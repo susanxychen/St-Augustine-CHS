@@ -1,0 +1,6 @@
+framework module Pods_St_Augustine_CHSTests {
+  umbrella header "Pods-St Augustine CHSTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

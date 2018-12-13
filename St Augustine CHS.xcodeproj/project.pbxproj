@@ -1,0 +1,903 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1B7118275B2F370E7F8DC350 /* Pods_St_Augustine_CHSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F6C7B53B9BF7FDA7804B7E /* Pods_St_Augustine_CHSTests.framework */; };
+		494821B70FBAAF1BBB3661A4 /* Pods_St_Augustine_CHSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA845C7AE92D011ED02C842B /* Pods_St_Augustine_CHSUITests.framework */; };
+		5EBB39C3991C8DC517A48D59 /* Pods_St_Augustine_CHS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9FAA361F1A4C797EA3582A8 /* Pods_St_Augustine_CHS.framework */; };
+		B90669C82186851800CAA824 /* addAnncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90669C72186851800CAA824 /* addAnncController.swift */; };
+		B90669CA2186ACF100CAA824 /* addClubController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90669C92186ACF100CAA824 /* addClubController.swift */; };
+		B9118FA4218A653200CE4C6A /* clubGoodController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9118FA3218A653200CE4C6A /* clubGoodController.swift */; };
+		B9118FA8218A70AB00CE4C6A /* clubHeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9118FA7218A70AB00CE4C6A /* clubHeaderViewCell.swift */; };
+		B918546C21B4B26500DA14F5 /* profilePicController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B918546B21B4B26500DA14F5 /* profilePicController.swift */; };
+		B918546E21B4B28000DA14F5 /* picsOwnedViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B918546D21B4B28000DA14F5 /* picsOwnedViewCell.swift */; };
+		B918547021B4B29000DA14F5 /* picsNotOwnedViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B918546F21B4B29000DA14F5 /* picsNotOwnedViewCell.swift */; };
+		B93258A62186313300605689 /* clubNewsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93258A52186313300605689 /* clubNewsViewCell.swift */; };
+		B93F208E21738E5100279829 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93F208D21738E5100279829 /* AppDelegate.swift */; };
+		B93F209021738E5100279829 /* menuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93F208F21738E5100279829 /* menuController.swift */; };
+		B93F209321738E5100279829 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B93F209121738E5100279829 /* Main.storyboard */; };
+		B93F209521738E5500279829 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B93F209421738E5500279829 /* Assets.xcassets */; };
+		B93F209821738E5500279829 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B93F209621738E5500279829 /* LaunchScreen.storyboard */; };
+		B93F20A321738E5500279829 /* St_Augustine_CHSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93F20A221738E5500279829 /* St_Augustine_CHSTests.swift */; };
+		B93F20AE21738E5500279829 /* St_Augustine_CHSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93F20AD21738E5500279829 /* St_Augustine_CHSUITests.swift */; };
+		B94B173B21A0AAD000BCD86A /* SignInProfilePicController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94B173A21A0AAD000BCD86A /* SignInProfilePicController.swift */; };
+		B94B173D21A0AB9D00BCD86A /* SignInCoursesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94B173C21A0AB9D00BCD86A /* SignInCoursesController.swift */; };
+		B94B173F21A0AC5C00BCD86A /* SignInPrefController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94B173E21A0AC5C00BCD86A /* SignInPrefController.swift */; };
+		B958069D218209AA00B3EE70 /* songReqController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958069C218209AA00B3EE70 /* songReqController.swift */; };
+		B958069F21821EA400B3EE70 /* songViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958069E21821EA400B3EE70 /* songViewCell.swift */; };
+		B958FB54218FC582004C99F0 /* clubListFooterViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958FB53218FC582004C99F0 /* clubListFooterViewCell.swift */; };
+		B961425021B6193F0070F27B /* suggestASongController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B961424F21B6193F0070F27B /* suggestASongController.swift */; };
+		B97CDA492176DCFE00F7F685 /* newsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97CDA482176DCFE00F7F685 /* newsViewCell.swift */; };
+		B9876BAE217AC9E800D57C16 /* clubListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9876BAD217AC9E800D57C16 /* clubListController.swift */; };
+		B9876BB2217ACC5300D57C16 /* clubViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9876BB1217ACC5300D57C16 /* clubViewCell.swift */; };
+		B995CFF4218F8600004970E0 /* editClubDetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B995CFF3218F8600004970E0 /* editClubDetailsController.swift */; };
+		B9AC701321C1A19E00FEF5EF /* clubBadgeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AC701221C1A19D00FEF5EF /* clubBadgeCell.swift */; };
+		B9AC701521C1B52C00FEF5EF /* cafeImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AC701421C1B52C00FEF5EF /* cafeImageController.swift */; };
+		B9ACA1EA2175499100302C4B /* signInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACA1E92175499100302C4B /* signInController.swift */; };
+		B9ACA1EC21755BBD00302C4B /* settingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACA1EB21755BBD00302C4B /* settingsController.swift */; };
+		B9ACA1EE2175825800302C4B /* failedLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACA1ED2175825800302C4B /* failedLoginController.swift */; };
+		B9B2E69E2175383C006E1EA4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B9B2E69D2175383C006E1EA4 /* GoogleService-Info.plist */; };
+		B9B2E69F2175383C006E1EA4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B9B2E69D2175383C006E1EA4 /* GoogleService-Info.plist */; };
+		B9B2E6A02175383C006E1EA4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B9B2E69D2175383C006E1EA4 /* GoogleService-Info.plist */; };
+		B9B3684B21B9EB060059CF9C /* changeCoursesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B3684A21B9EB060059CF9C /* changeCoursesController.swift */; };
+		B9C6E35B21ACA68500A03650 /* classesDetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C6E35A21ACA68500A03650 /* classesDetailsController.swift */; };
+		B9C6E35D21ACBFE200A03650 /* semester1ViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C6E35C21ACBFE200A03650 /* semester1ViewCell.swift */; };
+		B9C6E35F21ACBFF200A03650 /* semester2ViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C6E35E21ACBFF200A03650 /* semester2ViewCell.swift */; };
+		B9E67F8821B86B7300836A65 /* spiritMeterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E67F8721B86B7300836A65 /* spiritMeterController.swift */; };
+		B9EAF7B321A0D3D40062736B /* signInProfilePicViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EAF7B221A0D3D40062736B /* signInProfilePicViewCell.swift */; };
+		B9FECBFD2190C79D0006CCE3 /* allExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FECBFC2190C79D0006CCE3 /* allExtensions.swift */; };
+		B9FECBFF219131E30006CCE3 /* socialController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FECBFE219131E30006CCE3 /* socialController.swift */; };
+		B9FECC012191337F0006CCE3 /* badgesViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FECC002191337F0006CCE3 /* badgesViewCell.swift */; };
+		B9FECC03219133950006CCE3 /* socialClubsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FECC02219133950006CCE3 /* socialClubsViewCell.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B93F209F21738E5500279829 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B93F208221738E5100279829 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B93F208921738E5100279829;
+			remoteInfo = "St Augustine CHS";
+		};
+		B93F20AA21738E5500279829 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B93F208221738E5100279829 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B93F208921738E5100279829;
+			remoteInfo = "St Augustine CHS";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		127B8C6C2EFA7C3ED40114CF /* Pods-St Augustine CHSUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSUITests/Pods-St Augustine CHSUITests.release.xcconfig"; sourceTree = "<group>"; };
+		86F6C7B53B9BF7FDA7804B7E /* Pods_St_Augustine_CHSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_St_Augustine_CHSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		91ED8963871FD556454B1708 /* Pods-St Augustine CHS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS.debug.xcconfig"; sourceTree = "<group>"; };
+		96304CEA120001801BBAAF2E /* Pods-St Augustine CHSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSTests/Pods-St Augustine CHSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		9BAED68563022F92CBFBD140 /* Pods-St Augustine CHS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHS.release.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS.release.xcconfig"; sourceTree = "<group>"; };
+		B41D9C669E0D1D4DCB919C9C /* Pods-St Augustine CHSUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSUITests/Pods-St Augustine CHSUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		B90669C72186851800CAA824 /* addAnncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addAnncController.swift; sourceTree = "<group>"; };
+		B90669C92186ACF100CAA824 /* addClubController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addClubController.swift; sourceTree = "<group>"; };
+		B9118FA3218A653200CE4C6A /* clubGoodController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubGoodController.swift; sourceTree = "<group>"; };
+		B9118FA7218A70AB00CE4C6A /* clubHeaderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubHeaderViewCell.swift; sourceTree = "<group>"; };
+		B918546B21B4B26500DA14F5 /* profilePicController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = profilePicController.swift; sourceTree = "<group>"; };
+		B918546D21B4B28000DA14F5 /* picsOwnedViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = picsOwnedViewCell.swift; sourceTree = "<group>"; };
+		B918546F21B4B29000DA14F5 /* picsNotOwnedViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = picsNotOwnedViewCell.swift; sourceTree = "<group>"; };
+		B93258A52186313300605689 /* clubNewsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubNewsViewCell.swift; sourceTree = "<group>"; };
+		B93F208A21738E5100279829 /* St Augustine CHS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "St Augustine CHS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B93F208D21738E5100279829 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B93F208F21738E5100279829 /* menuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = menuController.swift; sourceTree = "<group>"; };
+		B93F209221738E5100279829 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B93F209421738E5500279829 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B93F209721738E5500279829 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B93F209921738E5500279829 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B93F209E21738E5500279829 /* St Augustine CHSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "St Augustine CHSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B93F20A221738E5500279829 /* St_Augustine_CHSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = St_Augustine_CHSTests.swift; sourceTree = "<group>"; };
+		B93F20A421738E5500279829 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B93F20A921738E5500279829 /* St Augustine CHSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "St Augustine CHSUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B93F20AD21738E5500279829 /* St_Augustine_CHSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = St_Augustine_CHSUITests.swift; sourceTree = "<group>"; };
+		B93F20AF21738E5500279829 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B94B173A21A0AAD000BCD86A /* SignInProfilePicController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInProfilePicController.swift; sourceTree = "<group>"; };
+		B94B173C21A0AB9D00BCD86A /* SignInCoursesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInCoursesController.swift; sourceTree = "<group>"; };
+		B94B173E21A0AC5C00BCD86A /* SignInPrefController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPrefController.swift; sourceTree = "<group>"; };
+		B958069C218209AA00B3EE70 /* songReqController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = songReqController.swift; sourceTree = "<group>"; };
+		B958069E21821EA400B3EE70 /* songViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = songViewCell.swift; sourceTree = "<group>"; };
+		B958FB53218FC582004C99F0 /* clubListFooterViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubListFooterViewCell.swift; sourceTree = "<group>"; };
+		B961424F21B6193F0070F27B /* suggestASongController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = suggestASongController.swift; sourceTree = "<group>"; };
+		B97CDA482176DCFE00F7F685 /* newsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = newsViewCell.swift; sourceTree = "<group>"; };
+		B9876BAD217AC9E800D57C16 /* clubListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubListController.swift; sourceTree = "<group>"; };
+		B9876BB1217ACC5300D57C16 /* clubViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubViewCell.swift; sourceTree = "<group>"; };
+		B995CFF3218F8600004970E0 /* editClubDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = editClubDetailsController.swift; sourceTree = "<group>"; };
+		B9AC701221C1A19D00FEF5EF /* clubBadgeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubBadgeCell.swift; sourceTree = "<group>"; };
+		B9AC701421C1B52C00FEF5EF /* cafeImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cafeImageController.swift; sourceTree = "<group>"; };
+		B9ACA1E92175499100302C4B /* signInController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = signInController.swift; sourceTree = "<group>"; };
+		B9ACA1EB21755BBD00302C4B /* settingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingsController.swift; sourceTree = "<group>"; };
+		B9ACA1ED2175825800302C4B /* failedLoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = failedLoginController.swift; sourceTree = "<group>"; };
+		B9B2E69D2175383C006E1EA4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		B9B3684A21B9EB060059CF9C /* changeCoursesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = changeCoursesController.swift; sourceTree = "<group>"; };
+		B9C6E35A21ACA68500A03650 /* classesDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = classesDetailsController.swift; sourceTree = "<group>"; };
+		B9C6E35C21ACBFE200A03650 /* semester1ViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = semester1ViewCell.swift; sourceTree = "<group>"; };
+		B9C6E35E21ACBFF200A03650 /* semester2ViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = semester2ViewCell.swift; sourceTree = "<group>"; };
+		B9E67F8721B86B7300836A65 /* spiritMeterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = spiritMeterController.swift; sourceTree = "<group>"; };
+		B9EAF7B221A0D3D40062736B /* signInProfilePicViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = signInProfilePicViewCell.swift; sourceTree = "<group>"; };
+		B9FECBFC2190C79D0006CCE3 /* allExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = allExtensions.swift; sourceTree = "<group>"; };
+		B9FECBFE219131E30006CCE3 /* socialController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = socialController.swift; sourceTree = "<group>"; };
+		B9FECC002191337F0006CCE3 /* badgesViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = badgesViewCell.swift; sourceTree = "<group>"; };
+		B9FECC02219133950006CCE3 /* socialClubsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = socialClubsViewCell.swift; sourceTree = "<group>"; };
+		BA845C7AE92D011ED02C842B /* Pods_St_Augustine_CHSUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_St_Augustine_CHSUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9FAA361F1A4C797EA3582A8 /* Pods_St_Augustine_CHS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_St_Augustine_CHS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F197B6E0EC9F0995B2803F8C /* Pods-St Augustine CHSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSTests/Pods-St Augustine CHSTests.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B93F208721738E5100279829 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5EBB39C3991C8DC517A48D59 /* Pods_St_Augustine_CHS.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B93F209B21738E5500279829 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B7118275B2F370E7F8DC350 /* Pods_St_Augustine_CHSTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B93F20A621738E5500279829 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				494821B70FBAAF1BBB3661A4 /* Pods_St_Augustine_CHSUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		401D10943CE88EEB2FFECA3B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				91ED8963871FD556454B1708 /* Pods-St Augustine CHS.debug.xcconfig */,
+				9BAED68563022F92CBFBD140 /* Pods-St Augustine CHS.release.xcconfig */,
+				96304CEA120001801BBAAF2E /* Pods-St Augustine CHSTests.debug.xcconfig */,
+				F197B6E0EC9F0995B2803F8C /* Pods-St Augustine CHSTests.release.xcconfig */,
+				B41D9C669E0D1D4DCB919C9C /* Pods-St Augustine CHSUITests.debug.xcconfig */,
+				127B8C6C2EFA7C3ED40114CF /* Pods-St Augustine CHSUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		A47DE789B9C6EDA4D19CBCD0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C9FAA361F1A4C797EA3582A8 /* Pods_St_Augustine_CHS.framework */,
+				86F6C7B53B9BF7FDA7804B7E /* Pods_St_Augustine_CHSTests.framework */,
+				BA845C7AE92D011ED02C842B /* Pods_St_Augustine_CHSUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B93F208121738E5100279829 = {
+			isa = PBXGroup;
+			children = (
+				B93F208C21738E5100279829 /* St Augustine CHS */,
+				B93F20A121738E5500279829 /* St Augustine CHSTests */,
+				B93F20AC21738E5500279829 /* St Augustine CHSUITests */,
+				B93F208B21738E5100279829 /* Products */,
+				401D10943CE88EEB2FFECA3B /* Pods */,
+				A47DE789B9C6EDA4D19CBCD0 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		B93F208B21738E5100279829 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B93F208A21738E5100279829 /* St Augustine CHS.app */,
+				B93F209E21738E5500279829 /* St Augustine CHSTests.xctest */,
+				B93F20A921738E5500279829 /* St Augustine CHSUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B93F208C21738E5100279829 /* St Augustine CHS */ = {
+			isa = PBXGroup;
+			children = (
+				B93F208D21738E5100279829 /* AppDelegate.swift */,
+				B9FECBFC2190C79D0006CCE3 /* allExtensions.swift */,
+				B9ACA1E92175499100302C4B /* signInController.swift */,
+				B94B173A21A0AAD000BCD86A /* SignInProfilePicController.swift */,
+				B94B173C21A0AB9D00BCD86A /* SignInCoursesController.swift */,
+				B94B173E21A0AC5C00BCD86A /* SignInPrefController.swift */,
+				B9ACA1ED2175825800302C4B /* failedLoginController.swift */,
+				B93F208F21738E5100279829 /* menuController.swift */,
+				B9AC701421C1B52C00FEF5EF /* cafeImageController.swift */,
+				B9876BAD217AC9E800D57C16 /* clubListController.swift */,
+				B90669C92186ACF100CAA824 /* addClubController.swift */,
+				B9118FA3218A653200CE4C6A /* clubGoodController.swift */,
+				B995CFF3218F8600004970E0 /* editClubDetailsController.swift */,
+				B90669C72186851800CAA824 /* addAnncController.swift */,
+				B958069C218209AA00B3EE70 /* songReqController.swift */,
+				B961424F21B6193F0070F27B /* suggestASongController.swift */,
+				B9E67F8721B86B7300836A65 /* spiritMeterController.swift */,
+				B9ACA1EB21755BBD00302C4B /* settingsController.swift */,
+				B9FECBFE219131E30006CCE3 /* socialController.swift */,
+				B918546B21B4B26500DA14F5 /* profilePicController.swift */,
+				B9C6E35A21ACA68500A03650 /* classesDetailsController.swift */,
+				B9B3684A21B9EB060059CF9C /* changeCoursesController.swift */,
+				B93F209121738E5100279829 /* Main.storyboard */,
+				B93F209421738E5500279829 /* Assets.xcassets */,
+				B93F209621738E5500279829 /* LaunchScreen.storyboard */,
+				B93F209921738E5500279829 /* Info.plist */,
+				B9B2E69D2175383C006E1EA4 /* GoogleService-Info.plist */,
+				B97CDA482176DCFE00F7F685 /* newsViewCell.swift */,
+				B9876BB1217ACC5300D57C16 /* clubViewCell.swift */,
+				B958069E21821EA400B3EE70 /* songViewCell.swift */,
+				B93258A52186313300605689 /* clubNewsViewCell.swift */,
+				B9118FA7218A70AB00CE4C6A /* clubHeaderViewCell.swift */,
+				B9AC701221C1A19D00FEF5EF /* clubBadgeCell.swift */,
+				B958FB53218FC582004C99F0 /* clubListFooterViewCell.swift */,
+				B9FECC002191337F0006CCE3 /* badgesViewCell.swift */,
+				B9FECC02219133950006CCE3 /* socialClubsViewCell.swift */,
+				B9EAF7B221A0D3D40062736B /* signInProfilePicViewCell.swift */,
+				B9C6E35C21ACBFE200A03650 /* semester1ViewCell.swift */,
+				B9C6E35E21ACBFF200A03650 /* semester2ViewCell.swift */,
+				B918546D21B4B28000DA14F5 /* picsOwnedViewCell.swift */,
+				B918546F21B4B29000DA14F5 /* picsNotOwnedViewCell.swift */,
+			);
+			path = "St Augustine CHS";
+			sourceTree = "<group>";
+		};
+		B93F20A121738E5500279829 /* St Augustine CHSTests */ = {
+			isa = PBXGroup;
+			children = (
+				B93F20A221738E5500279829 /* St_Augustine_CHSTests.swift */,
+				B93F20A421738E5500279829 /* Info.plist */,
+			);
+			path = "St Augustine CHSTests";
+			sourceTree = "<group>";
+		};
+		B93F20AC21738E5500279829 /* St Augustine CHSUITests */ = {
+			isa = PBXGroup;
+			children = (
+				B93F20AD21738E5500279829 /* St_Augustine_CHSUITests.swift */,
+				B93F20AF21738E5500279829 /* Info.plist */,
+			);
+			path = "St Augustine CHSUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B93F208921738E5100279829 /* St Augustine CHS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B93F20B221738E5500279829 /* Build configuration list for PBXNativeTarget "St Augustine CHS" */;
+			buildPhases = (
+				8379390C766842FEF021AA8F /* [CP] Check Pods Manifest.lock */,
+				B93F208621738E5100279829 /* Sources */,
+				B93F208721738E5100279829 /* Frameworks */,
+				B93F208821738E5100279829 /* Resources */,
+				2A8811AB0848F9160E727131 /* [CP] Embed Pods Frameworks */,
+				891753D794A02D0E5EF0AC28 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "St Augustine CHS";
+			productName = "St Augustine CHS";
+			productReference = B93F208A21738E5100279829 /* St Augustine CHS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B93F209D21738E5500279829 /* St Augustine CHSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B93F20B521738E5500279829 /* Build configuration list for PBXNativeTarget "St Augustine CHSTests" */;
+			buildPhases = (
+				A34BF1E0A42158E7F162256A /* [CP] Check Pods Manifest.lock */,
+				B93F209A21738E5500279829 /* Sources */,
+				B93F209B21738E5500279829 /* Frameworks */,
+				B93F209C21738E5500279829 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B93F20A021738E5500279829 /* PBXTargetDependency */,
+			);
+			name = "St Augustine CHSTests";
+			productName = "St Augustine CHSTests";
+			productReference = B93F209E21738E5500279829 /* St Augustine CHSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		B93F20A821738E5500279829 /* St Augustine CHSUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B93F20B821738E5500279829 /* Build configuration list for PBXNativeTarget "St Augustine CHSUITests" */;
+			buildPhases = (
+				26D86A6D002BFE2E00C43A9F /* [CP] Check Pods Manifest.lock */,
+				B93F20A521738E5500279829 /* Sources */,
+				B93F20A621738E5500279829 /* Frameworks */,
+				B93F20A721738E5500279829 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B93F20AB21738E5500279829 /* PBXTargetDependency */,
+			);
+			name = "St Augustine CHSUITests";
+			productName = "St Augustine CHSUITests";
+			productReference = B93F20A921738E5500279829 /* St Augustine CHSUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B93F208221738E5100279829 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1000;
+				LastUpgradeCheck = 1000;
+				ORGANIZATIONNAME = "St Augustine CHS";
+				TargetAttributes = {
+					B93F208921738E5100279829 = {
+						CreatedOnToolsVersion = 10.0;
+					};
+					B93F209D21738E5500279829 = {
+						CreatedOnToolsVersion = 10.0;
+						TestTargetID = B93F208921738E5100279829;
+					};
+					B93F20A821738E5500279829 = {
+						CreatedOnToolsVersion = 10.0;
+						TestTargetID = B93F208921738E5100279829;
+					};
+				};
+			};
+			buildConfigurationList = B93F208521738E5100279829 /* Build configuration list for PBXProject "St Augustine CHS" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B93F208121738E5100279829;
+			productRefGroup = B93F208B21738E5100279829 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B93F208921738E5100279829 /* St Augustine CHS */,
+				B93F209D21738E5500279829 /* St Augustine CHSTests */,
+				B93F20A821738E5500279829 /* St Augustine CHSUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B93F208821738E5100279829 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B93F209821738E5500279829 /* LaunchScreen.storyboard in Resources */,
+				B9B2E69E2175383C006E1EA4 /* GoogleService-Info.plist in Resources */,
+				B93F209521738E5500279829 /* Assets.xcassets in Resources */,
+				B93F209321738E5100279829 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B93F209C21738E5500279829 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B9B2E69F2175383C006E1EA4 /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B93F20A721738E5500279829 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B9B2E6A02175383C006E1EA4 /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		26D86A6D002BFE2E00C43A9F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-St Augustine CHSUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2A8811AB0848F9160E727131 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/BoringSSL/openssl.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMOAuth2/GTMOAuth2.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC/GRPCClient.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-ProtoRPC/ProtoRPC.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-RxLibrary/RxLibrary.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMOAuth2.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GRPCClient.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpcpp.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpc.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ProtoRPC.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxLibrary.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8379390C766842FEF021AA8F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-St Augustine CHS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		891753D794A02D0E5EF0AC28 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS-resources.sh",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A34BF1E0A42158E7F162256A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-St Augustine CHSTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B93F208621738E5100279829 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B9E67F8821B86B7300836A65 /* spiritMeterController.swift in Sources */,
+				B995CFF4218F8600004970E0 /* editClubDetailsController.swift in Sources */,
+				B918546E21B4B28000DA14F5 /* picsOwnedViewCell.swift in Sources */,
+				B9AC701321C1A19E00FEF5EF /* clubBadgeCell.swift in Sources */,
+				B94B173D21A0AB9D00BCD86A /* SignInCoursesController.swift in Sources */,
+				B9ACA1EC21755BBD00302C4B /* settingsController.swift in Sources */,
+				B94B173B21A0AAD000BCD86A /* SignInProfilePicController.swift in Sources */,
+				B9118FA8218A70AB00CE4C6A /* clubHeaderViewCell.swift in Sources */,
+				B90669CA2186ACF100CAA824 /* addClubController.swift in Sources */,
+				B94B173F21A0AC5C00BCD86A /* SignInPrefController.swift in Sources */,
+				B9FECBFD2190C79D0006CCE3 /* allExtensions.swift in Sources */,
+				B9876BAE217AC9E800D57C16 /* clubListController.swift in Sources */,
+				B93F209021738E5100279829 /* menuController.swift in Sources */,
+				B9ACA1EA2175499100302C4B /* signInController.swift in Sources */,
+				B9118FA4218A653200CE4C6A /* clubGoodController.swift in Sources */,
+				B958069D218209AA00B3EE70 /* songReqController.swift in Sources */,
+				B97CDA492176DCFE00F7F685 /* newsViewCell.swift in Sources */,
+				B958069F21821EA400B3EE70 /* songViewCell.swift in Sources */,
+				B9FECC012191337F0006CCE3 /* badgesViewCell.swift in Sources */,
+				B9EAF7B321A0D3D40062736B /* signInProfilePicViewCell.swift in Sources */,
+				B9C6E35B21ACA68500A03650 /* classesDetailsController.swift in Sources */,
+				B9C6E35D21ACBFE200A03650 /* semester1ViewCell.swift in Sources */,
+				B9876BB2217ACC5300D57C16 /* clubViewCell.swift in Sources */,
+				B961425021B6193F0070F27B /* suggestASongController.swift in Sources */,
+				B93F208E21738E5100279829 /* AppDelegate.swift in Sources */,
+				B9ACA1EE2175825800302C4B /* failedLoginController.swift in Sources */,
+				B9FECC03219133950006CCE3 /* socialClubsViewCell.swift in Sources */,
+				B9B3684B21B9EB060059CF9C /* changeCoursesController.swift in Sources */,
+				B93258A62186313300605689 /* clubNewsViewCell.swift in Sources */,
+				B90669C82186851800CAA824 /* addAnncController.swift in Sources */,
+				B9AC701521C1B52C00FEF5EF /* cafeImageController.swift in Sources */,
+				B918546C21B4B26500DA14F5 /* profilePicController.swift in Sources */,
+				B9FECBFF219131E30006CCE3 /* socialController.swift in Sources */,
+				B958FB54218FC582004C99F0 /* clubListFooterViewCell.swift in Sources */,
+				B9C6E35F21ACBFF200A03650 /* semester2ViewCell.swift in Sources */,
+				B918547021B4B29000DA14F5 /* picsNotOwnedViewCell.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B93F209A21738E5500279829 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B93F20A321738E5500279829 /* St_Augustine_CHSTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B93F20A521738E5500279829 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B93F20AE21738E5500279829 /* St_Augustine_CHSUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B93F20A021738E5500279829 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B93F208921738E5100279829 /* St Augustine CHS */;
+			targetProxy = B93F209F21738E5500279829 /* PBXContainerItemProxy */;
+		};
+		B93F20AB21738E5500279829 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B93F208921738E5100279829 /* St Augustine CHS */;
+			targetProxy = B93F20AA21738E5500279829 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B93F209121738E5100279829 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B93F209221738E5100279829 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		B93F209621738E5500279829 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B93F209721738E5500279829 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B93F20B021738E5500279829 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B93F20B121738E5500279829 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B93F20B321738E5500279829 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 91ED8963871FD556454B1708 /* Pods-St Augustine CHS.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LT34HB8JVR;
+				INFOPLIST_FILE = "St Augustine CHS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.stauchs.St-Augustine-CHS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		B93F20B421738E5500279829 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9BAED68563022F92CBFBD140 /* Pods-St Augustine CHS.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LT34HB8JVR;
+				INFOPLIST_FILE = "St Augustine CHS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.stauchs.St-Augustine-CHS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		B93F20B621738E5500279829 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 96304CEA120001801BBAAF2E /* Pods-St Augustine CHSTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LT34HB8JVR;
+				INFOPLIST_FILE = "St Augustine CHSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.stauchs.St-Augustine-CHSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/St Augustine CHS.app/St Augustine CHS";
+			};
+			name = Debug;
+		};
+		B93F20B721738E5500279829 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F197B6E0EC9F0995B2803F8C /* Pods-St Augustine CHSTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LT34HB8JVR;
+				INFOPLIST_FILE = "St Augustine CHSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.stauchs.St-Augustine-CHSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/St Augustine CHS.app/St Augustine CHS";
+			};
+			name = Release;
+		};
+		B93F20B921738E5500279829 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B41D9C669E0D1D4DCB919C9C /* Pods-St Augustine CHSUITests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LT34HB8JVR;
+				INFOPLIST_FILE = "St Augustine CHSUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.stauchs.St-Augustine-CHSUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "St Augustine CHS";
+			};
+			name = Debug;
+		};
+		B93F20BA21738E5500279829 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 127B8C6C2EFA7C3ED40114CF /* Pods-St Augustine CHSUITests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LT34HB8JVR;
+				INFOPLIST_FILE = "St Augustine CHSUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.stauchs.St-Augustine-CHSUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "St Augustine CHS";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B93F208521738E5100279829 /* Build configuration list for PBXProject "St Augustine CHS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B93F20B021738E5500279829 /* Debug */,
+				B93F20B121738E5500279829 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B93F20B221738E5500279829 /* Build configuration list for PBXNativeTarget "St Augustine CHS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B93F20B321738E5500279829 /* Debug */,
+				B93F20B421738E5500279829 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B93F20B521738E5500279829 /* Build configuration list for PBXNativeTarget "St Augustine CHSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B93F20B621738E5500279829 /* Debug */,
+				B93F20B721738E5500279829 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B93F20B821738E5500279829 /* Build configuration list for PBXNativeTarget "St Augustine CHSUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B93F20B921738E5500279829 /* Debug */,
+				B93F20BA21738E5500279829 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B93F208221738E5100279829 /* Project object */;
+}
