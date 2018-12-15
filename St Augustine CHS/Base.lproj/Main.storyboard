@@ -253,56 +253,59 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Q2H-uS-rjb">
-                                                <rect key="frame" x="0.0" y="99" width="375" height="100"/>
+                                                <rect key="frame" x="0.0" y="99" width="375" height="200"/>
                                                 <color key="backgroundColor" red="0.94509803920000002" green="0.88235294119999996" blue="0.76470588240000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="100" id="Fvi-8E-9yA"/>
+                                                    <constraint firstAttribute="height" constant="200" id="Fvi-8E-9yA"/>
                                                 </constraints>
                                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="JIR-cN-PSM">
-                                                    <size key="itemSize" width="361" height="80"/>
+                                                    <size key="itemSize" width="361" height="140"/>
                                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                 </collectionViewFlowLayout>
                                                 <cells>
                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="PhT-m5-M9l" customClass="newsViewCell" customModule="St_Augustine_CHS" customModuleProvider="target">
-                                                        <rect key="frame" x="7" y="0.0" width="361" height="80"/>
+                                                        <rect key="frame" x="7" y="0.0" width="361" height="140"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                                            <rect key="frame" x="0.0" y="0.0" width="361" height="80"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="361" height="140"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
-                                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="filer data" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="H1a-Sr-4aj">
-                                                                    <rect key="frame" x="153" y="0.0" width="208" height="80"/>
-                                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                                </textView>
                                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" text="No Announcements today" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="61y-hS-KmG">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="145" height="80"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="361" height="70"/>
                                                                     <constraints>
-                                                                        <constraint firstAttribute="width" constant="145" id="H7U-N6-GVA"/>
+                                                                        <constraint firstAttribute="height" constant="70" id="RsX-VQ-NbK"/>
                                                                     </constraints>
                                                                     <color key="textColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                                </textView>
+                                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="filer data" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="H1a-Sr-4aj">
+                                                                    <rect key="frame" x="0.0" y="80" width="361" height="60"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" constant="60" id="b2z-s9-LG2"/>
+                                                                    </constraints>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                                 </textView>
                                                             </subviews>
                                                         </view>
                                                         <color key="backgroundColor" red="0.99269646406173706" green="0.95307916402816772" blue="0.84141534566879272" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <constraints>
-                                                            <constraint firstItem="61y-hS-KmG" firstAttribute="top" secondItem="PhT-m5-M9l" secondAttribute="top" id="Fm9-3J-9FN"/>
-                                                            <constraint firstAttribute="bottom" secondItem="61y-hS-KmG" secondAttribute="bottom" id="MOC-ex-0Px"/>
-                                                            <constraint firstItem="H1a-Sr-4aj" firstAttribute="leading" secondItem="61y-hS-KmG" secondAttribute="trailing" constant="8" id="XW6-32-M2w"/>
-                                                            <constraint firstAttribute="bottom" secondItem="H1a-Sr-4aj" secondAttribute="bottom" id="fA9-sS-h3q"/>
-                                                            <constraint firstItem="H1a-Sr-4aj" firstAttribute="leading" secondItem="61y-hS-KmG" secondAttribute="trailing" constant="8" id="izs-eu-Wie"/>
-                                                            <constraint firstItem="H1a-Sr-4aj" firstAttribute="top" secondItem="PhT-m5-M9l" secondAttribute="top" id="jWh-Vd-y2P"/>
-                                                            <constraint firstItem="61y-hS-KmG" firstAttribute="leading" secondItem="PhT-m5-M9l" secondAttribute="leading" id="mbg-ns-zhs"/>
-                                                            <constraint firstAttribute="trailing" secondItem="H1a-Sr-4aj" secondAttribute="trailing" id="zSP-KA-dx6"/>
+                                                            <constraint firstItem="61y-hS-KmG" firstAttribute="leading" secondItem="PhT-m5-M9l" secondAttribute="leading" id="7Qh-KV-qHD"/>
+                                                            <constraint firstItem="61y-hS-KmG" firstAttribute="top" secondItem="PhT-m5-M9l" secondAttribute="top" id="CTw-UK-nZ3"/>
+                                                            <constraint firstAttribute="trailing" secondItem="H1a-Sr-4aj" secondAttribute="trailing" id="NID-vd-kez"/>
+                                                            <constraint firstAttribute="trailing" secondItem="61y-hS-KmG" secondAttribute="trailing" id="Oxm-Li-alm"/>
+                                                            <constraint firstItem="H1a-Sr-4aj" firstAttribute="leading" secondItem="PhT-m5-M9l" secondAttribute="leading" id="j30-x3-Mbw"/>
+                                                            <constraint firstAttribute="bottom" secondItem="H1a-Sr-4aj" secondAttribute="bottom" id="lP2-3t-TH8"/>
                                                         </constraints>
-                                                        <size key="customSize" width="361" height="80"/>
+                                                        <size key="customSize" width="361" height="140"/>
                                                         <connections>
                                                             <outlet property="anncDep" destination="61y-hS-KmG" id="4Cm-Ty-yqy"/>
                                                             <outlet property="anncText" destination="H1a-Sr-4aj" id="pLe-2L-1Us"/>
+                                                            <outlet property="contentHeight" destination="b2z-s9-LG2" id="t5n-0a-22A"/>
+                                                            <outlet property="titleHeight" destination="RsX-VQ-NbK" id="54L-JC-P4g"/>
                                                         </connections>
                                                     </collectionViewCell>
                                                 </cells>
@@ -312,7 +315,7 @@
                                                 </connections>
                                             </collectionView>
                                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="It's a Snow Day!!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oZ5-Rj-M5A">
-                                                <rect key="frame" x="8" y="207" width="359" height="30"/>
+                                                <rect key="frame" x="8" y="307" width="359" height="30"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="P12-0s-1Ic"/>
                                                 </constraints>
@@ -321,7 +324,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <wkWebView contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Qd5-JT-AqS">
-                                                <rect key="frame" x="0.0" y="245" width="375" height="230"/>
+                                                <rect key="frame" x="0.0" y="345" width="375" height="230"/>
                                                 <color key="backgroundColor" red="0.94509803920000002" green="0.88235294119999996" blue="0.76470588240000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="230" id="GM2-wA-7yC"/>
@@ -332,7 +335,7 @@
                                                 </wkWebViewConfiguration>
                                             </wkWebView>
                                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="space evenly" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dip-Tr-lPI">
-                                                <rect key="frame" x="8" y="483" width="359" height="30"/>
+                                                <rect key="frame" x="8" y="583" width="359" height="30"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="jtP-My-UAV"/>
                                                 </constraints>

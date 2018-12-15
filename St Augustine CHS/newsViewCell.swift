@@ -13,4 +13,6 @@ class newsViewCell: UICollectionViewCell {
     @IBOutlet weak var anncDep: UITextView!
     @IBOutlet weak var anncText: UITextView!
     
+    @IBOutlet weak var titleHeight: NSLayoutConstraint!
+    @IBOutlet weak var contentHeight: NSLayoutConstraint!
 }

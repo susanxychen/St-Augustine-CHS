@@ -30,8 +30,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var dateToString: UILabel!
     @IBOutlet weak var dayNumber: UILabel!
     @IBOutlet weak var snowDay: UILabel!
-    //@IBOutlet weak var ytVideoView: WKWebView!
-    //@IBOutlet weak var ytVideoViewHeight: NSLayoutConstraint!
     @IBOutlet weak var calendarView: WKWebView!
     
     //Profile UI Variables
@@ -39,6 +37,10 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var displayName: UILabel!
     @IBOutlet weak var displayEmail: UILabel!
     var menuShowing = false
+    
+    //News Vars
+    var titleHeights = [CGFloat]()
+    var contentHeights = [CGFloat]()
     
     //Online Data Variables
     var newsData = [[String]]()
@@ -237,26 +239,23 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        //Compare which is longer. Department name or announcment name
-        if newsData[indexPath.row][0].count < newsData[indexPath.row][1].count {
-            //print("dynamic change based on announcement")
-            //Dynamically change the cell size depending on the announcement length
-            let approxWidthOfAnnouncementTextView = view.frame.width - 145
-            let size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
-            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18.5)]
-            let estimatedFrame = NSString(string: newsData[indexPath.row][1]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+        //Dynamically change the cell size depending on the announcement length
+        let approxWidthOfAnnouncementTextView = view.frame.width
+        var size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
+        var attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18.5)]
+        var estimatedFrame = NSString(string: newsData[indexPath.row][1]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             
-            return CGSize(width: view.frame.width, height: estimatedFrame.height + 15)
-        } else {
-            //print("dynamic change based on department")
-            //Dynamically change the cell size depending on the department length
-            let approxWidthOfAnnouncementTextView = 145
-            let size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
-            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18)]
-            let estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
-            
-            return CGSize(width: view.frame.width, height: estimatedFrame.height + 10)
-        }
+        let contentHeight =  estimatedFrame.height + 10
+        contentHeights[indexPath.item] = contentHeight
+        
+        size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
+        attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18)]
+        estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+        
+        let titleHeight = estimatedFrame.height + 10
+        titleHeights[indexPath.item] = titleHeight
+        
+        return CGSize(width: view.frame.width, height: contentHeight + titleHeight + 8)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -266,6 +265,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         cell.anncText.text = newsData[indexPath.item][1]
         cell.anncDep.centerVertically()
         cell.anncText.centerVertically()
+        cell.contentHeight.constant = contentHeights[indexPath.item]
+        cell.titleHeight.constant = titleHeights[indexPath.item]
+        
         return cell
     }
     
@@ -385,24 +387,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         task4.resume()*/
         //self.ytVideoView.load(URLRequest(url: findYTVideo(content: "wow")))
     }
-    func findYTVideo(content: String) -> URL{
-        /*
-        //The Start and End of the video
-        let start = content.index(of: "<iframe src=\"")?.encodedOffset
-        let end = content.index(of: "\" frameborder")?.encodedOffset
-        
-        //Characters is Depracted. Find a better solution in the future to find a string within a string
-        let c = content.characters;
-        let r = c.index(c.startIndex, offsetBy: (start! + 13))..<c.index(c.startIndex, offsetBy: (end! + 18))
-        
-        //print(content[r])
-        //print(backupURL)
-        
-        //return URL(string: String(content[r])) ?? backupURL!
-        
-        //for now return the iframe*/
-        return URL(string: "https://staugustinechs.netfirms.com/stayt/")!
-    }
     
     //*************************************UPDATE THE DAY NUMBER**************************************
     func dayTask() {
@@ -429,20 +413,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         let theDay = DateFormatter.localizedString(from: NSDate() as Date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
         //Weekend, don't look for the Day number
         if (theDay.range(of:"Sunday") != nil) || (theDay.range(of:"Saturday") != nil){
-            //Set the database reference
-//            var dayNum = 3
-//            docRef = db.collection("info").document("dayNumber")
-//            docRef.getDocument { (docSnapshot, error) in
-//                guard let docSnapshot = docSnapshot, docSnapshot.exists else { return }
-//                //Should add error checking here lol
-//                let myData = docSnapshot.data()
-//                dayNum = myData?["dayNumber"] as! Int
-//                //print("wowzers", dayNum)
-//            }
-//            while dayNum == 3 {
-//                //Keep the display stuck until you get a response
-//                //Find a better way to keep the async from being annoying and for sure returning a dayNum value other than 3
-//            }
             return "It's a Weekend!"
         } else{
             //Look for last time "Day " is mentioned and output that
@@ -474,6 +444,10 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 let htmlContent = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!
                 self.newsData = self.processNewsSite(content: htmlContent as String)
                 DispatchQueue.main.async {
+                    for _ in 0..<self.newsData.count {
+                        self.titleHeights.append(0)
+                        self.contentHeights.append(0)
+                    }
                     self.annoucView.reloadData()
                 }
             }
