@@ -11,6 +11,8 @@ import Foundation
 import Firebase
 import WebKit
 
+import UserNotifications
+
 //This is the struct that holds all of the users firebase data
 struct allUserFirebaseData {
     static var data:[String:Any] = [:]
@@ -28,8 +30,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var dateToString: UILabel!
     @IBOutlet weak var dayNumber: UILabel!
     @IBOutlet weak var snowDay: UILabel!
-    @IBOutlet weak var ytVideoView: WKWebView!
-    @IBOutlet weak var ytVideoViewHeight: NSLayoutConstraint!
+    //@IBOutlet weak var ytVideoView: WKWebView!
+    //@IBOutlet weak var ytVideoViewHeight: NSLayoutConstraint!
     @IBOutlet weak var calendarView: WKWebView!
     
     //Profile UI Variables
@@ -66,11 +68,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     //***********************************SETTING UP EVERYTHING****************************************
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         //News Data
         newsTask()
         
         //Disable webkit View Zoom
-        self.ytVideoView.scrollView.delegate = self
+        //self.ytVideoView.scrollView.delegate = self
         
         //Set Up
         // [START setup]
@@ -110,7 +113,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //Remainin Tasks
         dayTask()
         snowTask()
-        ytTask()
+        //ytTask()
         
         //*******************SET UP USER PROFILE ON MENU*****************
         let user = Auth.auth().currentUser
@@ -135,11 +138,25 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //This is only for using direct iframe
         //Set Up the Youtube Video Height
         //these values came from the websites iframe width of 640px and height of 360px
-        ytVideoViewHeight.constant = ytVideoView.frame.width*(9.0/16.0)
+        //ytVideoViewHeight.constant = ytVideoView.frame.width*(9.0/16.0)
         
         //Load the calendar
         calendarView.load(URLRequest(url: schoolCalendarURL ?? backupURL!))
     }
+    
+    @IBAction func notify(_ sender: Any) {
+        print("i get run notifications")
+        let content = UNMutableNotificationContent()
+        content.title = "Annc Title"
+        content.body = "Make sure you bring all your donation money!"
+        content.badge = 1
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(identifier: "timerDone", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+    }
+    
     
     override func viewDidAppear(_ animated: Bool) {
         profilePicture.image = allUserFirebaseData.profilePic
@@ -366,7 +383,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             }
         }
         task4.resume()*/
-        self.ytVideoView.load(URLRequest(url: findYTVideo(content: "wow")))
+        //self.ytVideoView.load(URLRequest(url: findYTVideo(content: "wow")))
     }
     func findYTVideo(content: String) -> URL{
         /*

@@ -335,26 +335,28 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
 
     func sortAnncByDate () {
         //print(anncData)
-        var thereWasASwap = true
-        while thereWasASwap {
-            thereWasASwap = false
-            for i in 0...anncData.count-2 {
-                let timestamp1: Timestamp = anncData[i]["date"] as! Timestamp
-                let date1: Date = timestamp1.dateValue()
-                let timestamp2: Timestamp = anncData[i + 1]["date"] as! Timestamp
-                let date2: Date = timestamp2.dateValue()
-                
-                //Swap values
-                if date2 > date1 {
-                    thereWasASwap = true
-                    let temp = anncData[i]
-                    anncData[i] = anncData[i+1]
-                    anncData[i+1] = temp
+        if anncData.count > 2 {
+            var thereWasASwap = true
+            while thereWasASwap {
+                thereWasASwap = false
+                for i in 0...anncData.count-2 {
+                    let timestamp1: Timestamp = anncData[i]["date"] as! Timestamp
+                    let date1: Date = timestamp1.dateValue()
+                    let timestamp2: Timestamp = anncData[i + 1]["date"] as! Timestamp
+                    let date2: Date = timestamp2.dateValue()
                     
-                    //also swap the anncRef array for edit mode so we can use it otherwise its out of order
-                    let temp2 = trueAnncRefs[i]
-                    trueAnncRefs[i] = trueAnncRefs[i+1]
-                    trueAnncRefs[i+1] = temp2
+                    //Swap values
+                    if date2 > date1 {
+                        thereWasASwap = true
+                        let temp = anncData[i]
+                        anncData[i] = anncData[i+1]
+                        anncData[i+1] = temp
+                        
+                        //also swap the anncRef array for edit mode so we can use it otherwise its out of order
+                        let temp2 = trueAnncRefs[i]
+                        trueAnncRefs[i] = trueAnncRefs[i+1]
+                        trueAnncRefs[i+1] = temp2
+                    }
                 }
             }
         }
@@ -365,6 +367,12 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     
     func getImages() {
         //print(anncData)
+        if anncData.count < 0 {
+            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+            self.clubContoller.reloadData()
+            self.refreshControl?.endRefreshing()
+        }
+        
         var hasImageSomewhere = false
         for i in 0...anncData.count-1{
             if anncData[i]["img"] as? String != nil && anncData[i]["img"] as? String != "" {

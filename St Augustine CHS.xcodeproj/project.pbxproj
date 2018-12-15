@@ -30,6 +30,8 @@
 		B94B173F21A0AC5C00BCD86A /* SignInPrefController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94B173E21A0AC5C00BCD86A /* SignInPrefController.swift */; };
 		B958069D218209AA00B3EE70 /* songReqController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958069C218209AA00B3EE70 /* songReqController.swift */; };
 		B958069F21821EA400B3EE70 /* songViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958069E21821EA400B3EE70 /* songViewCell.swift */; };
+		B958A26421C4023A00726345 /* cafeMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A26321C4023A00726345 /* cafeMenuController.swift */; };
+		B958A26621C4036B00726345 /* cafemenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A26521C4036B00726345 /* cafemenuCell.swift */; };
 		B958FB54218FC582004C99F0 /* clubListFooterViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958FB53218FC582004C99F0 /* clubListFooterViewCell.swift */; };
 		B961425021B6193F0070F27B /* suggestASongController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B961424F21B6193F0070F27B /* suggestASongController.swift */; };
 		B97CDA492176DCFE00F7F685 /* newsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97CDA482176DCFE00F7F685 /* newsViewCell.swift */; };
@@ -106,6 +108,8 @@
 		B94B173E21A0AC5C00BCD86A /* SignInPrefController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPrefController.swift; sourceTree = "<group>"; };
 		B958069C218209AA00B3EE70 /* songReqController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = songReqController.swift; sourceTree = "<group>"; };
 		B958069E21821EA400B3EE70 /* songViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = songViewCell.swift; sourceTree = "<group>"; };
+		B958A26321C4023A00726345 /* cafeMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cafeMenuController.swift; sourceTree = "<group>"; };
+		B958A26521C4036B00726345 /* cafemenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cafemenuCell.swift; sourceTree = "<group>"; };
 		B958FB53218FC582004C99F0 /* clubListFooterViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubListFooterViewCell.swift; sourceTree = "<group>"; };
 		B961424F21B6193F0070F27B /* suggestASongController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = suggestASongController.swift; sourceTree = "<group>"; };
 		B97CDA482176DCFE00F7F685 /* newsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = newsViewCell.swift; sourceTree = "<group>"; };
@@ -217,6 +221,7 @@
 				B94B173E21A0AC5C00BCD86A /* SignInPrefController.swift */,
 				B9ACA1ED2175825800302C4B /* failedLoginController.swift */,
 				B93F208F21738E5100279829 /* menuController.swift */,
+				B958A26321C4023A00726345 /* cafeMenuController.swift */,
 				B9AC701421C1B52C00FEF5EF /* cafeImageController.swift */,
 				B9876BAD217AC9E800D57C16 /* clubListController.swift */,
 				B90669C92186ACF100CAA824 /* addClubController.swift */,
@@ -250,6 +255,7 @@
 				B9C6E35E21ACBFF200A03650 /* semester2ViewCell.swift */,
 				B918546D21B4B28000DA14F5 /* picsOwnedViewCell.swift */,
 				B918546F21B4B29000DA14F5 /* picsNotOwnedViewCell.swift */,
+				B958A26521C4036B00726345 /* cafemenuCell.swift */,
 			);
 			path = "St Augustine CHS";
 			sourceTree = "<group>";
@@ -550,6 +556,7 @@
 				B9EAF7B321A0D3D40062736B /* signInProfilePicViewCell.swift in Sources */,
 				B9C6E35B21ACA68500A03650 /* classesDetailsController.swift in Sources */,
 				B9C6E35D21ACBFE200A03650 /* semester1ViewCell.swift in Sources */,
+				B958A26421C4023A00726345 /* cafeMenuController.swift in Sources */,
 				B9876BB2217ACC5300D57C16 /* clubViewCell.swift in Sources */,
 				B961425021B6193F0070F27B /* suggestASongController.swift in Sources */,
 				B93F208E21738E5100279829 /* AppDelegate.swift in Sources */,
@@ -558,6 +565,7 @@
 				B9B3684B21B9EB060059CF9C /* changeCoursesController.swift in Sources */,
 				B93258A62186313300605689 /* clubNewsViewCell.swift in Sources */,
 				B90669C82186851800CAA824 /* addAnncController.swift in Sources */,
+				B958A26621C4036B00726345 /* cafemenuCell.swift in Sources */,
 				B9AC701521C1B52C00FEF5EF /* cafeImageController.swift in Sources */,
 				B918546C21B4B26500DA14F5 /* profilePicController.swift in Sources */,
 				B9FECBFF219131E30006CCE3 /* socialController.swift in Sources */,

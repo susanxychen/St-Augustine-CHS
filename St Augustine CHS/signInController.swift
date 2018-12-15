@@ -34,12 +34,20 @@ class signInController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate
             try firebaseAuth.signOut()
         } catch let signOutError as NSError {
             print ("Error signing out: %@", signOutError)
+            let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(signOutError)", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
         }
     }
     
     func sign(inWillDispatch signIn: GIDSignIn!, error: Error!) {
         guard error == nil else {
             print("Error while trying to redirect : \(String(describing: error))")
+            let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(error!)", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
             return
         }
         print("Successful Redirection")
@@ -51,6 +59,10 @@ class signInController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate
             //Successfuly Signed In to Google
         } else {
             print("ERROR ::\(error.localizedDescription)")
+            let alert = UIAlertController(title: "Error in signing in to Google", message: "Please Try Again later. Error: \(error!)", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
             return
         }
         
@@ -70,13 +82,20 @@ class signInController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate
         else if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))!){
             //print("wow nice sign in")
             //************************Firebase Auth************************ 
-            guard let authentication = user.authentication else { return }
+            guard let authentication = user.authentication else {
+                let alert = UIAlertController(title: "Error occured signing in to Firebase", message: "Please Try Again later", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+                return
+                
+            }
             
             let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken, accessToken: authentication.accessToken)
             
             Auth.auth().signInAndRetrieveData(with: credential) { (authResult, error) in
                 if let error = error {
-                    let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(error)", preferredStyle: .alert)
+                    let alert = UIAlertController(title: "Error in signing in to Firebase", message: "Please Try Again later. Error: \(error)", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                     alert.addAction(okAction)
                     self.present(alert, animated: true, completion: nil)
