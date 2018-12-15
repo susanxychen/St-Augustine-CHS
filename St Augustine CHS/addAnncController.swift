@@ -204,8 +204,8 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
                         //Upload the image to the database
                         if let uploadData = self.anncImg.image?.resized(toWidth: 475)!.jpegData(compressionQuality: 0.8){
                             storageRef.putData(uploadData, metadata: metaData) { (metadata, error) in
-                                if error != nil {
-                                    let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error!)", preferredStyle: .alert)
+                                if let error = error {
+                                    let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
                                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                                     alert.addAction(okAction)
                                     self.present(alert, animated: true, completion: nil)
@@ -256,6 +256,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
             let user = Auth.auth().currentUser
             print("Added annc id \(currentAnncID)")
             db.collection("announcements").document(currentAnncID).setData([
+                "club": clubID,
                 "content": anncDesc,
                 "creator": user?.uid as Any,
                 "date": Date(),
@@ -263,7 +264,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
                 "title": anncTitle
             ]) { err in
                 if let err = err {
-                    let alert = UIAlertController(title: "Error in adding announcement", message: "Please Try Again later. Error: \(err)", preferredStyle: .alert)
+                    let alert = UIAlertController(title: "Error in adding announcement", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                     alert.addAction(okAction)
                     self.present(alert, animated: true, completion: nil)
@@ -272,12 +273,6 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
                     print("Error writing document: \(err)")
                 } else {
                     print("Document successfully written!")
-                    
-                    // Add the new announcement names
-                    //print("The club's id \(clubID)")
-                    let clubRef = self.db.collection("clubs").document(self.clubID)
-                    clubRef.updateData(["announcements": FieldValue.arrayUnion([self.currentAnncID])])
-                    
                     //Return to the club controller page
                     //add a delay to allow the image to upload add an indicator to show u r uploading. same for returning and refreshing or just getting anncs in general
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
@@ -296,7 +291,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
                 "creator": user?.uid as Any
             ]) { (err) in
                 if let err = err {
-                    let alert = UIAlertController(title: "Error in updating announcement", message: "Please Try Again later. Error: \(err)", preferredStyle: .alert)
+                    let alert = UIAlertController(title: "Error in updating announcement", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                     alert.addAction(okAction)
                     self.present(alert, animated: true, completion: nil)

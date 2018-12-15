@@ -83,7 +83,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         addRefreshControl()
         
         //The announcements
-        anncRef = clubData["announcements"] as? [String] ?? []
+        //anncRef = clubData["announcements"] as? [String] ?? []
         
         let user = Auth.auth().currentUser
         //********CHECK IF USER IS ADMIN*******
@@ -176,7 +176,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                     self.theCurrentAnncDesc = self.anncData[indexPath.item]["content"] as? String ?? ""
                     self.theCurrentAnncImg = self.anncImgs[indexPath.item]
                     self.theCurrentAnncImgName = self.anncData[indexPath.item]["img"] as? String ?? ""
-                    self.theCurrentAnncID = self.trueAnncRefs[indexPath.item]
+                    self.theCurrentAnncID = self.anncRef[indexPath.item]
                     
                     self.segueNum = 1
                     
@@ -193,19 +193,19 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                     let confirmAction = UIAlertAction(title: "Delete", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
                         print("Deleted the annc");
                         self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-                        let theDeleteAnncID = self.trueAnncRefs[indexPath.item]
+                        let theDeleteAnncID = self.anncRef[indexPath.item]
                         
-                        //Remove the Announcement from the club annc array
-                        let anncRef = self.db.collection("clubs").document(self.clubID)
-                        anncRef.updateData([
-                            "announcements" : FieldValue.arrayRemove([theDeleteAnncID])
-                        ])
+//                        //Remove the Announcement from the club annc array
+//                        let anncRef = self.db.collection("clubs").document(self.clubID)
+//                        anncRef.updateData([
+//                            "announcements" : FieldValue.arrayRemove([theDeleteAnncID])
+//                        ])
                         
                         //Remove the announcement document
                         self.db.collection("announcements").document(theDeleteAnncID).delete() { err in
                             if let err = err {
-                                print("Error in removing document: \(err)")
-                                let alert = UIAlertController(title: "Error in deleting announcement", message: "Please Try Again later. Error: \(err)", preferredStyle: .alert)
+                                print("Error in removing document: \(err.localizedDescription)")
+                                let alert = UIAlertController(title: "Error in deleting announcement", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
                                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                                 alert.addAction(okAction)
                                 self.present(alert, animated: true, completion: nil)
@@ -220,7 +220,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                             let storageRef = Storage.storage().reference(withPath: "announcements").child(imageName)
                             storageRef.delete(completion: { err in
                                 if let err = err {
-                                    print("Error deleteing anncImg \(err)")
+                                    print("Error deleteing anncImg \(err.localizedDescription)")
                                 } else {
                                     print("Annc Img successfully deleted")
                                 }
@@ -256,7 +256,6 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         
     }
     
-    var trueAnncRefs = [String]()
     //***********************************GET CLUB ANNOUNCEMENTS*************************************
     func getClubAnnc() {
         showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
@@ -283,49 +282,36 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         })
         
         anncData.removeAll()
-        trueAnncRefs.removeAll()
+        anncRef.removeAll()
         anncImgs.removeAll()
         
-        //Set Up the annc filler to be the same length as the number of announcements
-        for _ in anncRef {
-            anncImgs.append(snooImgFiller!)
-        }
-        //print(anncRef)
-        if (anncRef.count == 0 || anncRef[0] == ""){
-            //If there are no annoucmenets show that
-            print("there is no announcements")
-            anncData = [["content": "", "date": Timestamp.init(), "img": "","title": "There are no announcements"]]
-            
-            noAnnouncments = true
-            
-            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-            self.clubContoller.reloadData()
-            self.refreshControl?.endRefreshing()
-        }
-        else {
-            //print(" is annc ref the problem \(anncRef)")
-            for i in 0...anncRef.count-1 {
-                let docRef = db.collection("announcements").document(anncRef[i])
-                docRef.getDocument { (document, error) in
-                    if let error = error {
-                        let alert = UIAlertController(title: "Error in retrieveing Club Data", message: "Error \(error)", preferredStyle: .alert)
-                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                        alert.addAction(okAction)
-                        self.present(alert, animated: true, completion: nil)
-                    }
-                    if let document = document, document.exists {
-                        self.anncData.append(document.data() ?? ["oops" : "something whent wrong"])
-                        self.trueAnncRefs.append(document.documentID)
-                        //print("appended \(self.anncRef[i])")
-                    } else {
-                        print("Document does not exist")
-                    }
-                    if i == self.anncRef.count - 1{
-                        //print("i am basically done getting annc")
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            print("finished getting getting anncData first time")
-                            //print("After all appends \(self.anncData)")
-                            self.sortAnncByDate()
+        db.collection("announcements").whereField("club", isEqualTo: clubID).getDocuments { (snap, err) in
+            if let error = err {
+                let alert = UIAlertController(title: "Error in retrieveing Club Data", message: "Error \(error.localizedDescription)", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+            }
+            if let snap = snap {
+                if snap.count <= 0 {
+                    print("there is no announcements")
+                    self.anncData = [["content": "", "date": Timestamp.init(), "img": "","title": "There are no announcements"]]
+                    self.noAnnouncments = true
+                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    self.clubContoller.reloadData()
+                    self.refreshControl?.endRefreshing()
+                } else {
+                    let document = snap.documents
+                    for i in 0...document.count-1 {
+                        self.anncData.append(document[i].data())
+                        self.anncRef.append(document[i].documentID)
+                        
+                        if i == document.count - 1 {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                print("finished getting getting anncData first time")
+                                //print("After all appends \(self.anncData)")
+                                self.sortAnncByDate()
+                            }
                         }
                     }
                 }
@@ -334,6 +320,9 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     }
 
     func sortAnncByDate () {
+        for _ in anncRef {
+            anncImgs.append(snooImgFiller!)
+        }
         //print(anncData)
         if anncData.count > 2 {
             var thereWasASwap = true
@@ -353,21 +342,37 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                         anncData[i+1] = temp
                         
                         //also swap the anncRef array for edit mode so we can use it otherwise its out of order
-                        let temp2 = trueAnncRefs[i]
-                        trueAnncRefs[i] = trueAnncRefs[i+1]
-                        trueAnncRefs[i+1] = temp2
+                        let temp2 = anncRef[i]
+                        anncRef[i] = anncRef[i+1]
+                        anncRef[i+1] = temp2
                     }
                 }
             }
+        } else if anncData.count == 2 {
+            let i = 0
+            let timestamp1: Timestamp = anncData[i]["date"] as! Timestamp
+            let date1: Date = timestamp1.dateValue()
+            let timestamp2: Timestamp = anncData[i + 1]["date"] as! Timestamp
+            let date2: Date = timestamp2.dateValue()
+            
+            //Swap values
+            if date2 > date1 {
+                let temp = anncData[i]
+                anncData[i] = anncData[i+1]
+                anncData[i+1] = temp
+                
+                //also swap the anncRef array for edit mode so we can use it otherwise its out of order
+                let temp2 = anncRef[i]
+                anncRef[i] = anncRef[i+1]
+                anncRef[i+1] = temp2
+            }
         }
-        //print(trueAnncRefs)
-        //print(anncData)
         getImages()
     }
     
     func getImages() {
         //print(anncData)
-        if anncData.count < 0 {
+        if anncData.count <= 0 {
             self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
             self.clubContoller.reloadData()
             self.refreshControl?.endRefreshing()
@@ -626,7 +631,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         let docRef = db.collection("clubs").document(clubID)
         docRef.getDocument { (document, error) in
             if let error = error {
-                let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(error)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
@@ -634,8 +639,6 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             if let document = document, document.exists {
                 self.clubData = document.data()!
                 self.navigationItem.title = self.clubData["name"] as? String
-                self.anncRef = document.data()!["announcements"] as? [String] ?? []
-                print("i got club data after refresh")
                 self.getClubAnnc()
                 self.getClubBanner()
             } else {
@@ -672,7 +675,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                                 if let error = error {
                                     // Handle any errors
                                     print(error)
-                                    let alert = UIAlertController(title: "Error in retrieveing Club Banner", message: "Please Try Again later. Error: \(error)", preferredStyle: .alert)
+                                    let alert = UIAlertController(title: "Error in retrieveing Club Banner", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
                                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                                     alert.addAction(okAction)
                                     self.present(alert, animated: true, completion: nil)

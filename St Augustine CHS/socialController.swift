@@ -229,7 +229,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                     //There was an error somewhere
                     if let error = error {
                         print("Oh noes error getting club data: \(error)")
-                        let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(error)", preferredStyle: .alert)
+                        let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
                         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                         alert.addAction(okAction)
                         self.present(alert, animated: true, completion: nil)
@@ -322,7 +322,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                 //Search the database
                 db.collection("users").whereField("email", isEqualTo: userInput).getDocuments { (querySnapshot, err) in
                     if let err = err {
-                        let alert = UIAlertController(title: "Error finding user", message: "Error: \(err)", preferredStyle: .alert)
+                        let alert = UIAlertController(title: "Error finding user", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
                         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                         alert.addAction(okAction)
                         self.present(alert, animated: true, completion: nil)
@@ -508,7 +508,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                     bannerRef.getMetadata { (metadata, error) in
                         if let error = error {
                             // Uh-oh, an error occurred!
-                            let alert = UIAlertController(title: "Error in retrieveing club images", message: "Error: \(error)", preferredStyle: .alert)
+                            let alert = UIAlertController(title: "Error in retrieveing club images", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
                             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                             alert.addAction(okAction)
                             self.present(alert, animated: true, completion: nil)
@@ -533,7 +533,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                         bannerRef.downloadURL { url, error in
                                             if let error = error {
                                                 // Handle any errors
-                                                let alert = UIAlertController(title: "Error in retrieveing club images", message: "Error: \(error)", preferredStyle: .alert)
+                                                let alert = UIAlertController(title: "Error in retrieveing club images", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
                                                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                                                 alert.addAction(okAction)
                                                 self.present(alert, animated: true, completion: nil)

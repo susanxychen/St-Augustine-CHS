@@ -2157,7 +2157,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please Enter a Valid YCDSB Account" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fL7-wk-2ga">
-                                <rect key="frame" x="19" y="239" width="337" height="77"/>
+                                <rect key="frame" x="19" y="195" width="337" height="77"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="77" id="cLj-0M-Kg6"/>
                                 </constraints>

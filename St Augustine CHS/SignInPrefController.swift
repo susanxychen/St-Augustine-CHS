@@ -95,7 +95,7 @@ class SignInPrefController: UIViewController {
         ]) { err in
             if let err = err {
                 print("Error writing document: \(err)")
-                let alert = UIAlertController(title: "There was an error creating you in the database...well isnt that awkward", message: "Error: \(err)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "There was an error creating you in the database...well isnt that awkward", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)

@@ -103,7 +103,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
         db.collection("info").document("profilePics").getDocument { (snapshot, error) in
             if let error = error {
                 print(error)
-                let alert = UIAlertController(title: "Error in getting profile pictures", message: "Error: \(error)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Error in getting profile pictures", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
@@ -193,7 +193,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
         db.collection("users").document((user?.uid)!).getDocument { (snapshot, error) in
             if let error = error {
                 print(error)
-                let alert = UIAlertController(title: "Error in getting profile pictures", message: "Error: \(error)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Error in getting profile pictures", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
@@ -258,7 +258,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                         "profilePic" : self.newPicChosen,
                     ], mergeFields: ["profilePic"]) { (err) in
                         if let err = err {
-                            let alert = UIAlertController(title: "Error in updating profile picture", message: "Error: \(err)", preferredStyle: .alert)
+                            let alert = UIAlertController(title: "Error in updating profile picture", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
                             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                             alert.addAction(okAction)
                             self.present(alert, animated: true, completion: nil)
@@ -273,7 +273,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                                     self.dismiss(animated: true, completion: nil)
                                 }
                                 if let err = err {
-                                    let alert = UIAlertController(title: "Error in updating profile picture", message: "Error: \(err)", preferredStyle: .alert)
+                                    let alert = UIAlertController(title: "Error in updating profile picture", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
                                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                                     alert.addAction(okAction)
                                     self.present(alert, animated: true, completion: nil)
@@ -380,7 +380,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                         "points" : allUserFirebaseData.data["points"] as! Int
                     ], mergeFields: ["profilePic", "points"]) { (err) in
                         if let err = err {
-                            let alert = UIAlertController(title: "Error in updating profile picture", message: "Error: \(err)", preferredStyle: .alert)
+                            let alert = UIAlertController(title: "Error in updating profile picture", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
                             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                             alert.addAction(okAction)
                             self.present(alert, animated: true, completion: nil)

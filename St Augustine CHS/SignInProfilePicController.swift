@@ -53,7 +53,7 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
         db.collection("info").document("profilePics").getDocument { (snapshot, error) in
             if let error = error {
                 print(error)
-                let alert = UIAlertController(title: "Error in getting profile pictures", message: "Error: \(error)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Error in getting profile pictures", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)

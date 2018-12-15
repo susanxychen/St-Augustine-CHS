@@ -135,7 +135,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
         let docRef = db.collection("users").document((user?.uid)!)
         docRef.getDocument { (document, error) in
             if let error = error {
-                let alert = UIAlertController(title: "Error in retrieveing your info", message: "Please Try Again later. Error: \(error)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Error in retrieveing your info", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
@@ -175,7 +175,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                 let docRef = db.collection("clubs").document(personalClubReferences[i])
                 docRef.getDocument { (document, error) in
                     if let error = error {
-                        let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(error)", preferredStyle: .alert)
+                        let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
                         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                         alert.addAction(okAction)
                         self.present(alert, animated: true, completion: nil)
@@ -218,7 +218,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
         self.db.collection("clubs").getDocuments() { (querySnapshot, err) in
             if let err = err {
                 print("Error getting documents: \(err)")
-                let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(err)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
@@ -406,7 +406,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                                 bannerRef.downloadURL { url, error in
                                     if let error = error {
                                         // Handle any errors
-                                        let alert = UIAlertController(title: "Error in retrieveing some club images", message: "Please try again later. \(error)", preferredStyle: .alert)
+                                        let alert = UIAlertController(title: "Error in retrieveing some club images", message: "Please try again later. \(error.localizedDescription)", preferredStyle: .alert)
                                         let okAction = UIAlertAction(title: "OK", style: .cancel) { (action:UIAlertAction) in
                                         }
                                         alert.addAction(okAction)
@@ -482,7 +482,6 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     //*************************************FORMATTING THE CLUBS*************************************
-    //RETURN CLUB COUNT announcement
     //Make sure when you add collection view you add data source and delegate connections on storyboard
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         //print("i do get run club list")

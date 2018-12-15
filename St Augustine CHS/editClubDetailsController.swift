@@ -195,8 +195,8 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
             //Upload the image to the database
             if let uploadData = newClubBanner?.resized(toWidth: 600)!.jpegData(compressionQuality: 0.8){
                 storageRef.putData(uploadData, metadata: metaData) { (metadata, error) in
-                    if error != nil {
-                        let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error!)", preferredStyle: .alert)
+                    if let error = error {
+                        let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
                         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                         alert.addAction(okAction)
                         self.present(alert, animated: true, completion: nil)
@@ -223,7 +223,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
             "canJoin": clubJoinSetting
         ], merge: true) { (err) in
             if let err = err {
-                let alert = UIAlertController(title: "Error in updating Club", message: "Please Try Again later. Error: \(err)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Error in updating Club", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)

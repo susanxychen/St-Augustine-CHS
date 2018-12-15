@@ -163,17 +163,17 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //If content size is still 0, just wait
         if annoucView.contentSize.height == 0 {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                if self.annoucView.contentSize.height < 300 {
+                if self.annoucView.contentSize.height < 500 {
                     self.anncViewHeight.constant = self.annoucView.contentSize.height
                 } else {
-                    self.anncViewHeight.constant = 300
+                    self.anncViewHeight.constant = 500
                 }
             }
         } else {
-            if annoucView.contentSize.height < 300 {
+            if annoucView.contentSize.height < 500 {
                 anncViewHeight.constant = annoucView.contentSize.height
             } else {
-                anncViewHeight.constant = 300
+                anncViewHeight.constant = 500
             }
         }
     }
@@ -460,10 +460,10 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     //*********************************************GETTING NEWS**************************************************
     func newsTask(){
         let task2 = URLSession.shared.dataTask(with: newsURL!) { (data, response, error) in
-            if error != nil {
+            if let error = error {
                 print("error in finding news page")
                 self.newsData = [["No internet connection","Can't find news"]]
-                let alert = UIAlertController(title: "Error in retrieveing School News", message: "Please Try Again later. Error: \(error!)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Error in retrieveing School News", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)

@@ -151,7 +151,7 @@ class changeCoursesController: UIViewController {
                 "classes": coursesTypedIn
             ], mergeFields: ["classes"]) { (err) in
                 if let err = err {
-                    let alert = UIAlertController(title: "Error in updating courses", message: "Error: \(err)", preferredStyle: .alert)
+                    let alert = UIAlertController(title: "Error in updating courses", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                     alert.addAction(okAction)
                     self.present(alert, animated: true, completion: nil)
@@ -163,7 +163,7 @@ class changeCoursesController: UIViewController {
                             self.dismiss(animated: true, completion: nil)
                         }
                         if let err = err {
-                            let alert = UIAlertController(title: "Error in updating courses", message: "Error: \(err)", preferredStyle: .alert)
+                            let alert = UIAlertController(title: "Error in updating courses", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
                             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                             alert.addAction(okAction)
                             self.present(alert, animated: true, completion: nil)

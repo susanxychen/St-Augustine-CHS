@@ -44,7 +44,7 @@ class signInController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate
     func sign(inWillDispatch signIn: GIDSignIn!, error: Error!) {
         guard error == nil else {
             print("Error while trying to redirect : \(String(describing: error))")
-            let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(error!)", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
@@ -59,7 +59,7 @@ class signInController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate
             //Successfuly Signed In to Google
         } else {
             print("ERROR ::\(error.localizedDescription)")
-            let alert = UIAlertController(title: "Error in signing in to Google", message: "Please Try Again later. Error: \(error!)", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Error in signing in to Google", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
@@ -95,7 +95,7 @@ class signInController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate
             
             Auth.auth().signInAndRetrieveData(with: credential) { (authResult, error) in
                 if let error = error {
-                    let alert = UIAlertController(title: "Error in signing in to Firebase", message: "Please Try Again later. Error: \(error)", preferredStyle: .alert)
+                    let alert = UIAlertController(title: "Error in signing in to Firebase", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                     alert.addAction(okAction)
                     self.present(alert, animated: true, completion: nil)
