@@ -451,18 +451,12 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             //This if is just to ENSURE that there will NEVER be an array out of bounds exception
             clubsCell.clubName.text = userClubNames[indexPath.item]
             
-            print("I have \(userClubNames) with \(indexPath.item) and \(counterBecauseOnlyRunOnce)")
-            
-            //If the club list is more than 275, then just start to cut it off.
             //Makes it look prettier
-            if (counterBecauseOnlyRunOnce == userClubNames.count-1 || userClubNames.count == 0 || userClubNames.count == 1) {
-                if clubsCollectionView.contentSize.height < 275 {
-                    clubCollectionViewHeight.constant = clubsCollectionView.contentSize.height
-                } else {
-                    clubCollectionViewHeight.constant = 275
-                }
+            if clubsCollectionView.contentSize.height < 275 {
+                clubCollectionViewHeight.constant = clubsCollectionView.contentSize.height
+            } else {
+                clubCollectionViewHeight.constant = 275
             }
-            counterBecauseOnlyRunOnce += 1
             
             return clubsCell
         }

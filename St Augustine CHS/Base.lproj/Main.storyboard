@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Tpv-kb-6nU">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="C1Q-We-Oq9">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -343,18 +343,10 @@
                                                 <color key="textColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YVm-EN-vh5">
-                                                <rect key="frame" x="329" y="61" width="46" height="30"/>
-                                                <state key="normal" title="Button"/>
-                                                <connections>
-                                                    <action selector="notify:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CDb-LH-hor"/>
-                                                </connections>
-                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" red="0.94509803920000002" green="0.88235294119999996" blue="0.76470588240000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <gestureRecognizers/>
                                         <constraints>
-                                            <constraint firstItem="Q2H-uS-rjb" firstAttribute="top" secondItem="YVm-EN-vh5" secondAttribute="bottom" constant="8" id="1kd-w2-WcG"/>
                                             <constraint firstItem="Dip-Tr-lPI" firstAttribute="top" secondItem="Qd5-JT-AqS" secondAttribute="bottom" constant="8" id="2bC-so-e4N"/>
                                             <constraint firstItem="Qd5-JT-AqS" firstAttribute="top" secondItem="oZ5-Rj-M5A" secondAttribute="bottom" constant="8" id="7ph-sA-DKP"/>
                                             <constraint firstItem="4fU-Vm-KxY" firstAttribute="leading" secondItem="tIc-FW-6Oz" secondAttribute="leadingMargin" id="AXu-f3-G8d"/>
@@ -373,7 +365,6 @@
                                             <constraint firstAttribute="height" constant="1000" id="pH1-jS-mwu"/>
                                             <constraint firstAttribute="trailing" secondItem="Qd5-JT-AqS" secondAttribute="trailing" id="svS-VA-442"/>
                                             <constraint firstAttribute="trailing" secondItem="Q2H-uS-rjb" secondAttribute="trailing" id="uUN-ly-hyg"/>
-                                            <constraint firstAttribute="trailing" secondItem="YVm-EN-vh5" secondAttribute="trailing" id="yCl-tP-U6f"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -384,21 +375,39 @@
                                     <constraint firstItem="tIc-FW-6Oz" firstAttribute="leading" secondItem="G0F-1K-Cg1" secondAttribute="leading" id="hQR-8Q-smf"/>
                                 </constraints>
                             </scrollView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f20-Wx-GAe">
+                                <rect key="frame" x="268" y="0.0" width="107" height="30"/>
+                                <state key="normal" title="newUserButton"/>
+                                <connections>
+                                    <segue destination="HyD-QJ-rCQ" kind="presentation" identifier="signInFlow" id="dOO-6f-ACp"/>
+                                </connections>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r5x-9e-R01">
+                                <rect key="frame" x="337" y="0.0" width="38" height="30"/>
+                                <state key="normal" title="failed"/>
+                                <connections>
+                                    <segue destination="ZDI-B4-r4w" kind="show" identifier="failedLogin" id="ZPw-sW-YUi"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.94509803920000002" green="0.88235294119999996" blue="0.76470588240000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="f20-Wx-GAe" secondAttribute="trailing" id="17I-dU-7Iy"/>
                             <constraint firstItem="G0F-1K-Cg1" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="6tY-am-gcE"/>
                             <constraint firstItem="ZmE-2m-EIZ" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottom" id="Cdl-Xc-tbf"/>
                             <constraint firstItem="G0F-1K-Cg1" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="Kxf-6l-M9W"/>
                             <constraint firstItem="ZmE-2m-EIZ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="LEN-ed-cl0"/>
                             <constraint firstItem="ZmE-2m-EIZ" firstAttribute="top" secondItem="Qz9-pe-15d" secondAttribute="top" id="Lz8-bi-yJi"/>
+                            <constraint firstItem="r5x-9e-R01" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="S7w-Fw-Yay"/>
+                            <constraint firstAttribute="trailing" secondItem="r5x-9e-R01" secondAttribute="trailing" id="gTu-Hx-qP5"/>
                             <constraint firstItem="G0F-1K-Cg1" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="kln-fT-TFq"/>
                             <constraint firstItem="ZmE-2m-EIZ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="loi-Nt-OzY"/>
                             <constraint firstItem="G0F-1K-Cg1" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="n2N-lp-7Mo"/>
                             <constraint firstItem="ZmE-2m-EIZ" firstAttribute="bottom" secondItem="Qz9-pe-15d" secondAttribute="bottom" id="pWj-4l-Pim"/>
                             <constraint firstItem="Qz9-pe-15d" firstAttribute="leading" secondItem="ZmE-2m-EIZ" secondAttribute="trailing" id="rGY-5i-3uM"/>
                             <constraint firstItem="tIc-FW-6Oz" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="vRe-wI-n7u"/>
+                            <constraint firstItem="f20-Wx-GAe" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="zLw-8a-Id0"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <connections>
@@ -422,10 +431,12 @@
                         <outlet property="dayNumber" destination="PCo-Ct-GwT" id="z5C-u9-3O0"/>
                         <outlet property="displayEmail" destination="vrZ-mV-u1U" id="9JB-id-NAG"/>
                         <outlet property="displayName" destination="v8j-0f-I2F" id="4hn-g0-okr"/>
+                        <outlet property="failedSignInButton" destination="r5x-9e-R01" id="QUf-T7-ngB"/>
                         <outlet property="homeScrollView" destination="G0F-1K-Cg1" id="b2M-jE-TWN"/>
                         <outlet property="homeView" destination="8bC-Xf-vdC" id="Xsa-JV-Fhm"/>
                         <outlet property="leadingConstraint" destination="loi-Nt-OzY" id="VFe-Ge-F06"/>
                         <outlet property="menuView" destination="ZmE-2m-EIZ" id="pLc-RM-KXx"/>
+                        <outlet property="newUserButton" destination="f20-Wx-GAe" id="qrR-Re-RL7"/>
                         <outlet property="profilePicture" destination="WNL-JB-fpd" id="juc-cO-lED"/>
                         <outlet property="snowDay" destination="oZ5-Rj-M5A" id="Y3q-LD-FhN"/>
                         <outlet property="tapOutOfMenuButton" destination="Qz9-pe-15d" id="60z-fY-FOB"/>
@@ -2159,8 +2170,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please Enter a Valid YCDSB Account" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fL7-wk-2ga">
-                                <rect key="frame" x="19" y="195" width="337" height="77"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please Login with a Valid YCDSB Account" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fL7-wk-2ga">
+                                <rect key="frame" x="19" y="239" width="337" height="77"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="77" id="cLj-0M-Kg6"/>
                                 </constraints>
@@ -3565,8 +3576,10 @@
         <image name="voteArrowEmpty" width="480" height="455.27999877929688"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="ZBK-Jk-E3t"/>
-        <segue reference="Bcw-dD-CBe"/>
+        <segue reference="u7i-IT-8gd"/>
+        <segue reference="1Wp-YT-qQx"/>
+        <segue reference="dOO-6f-ACp"/>
+        <segue reference="ZPw-sW-YUi"/>
         <segue reference="t4R-bV-FN9"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

@@ -10,8 +10,7 @@ import UIKit
 import Foundation
 import Firebase
 import WebKit
-
-import UserNotifications
+import GoogleSignIn
 
 //This is the struct that holds all of the users firebase data
 struct allUserFirebaseData {
@@ -20,7 +19,11 @@ struct allUserFirebaseData {
     static var didUpdateProfilePicture = false
 }
 
-class menuController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class menuController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, GIDSignInDelegate, GIDSignInUIDelegate {
+    
+    //Sign In Variables
+    @IBOutlet weak var failedSignInButton: UIButton!
+    @IBOutlet weak var newUserButton: UIButton!
     
     //All Basic Menu Variables
     @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
@@ -67,10 +70,94 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     //Filler Vars
     var fillerImage = UIImage(named: "blankUser")
     
+    let viewAboveAllViews = UIView()
+    
     //***********************************SETTING UP EVERYTHING****************************************
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        viewAboveAllViews.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.7) //Make it beige
+        viewAboveAllViews.frame = UIApplication.shared.keyWindow!.frame
+        UIApplication.shared.keyWindow!.addSubview(viewAboveAllViews)
+        definesPresentationContext = true
+        GIDSignIn.sharedInstance()?.delegate = self
+        GIDSignIn.sharedInstance()?.uiDelegate = self
+        GIDSignIn.sharedInstance()?.signIn()
+    }
+    
+    //**********************************SIGN IN TO GOOGLE AND FIREBASE*************************************
+    func sign(inWillDispatch signIn: GIDSignIn!, error: Error!) {
+        guard error == nil else {
+            viewAboveAllViews.removeFromSuperview()
+            self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
+            return
+        }
+        print("Successful Redirection")
+    }
+    
+    //MARK: GIDSignIn Delegate
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!){
+        if (error == nil) {
+            //Successfuly Signed In to Google
+        } else {
+            print(error.localizedDescription)
+            viewAboveAllViews.removeFromSuperview()
+            self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
+            return
+        }
+        let checkEmail = user.profile.email
+        if (checkEmail?.count ?? 100 < 8) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.viewAboveAllViews.removeFromSuperview()
+                self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
+            }
+        }
+        else if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))!){
+            //print("wow nice sign in")
+            //************************Firebase Auth************************
+            guard let authentication = user.authentication else {
+                self.viewAboveAllViews.removeFromSuperview()
+                self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
+                return
+            }
+            
+            let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken, accessToken: authentication.accessToken)
+            
+            Auth.auth().signInAndRetrieveData(with: credential) { (authResult, error) in
+                self.viewAboveAllViews.removeFromSuperview()
+                if let error = error {
+                    print(error)
+                    self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
+                    return
+                }
+                //If Valid k12 account auto segue to main screen
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    let lastSignIn = Auth.auth().currentUser?.metadata.lastSignInDate
+                    let creation = Auth.auth().currentUser?.metadata.creationDate
+                    
+                    if lastSignIn == creation {
+                        print("new user! take em through the sign in flow")
+                        self.viewAboveAllViews.removeFromSuperview()
+                        self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
+                    } else {
+                        self.getAllStartingInfoAfterSignIn()
+                    }
+                }
+            }
+        } else{
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.viewAboveAllViews.removeFromSuperview()
+                self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
+            }
+        }
+    }
+    
+    // Finished disconnecting |user| from the app successfully if |error| is |nil|.
+    public func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!){
+    }
+    
+    //************************************************************************************************
+    
+    func getAllStartingInfoAfterSignIn(){
         //News Data
         newsTask()
         
@@ -115,14 +202,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //Remainin Tasks
         dayTask()
         snowTask()
-        //ytTask()
         
         //*******************SET UP USER PROFILE ON MENU*****************
         let user = Auth.auth().currentUser
-        //Profile Pic
-        //let url = user?.photoURL
-        //let data = try? Data(contentsOf: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
-        //profilePicture.image = UIImage(data: data!)
         //Name
         displayName.text = user?.displayName
         //Email
@@ -137,47 +219,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             }
         }
         
-        //This is only for using direct iframe
-        //Set Up the Youtube Video Height
-        //these values came from the websites iframe width of 640px and height of 360px
-        //ytVideoViewHeight.constant = ytVideoView.frame.width*(9.0/16.0)
-        
         //Load the calendar
         calendarView.load(URLRequest(url: schoolCalendarURL ?? backupURL!))
     }
     
-    @IBAction func notify(_ sender: Any) {
-        print("i get run notifications")
-        let content = UNMutableNotificationContent()
-        content.title = "Annc Title"
-        content.body = "Make sure you bring all your donation money!"
-        content.badge = 1
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        let request = UNNotificationRequest(identifier: "timerDone", content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-    }
-    
-    
     override func viewDidAppear(_ animated: Bool) {
         profilePicture.image = allUserFirebaseData.profilePic
-        //If content size is still 0, just wait
-        if annoucView.contentSize.height == 0 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                if self.annoucView.contentSize.height < 500 {
-                    self.anncViewHeight.constant = self.annoucView.contentSize.height
-                } else {
-                    self.anncViewHeight.constant = 500
-                }
-            }
-        } else {
-            if annoucView.contentSize.height < 500 {
-                anncViewHeight.constant = annoucView.contentSize.height
-            } else {
-                anncViewHeight.constant = 500
-            }
-        }
     }
     
     func getPicture(i: Int) {
@@ -268,6 +315,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         cell.contentHeight.constant = contentHeights[indexPath.item]
         cell.titleHeight.constant = titleHeights[indexPath.item]
         
+        if self.annoucView.contentSize.height < 500 {
+            self.anncViewHeight.constant = self.annoucView.contentSize.height
+        } else {
+            self.anncViewHeight.constant = 500
+        }
+        
         return cell
     }
     
@@ -289,7 +342,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         dayTask()
         newsTask()
         snowTask()
-        ytTask()
         let user = Auth.auth().currentUser
         db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
             if let docSnapshot = docSnapshot {
@@ -363,29 +415,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             return true
         }
         return false
-    }
-    
-    //************************************Get Youtube Video************************************
-    //Disable webkit view zooming
-    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        scrollView.pinchGestureRecognizer?.isEnabled = false
-    }
-    //dont really need below data
-    func ytTask() {
-        /*
-        let task4 = URLSession.shared.dataTask(with: ytSourceURL!) { (data, response, error) in
-            if error != nil {
-                //can't find website lol
-            } else{
-                let htmlContent = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!
-                let request = URLRequest(url: self.findYTVideo(content: htmlContent as String))
-                DispatchQueue.main.async {
-                    self.ytVideoView.load(request)
-                }
-            }
-        }
-        task4.resume()*/
-        //self.ytVideoView.load(URLRequest(url: findYTVideo(content: "wow")))
     }
     
     //*************************************UPDATE THE DAY NUMBER**************************************
