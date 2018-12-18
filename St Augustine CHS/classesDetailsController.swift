@@ -56,7 +56,7 @@ class classesDetailsController: UIViewController, UICollectionViewDataSource, UI
             
             //If same class, highlight
             if (!viewingYourself && classes[indexPath.item] == yourClasses[indexPath.item]) {
-                sem1Cell.theClass.textColor = UIColor(red: 249/255.0, green: 225/255.0, blue: 44/255.0, alpha: 1.0)
+                sem1Cell.theClass.textColor = UIColor(red: 216/255.0, green: 175/255.0, blue: 28/255.0, alpha: 1.0)
             }
             
             return sem1Cell

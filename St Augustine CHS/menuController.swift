@@ -29,6 +29,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var menuView: UIView!
     @IBOutlet var homeView: UIView!
+    @IBOutlet weak var gradientSocialView: UIView!
     @IBOutlet weak var tapOutOfMenuButton: UIButton!
     @IBOutlet weak var dateToString: UILabel!
     @IBOutlet weak var dayNumber: UILabel!
@@ -75,7 +76,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     //***********************************SETTING UP EVERYTHING****************************************
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewAboveAllViews.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.7) //Make it beige
+        viewAboveAllViews.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.7)
         viewAboveAllViews.frame = UIApplication.shared.keyWindow!.frame
         UIApplication.shared.keyWindow!.addSubview(viewAboveAllViews)
         definesPresentationContext = true
@@ -156,13 +157,17 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     //************************************************************************************************
-    
     func getAllStartingInfoAfterSignIn(){
+//        self.navigationController?.navigationBar.titleTextAttributes =
+//            [NSAttributedString.Key.foregroundColor: UIColor.white,
+//             NSAttributedString.Key.font: UIFont(name: "Scada-regular", size: 20)!]
+        
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 20)!]
+        
         //News Data
         newsTask()
         
-        //Disable webkit View Zoom
-        //self.ytVideoView.scrollView.delegate = self
+        annoucView.alwaysBounceVertical = true
         
         //Set Up
         // [START setup]
@@ -182,13 +187,19 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         leadingConstraint.constant = -400
         
         //Change profile picture corners to round
-        profilePicture.layer.cornerRadius = 10
-        
-        //Cuts profile picture to the bounds. Dont show anything out of the bounds
+        profilePicture.layer.borderWidth = 1.0
+        profilePicture.layer.masksToBounds = false
+        profilePicture.layer.borderColor = UIColor.white.cgColor
+        profilePicture.layer.cornerRadius = 75/2
         profilePicture.clipsToBounds = true
         
+        let gradient:CAGradientLayer = CAGradientLayer()
+        gradient.frame.size = self.gradientSocialView.frame.size
+        gradient.colors = [UIColor(red: 141/255.0, green: 18/255.0, blue: 48/255.0, alpha: 1.0), UIColor(red: 70/255.0, green: 8/255.0, blue: 23/255.0, alpha: 1.0)] //Or any colors
+        self.gradientSocialView.layer.addSublayer(gradient)
+        
         //Top Bar Colour
-        navigationController?.navigationBar.barTintColor = UIColor(red: 0.44, green: 0.14, blue: 0.14, alpha: 1.0)
+        navigationController?.navigationBar.barTintColor = UIColor(red: 141/255.0, green: 18/255.0, blue: 48/255.0, alpha: 1.0)
         //Top Bar Text Colour
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         
@@ -308,6 +319,20 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! newsViewCell
         //print("i get run data \(newsData[indexPath.item][0]) replacing \(cell.depName.text)")
+        
+        cell.contentView.layer.cornerRadius = 10
+        cell.contentView.layer.borderWidth = 1.0
+        
+        cell.contentView.layer.borderColor = UIColor.clear.cgColor
+        cell.contentView.layer.masksToBounds = true
+        
+        cell.layer.shadowColor = UIColor.gray.cgColor
+        cell.layer.shadowOffset = CGSize(width: 0, height: 2.0)
+        cell.layer.shadowRadius = 2.0
+        cell.layer.shadowOpacity = 1.0
+        cell.layer.masksToBounds = false
+        cell.layer.shadowPath = UIBezierPath(roundedRect:cell.bounds, cornerRadius:cell.contentView.layer.cornerRadius).cgPath
+        
         cell.anncDep.text = newsData[indexPath.item][0]
         cell.anncText.text = newsData[indexPath.item][1]
         cell.anncDep.centerVertically()
@@ -316,7 +341,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         cell.titleHeight.constant = titleHeights[indexPath.item]
         
         if self.annoucView.contentSize.height < 500 {
-            self.anncViewHeight.constant = self.annoucView.contentSize.height
+            self.anncViewHeight.constant = self.annoucView.contentSize.height + 10
         } else {
             self.anncViewHeight.constant = 500
         }

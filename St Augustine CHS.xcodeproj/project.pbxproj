@@ -34,6 +34,10 @@
 		B958A26621C4036B00726345 /* cafemenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A26521C4036B00726345 /* cafemenuCell.swift */; };
 		B958FB54218FC582004C99F0 /* clubListFooterViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958FB53218FC582004C99F0 /* clubListFooterViewCell.swift */; };
 		B961425021B6193F0070F27B /* suggestASongController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B961424F21B6193F0070F27B /* suggestASongController.swift */; };
+		B96F9F2321C876FE00A841C9 /* Scada-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B96F9F2221C876E700A841C9 /* Scada-Bold.ttf */; };
+		B96F9F2421C8770000A841C9 /* Scada-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B96F9F1F21C876E600A841C9 /* Scada-BoldItalic.ttf */; };
+		B96F9F2521C8770200A841C9 /* Scada-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B96F9F2021C876E600A841C9 /* Scada-Italic.ttf */; };
+		B96F9F2621C8770400A841C9 /* Scada-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B96F9F2121C876E700A841C9 /* Scada-Regular.ttf */; };
 		B97CDA492176DCFE00F7F685 /* newsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97CDA482176DCFE00F7F685 /* newsViewCell.swift */; };
 		B9876BAE217AC9E800D57C16 /* clubListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9876BAD217AC9E800D57C16 /* clubListController.swift */; };
 		B9876BB2217ACC5300D57C16 /* clubViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9876BB1217ACC5300D57C16 /* clubViewCell.swift */; };
@@ -112,6 +116,10 @@
 		B958A26521C4036B00726345 /* cafemenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cafemenuCell.swift; sourceTree = "<group>"; };
 		B958FB53218FC582004C99F0 /* clubListFooterViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubListFooterViewCell.swift; sourceTree = "<group>"; };
 		B961424F21B6193F0070F27B /* suggestASongController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = suggestASongController.swift; sourceTree = "<group>"; };
+		B96F9F1F21C876E600A841C9 /* Scada-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Scada-BoldItalic.ttf"; sourceTree = "<group>"; };
+		B96F9F2021C876E600A841C9 /* Scada-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Scada-Italic.ttf"; sourceTree = "<group>"; };
+		B96F9F2121C876E700A841C9 /* Scada-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Scada-Regular.ttf"; sourceTree = "<group>"; };
+		B96F9F2221C876E700A841C9 /* Scada-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Scada-Bold.ttf"; sourceTree = "<group>"; };
 		B97CDA482176DCFE00F7F685 /* newsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = newsViewCell.swift; sourceTree = "<group>"; };
 		B9876BAD217AC9E800D57C16 /* clubListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubListController.swift; sourceTree = "<group>"; };
 		B9876BB1217ACC5300D57C16 /* clubViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubViewCell.swift; sourceTree = "<group>"; };
@@ -213,13 +221,17 @@
 		B93F208C21738E5100279829 /* St Augustine CHS */ = {
 			isa = PBXGroup;
 			children = (
+				B96F9F1E21C876C500A841C9 /* Fonts */,
+				B93F209421738E5500279829 /* Assets.xcassets */,
+				B93F209621738E5500279829 /* LaunchScreen.storyboard */,
+				B93F209121738E5100279829 /* Main.storyboard */,
 				B93F208D21738E5100279829 /* AppDelegate.swift */,
 				B9FECBFC2190C79D0006CCE3 /* allExtensions.swift */,
+				B9ACA1ED2175825800302C4B /* failedLoginController.swift */,
 				B9ACA1E92175499100302C4B /* signInController.swift */,
 				B94B173A21A0AAD000BCD86A /* SignInProfilePicController.swift */,
 				B94B173C21A0AB9D00BCD86A /* SignInCoursesController.swift */,
 				B94B173E21A0AC5C00BCD86A /* SignInPrefController.swift */,
-				B9ACA1ED2175825800302C4B /* failedLoginController.swift */,
 				B93F208F21738E5100279829 /* menuController.swift */,
 				B958A26321C4023A00726345 /* cafeMenuController.swift */,
 				B9AC701421C1B52C00FEF5EF /* cafeImageController.swift */,
@@ -236,26 +248,9 @@
 				B918546B21B4B26500DA14F5 /* profilePicController.swift */,
 				B9C6E35A21ACA68500A03650 /* classesDetailsController.swift */,
 				B9B3684A21B9EB060059CF9C /* changeCoursesController.swift */,
-				B93F209121738E5100279829 /* Main.storyboard */,
-				B93F209421738E5500279829 /* Assets.xcassets */,
-				B93F209621738E5500279829 /* LaunchScreen.storyboard */,
 				B93F209921738E5500279829 /* Info.plist */,
 				B9B2E69D2175383C006E1EA4 /* GoogleService-Info.plist */,
-				B97CDA482176DCFE00F7F685 /* newsViewCell.swift */,
-				B9876BB1217ACC5300D57C16 /* clubViewCell.swift */,
-				B958069E21821EA400B3EE70 /* songViewCell.swift */,
-				B93258A52186313300605689 /* clubNewsViewCell.swift */,
-				B9118FA7218A70AB00CE4C6A /* clubHeaderViewCell.swift */,
-				B9AC701221C1A19D00FEF5EF /* clubBadgeCell.swift */,
-				B958FB53218FC582004C99F0 /* clubListFooterViewCell.swift */,
-				B9FECC002191337F0006CCE3 /* badgesViewCell.swift */,
-				B9FECC02219133950006CCE3 /* socialClubsViewCell.swift */,
-				B9EAF7B221A0D3D40062736B /* signInProfilePicViewCell.swift */,
-				B9C6E35C21ACBFE200A03650 /* semester1ViewCell.swift */,
-				B9C6E35E21ACBFF200A03650 /* semester2ViewCell.swift */,
-				B918546D21B4B28000DA14F5 /* picsOwnedViewCell.swift */,
-				B918546F21B4B29000DA14F5 /* picsNotOwnedViewCell.swift */,
-				B958A26521C4036B00726345 /* cafemenuCell.swift */,
+				B96F9F2821C8772500A841C9 /* Cell */,
 			);
 			path = "St Augustine CHS";
 			sourceTree = "<group>";
@@ -276,6 +271,39 @@
 				B93F20AF21738E5500279829 /* Info.plist */,
 			);
 			path = "St Augustine CHSUITests";
+			sourceTree = "<group>";
+		};
+		B96F9F1E21C876C500A841C9 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				B96F9F2221C876E700A841C9 /* Scada-Bold.ttf */,
+				B96F9F1F21C876E600A841C9 /* Scada-BoldItalic.ttf */,
+				B96F9F2021C876E600A841C9 /* Scada-Italic.ttf */,
+				B96F9F2121C876E700A841C9 /* Scada-Regular.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		B96F9F2821C8772500A841C9 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				B97CDA482176DCFE00F7F685 /* newsViewCell.swift */,
+				B9876BB1217ACC5300D57C16 /* clubViewCell.swift */,
+				B958069E21821EA400B3EE70 /* songViewCell.swift */,
+				B93258A52186313300605689 /* clubNewsViewCell.swift */,
+				B9118FA7218A70AB00CE4C6A /* clubHeaderViewCell.swift */,
+				B9AC701221C1A19D00FEF5EF /* clubBadgeCell.swift */,
+				B958FB53218FC582004C99F0 /* clubListFooterViewCell.swift */,
+				B9FECC002191337F0006CCE3 /* badgesViewCell.swift */,
+				B9FECC02219133950006CCE3 /* socialClubsViewCell.swift */,
+				B9EAF7B221A0D3D40062736B /* signInProfilePicViewCell.swift */,
+				B9C6E35C21ACBFE200A03650 /* semester1ViewCell.swift */,
+				B9C6E35E21ACBFF200A03650 /* semester2ViewCell.swift */,
+				B918546D21B4B28000DA14F5 /* picsOwnedViewCell.swift */,
+				B918546F21B4B29000DA14F5 /* picsNotOwnedViewCell.swift */,
+				B958A26521C4036B00726345 /* cafemenuCell.swift */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -387,9 +415,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B96F9F2621C8770400A841C9 /* Scada-Regular.ttf in Resources */,
 				B93F209821738E5500279829 /* LaunchScreen.storyboard in Resources */,
 				B9B2E69E2175383C006E1EA4 /* GoogleService-Info.plist in Resources */,
+				B96F9F2421C8770000A841C9 /* Scada-BoldItalic.ttf in Resources */,
+				B96F9F2321C876FE00A841C9 /* Scada-Bold.ttf in Resources */,
 				B93F209521738E5500279829 /* Assets.xcassets in Resources */,
+				B96F9F2521C8770200A841C9 /* Scada-Italic.ttf in Resources */,
 				B93F209321738E5100279829 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

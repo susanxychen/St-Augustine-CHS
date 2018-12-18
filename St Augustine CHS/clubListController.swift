@@ -494,6 +494,20 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "club", for: indexPath) as! clubViewCell
+        
+        cell.contentView.layer.cornerRadius = 10
+        cell.contentView.layer.borderWidth = 1.0
+        
+        cell.contentView.layer.borderColor = UIColor.clear.cgColor
+        cell.contentView.layer.masksToBounds = true
+        
+        cell.layer.shadowColor = UIColor.gray.cgColor
+        cell.layer.shadowOffset = CGSize(width: 0, height: 2.0)
+        cell.layer.shadowRadius = 2.0
+        cell.layer.shadowOpacity = 1.0
+        cell.layer.masksToBounds = false
+        cell.layer.shadowPath = UIBezierPath(roundedRect:cell.bounds, cornerRadius:cell.contentView.layer.cornerRadius).cgPath
+        
         if viewingPersonalClubs {
             cell.name.text = personalClubNames[indexPath.item]
             cell.banner.image = personalClubBanners[indexPath.item]
@@ -501,6 +515,10 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
             cell.name.text = clubNames[indexPath.item]
             cell.banner.image = banners[indexPath.item]
         }
+        
+        cell.sendSubviewToBack(cell.banner)
+        cell.bringSubviewToFront(cell.name)
+        
         return cell
     }
     

@@ -421,7 +421,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     //****************************FORMATTING THE COLLECTION VIEWS****************************
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == badgesCollectionView {
-            return 3 // Replace with count of badges
+            return 1 // Replace with count of badges
         } else {
             return userClubNames.count
         }
@@ -436,11 +436,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             badgesCell.theBadge.layer.cornerRadius = 130/2
             badgesCell.theBadge.clipsToBounds = true
             
-            if indexPath.item == 1 {
-                badgesCell.theBadge.image = UIImage(named: "cafe")
-            } else {
-                badgesCell.theBadge.image = UIImage(named: "song")
-            }
+            badgesCell.theBadge.image = UIImage(named: "brackets")
             
             return badgesCell
         }

@@ -15,4 +15,6 @@ class newsViewCell: UICollectionViewCell {
     
     @IBOutlet weak var titleHeight: NSLayoutConstraint!
     @IBOutlet weak var contentHeight: NSLayoutConstraint!
+    
+    
 }

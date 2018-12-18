@@ -22,6 +22,7 @@ class songViewCell: UICollectionViewCell {
     lazy var functions = Functions.functions()
     
     @IBAction func upvoteAction(_ sender: Any) {
+        print("voted")
         upvotedButton.isEnabled = false
         //If the user has not voted on the current song, do upvote calculation
         let theSong = self.indexPath![1]
@@ -99,5 +100,4 @@ class songViewCell: UICollectionViewCell {
         UserDefaults.standard.set(voteData.songsVoted, forKey: "songsVoted")
     }
     
-    //RIGHT NOW YOUR VOTES WILL DECREASE AS YOU LEAVE SONG SCREEN BECAUSE YOU ARE DIRECTLY GETTING THE VOTES FROM THE DATABASE
 }

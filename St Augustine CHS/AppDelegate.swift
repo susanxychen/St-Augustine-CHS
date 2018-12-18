@@ -19,6 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         // Override point for customization after application launch.
         FirebaseApp.configure()
         
+        UINavigationBar.appearance().titleTextAttributes = [
+            NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 20)!
+        ]
+        
         let db: Firestore!
         //Set Up
         // [START setup]

@@ -25,12 +25,17 @@ class clubHeaderViewCell: UICollectionViewCell, UICollectionViewDataSource, UICo
     //RETURN Badge COUNT
     //Make sure when you add collection view you add data source and delegate connections on storyboard
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return 2
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "badge", for: indexPath) as! clubBadgeCell
-        cell.badge.image = UIImage(named: "cafe")
+        if indexPath.item == 0 {
+            cell.badge.image = UIImage(named: "brackets")
+        } else if indexPath.item == 1 {
+            cell.badge.image = UIImage(named: "phone")
+        }
+        
         return cell
     }
     

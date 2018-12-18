@@ -36,6 +36,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     @IBOutlet weak var supervotePoints: UILabel!
     @IBOutlet weak var supervoteVotes: UILabel!
     @IBOutlet weak var supervoteSlider: UISlider!
+    @IBOutlet weak var supervoteDesc: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,28 +93,38 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         performSegue(withIdentifier: "suggestSong", sender: suggestASong)
     }
     
+    var selectedSuperSongID: String!
+    var supervotedIndex = 0
     @objc func handleLongPress(gestureRecognizer : UILongPressGestureRecognizer){
         if (gestureRecognizer.state != UIGestureRecognizer.State.began){
             return
         }
         let p = gestureRecognizer.location(in: self.songView)
         if let indexPath : NSIndexPath = (self.songView.indexPathForItem(at: p) as NSIndexPath?){
-            print("Long Pressed on: \(indexPath.item)")
-            self.view.bringSubviewToFront(supervoteView)
-            
-            supervoteSongName.text = "Supervote: \(voteData.songsVoted[indexPath.item][1] as? String ?? "Error")" 
-            supervoteView.isHidden = false
-            
-            UIView.animate(withDuration: 0.1) {
-                self.supervoteView.alpha = 1
+            if !(voteData.songsVoted[indexPath.item][0] as! Bool) {
+                print("Long Pressed on: \(indexPath.item)")
+                supervotedIndex = indexPath.item
+                selectedSuperSongID = voteData.songsVoted[indexPath.item][4] as? String
+                supervoteSongName.text = "Supervote: \(voteData.songsVoted[indexPath.item][1] as? String ?? "Error")"
+                supervoteDesc.text = "Super vote allows you to spend points for votes. You have \(allUserFirebaseData.data["points"] ?? "Error") points"
+                supervoteView.isHidden = false
+                self.view.bringSubviewToFront(supervoteView)
+                
+                UIView.animate(withDuration: 0.1) {
+                    self.supervoteView.alpha = 1
+                }
             }
         }
     }
     
+    var supervoteAmount = 0
+    var supervoteCost = 0
     @IBAction func sliderMoved(_ sender: Any) {
         let value = Int(supervoteSlider.value)
         supervoteVotes.text = "Votes: \(value)"
+        supervoteAmount = value
         supervotePoints.text = "Points: \(value*2)"
+        supervoteCost = value*2
     }
     
     @IBAction func cancelSuperVote(_ sender: Any) {
@@ -122,6 +133,60 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         }) { _ in
             self.supervoteView.isHidden = true
             self.view.sendSubviewToBack(self.supervoteView)
+        }
+    }
+    
+    //Cloud Functions
+    lazy var functions = Functions.functions()
+    @IBAction func spendPointsSuper(_ sender: Any) {
+        //Take away your points and only upload the song if taken away points
+        let user = Auth.auth().currentUser
+        self.db.collection("users").document((user?.uid)!).setData([
+            "points": (allUserFirebaseData.data["points"] as! Int) - self.supervoteCost
+        ], mergeFields: ["points"]) { (err) in
+            if let err = err {
+                print("Error writing document: \(err)")
+                let alert = UIAlertController(title: "Error in retrieveing users", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+            }
+            
+            self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                if let err = err {
+                    print("Error writing document: \(err)")
+                    let alert = UIAlertController(title: "Error in retrieveing users", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                    alert.addAction(okAction)
+                    self.present(alert, animated: true, completion: nil)
+                }
+                if docSnapshot != nil {
+                    self.functions.httpsCallable("changeVote").call(["id": self.selectedSuperSongID, "uservote": self.supervoteAmount]) { (result, error) in
+                        if let error = error as NSError? {
+                            if error.domain == FunctionsErrorDomain {
+                                let code = FunctionsErrorCode(rawValue: error.code)
+                                let message = error.localizedDescription
+                                let details = error.userInfo[FunctionsErrorDetailsKey]
+                                print(code as Any)
+                                print(message)
+                                print(details as Any)
+                            }
+                        }
+                        UIView.animate(withDuration: 0.1, animations: {
+                            self.supervoteView.alpha = 0
+                        }) { _ in
+                            self.supervoteView.isHidden = true
+                            self.view.sendSubviewToBack(self.supervoteView)
+                        }
+                        voteData.songsVoted[self.supervotedIndex][0] = true
+                        voteData.songsVoted[self.supervotedIndex][3] = self.supervoteAmount + (voteData.songsVoted[self.supervotedIndex][3] as! Int)
+                        UserDefaults.standard.set(voteData.songsVoted, forKey: "songsVoted")
+                        print("vote sent to functions")
+                        print("Result is: \(String(describing: result?.data))")
+                        self.songView.reloadData()
+                    }
+                }
+            }
         }
     }
     
@@ -298,6 +363,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
             cell.voteArrow.image = UIImage(named: "voteArrowEmpty")
         }
         
+        cell.bringSubviewToFront(cell.upvotedButton)
         return cell
     }
     
