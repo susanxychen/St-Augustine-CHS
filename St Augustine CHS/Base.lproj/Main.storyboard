@@ -119,14 +119,14 @@
                                             <segue destination="sB5-uo-h8e" kind="show" id="Cug-l7-SHo"/>
                                         </connections>
                                     </button>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cafe" translatesAutoresizingMaskIntoConstraints="NO" id="8k3-HD-byl">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="clubs" translatesAutoresizingMaskIntoConstraints="NO" id="8k3-HD-byl">
                                         <rect key="frame" x="8" y="206" width="40" height="41"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="41" id="laJ-sz-gjA"/>
                                             <constraint firstAttribute="width" constant="40" id="zk9-1o-65h"/>
                                         </constraints>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="gear" translatesAutoresizingMaskIntoConstraints="NO" id="ZMV-k5-aAe">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="spiritPoints" translatesAutoresizingMaskIntoConstraints="NO" id="ZMV-k5-aAe">
                                         <rect key="frame" x="8" y="362" width="40" height="40"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" id="adK-UV-P9I"/>
@@ -140,7 +140,7 @@
                                             <constraint firstAttribute="height" constant="40" id="x19-vU-UJY"/>
                                         </constraints>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="song" translatesAutoresizingMaskIntoConstraints="NO" id="KxN-jz-D1T">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cafe" translatesAutoresizingMaskIntoConstraints="NO" id="KxN-jz-D1T">
                                         <rect key="frame" x="8" y="260" width="40" height="41"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="41" id="1QV-N2-Npn"/>
@@ -220,8 +220,8 @@
                                     <action selector="tapOutOfMenu:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Suw-Vn-rYj"/>
                                 </connections>
                             </button>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="G0F-1K-Cg1">
-                                <rect key="frame" x="400" y="64" width="375" height="936"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G0F-1K-Cg1">
+                                <rect key="frame" x="0.0" y="64" width="375" height="936"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tIc-FW-6Oz">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="1000"/>
@@ -326,7 +326,7 @@
                                                 <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <wkWebView contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Qd5-JT-AqS">
+                                            <wkWebView hidden="YES" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Qd5-JT-AqS">
                                                 <rect key="frame" x="0.0" y="313" width="375" height="230"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
@@ -346,6 +346,15 @@
                                                 <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9bF-9O-Uz2">
+                                                <rect key="frame" x="8" y="313" width="359" height="35"/>
+                                                <color key="backgroundColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="35" id="UBW-WP-bQW"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                                <state key="normal" title="View Calendar"/>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <gestureRecognizers/>
@@ -353,10 +362,12 @@
                                             <constraint firstItem="Dip-Tr-lPI" firstAttribute="top" secondItem="Qd5-JT-AqS" secondAttribute="bottom" constant="8" id="2bC-so-e4N"/>
                                             <constraint firstItem="Qd5-JT-AqS" firstAttribute="top" secondItem="oZ5-Rj-M5A" secondAttribute="bottom" constant="8" id="7ph-sA-DKP"/>
                                             <constraint firstItem="oZ5-Rj-M5A" firstAttribute="top" secondItem="Q2H-uS-rjb" secondAttribute="bottom" constant="8" id="DRz-3J-oBj"/>
+                                            <constraint firstItem="9bF-9O-Uz2" firstAttribute="top" secondItem="oZ5-Rj-M5A" secondAttribute="bottom" constant="8" id="KVe-DG-y5t"/>
                                             <constraint firstItem="Qd5-JT-AqS" firstAttribute="leading" secondItem="tIc-FW-6Oz" secondAttribute="leading" id="Ka5-5E-c6H"/>
                                             <constraint firstItem="SHn-Ri-sPA" firstAttribute="top" secondItem="tIc-FW-6Oz" secondAttribute="top" id="L8N-x7-um0"/>
                                             <constraint firstItem="oZ5-Rj-M5A" firstAttribute="leading" secondItem="tIc-FW-6Oz" secondAttribute="leading" constant="8" id="Qhd-Fq-zIZ"/>
                                             <constraint firstItem="Dip-Tr-lPI" firstAttribute="leading" secondItem="tIc-FW-6Oz" secondAttribute="leading" constant="8" id="dcr-jm-etN"/>
+                                            <constraint firstItem="9bF-9O-Uz2" firstAttribute="leading" secondItem="tIc-FW-6Oz" secondAttribute="leading" constant="8" id="hk3-sl-oFT"/>
                                             <constraint firstAttribute="trailing" secondItem="SHn-Ri-sPA" secondAttribute="trailing" id="iXt-ys-s8F"/>
                                             <constraint firstItem="Q2H-uS-rjb" firstAttribute="top" secondItem="SHn-Ri-sPA" secondAttribute="bottom" constant="8" id="jwG-9B-zRu"/>
                                             <constraint firstAttribute="trailing" secondItem="Dip-Tr-lPI" secondAttribute="trailing" constant="8" id="kmD-M1-XhD"/>
@@ -365,6 +376,7 @@
                                             <constraint firstItem="Q2H-uS-rjb" firstAttribute="leading" secondItem="tIc-FW-6Oz" secondAttribute="leading" id="pGd-9x-Ngw"/>
                                             <constraint firstAttribute="height" constant="1000" id="pH1-jS-mwu"/>
                                             <constraint firstAttribute="trailing" secondItem="Qd5-JT-AqS" secondAttribute="trailing" id="svS-VA-442"/>
+                                            <constraint firstAttribute="trailing" secondItem="9bF-9O-Uz2" secondAttribute="trailing" constant="8" id="tW4-wH-XOO"/>
                                             <constraint firstAttribute="trailing" secondItem="Q2H-uS-rjb" secondAttribute="trailing" id="uUN-ly-hyg"/>
                                         </constraints>
                                     </view>
@@ -427,6 +439,7 @@
                     <connections>
                         <outlet property="anncViewHeight" destination="Fvi-8E-9yA" id="6lK-tX-rkt"/>
                         <outlet property="annoucView" destination="Q2H-uS-rjb" id="0aW-WA-8KU"/>
+                        <outlet property="calendarButton" destination="9bF-9O-Uz2" id="dVi-Zp-uGf"/>
                         <outlet property="calendarView" destination="Qd5-JT-AqS" id="u3A-f5-vrb"/>
                         <outlet property="dateToString" destination="ZA0-bd-msg" id="kKe-yt-uM9"/>
                         <outlet property="dayNumber" destination="PCo-Ct-GwT" id="z5C-u9-3O0"/>
@@ -834,7 +847,7 @@
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qvD-gZ-g5c">
                                                                     <rect key="frame" x="5" y="5" width="349" height="49"/>
-                                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                                    <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
@@ -3614,19 +3627,21 @@
         <image name="3Dots" width="11.520000457763672" height="11.520000457763672"/>
         <image name="addClub" width="3456" height="3456"/>
         <image name="blankUser" width="236" height="236"/>
-        <image name="cafe" width="411.60000610351562" height="421.67999267578125"/>
-        <image name="gear" width="2000" height="2000"/>
+        <image name="cafe" width="48" height="48"/>
+        <image name="clubs" width="48" height="48"/>
+        <image name="gear" width="48" height="48"/>
         <image name="snoo" width="676" height="507"/>
-        <image name="song" width="561.3599853515625" height="561.3599853515625"/>
+        <image name="song" width="48" height="48"/>
         <image name="space" width="1600" height="900"/>
+        <image name="spiritPoints" width="48" height="48"/>
         <image name="stalogo" width="430" height="427"/>
-        <image name="voteArrowEmpty" width="480" height="455.27999877929688"/>
+        <image name="voteArrowEmpty" width="48" height="48"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="ZBK-Jk-E3t"/>
         <segue reference="Bcw-dD-CBe"/>
-        <segue reference="5Au-Eg-vg9"/>
-        <segue reference="kPJ-qg-kQl"/>
+        <segue reference="dOO-6f-ACp"/>
+        <segue reference="ZPw-sW-YUi"/>
         <segue reference="IJv-sg-69W"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

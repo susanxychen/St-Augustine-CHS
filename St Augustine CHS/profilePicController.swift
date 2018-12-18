@@ -47,6 +47,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        overlayView.frame = UIApplication.shared.keyWindow!.frame
         
         //***************INTERNET CONNECTION**************
         var iAmConneted = false

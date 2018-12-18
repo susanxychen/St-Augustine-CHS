@@ -34,7 +34,7 @@ class songViewCell: UICollectionViewCell {
         }
         
         
-        if voteData.songsVoted[theSong][0] as! Bool == false {
+        if voteData.songsVoted[theSong][0] as! Int == 0 {
             //Send the vote to cloud functions
             functions.httpsCallable("changeVote").call(["id": songID.text!, "uservote": voteAmount]) { (result, error) in
                 if let error = error as NSError? {
@@ -61,7 +61,10 @@ class songViewCell: UICollectionViewCell {
             voteData.songsVoted[theSong][3] = votes
             
             voteCount.text = String(votes)
-        } else {
+            
+            voteData.songsVoted[theSong][0] = 1
+            voteCount.textColor = UIColor(red: 140/255.0, green: 201/255.0, blue: 140/255.0, alpha: 1.0)
+        } else if voteData.songsVoted[theSong][0] as! Int == 1 {
             var votes = voteData.songsVoted[theSong][3] as! Int
             voteArrow.image = UIImage(named: "voteArrowEmpty")
             
@@ -88,12 +91,9 @@ class songViewCell: UICollectionViewCell {
                 self.upvotedButton.isEnabled = true
             }
             voteCount.text = String(votes)
+            voteData.songsVoted[theSong][0] = 0
+            voteCount.textColor = UIColor.darkText
         }
-        
-        //Change the vote status
-        voteData.songsVoted[theSong][0] = !(voteData.songsVoted[theSong][0] as! Bool)
-        
-        //print(voteData.songsVoted)
         
         //Save the vote data locally
         UserDefaults.standard.set(voteData.songsVoted, forKey: "songsVoted")

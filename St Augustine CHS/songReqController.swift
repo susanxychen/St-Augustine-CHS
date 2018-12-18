@@ -49,7 +49,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         
         //create a new button
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "addClub"), for: .normal)
+        button.setImage(UIImage(named: "addSong"), for: .normal)
         //add function for button
         button.addTarget(self, action: #selector(suggestSongButtonPressed), for: .touchUpInside)
         button.frame = CGRect(x: 0, y: 0, width: 48, height: 48)
@@ -101,7 +101,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         }
         let p = gestureRecognizer.location(in: self.songView)
         if let indexPath : NSIndexPath = (self.songView.indexPathForItem(at: p) as NSIndexPath?){
-            if !(voteData.songsVoted[indexPath.item][0] as! Bool) {
+            if voteData.songsVoted[indexPath.item][0] as! Int == 0 {
                 print("Long Pressed on: \(indexPath.item)")
                 supervotedIndex = indexPath.item
                 selectedSuperSongID = voteData.songsVoted[indexPath.item][4] as? String
@@ -178,7 +178,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                             self.supervoteView.isHidden = true
                             self.view.sendSubviewToBack(self.supervoteView)
                         }
-                        voteData.songsVoted[self.supervotedIndex][0] = true
+                        voteData.songsVoted[self.supervotedIndex][0] = 2
                         voteData.songsVoted[self.supervotedIndex][3] = self.supervoteAmount + (voteData.songsVoted[self.supervotedIndex][3] as! Int)
                         UserDefaults.standard.set(voteData.songsVoted, forKey: "songsVoted")
                         print("vote sent to functions")
@@ -252,7 +252,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                     }
                     
                     //Set the latest song data
-                    latestSongs.append([false, theSongName as! String, theArtistName as! String, votes as! Int, id])
+                    latestSongs.append([0, theSongName as! String, theArtistName as! String, votes as! Int, id])
                 }
                 
                 //Check if there was previously saved data
@@ -356,10 +356,15 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         cell.songID.text = voteData.songsVoted[indexPath.item][4] as? String
         
         //If The user has voted on song, display upvote image, if not display regular image
-        if voteData.songsVoted[indexPath.item][0] as! Bool {
+        if voteData.songsVoted[indexPath.item][0] as! Int == 1 {
             cell.voteArrow.image = UIImage(named: "voteArrowActive")
+            cell.voteCount.textColor = UIColor(red: 140/255.0, green: 201/255.0, blue: 140/255.0, alpha: 1.0)
+        } else if voteData.songsVoted[indexPath.item][0] as! Int == 2 {
+            cell.voteArrow.image = UIImage(named: "supervoteActive")
+            cell.voteCount.textColor = UIColor(red: 255/255.0, green: 171/255.0, blue: 35/255.0, alpha: 1.0)
         } else {
             cell.voteArrow.image = UIImage(named: "voteArrowEmpty")
+            cell.voteCount.textColor = UIColor.darkText
         }
         
         cell.bringSubviewToFront(cell.upvotedButton)

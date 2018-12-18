@@ -77,6 +77,9 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
             }
         })
         
+        overlayView.frame = UIApplication.shared.keyWindow!.frame
+        
+        
         clubListDidUpdateClubDetails.clubAdminUpdatedData = false
         
         viewingPersonalClubs = true

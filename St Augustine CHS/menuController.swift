@@ -73,9 +73,13 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     let viewAboveAllViews = UIView()
     
+    //Calendar Vars
+    @IBOutlet weak var calendarButton: UIButton!
+    
     //***********************************SETTING UP EVERYTHING****************************************
     override func viewDidLoad() {
         super.viewDidLoad()
+        calendarButton.isHidden = true
         viewAboveAllViews.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.7)
         viewAboveAllViews.frame = UIApplication.shared.keyWindow!.frame
         UIApplication.shared.keyWindow!.addSubview(viewAboveAllViews)
@@ -93,12 +97,15 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             return
         }
         print("Successful Redirection")
+        viewAboveAllViews.removeFromSuperview()
     }
     
     //MARK: GIDSignIn Delegate
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!){
+        UIApplication.shared.keyWindow!.addSubview(viewAboveAllViews)
         if (error == nil) {
             //Successfuly Signed In to Google
+            print("Sucessfully sign in to google")
         } else {
             print(error.localizedDescription)
             viewAboveAllViews.removeFromSuperview()
@@ -345,6 +352,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         } else {
             self.anncViewHeight.constant = 500
         }
+        
+        calendarButton.isHidden = false
         
         return cell
     }

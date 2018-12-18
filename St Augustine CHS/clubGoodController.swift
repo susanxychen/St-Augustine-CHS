@@ -55,6 +55,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        overlayView.frame = UIApplication.shared.keyWindow!.frame
         
         clubListDidUpdateClubDetails.clubAdminUpdatedData = false
         

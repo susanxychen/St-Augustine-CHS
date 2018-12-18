@@ -238,7 +238,8 @@ extension UIViewController {
         container.addSubview(loadingView)
         //overlayView.addSubview(container)
         //uiView.addSubview(overlayView)
-        uiView.addSubview(container)
+        //uiView.addSubview(container)
+        UIApplication.shared.keyWindow!.addSubview(container)
         //uiView.bringSubviewToFront(overlayView)
         actInd.startAnimating()
         
@@ -255,7 +256,6 @@ extension UIViewController {
     func hideActivityIndicator(uiView: UIView, container: UIView, actInd: UIActivityIndicatorView, overlayView: UIView) {
         actInd.stopAnimating()
         container.removeFromSuperview()
-        //uiView.willRemoveSubview(overlayView)
     }
     
     //********************************************MISC FUNCTIONS********************************************

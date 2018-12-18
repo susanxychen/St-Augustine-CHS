@@ -36,7 +36,7 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        overlayView.frame = UIApplication.shared.keyWindow!.frame
         //Set Up
         // [START setup]
         let settings = FirestoreSettings()
