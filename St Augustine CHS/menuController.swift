@@ -307,14 +307,14 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //Dynamically change the cell size depending on the announcement length
         let approxWidthOfAnnouncementTextView = view.frame.width
         var size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
-        var attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
+        var attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18.5)]
         var estimatedFrame = NSString(string: newsData[indexPath.row][1]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             
         let contentHeight =  estimatedFrame.height + 10
         contentHeights[indexPath.item] = contentHeight
         
         size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
-        attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
+        attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18)]
         estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
         
         let titleHeight = estimatedFrame.height + 10
