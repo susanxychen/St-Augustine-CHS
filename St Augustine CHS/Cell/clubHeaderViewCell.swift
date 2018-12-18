@@ -12,6 +12,8 @@ import Firebase
 class clubHeaderViewCell: UICollectionViewCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     @IBOutlet weak var banner: UIImageView!
+    @IBOutlet weak var bannerHeight: NSLayoutConstraint!
+    
     @IBOutlet weak var name: UITextView!
     @IBOutlet weak var desc: UITextView!
     @IBOutlet weak var nameHeight: NSLayoutConstraint!

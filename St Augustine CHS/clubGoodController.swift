@@ -468,13 +468,13 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             //print(clubData["name"])
             //Set the title's height
             let size = CGSize(width: view.frame.width, height: 1000)
-            let attributesTitle = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 23)]
+            let attributesTitle = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
             let estimatedFrameTitle = NSString(string: clubData["name"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
             view.nameHeight.constant = estimatedFrameTitle.height + 20
             //print(estimatedFrameTitle.height)
             
             //Set the content's height
-            let attributesContent = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+            let attributesContent = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
             let estimatedFrameContent = NSString(string: clubData["desc"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
             view.descHeight.constant = estimatedFrameContent.height + 40
             //print(estimatedFrameContent.height)
@@ -511,14 +511,15 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize{
         //Dynamically change the cell size depending on the announcement length
-        let size = CGSize(width: view.frame.width, height: 1000)
+        let width = view.frame.width
+        let size = CGSize(width: width, height: 1000)
         
         //Get an approximation of the title size
-        let attributesTitle = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 23)]
+        let attributesTitle = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
         let estimatedFrameTitle = NSString(string: clubData["name"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
         
         //Get an approximation of the description size
-        let attributesContent = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+        let attributesContent = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
         let estimatedFrameContent = NSString(string: clubData["desc"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
         
         var joinButtonSizeOrAnnouncmentTextSize: CGFloat
@@ -531,8 +532,8 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             joinButtonSizeOrAnnouncmentTextSize = 55
         }
         
-        //Also add the height of the picture and the announcements and the space inbetween
-        return CGSize(width: view.frame.width, height: estimatedFrameContent.height + estimatedFrameTitle.height + 150 + joinButtonSizeOrAnnouncmentTextSize + 100 + 30 + 130)
+        //Also add the height of the picture and the announcements and the space inbetween 
+        return CGSize(width: width, height: estimatedFrameContent.height + estimatedFrameTitle.height + (width * 0.5538461) + joinButtonSizeOrAnnouncmentTextSize + 220)
         
     }
     
@@ -546,11 +547,11 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         let size = CGSize(width: view.frame.width, height: 1000)
         
         //Get an approximation of the title size
-        let attributesTitle = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 19)]
+        let attributesTitle = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 21)!]
         let estimatedFrameTitle = NSString(string: anncData[indexPath.row]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
         
         //Get an approximation of the content size
-        let attributesContent = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+        let attributesContent = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
         let estimatedFrameContent = NSString(string: anncData[indexPath.row]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
         
         var imgHeight:CGFloat = 0
@@ -560,9 +561,9 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         
         //Check if there is content for the announcment
         if anncData[indexPath.row]["content"] as? String == "" {
-            return CGSize(width: view.frame.width, height: estimatedFrameTitle.height + imgHeight + 33 + 40)
+            return CGSize(width: view.frame.width, height: estimatedFrameTitle.height + imgHeight + 73)
         } else {
-            return CGSize(width: view.frame.width, height: estimatedFrameTitle.height + estimatedFrameContent.height + imgHeight + 33 + 40)
+            return CGSize(width: view.frame.width, height: estimatedFrameTitle.height + estimatedFrameContent.height + imgHeight + 73)
         }
     }
     
@@ -576,12 +577,12 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         if anncData.count != 0 {
             //Set the title's height
             let size = CGSize(width: view.frame.width, height: 1000)
-            let attributesTitle = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 19)]
+            let attributesTitle = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
             let estimatedFrameTitle = NSString(string: anncData[indexPath.row]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
             cell.anncTitleHeight.constant = estimatedFrameTitle.height + 20
             
             //Set the content's height
-            let attributesContent = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+            let attributesContent = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
             let estimatedFrameContent = NSString(string: anncData[indexPath.row]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
             if anncData[indexPath.row]["content"] as? String == "" {
                 cell.anncTextHeight.constant = 1

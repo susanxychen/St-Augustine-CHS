@@ -1796,6 +1796,7 @@
                                         <outlet property="announcmentLabel" destination="4QB-o9-FaD" id="A57-W5-02W"/>
                                         <outlet property="badgesCollectionView" destination="mFP-Po-5Ku" id="1Tj-Ab-mqC"/>
                                         <outlet property="banner" destination="lqY-OR-cWe" id="48r-He-OyY"/>
+                                        <outlet property="bannerHeight" destination="FeZ-md-Bz3" id="SMv-Ph-Feu"/>
                                         <outlet property="desc" destination="iZ8-fM-rql" id="Qba-Ro-2fb"/>
                                         <outlet property="descHeight" destination="sAR-4J-ass" id="LZ3-ne-ZzN"/>
                                         <outlet property="joinClubButton" destination="OO8-JJ-SbL" id="NRi-Au-oZO"/>
@@ -3642,7 +3643,7 @@
         <segue reference="Bcw-dD-CBe"/>
         <segue reference="dOO-6f-ACp"/>
         <segue reference="ZPw-sW-YUi"/>
-        <segue reference="IJv-sg-69W"/>
+        <segue reference="t4R-bV-FN9"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>
