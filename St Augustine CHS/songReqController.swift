@@ -228,7 +228,6 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                 
                 //Disable the add song button if there are over 20 songs
                 if querySnapshot!.documents.count > 20 {
-                    //Allow app dev to still vote
                     if allUserFirebaseData.data["status"] as? Int ?? 0 < 1 {
                         self.songReqButton.isEnabled = false
                     }

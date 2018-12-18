@@ -28,7 +28,6 @@ class songViewCell: UICollectionViewCell {
         let theSong = self.indexPath![1]
         print(theSong)
         
-        //Allow App Dev votes to count for more
         var voteAmount = 1
         if allUserFirebaseData.data["status"] as? Int ?? 0 >= 2 {
             voteAmount = 5
