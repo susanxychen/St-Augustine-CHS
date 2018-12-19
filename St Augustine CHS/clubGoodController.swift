@@ -53,6 +53,9 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     var segueNum = 0
     var comingFromTheSocialPage = false
     
+    //Deleting images
+    var allImageIDs = [String]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         overlayView.frame = UIApplication.shared.keyWindow!.frame
@@ -382,6 +385,8 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         var hasImageSomewhere = false
         for i in 0...anncData.count-1{
             if anncData[i]["img"] as? String != nil && anncData[i]["img"] as? String != "" {
+                allImageIDs.append(anncData[i]["img"] as! String)
+                
                 hasImageSomewhere = true
                 let storage = Storage.storage()
                 let storageRef = storage.reference()
@@ -436,6 +441,79 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                 self.anncImgs[i] = self.snooImgFiller!
             }
         }
+        
+        //Check against the saved ids in UserDefaults to see which to delete
+        if let x = UserDefaults.standard.object(forKey: clubID) as? [String]{
+            var x = x
+            //Check if there was previously saved data
+            if x.count != 0 {
+                //Remove old ids and also update votes
+                var idsToRemove = [Int]()
+                for i in 0...x.count-1 {
+                    var idIsInBothArrays = false
+                    for newid in allImageIDs {
+                        //Check all IDs
+                        if (x[i] == newid) {
+                            idIsInBothArrays = true
+                        }
+                    }
+                    //Remove the id if it isnt part of latest ids
+                    if !idIsInBothArrays {
+                        idsToRemove.append(i)
+                    }
+                }
+                print("Removing \(idsToRemove) x: \(x)")
+                x.remove(at: idsToRemove)
+                
+                let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+                guard let items = try? FileManager.default.contentsOfDirectory(atPath: path) else { return }
+                
+                for index in idsToRemove {
+                    let imageName = x[index]
+                    for item in items {
+                        // This can be made better by using pathComponent
+                        let completePath = path.appending("/").appending(item)
+                        if completePath.hasSuffix(imageName) {
+                            print("removing \(imageName)")
+                            try? FileManager.default.removeItem(atPath: completePath)
+                        }
+                    }
+                }
+                
+            } else {
+                //If not then just continnue
+                x = allImageIDs
+            }
+            
+            //At this point, latest ids should be larger
+            //Now that you removed old ids, add new ids
+            var idsToAdd = [String]()
+            for newid in allImageIDs {
+                //Check if you already have this id
+                var alreadyGotThisid = false
+                for id in x {
+                    if (newid == id) {
+                        alreadyGotThisid = true
+                    }
+                }
+                
+                //If Not then add it!
+                if !alreadyGotThisid {
+                    idsToAdd.append(newid)
+                }
+            }
+            
+            //Now finally actually add these new ids to voteData *cant do it within the loop cause itll break the count
+            for id in idsToAdd {
+                x.append(id)
+            }
+            
+            UserDefaults.standard.set(x, forKey: clubID)
+        } else {
+            //Save the data locally
+            UserDefaults.standard.set(allImageIDs, forKey: clubID)
+        }
+        
         
         //Reload announcements
         if hasImageSomewhere {
