@@ -41,6 +41,7 @@
 		B97CDA492176DCFE00F7F685 /* newsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97CDA482176DCFE00F7F685 /* newsViewCell.swift */; };
 		B9876BAE217AC9E800D57C16 /* clubListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9876BAD217AC9E800D57C16 /* clubListController.swift */; };
 		B9876BB2217ACC5300D57C16 /* clubViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9876BB1217ACC5300D57C16 /* clubViewCell.swift */; };
+		B98F3C6A21C990A9000D8F07 /* updatePrivacyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98F3C6921C990A9000D8F07 /* updatePrivacyController.swift */; };
 		B995CFF4218F8600004970E0 /* editClubDetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B995CFF3218F8600004970E0 /* editClubDetailsController.swift */; };
 		B9AC701321C1A19E00FEF5EF /* clubBadgeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AC701221C1A19D00FEF5EF /* clubBadgeCell.swift */; };
 		B9AC701521C1B52C00FEF5EF /* cafeImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AC701421C1B52C00FEF5EF /* cafeImageController.swift */; };
@@ -123,6 +124,7 @@
 		B97CDA482176DCFE00F7F685 /* newsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = newsViewCell.swift; sourceTree = "<group>"; };
 		B9876BAD217AC9E800D57C16 /* clubListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubListController.swift; sourceTree = "<group>"; };
 		B9876BB1217ACC5300D57C16 /* clubViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubViewCell.swift; sourceTree = "<group>"; };
+		B98F3C6921C990A9000D8F07 /* updatePrivacyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = updatePrivacyController.swift; sourceTree = "<group>"; };
 		B995CFF3218F8600004970E0 /* editClubDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = editClubDetailsController.swift; sourceTree = "<group>"; };
 		B9AC701221C1A19D00FEF5EF /* clubBadgeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubBadgeCell.swift; sourceTree = "<group>"; };
 		B9AC701421C1B52C00FEF5EF /* cafeImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cafeImageController.swift; sourceTree = "<group>"; };
@@ -244,6 +246,7 @@
 				B961424F21B6193F0070F27B /* suggestASongController.swift */,
 				B9E67F8721B86B7300836A65 /* spiritMeterController.swift */,
 				B9ACA1EB21755BBD00302C4B /* settingsController.swift */,
+				B98F3C6921C990A9000D8F07 /* updatePrivacyController.swift */,
 				B9FECBFE219131E30006CCE3 /* socialController.swift */,
 				B918546B21B4B26500DA14F5 /* profilePicController.swift */,
 				B9C6E35A21ACA68500A03650 /* classesDetailsController.swift */,
@@ -585,6 +588,7 @@
 				B97CDA492176DCFE00F7F685 /* newsViewCell.swift in Sources */,
 				B958069F21821EA400B3EE70 /* songViewCell.swift in Sources */,
 				B9FECC012191337F0006CCE3 /* badgesViewCell.swift in Sources */,
+				B98F3C6A21C990A9000D8F07 /* updatePrivacyController.swift in Sources */,
 				B9EAF7B321A0D3D40062736B /* signInProfilePicViewCell.swift in Sources */,
 				B9C6E35B21ACA68500A03650 /* classesDetailsController.swift in Sources */,
 				B9C6E35D21ACBFE200A03650 /* semester1ViewCell.swift in Sources */,

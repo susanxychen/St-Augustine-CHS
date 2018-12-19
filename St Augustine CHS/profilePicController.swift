@@ -41,13 +41,12 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
     //Refresh Vars
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIScreen.main.bounds)
+    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
     
     var choseNewPic = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        overlayView.frame = UIApplication.shared.keyWindow!.frame
         
         //***************INTERNET CONNECTION**************
         var iAmConneted = false
@@ -271,6 +270,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                             self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
                                 if let docSnapshot = docSnapshot {
                                     allUserFirebaseData.data = docSnapshot.data()!
+                                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                                     self.dismiss(animated: true, completion: nil)
                                 }
                                 if let err = err {
@@ -391,8 +391,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                             allUserFirebaseData.profilePic = self.theProfilePic.image!
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
-                                //self.dismiss(animated: true, completion: nil)
-                                self.getPicsCost() //why tf is the images out of order
+                                self.getPicsCost() 
                             }
                         }
                     }

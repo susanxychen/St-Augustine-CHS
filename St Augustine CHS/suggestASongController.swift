@@ -67,7 +67,7 @@ class suggestASongController: UIViewController {
     
     //**********Suggest the song**********
     @IBAction func suggestPressed(_ sender: Any) {
-        let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to spend 10 points to request a song? (You currently have \(allUserFirebaseData.data["points"] ?? "error occured") points)? Administration will be able to see who requested what song and have the power to bann those who request inappropriate or irrelevant content", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to spend 10 points to request a song? (You currently have \(allUserFirebaseData.data["points"] ?? "error occured") points)? Administration will be able to see who requested what song and have the power to ban those who request inappropriate or irrelevant content", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel) { (action:UIAlertAction) in
             print("You've pressed cancel");
@@ -145,6 +145,7 @@ class suggestASongController: UIViewController {
                                         } else {
                                             print("Document successfully written!")
                                             self.onDoneBlock!(true)
+                                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                                             self.dismiss(animated: true, completion: nil)
                                         }
                                     }

@@ -152,15 +152,19 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                 self.present(alert, animated: true, completion: nil)
             }
             
-            self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+            //Subtact the points
+            let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+            allUserFirebaseData.data["points"] = allUserFirebaseData.data["points"] as! Int - self.supervoteCost
+            userRef.setData([
+                "points" : allUserFirebaseData.data["points"] as! Int
+            ], mergeFields: ["points"]) { (err) in
                 if let err = err {
-                    print("Error writing document: \(err)")
-                    let alert = UIAlertController(title: "Error in retrieveing users", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                    let alert = UIAlertController(title: "Error in supervoting", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                     alert.addAction(okAction)
                     self.present(alert, animated: true, completion: nil)
-                }
-                if docSnapshot != nil {
+                } else {
+                    print("Document successfully updated")
                     self.functions.httpsCallable("changeVote").call(["id": self.selectedSuperSongID, "uservote": self.supervoteAmount]) { (result, error) in
                         if let error = error as NSError? {
                             if error.domain == FunctionsErrorDomain {

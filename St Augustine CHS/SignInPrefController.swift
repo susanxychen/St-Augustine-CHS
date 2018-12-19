@@ -61,8 +61,6 @@ class SignInPrefController: UIViewController {
                 showClubs = false
             }
         }
-        
-        
     }
     
     @IBAction func pressedFinishedButton(_ sender: Any) {

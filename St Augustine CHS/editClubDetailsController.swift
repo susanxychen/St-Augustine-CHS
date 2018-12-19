@@ -239,6 +239,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     
     func doneWithEverything() {
         onDoneBlock!(true)
+        //self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
         dismiss(animated: true, completion: nil)
     }
 }

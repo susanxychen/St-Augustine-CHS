@@ -161,6 +161,7 @@ class changeCoursesController: UIViewController {
                         if let docSnapshot = docSnapshot {
                             allUserFirebaseData.data = docSnapshot.data()!
                             self.onDoneBlock!(true)
+                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                             self.dismiss(animated: true, completion: nil)
                         }
                         if let err = err {

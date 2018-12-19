@@ -110,6 +110,13 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         hideKeyboardWhenTappedAround()
         
         //*************************SET UP THE USER PROFILE DATA*************************
+        if allUserFirebaseData.data["status"] as! Int == 2 {
+            self.profileViewBackground.backgroundColor = UIColor(red: 25/255.0, green: 2/255.0, blue: 6/255.0, alpha: 1.0)
+            self.usersFullName.textColor = UIColor(red: 216/255.0, green: 175/255.0, blue: 28/255.0, alpha: 1.0)
+        } else {
+            self.profileViewBackground.backgroundColor = UIColor(red: 141/255.0, green: 18/255.0, blue: 48/255.0, alpha: 1.0)
+        }
+        
         //Background Shadow
         profileViewBackground.layer.shadowOpacity = 1
         profileViewBackground.layer.shadowRadius = 2
@@ -342,6 +349,14 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                 self.lookingAtOtherUserInGeneral = true
                                 
                                 let requestedStudentData = document.data()
+                                
+                                if requestedStudentData["status"] as! Int == 2 {
+                                    self.profileViewBackground.backgroundColor = UIColor(red: 25/255.0, green: 2/255.0, blue: 6/255.0, alpha: 1.0)
+                                    self.usersFullName.textColor = UIColor(red: 216/255.0, green: 175/255.0, blue: 28/255.0, alpha: 1.0)
+                                } else {
+                                    self.profileViewBackground.backgroundColor = UIColor(red: 141/255.0, green: 18/255.0, blue: 48/255.0, alpha: 1.0)
+                                }
+                                
                                 //Get the requested stuends information
                                 //Image
                                 self.getPicture(i: requestedStudentData["profilePic"] as? Int ?? 0)

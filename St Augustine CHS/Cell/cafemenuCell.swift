@@ -10,4 +10,5 @@ import UIKit
 
 class cafemenuCell: UICollectionViewCell {
     @IBOutlet weak var foodLabel: UILabel!
+    @IBOutlet weak var priceLabel: UILabel!
 }

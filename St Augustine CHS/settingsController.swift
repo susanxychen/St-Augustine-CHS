@@ -13,12 +13,15 @@ import GoogleSignIn
 class settingsController: UIViewController {
 
     @IBOutlet weak var cacheSizeLabel: UILabel!
+    @IBOutlet weak var clearKeys: UIButton!
     
     var stupidButtonPressedCount = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        if allUserFirebaseData.data["status"] as! Int == 2 {
+            clearKeys.isHidden = false
+        }
         //create a new button
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "info"), for: .normal)
@@ -171,11 +174,8 @@ class settingsController: UIViewController {
         print("After: \(Array(UserDefaults.standard.dictionaryRepresentation().keys).count) keys")
     }
     
-
     //********************************CACHE********************************
     @IBAction func removeCache(_ sender: Any) {
-
-        
         //Create the alert controller.
         let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to clear cache? You will need to redownload all pictures again.", preferredStyle: .alert)
         
@@ -204,6 +204,7 @@ class settingsController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
+    //********************************DOC DIRECT********************************
     func sizeOfDocumentDirectory() -> String {
         let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         guard let items = try? FileManager.default.contentsOfDirectory(atPath: path) else { return "Error in getting Size" }
