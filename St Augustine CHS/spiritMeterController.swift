@@ -16,6 +16,11 @@ class spiritMeterController: UIViewController {
     @IBOutlet weak var elevenLabel: UILabel!
     @IBOutlet weak var twelveLabel: UILabel!
     
+    @IBOutlet weak var nineBar: UIProgressView!
+    @IBOutlet weak var tenBar: UIProgressView!
+    @IBOutlet weak var elevenBar: UIProgressView!
+    @IBOutlet weak var twelveBar: UIProgressView!
+    
     //The Database
     var db: Firestore!
     var docRef: DocumentReference!
@@ -52,8 +57,17 @@ class spiritMeterController: UIViewController {
         // [END setup]
         db = Firestore.firestore()
         
+        //Format the progress bars
+        let transform = CGAffineTransform(scaleX: 1.0, y: 10.0)
+        
+        self.nineBar.transform = transform
+        self.tenBar.transform = transform
+        self.elevenBar.transform = transform
+        self.twelveBar.transform = transform
+        
         //Get the points
         getSpiritPoints()
+        
     }
     
     func getSpiritPoints() {
@@ -65,12 +79,28 @@ class spiritMeterController: UIViewController {
                 self.present(alert, animated: true, completion: nil)
             }
             if let snapshot = snapshot {
-                let data = snapshot.data()
+                let data = snapshot.data()!
                 
-                self.nineLabel.text = "Nine: \(data?["nine"] ?? "error")"
-                self.tenLabel.text = "Ten: \(data?["ten"] ?? "error")"
-                self.elevenLabel.text = "Eleven: \(data?["eleven"] ?? "error")"
-                self.twelveLabel.text = "Twelve: \(data?["twelve"] ?? "error")"
+                //Set the values
+                let nine = data["nine"] as! Double
+                let ten = data["ten"] as! Double
+                let eleven = data["eleven"] as! Double
+                let twelve = data["twelve"] as! Double
+                
+                let points = [nine,ten,eleven,twelve]
+                
+                let max:Double = Double(points.max() ?? 1)
+                
+                self.nineBar.progress = Float(nine/max)
+                self.tenBar.progress = Float(ten/max)
+                self.elevenBar.progress = Float(eleven/max)
+                self.twelveBar.progress = Float(twelve/max)
+                
+                //Update the labels
+                self.nineLabel.text = "Grade 9 - \(data["nine"] ?? "error") Points"
+                self.tenLabel.text = "Grade 10 - \(data["ten"] ?? "error") Points"
+                self.elevenLabel.text = "Grade 11 - \(data["eleven"] ?? "error") Points"
+                self.twelveLabel.text = "Grade 12 - \(data["twelve"] ?? "error") Points"
             }
         }
     }
