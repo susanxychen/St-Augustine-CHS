@@ -46,6 +46,8 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     @IBOutlet weak var badgesCollectionView: UICollectionView!
     @IBOutlet weak var addBadgeButton: UIButton!
     let badgeCollectionIdentifier = "badge"
+    var badgeData = [[String: Any]]()
+    var badgeImgs = [UIImage]()
     
     //Clubs
     @IBOutlet weak var clubsCollectionView: UICollectionView!
@@ -152,6 +154,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         //Get the preexisting data from the menu controller
         if allUserFirebaseData.data.count != 0 && !forceRefresh {
             self.userData = allUserFirebaseData.data
+            self.getBadgeDocs()
             self.userCourses = allUserFirebaseData.data["classes"] as! [String]
             let clubIDRefs = allUserFirebaseData.data["clubs"] as! [String]
             self.getClubData(clubIDRefs: clubIDRefs)
@@ -161,14 +164,98 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
                 if let docSnapshot = docSnapshot {
                     self.userData = docSnapshot.data()!
+                    self.getBadgeDocs()
                     self.userCourses = self.userData["classes"] as! [String]
                     let clubIDRefs = self.userData["clubs"] as! [String]
                     self.getClubData(clubIDRefs: clubIDRefs)
-                    
                 } else {
                     print("wow u dont exist")
                 }
             }
+        }
+    }
+    
+    func getBadgeDocs(){
+        for _ in allUserFirebaseData.data["badges"] as! [String] {
+            badgeData.append(["err":"err"])
+        }
+        for x in 0...(allUserFirebaseData.data["badges"] as! [String]).count - 1 {
+            let id = (allUserFirebaseData.data["badges"] as! [String])[x]
+            db.collection("badges").document(id).getDocument { (snap, err) in
+                if let err = err {
+                    let alert = UIAlertController(title: "Error in retrieveing some club images", message: "Please try again later. \(err.localizedDescription)", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                    alert.addAction(okAction)
+                    self.present(alert, animated: true, completion: nil)
+                }
+                if let snap = snap {
+                    self.badgeData[x] = snap.data()!
+                }
+                
+                if x == (allUserFirebaseData.data["badges"] as! [String]).count - 1 {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+                        self.getBadgesImages()
+                    }
+                }
+            }
+        }
+    }
+    
+    func getBadgesImages() {
+        for _ in badgeData {
+            badgeImgs.append(UIImage(named: "snoo")!)
+        }
+        for i in 0...badgeImgs.count - 1 {
+            let name = badgeData[i]["img"] as? String ?? "Error"
+            //Image
+            let storage = Storage.storage()
+            let storageRef = storage.reference()
+            
+            // Create a reference to the file you want to download
+            let imgRef = storageRef.child("badges/\(name)")
+            
+            imgRef.getMetadata { (metadata, error) in
+                if let error = error {
+                    // Uh-oh, an error occurred!
+                    print("cant find image \(name)")
+                    print(error)
+                } else {
+                    // Metadata now contains the metadata for 'images/forest.jpg'
+                    if let metadata = metadata {
+                        let theMetaData = metadata.dictionaryRepresentation()
+                        let updated = theMetaData["updated"]
+                        
+                        if let updated = updated {
+                            if let savedImage = self.getSavedImage(named: "\(name)-\(updated)"){
+                                print("already saved \(name)-\(updated)")
+                                self.badgeImgs[i] = savedImage
+                            } else {
+                                // Create a reference to the file you want to download
+                                imgRef.downloadURL { url, error in
+                                    if error != nil {
+                                        //print(error)
+                                        print("cant find image \(name)")
+                                    } else {
+                                        // Get the download URL
+                                        var image: UIImage?
+                                        let data = try? Data(contentsOf: url!)
+                                        if let imageData = data {
+                                            image = UIImage(data: imageData)!
+                                            self.badgeImgs[i] = image!
+                                            self.clearImageFolder(imageName: "\(name)-\(updated)")
+                                            self.saveImageDocumentDirectory(image: image!, imageName: "\(name)-\(updated)")
+                                        }
+                                        print("i success now")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+            self.badgesCollectionView.reloadData()
         }
     }
     
@@ -437,7 +524,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     //****************************FORMATTING THE COLLECTION VIEWS****************************
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == badgesCollectionView {
-            return 1 // Replace with count of badges
+            return badgeImgs.count
         } else {
             return userClubNames.count
         }
@@ -452,7 +539,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             badgesCell.theBadge.layer.cornerRadius = 130/2
             badgesCell.theBadge.clipsToBounds = true
             
-            badgesCell.theBadge.image = UIImage(named: "brackets")
+            badgesCell.theBadge.image = badgeImgs[indexPath.item]
             
             return badgesCell
         }
@@ -481,7 +568,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     //**********************SELECTING A BADGE OR CLUB**********************
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == badgesCollectionView {
-            print("badges \(indexPath.item)")
+            print("badges \(badgeData[indexPath.item])")
         } else {
             print("clubs \(indexPath.item) \(userClubNames[indexPath.item])")
             self.segDest = 1

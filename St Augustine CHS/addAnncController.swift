@@ -25,6 +25,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
     @IBOutlet weak var anncImg: UIImageView!
     @IBOutlet weak var removeImage: UIButton!
     var currentAnncID = String()
+    var clubName = String()
     
     //Returning to club vars
     var onDoneBlock : ((Bool) -> Void)?
@@ -257,6 +258,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
             print("Added annc id \(currentAnncID)")
             db.collection("announcements").document(currentAnncID).setData([
                 "club": clubID,
+                "clubName": clubName,
                 "content": anncDesc,
                 "creator": user?.uid as Any,
                 "date": Date(),

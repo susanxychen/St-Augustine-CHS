@@ -91,8 +91,8 @@ class updatePrivacyController: UIViewController {
         let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
         //Subtact the points
         userRef.setData([
-            "showClubs" : allUserFirebaseData.data["showClasses"],
-            "showClasses" : allUserFirebaseData.data["showClubs"]
+            "showClubs" : allUserFirebaseData.data["showClasses"] as Any,
+            "showClasses" : allUserFirebaseData.data["showClubs"] as Any
         ], mergeFields: ["showClubs", "showClasses"]) { (err) in
             if let err = err {
                 let alert = UIAlertController(title: "Error in updating profile picture", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)

@@ -36,6 +36,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var snowDay: UILabel!
     @IBOutlet weak var calendarView: WKWebView!
     
+    //Scroll Height
+    @IBOutlet weak var homeScrollViewHeight: NSLayoutConstraint!
+    
     //Profile UI Variables
     @IBOutlet weak var profilePicture: UIImageView!
     @IBOutlet weak var displayName: UILabel!
@@ -47,7 +50,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     var contentHeights = [CGFloat]()
     
     //Online Data Variables
-    var newsData = [[String]]()
     let dayURL = URL(string: "https://staugustinechs.netfirms.com/stadayonetwo/")
     let newsURL = URL(string: "http://staugustinechs.ca/printable/")
     let busURL = URL(string: "http://net.schoolbuscity.com/")
@@ -56,9 +58,14 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     let schoolCalendarURL = URL(string: "https://calendar.google.com/calendar/embed?showTitle=0&showTz=0&height=230&wkst=1&src=ycdsbk12.ca_f456pem6p0idarcilfuqiakaa8@group.calendar.google.com&color=%23004183&src=ycdsbk12.ca_4tepqngmnt9htbg435bmbpf3tg%40group.calendar.google.com&color=%23711616")
     
     //Annoucment Variables
-    var counter = 0
+    var newsData = [[String]]()
     @IBOutlet weak var annoucView: UICollectionView!
     @IBOutlet weak var anncViewHeight: NSLayoutConstraint!
+    
+    //Club Annc
+    @IBOutlet weak var clubAnncView: UICollectionView!
+    @IBOutlet weak var clubAnncHeight: NSLayoutConstraint!
+    var clubNewsData = [[String:Any]]()
     
     //Refresh Variables
     var refreshControl: UIRefreshControl?
@@ -79,6 +86,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     //***********************************SETTING UP EVERYTHING****************************************
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         calendarButton.isHidden = true
         viewAboveAllViews.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.7)
         viewAboveAllViews.frame = UIApplication.shared.keyWindow!.frame
@@ -232,6 +240,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             if let docSnapshot = docSnapshot {
                 allUserFirebaseData.data = docSnapshot.data()!
                 self.getPicture(i: docSnapshot.data()!["profilePic"] as? Int ?? 0)
+                self.getClubAnncs()
             } else {
                 print("wow u dont exist")
             }
@@ -243,6 +252,37 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     override func viewDidAppear(_ animated: Bool) {
         profilePicture.image = allUserFirebaseData.profilePic
+    }
+    
+    func getClubAnncs(){
+        for club in allUserFirebaseData.data["clubs"] as! [String] {
+            db.collection("announcements").whereField("club", isEqualTo: club).getDocuments { (snap, err) in
+                if let err = err {
+                    let alert = UIAlertController(title: "Error in retrieveing some club announcements", message: "Please try again later. \(err.localizedDescription)", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                    alert.addAction(okAction)
+                    self.present(alert, animated: true, completion: nil)
+                }
+                if let snap = snap {
+                    for annc in snap.documents {
+                        let data = annc.data()
+                        //Check Dates
+                        //Get the date the announcement was made
+                        let timestamp: Timestamp = data["date"] as! Timestamp
+                        let date: Date = timestamp.dateValue()
+                        let weekAgoDate = Calendar.current.date(byAdding: .day, value: -7, to: Date())
+                        
+                        if date > weekAgoDate! {
+                            self.clubNewsData.append(data)
+                        }
+                    }
+                }
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            //print(self.clubNewsData)
+            self.clubAnncView.reloadData()
+        }
     }
     
     func getPicture(i: Int) {
@@ -300,62 +340,106 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     //*****************************************Annoucments Table**************************************
     //Make sure when you add collection view you add data source and delegate connections on storyboard
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return newsData.count
+        if collectionView == clubAnncView {
+            return clubNewsData.count
+        } else {
+            return newsData.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        //Dynamically change the cell size depending on the announcement length
-        let approxWidthOfAnnouncementTextView = view.frame.width
-        var size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
-        var attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18.5)]
-        var estimatedFrame = NSString(string: newsData[indexPath.row][1]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+        if collectionView == clubAnncView {
+            //Dynamically change the cell size depending on the announcement length
+            let size = CGSize(width: view.frame.width, height: 1000)
             
-        let contentHeight =  estimatedFrame.height + 10
-        contentHeights[indexPath.item] = contentHeight
-        
-        size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
-        attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18)]
-        estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
-        
-        let titleHeight = estimatedFrame.height + 10
-        titleHeights[indexPath.item] = titleHeight
-        
-        return CGSize(width: view.frame.width, height: contentHeight + titleHeight + 8)
+            //Get an approximation of the title size
+            let attributesTitle = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+            let estimatedFrameTitle = NSString(string: clubNewsData[indexPath.item]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
+            
+            //Get an approximation of the description size
+            let attributesContent = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+            let estimatedFrameContent = NSString(string: clubNewsData[indexPath.item]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
+            
+            //Also add the height of the picture and the announcements and the space inbetween
+            return CGSize(width: view.frame.width, height: estimatedFrameContent.height + estimatedFrameTitle.height + 100)
+        } else {
+            //Dynamically change the cell size depending on the announcement length
+            let approxWidthOfAnnouncementTextView = view.frame.width
+            var size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
+            var attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18.5)]
+            var estimatedFrame = NSString(string: newsData[indexPath.row][1]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+            
+            let contentHeight =  estimatedFrame.height + 10
+            contentHeights[indexPath.item] = contentHeight
+            
+            size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
+            attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18)]
+            estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+            
+            let titleHeight = estimatedFrame.height + 10
+            titleHeights[indexPath.item] = titleHeight
+            
+            return CGSize(width: view.frame.width, height: contentHeight + titleHeight + 8)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! newsViewCell
-        //print("i get run data \(newsData[indexPath.item][0]) replacing \(cell.depName.text)")
+        let height = self.annoucView.contentSize.height + self.clubAnncView.contentSize.height + 300
+        self.anncViewHeight.constant = self.annoucView.contentSize.height + 10
+        self.clubAnncHeight.constant = self.clubAnncView.contentSize.height + 10
         
-        cell.contentView.layer.cornerRadius = 10
-        cell.contentView.layer.borderWidth = 1.0
-        
-        cell.contentView.layer.borderColor = UIColor.clear.cgColor
-        cell.contentView.layer.masksToBounds = true
-        
-        cell.layer.shadowColor = UIColor.gray.cgColor
-        cell.layer.shadowOffset = CGSize(width: 0, height: 2.0)
-        cell.layer.shadowRadius = 2.0
-        cell.layer.shadowOpacity = 1.0
-        cell.layer.masksToBounds = false
-        cell.layer.shadowPath = UIBezierPath(roundedRect:cell.bounds, cornerRadius:cell.contentView.layer.cornerRadius).cgPath
-        
-        cell.anncDep.text = newsData[indexPath.item][0]
-        cell.anncText.text = newsData[indexPath.item][1]
-        cell.anncDep.centerVertically()
-        cell.anncText.centerVertically()
-        cell.contentHeight.constant = contentHeights[indexPath.item]
-        cell.titleHeight.constant = titleHeights[indexPath.item]
-        
-        if self.annoucView.contentSize.height < 500 {
-            self.anncViewHeight.constant = self.annoucView.contentSize.height + 10
+        //If the screen is too small to fit all announcements, just change the height to whatever it is
+        if height > UIScreen.main.bounds.height {
+            self.homeScrollViewHeight.constant = height
         } else {
-            self.anncViewHeight.constant = 500
+            self.homeScrollViewHeight.constant = UIScreen.main.bounds.height
         }
         
-        calendarButton.isHidden = false
-        
-        return cell
+        if collectionView == annoucView {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! newsViewCell
+            //print("i get run data \(newsData[indexPath.item][0]) replacing \(cell.depName.text)")
+            
+            cell.contentView.layer.cornerRadius = 10
+            cell.contentView.layer.borderWidth = 1.0
+            
+            cell.contentView.layer.borderColor = UIColor.clear.cgColor
+            cell.contentView.layer.masksToBounds = true
+            
+            cell.layer.shadowColor = UIColor.gray.cgColor
+            cell.layer.shadowOffset = CGSize(width: 0, height: 2.0)
+            cell.layer.shadowRadius = 2.0
+            cell.layer.shadowOpacity = 1.0
+            cell.layer.masksToBounds = false
+            cell.layer.shadowPath = UIBezierPath(roundedRect:cell.bounds, cornerRadius:cell.contentView.layer.cornerRadius).cgPath
+            
+            cell.anncDep.text = newsData[indexPath.item][0]
+            cell.anncText.text = newsData[indexPath.item][1]
+            cell.anncDep.centerVertically()
+            cell.anncText.centerVertically()
+            cell.contentHeight.constant = contentHeights[indexPath.item]
+            cell.titleHeight.constant = titleHeights[indexPath.item]
+            
+            //self.anncViewHeight.constant = self.annoucView.contentSize.height + 10
+            
+            calendarButton.isHidden = false
+            
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "clubNews", for: indexPath) as! mainClubNewsCell
+            
+            //Get the date the announcement was made
+            let timestamp: Timestamp = clubNewsData[indexPath.row]["date"] as! Timestamp
+            let date: Date = timestamp.dateValue()
+            
+            cell.clubLabel.text = clubNewsData[indexPath.item]["clubName"] as? String ?? "error"
+            cell.dateLabel.text = DateFormatter.localizedString(from: date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
+            cell.titleLabel.text = clubNewsData[indexPath.item]["title"] as? String ?? "error"
+            cell.contentLabel.text = clubNewsData[indexPath.item]["content"] as? String ?? "error"
+            
+            //self.clubAnncHeight.constant = self.clubAnncView.contentSize.height + 10
+            
+            return cell
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -381,6 +465,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             if let docSnapshot = docSnapshot {
                 allUserFirebaseData.data = docSnapshot.data()!
                 self.getPicture(i: docSnapshot.data()!["profilePic"] as? Int ?? 0)
+                self.getClubAnncs()
             } else {
                 print("wow u dont exist")
             }

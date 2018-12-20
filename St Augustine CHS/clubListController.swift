@@ -410,8 +410,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                                     if let error = error {
                                         // Handle any errors
                                         let alert = UIAlertController(title: "Error in retrieveing some club images", message: "Please try again later. \(error.localizedDescription)", preferredStyle: .alert)
-                                        let okAction = UIAlertAction(title: "OK", style: .cancel) { (action:UIAlertAction) in
-                                        }
+                                        let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
                                         alert.addAction(okAction)
                                         self.present(alert, animated: true, completion: nil)
                                         print(error)

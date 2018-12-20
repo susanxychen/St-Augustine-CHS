@@ -20,26 +20,28 @@ class clubHeaderViewCell: UICollectionViewCell, UICollectionViewDataSource, UICo
     @IBOutlet weak var announcmentLabel: UILabel!
     
     @IBOutlet weak var badgesCollectionView: UICollectionView!
+    @IBOutlet weak var badgesCollectionHeight: NSLayoutConstraint!
+    
+    //Badges
+    var badgeData = [[String:Any]]()
+    var badgeImgs = [UIImage]()
     
     //***********************************FORMATTING THE BADGES*************************************
     //RETURN Badge COUNT
     //Make sure when you add collection view you add data source and delegate connections on storyboard
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 2
+        return badgeImgs.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "badge", for: indexPath) as! clubBadgeCell
-        if indexPath.item == 0 {
-            cell.badge.image = UIImage(named: "brackets")
-        } else if indexPath.item == 1 {
-            cell.badge.image = UIImage(named: "phone")
-        }
-        
+        cell.badge.image = badgeImgs[indexPath.item]
+        cell.badge.layer.cornerRadius = 100/2
+        cell.badge.clipsToBounds = true
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath.item)
+        print(badgeData[indexPath.item])
     }
 }

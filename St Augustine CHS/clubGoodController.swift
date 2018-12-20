@@ -56,8 +56,13 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     //Deleting images
     var allImageIDs = [String]()
     
+    //Badges
+    var badgeData = [[String:Any]]()
+    var badgeImgs = [UIImage]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         overlayView.frame = UIApplication.shared.keyWindow!.frame
         
         clubListDidUpdateClubDetails.clubAdminUpdatedData = false
@@ -119,7 +124,9 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             //Assign Buttons to Navigation Bar
             self.navigationItem.rightBarButtonItem = editDetailsBarbutton
         }
-               
+        
+        getBadgeDocs()
+        
         //Get club announcements if part of club
         if partOfClub {
             getClubAnnc()
@@ -151,6 +158,94 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         self.present(actionSheet, animated: true, completion: nil)
+    }
+    
+    //********************************BADGES*********************************
+    func getBadgeDocs(){
+        db.collection("badges").whereField("club", isEqualTo: clubID).getDocuments { (snap, err) in
+            if let err = err {
+                let alert = UIAlertController(title: "Error in retrieveing some club images", message: "Please try again later. \(err.localizedDescription)", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+            }
+            if snap != nil {
+                if snap!.documents.count > 0 {
+                    for _ in snap!.documents {
+                        self.badgeData.append(["err":"err"])
+                    }
+                    for x in 0...snap!.documents.count - 1 {
+                        let data = snap?.documents[x].data()
+                        self.badgeData[x] = data!
+                        if x == snap!.documents.count - 1 {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+                                print("Final Badge \(self.badgeData)")
+                                self.getBadgesImages()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func getBadgesImages() {
+        for _ in badgeData {
+            badgeImgs.append(UIImage(named: "snoo")!)
+        }
+        print(badgeData)
+        for i in 0...badgeImgs.count - 1 {
+            let name = badgeData[i]["img"] as? String ?? "Error"
+            //Image
+            let storage = Storage.storage()
+            let storageRef = storage.reference()
+            
+            // Create a reference to the file you want to download
+            let imgRef = storageRef.child("badges/\(name)")
+            
+            imgRef.getMetadata { (metadata, error) in
+                if let error = error {
+                    // Uh-oh, an error occurred!
+                    print("cant find image \(name)")
+                    print(error)
+                } else {
+                    // Metadata now contains the metadata for 'images/forest.jpg'
+                    if let metadata = metadata {
+                        let theMetaData = metadata.dictionaryRepresentation()
+                        let updated = theMetaData["updated"]
+                        
+                        if let updated = updated {
+                            if let savedImage = self.getSavedImage(named: "\(name)-\(updated)"){
+                                print("already saved \(name)-\(updated)")
+                                self.badgeImgs[i] = savedImage
+                            } else {
+                                // Create a reference to the file you want to download
+                                imgRef.downloadURL { url, error in
+                                    if error != nil {
+                                        //print(error)
+                                        print("cant find image \(name)")
+                                    } else {
+                                        // Get the download URL
+                                        var image: UIImage?
+                                        let data = try? Data(contentsOf: url!)
+                                        if let imageData = data {
+                                            image = UIImage(data: imageData)!
+                                            self.badgeImgs[i] = image!
+                                            self.clearImageFolder(imageName: "\(name)-\(updated)")
+                                            self.saveImageDocumentDirectory(image: image!, imageName: "\(name)-\(updated)")
+                                        }
+                                        print("i success now")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+            self.clubContoller.reloadData()
+        }
     }
     
     //*********************************EDITING ANNOUNCEMENT*********************************
@@ -538,6 +633,16 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as! clubHeaderViewCell
+            view.badgeData = badgeData
+            view.badgeImgs = badgeImgs
+            
+            if badgeImgs.count == 0 {
+                view.badgesCollectionHeight.constant = 0
+            } else {
+                view.badgesCollectionHeight.constant = 100
+            }
+            
+            view.badgesCollectionView.reloadData()
             
             //Put banner on bottom
             view.bringSubviewToFront(view.name)
@@ -609,8 +714,14 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             joinButtonSizeOrAnnouncmentTextSize = 55
         }
         
+        var badgeCV:CGFloat = 100
+        if badgeImgs.count == 0 {
+            badgeCV = 0
+        }
+        let finalHeight = estimatedFrameContent.height + estimatedFrameTitle.height + joinButtonSizeOrAnnouncmentTextSize + badgeCV + 310
+        
         //Also add the height of the picture and the announcements and the space inbetween
-        return CGSize(width: view.frame.width, height: estimatedFrameContent.height + estimatedFrameTitle.height + 150 + joinButtonSizeOrAnnouncmentTextSize + 100 + 30 + 130)
+        return CGSize(width: view.frame.width, height: finalHeight)
         
     }
     
@@ -718,6 +829,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             if let document = document, document.exists {
                 self.clubData = document.data()!
                 self.navigationItem.title = self.clubData["name"] as? String
+                self.getBadgeDocs()
                 self.getClubAnnc()
                 self.getClubBanner()
             } else {
@@ -811,6 +923,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             //See if u have to go into edit mode and set defaults
             if isEditingAnnc {
                 vc.editMode = true
+                vc.clubName = (clubData["name"] as? String)!
                 vc.currentAnncID = theCurrentAnncID
                 vc.editTitle = theCurrentAnncTitle
                 vc.editDesc = theCurrentAnncDesc
