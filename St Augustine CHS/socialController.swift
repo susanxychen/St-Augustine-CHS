@@ -44,7 +44,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     
     //Badges
     @IBOutlet weak var badgesCollectionView: UICollectionView!
-    @IBOutlet weak var addBadgeButton: UIButton!
+    @IBOutlet weak var badgeCollectionViewHeight: NSLayoutConstraint!
     let badgeCollectionIdentifier = "badge"
     var badgeData = [[String: Any]]()
     var badgeImgs = [UIImage]()
@@ -52,7 +52,6 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     //Clubs
     @IBOutlet weak var clubsCollectionView: UICollectionView!
     @IBOutlet weak var clubCollectionViewHeight: NSLayoutConstraint!
-    @IBOutlet weak var addClubButton: UIButton!
     let clubCollectionIdentifier = "club"
     
     //Segue Data
@@ -154,7 +153,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         //Get the preexisting data from the menu controller
         if allUserFirebaseData.data.count != 0 && !forceRefresh {
             self.userData = allUserFirebaseData.data
-            self.getBadgeDocs()
+            self.getBadgeDocs(theData: allUserFirebaseData.data)
             self.userCourses = allUserFirebaseData.data["classes"] as! [String]
             let clubIDRefs = allUserFirebaseData.data["clubs"] as! [String]
             self.getClubData(clubIDRefs: clubIDRefs)
@@ -164,7 +163,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
                 if let docSnapshot = docSnapshot {
                     self.userData = docSnapshot.data()!
-                    self.getBadgeDocs()
+                    self.getBadgeDocs(theData: allUserFirebaseData.data)
                     self.userCourses = self.userData["classes"] as! [String]
                     let clubIDRefs = self.userData["clubs"] as! [String]
                     self.getClubData(clubIDRefs: clubIDRefs)
@@ -175,12 +174,21 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         }
     }
     
-    func getBadgeDocs(){
-        for _ in allUserFirebaseData.data["badges"] as! [String] {
+    func getBadgeDocs(theData: [String:Any]){
+        badgeData.removeAll()
+        badgeImgs.removeAll()
+        if (theData["badges"] as! [String]).count == 0 {
+            badgeCollectionViewHeight.constant = 0
+            badgesCollectionView.reloadData()
+            return
+        } else {
+            badgeCollectionViewHeight.constant = 133
+        }
+        for _ in theData["badges"] as! [String] {
             badgeData.append(["err":"err"])
         }
-        for x in 0...(allUserFirebaseData.data["badges"] as! [String]).count - 1 {
-            let id = (allUserFirebaseData.data["badges"] as! [String])[x]
+        for x in 0...(theData["badges"] as! [String]).count - 1 {
+            let id = (theData["badges"] as! [String])[x]
             db.collection("badges").document(id).getDocument { (snap, err) in
                 if let err = err {
                     let alert = UIAlertController(title: "Error in retrieveing some club images", message: "Please try again later. \(err.localizedDescription)", preferredStyle: .alert)
@@ -192,7 +200,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                     self.badgeData[x] = snap.data()!
                 }
                 
-                if x == (allUserFirebaseData.data["badges"] as! [String]).count - 1 {
+                if x == (theData["badges"] as! [String]).count - 1 {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
                         self.getBadgesImages()
                     }
@@ -350,6 +358,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                     if i == clubIDRefs.count-1{
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                             print(self.userClubIDs)
+                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                             self.clubCollectionViewHeight.constant = 275
                             self.clubsCollectionView.reloadData()
                         }
@@ -358,6 +367,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             }
         } else {
             clubCollectionViewHeight.constant = 0
+            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
             clubsCollectionView.reloadData()
         }
     }
@@ -414,6 +424,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
             } else {
+                self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                 //Search the database
                 db.collection("users").whereField("email", isEqualTo: userInput).getDocuments { (querySnapshot, err) in
                     if let err = err {
@@ -422,6 +433,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                         alert.addAction(okAction)
                         self.present(alert, animated: true, completion: nil)
                         print("error in getting doucments: \(err)")
+                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                     } else {
                         //Query Snapshot [] is empty if nothing in the database matches what the user typed in
                         if querySnapshot!.documents.count == 0 {
@@ -429,6 +441,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                             alert.addAction(okAction)
                             self.present(alert, animated: true, completion: nil)
+                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                         }
                         for document in querySnapshot!.documents{
                             //Check if there is no possible user
@@ -450,6 +463,9 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                 
                                 //Name
                                 self.usersFullName.text = requestedStudentData["name"] as? String ?? "Error Occured"
+                                
+                                //Badges
+                                self.getBadgeDocs(theData: requestedStudentData)
                                 
                                 //Classes
                                 if requestedStudentData["showClasses"] as! Bool {
@@ -495,6 +511,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                     self.clubsCollectionView.isUserInteractionEnabled = false
                                     self.userClubNames = ["Student has chosen not to share clubs"]
                                     self.userClubIDs = ["nice"]
+                                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                                     self.clubsCollectionView.reloadData()
                                 }
                                 
@@ -503,6 +520,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                                 alert.addAction(okAction)
                                 self.present(alert, animated: true, completion: nil)
+                                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                             }
                         }
                     }
@@ -575,7 +593,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
             
             //Check if the user is part of club
-            if (allUserFirebaseData.data["clubs"] as! [String]).contains(userClubIDs[indexPath.item]) {
+            if (allUserFirebaseData.data["clubs"] as! [String]).contains(userClubIDs[indexPath.item]) || allUserFirebaseData.data["status"] as! Int == 2 {
                 print("yeah part of club")
                 partOfClub = true
             } else {
@@ -691,11 +709,11 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         case 1:
             //Get all information for the club
             let vc = segue.destination as! clubGoodController
-            
             vc.clubData = clubData
             vc.partOfClub = partOfClub
             vc.banImage = clubImage
             vc.clubID = clubID
+            vc.cameFromSocialPage = true
             break
         case 3:
             //Profile pics

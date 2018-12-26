@@ -220,7 +220,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
         clubRef.setData([
             "desc": newClubDesc,
             "name": newClubName,
-            "canJoin": clubJoinSetting
+            "joinPref": clubJoinSetting
         ], merge: true) { (err) in
             if let err = err {
                 let alert = UIAlertController(title: "Error in updating Club", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)

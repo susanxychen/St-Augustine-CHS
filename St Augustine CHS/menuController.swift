@@ -161,8 +161,11 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             }
         } else{
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//                self.viewAboveAllViews.removeFromSuperview()
+//                self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
+                print("new user! take em through the sign in flow")
                 self.viewAboveAllViews.removeFromSuperview()
-                self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
+                self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
             }
         }
     }
@@ -182,7 +185,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //News Data
         newsTask()
         
-        annoucView.alwaysBounceVertical = true
+        homeScrollView.alwaysBounceVertical = true
         
         //Set Up
         // [START setup]
@@ -255,6 +258,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func getClubAnncs(){
+        clubNewsData.removeAll()
         for club in allUserFirebaseData.data["clubs"] as! [String] {
             db.collection("announcements").whereField("club", isEqualTo: club).getDocuments { (snap, err) in
                 if let err = err {
@@ -349,19 +353,20 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == clubAnncView {
+            let theFont = UIFont(name: "Scada-Regular", size: 17)
             //Dynamically change the cell size depending on the announcement length
             let size = CGSize(width: view.frame.width, height: 1000)
-            
             //Get an approximation of the title size
-            let attributesTitle = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
-            let estimatedFrameTitle = NSString(string: clubNewsData[indexPath.item]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
+            let attributesTitle = [NSAttributedString.Key.font: theFont]
+            let estimatedFrameTitle = NSString(string: clubNewsData[indexPath.item]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle as [NSAttributedString.Key : Any], context: nil)
             
             //Get an approximation of the description size
-            let attributesContent = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
-            let estimatedFrameContent = NSString(string: clubNewsData[indexPath.item]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
+            let attributesContent = [NSAttributedString.Key.font: theFont]
+            let estimatedFrameContent = NSString(string: clubNewsData[indexPath.item]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent as [NSAttributedString.Key : Any], context: nil)
+            let theHeight = estimatedFrameContent.height + estimatedFrameTitle.height + 110
             
             //Also add the height of the picture and the announcements and the space inbetween
-            return CGSize(width: view.frame.width, height: estimatedFrameContent.height + estimatedFrameTitle.height + 100)
+            return CGSize(width: view.frame.width, height: theHeight)
         } else {
             //Dynamically change the cell size depending on the announcement length
             let approxWidthOfAnnouncementTextView = view.frame.width
@@ -436,7 +441,14 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             cell.titleLabel.text = clubNewsData[indexPath.item]["title"] as? String ?? "error"
             cell.contentLabel.text = clubNewsData[indexPath.item]["content"] as? String ?? "error"
             
-            //self.clubAnncHeight.constant = self.clubAnncView.contentSize.height + 10
+            let theFont = UIFont(name: "Scada-Regular", size: 17)
+            let size = CGSize(width: view.frame.width, height: 1000)
+            let attributesContent = [NSAttributedString.Key.font: theFont]
+            let estimatedFrameContent = NSString(string: clubNewsData[indexPath.item]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent as [NSAttributedString.Key : Any], context: nil)
+            cell.contentHeight.constant = estimatedFrameContent.height + 20
+            
+            let estimatedtitleContent = NSString(string: clubNewsData[indexPath.item]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent as [NSAttributedString.Key : Any], context: nil)
+            cell.titleHeight.constant = estimatedtitleContent.height + 20
             
             return cell
         }

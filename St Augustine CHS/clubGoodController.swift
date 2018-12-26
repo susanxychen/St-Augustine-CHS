@@ -60,6 +60,12 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     var badgeData = [[String:Any]]()
     var badgeImgs = [UIImage]()
     
+    //Refreshing
+    //Returning to club vars
+    var joinedANewClubBlock : ((Bool) -> Void)?
+    
+    var cameFromSocialPage = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -68,7 +74,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         clubListDidUpdateClubDetails.clubAdminUpdatedData = false
         
         //Check join status
-        if clubData["canJoin"] as! Int == 0 {
+        if clubData["joinPref"] as! Int == 0 {
             acceptingJoinRequests = false
         } else {
             acceptingJoinRequests = true
@@ -96,7 +102,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         
         let user = Auth.auth().currentUser
         //********CHECK IF USER IS ADMIN*******
-        if (clubData["admins"] as! [String]).contains((user?.uid)!){
+        if ((clubData["admins"] as! [String]).contains((user?.uid)!) || allUserFirebaseData.data["status"] as! Int == 2){
             isClubAdmin = true
         } else {
             isClubAdmin = false
@@ -125,19 +131,49 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             self.navigationItem.rightBarButtonItem = editDetailsBarbutton
         }
         
+        print(clubID)
         getBadgeDocs()
         
         //Get club announcements if part of club
-        if partOfClub {
+        if partOfClub || allUserFirebaseData.data["status"] as! Int == 2 {
             getClubAnnc()
         }
     }
     
     //**********************JOINING CLUBS***********************
     @objc func joinButtonTapped(sender: UIButton){
-        let joinStatus = clubData["canJoin"] as! Int
+        let joinStatus = clubData["joinPref"] as! Int
         print("wow u want to join the best club. Join status \(joinStatus)")
         
+        if joinStatus == 2 {
+            //Update the club members array
+            let clubRef = self.db.collection("clubs").document(clubID)
+            clubRef.updateData(["members": FieldValue.arrayUnion([Auth.auth().currentUser?.uid as Any])])
+            
+            //Update the picsOwned array
+            let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+            userRef.updateData(["clubs": FieldValue.arrayUnion([clubID])])
+            
+            var ref = allUserFirebaseData.data["clubs"] as! [String]
+            allUserFirebaseData.data["clubs"] = ref.append(clubID)
+
+            let user = Auth.auth().currentUser
+            db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                if let docSnapshot = docSnapshot {
+                    self.partOfClub = true
+                    allUserFirebaseData.data = docSnapshot.data()!
+                    
+                    if !self.cameFromSocialPage {
+                        self.joinedANewClubBlock?(true)
+                    }
+                    
+                    self.refreshList()
+                } else {
+                    print("wow u dont exist")
+                }
+            }
+            
+        }
     }
     
     @objc func clubSettings(sender: Any) {
@@ -162,6 +198,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     
     //********************************BADGES*********************************
     func getBadgeDocs(){
+        badgeData.removeAll()
         db.collection("badges").whereField("club", isEqualTo: clubID).getDocuments { (snap, err) in
             if let err = err {
                 let alert = UIAlertController(title: "Error in retrieveing some club images", message: "Please try again later. \(err.localizedDescription)", preferredStyle: .alert)
@@ -170,8 +207,10 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                 self.present(alert, animated: true, completion: nil)
             }
             if snap != nil {
+                print(snap!.documents.count)
                 if snap!.documents.count > 0 {
                     for _ in snap!.documents {
+                        print("appending")
                         self.badgeData.append(["err":"err"])
                     }
                     for x in 0...snap!.documents.count - 1 {
@@ -179,7 +218,6 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                         self.badgeData[x] = data!
                         if x == snap!.documents.count - 1 {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
-                                print("Final Badge \(self.badgeData)")
                                 self.getBadgesImages()
                             }
                         }
@@ -190,10 +228,12 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     func getBadgesImages() {
+        badgeImgs.removeAll()
         for _ in badgeData {
             badgeImgs.append(UIImage(named: "snoo")!)
         }
-        print(badgeData)
+//        print(badgeData)
+//        print(badgeImgs)
         for i in 0...badgeImgs.count - 1 {
             let name = badgeData[i]["img"] as? String ?? "Error"
             //Image
@@ -893,7 +933,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         //selectedAnnc = indexPath.item
         print("im gonna show the announcment number \(String(describing: indexPath.item))")
-        print(anncImgs)
+        //print(anncImgs)
     }
     
     //****************************PREPARE FOR SEGUE*****************************
@@ -905,7 +945,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             vc.clubBannerImage = banImage
             vc.clubName = clubData["name"] as? String
             vc.clubDesc = clubData["desc"] as? String
-            vc.clubJoinSetting = clubData["canJoin"] as? Int
+            vc.clubJoinSetting = clubData["joinPref"] as? Int
             vc.clubBannerID = clubData["img"] as? String
             vc.clubID = clubID
             
@@ -923,13 +963,13 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             //See if u have to go into edit mode and set defaults
             if isEditingAnnc {
                 vc.editMode = true
-                vc.clubName = (clubData["name"] as? String)!
                 vc.currentAnncID = theCurrentAnncID
                 vc.editTitle = theCurrentAnncTitle
                 vc.editDesc = theCurrentAnncDesc
                 vc.editImage = theCurrentAnncImg
                 vc.editImageName = theCurrentAnncImgName
             }
+            vc.clubName = (clubData["name"] as? String)!
             
             //Refresh the data when coming back after posting to get new announcements 
             vc.onDoneBlock = { result in

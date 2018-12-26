@@ -13,6 +13,7 @@ pod 'Firebase/Database'
 pod 'Firebase/Firestore'
 pod 'Firebase/Storage'
 pod 'Firebase/Functions'
+pod 'Firebase/Messaging'
 # pod 'Firebase/MLVision'
 # pod 'Firebase/MLVisionTextModel'
 

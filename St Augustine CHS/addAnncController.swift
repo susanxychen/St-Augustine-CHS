@@ -74,10 +74,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
         //Hide keyboard when tapped out
         self.hideKeyboardWhenTappedAround()
         
-        //Add a drop shadow
-        //Drop Shadow
-        //topBar.layer.shadowOpacity = 1
-        //topBar.layer.shadowRadius = 3
+        print(clubName)
         
         //If in edit mode, set it to edit mode
         if editMode {

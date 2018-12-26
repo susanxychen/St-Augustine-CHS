@@ -121,7 +121,6 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        print(clubListDidUpdateClubDetails.clubAdminUpdatedData)
         if clubListDidUpdateClubDetails.clubAdminUpdatedData {
             print("refrshing clubList after editing data somewhere")
             showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
@@ -472,6 +471,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
             clubsYouAreNotPartOf.remove(at: indexesToRemove)
             banners.remove(at: indexesToRemove)
             clubNames.remove(at: indexesToRemove)
+            clubIDs.remove(at: indexesToRemove)
             
             self.clubsYouAreNotAPartOf = clubsYouAreNotPartOf
             
@@ -606,7 +606,17 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                 vc.clubData = self.clubsYouAreNotAPartOf[self.selectedClub]
                 vc.partOfClub = false
                 vc.banImage = banners[selectedClub]
+                print(clubIDs)
                 vc.clubID = clubIDs[selectedClub]
+                vc.joinedANewClubBlock = { result in
+                    self.viewingPersonalClubs = true
+                    self.didNotDownloadData = true
+                    self.allClubsData.removeAll()
+                    self.clubNames.removeAll()
+                    self.banners = [self.tempImg] as! [UIImage]
+                    self.clubIDs.removeAll()
+                    self.refreshList()
+                }
             }
         }
     }
