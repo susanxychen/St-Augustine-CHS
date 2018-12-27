@@ -1,11 +1,10 @@
 const https = require('https');
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const nodemailer = require('nodemailer');
 admin.initializeApp({ credential: admin.credential.applicationDefault()});
 const settings = {timestampsInSnapshots: true};
 admin.firestore().settings(settings);
-
-
 
 //The Edit Votes Function
 exports.changeVote = functions.https.onCall((data, context) => {
@@ -46,6 +45,66 @@ exports.changeVote = functions.https.onCall((data, context) => {
         console.log(error);
         response.status(500).send(error);
     });
+});
+
+// const gmailEmail = functions.config().gmail.email;
+// const gmailPassword = functions.config().gmail.password;
+// const mailTransport = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: gmailEmail,
+//     pass: gmailPassword,
+//   },
+// });
+
+exports.sendEmailToAdmins = functions.https.onCall((data, context) => {
+    const adminIDArr = data.adminIDArr;
+    const userEmail = data.userEmail;
+    const clubName = data.clubName;
+    const adminEmails = []
+
+    //Convert ids to emails
+    for (let i = 0; i < adminIDArr.length; i++){
+        admin.firestore().doc('users/' + adminIDArr[i]).get()
+        .then(doc => {
+            if (!doc.exists) {
+                console.log('No such document!');
+                return 'Error';
+            } else {
+                let theAdminEmail = '';
+                theAdminEmail = doc.data().email;
+                console.log(theAdminEmail);
+                var transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: 'sachsappteam@gmail.com',
+                        pass: 'takecompsciyoun00bs'
+                    }
+                });
+                    
+                var mailOptions = {
+                    from: '"The App Team" <sachsappteam@gmail.com>',
+                    to: theAdminEmail,
+                    subject: clubName + ' Join Request',
+                    text: userEmail + ' would like to join ' + clubName
+                };
+                    
+                transporter.sendMail(mailOptions, (error, info) =>{
+                    if (error) {
+                        console.log(error);
+                        response.send('Error!')
+                    } else {
+                        console.log('Email sent: ' + info.response);
+                        response.send('Success!');
+                    }
+                });
+                return theAdminEmail;
+            }
+        })
+        .catch(err => {
+            console.log('Error getting document', err);
+        });
+    }
 });
 
 // exports.changeSpiritPointsHTTP = functions.https.onRequest((request, response) => {
@@ -188,6 +247,33 @@ exports.deleteTopSongs = functions.https.onRequest((request, response) => {
             response.status(500).send(error);
         })
 });
+
+// exports.sendEmailTest = functions.https.onRequest((request, response) => {
+//     var transporter = nodemailer.createTransport({
+//         service: 'gmail',
+//         auth: {
+//           user: 'sachsappteam@gmail.com',
+//           pass: 'takecompsciyoun00bs'
+//         }
+//       });
+      
+//       var mailOptions = {
+//         from: '"The App Team" <sachsappteam@gmail.com>',
+//         to: 'kenny.miu19@ycdsbk12.ca',
+//         subject: 'Sending Email using Node.js',
+//         text: 'That was easy!'
+//       };
+      
+//       transporter.sendMail(mailOptions, (error, info) =>{
+//         if (error) {
+//           console.log(error);
+//           response.send('Error!')
+//         } else {
+//           console.log('Email sent: ' + info.response);
+//           response.send('Success!');
+//         }
+//       });
+// });
 
 exports.getDayNumber = functions.https.onRequest((request, response) => {
     https.get({

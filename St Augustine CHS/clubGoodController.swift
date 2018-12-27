@@ -14,6 +14,9 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     //Filler
     var fillerBanImage = UIImage(named: "space")
     
+    //Cloud Functions
+    lazy var functions = Functions.functions()
+    
     //The Database
     var db: Firestore!
     var docRef: DocumentReference!
@@ -44,6 +47,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     //Part of Club or not Variables
     var partOfClub = true
     var acceptingJoinRequests = true
+    var joinedTheClubPressed = false
     
     //Admin edit var
     @IBOutlet weak var editClubDetailsButton: UIButton!
@@ -73,16 +77,6 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         
         clubListDidUpdateClubDetails.clubAdminUpdatedData = false
         
-        //Check join status
-        if clubData["joinPref"] as! Int == 0 {
-            acceptingJoinRequests = false
-        } else {
-            acceptingJoinRequests = true
-        }
-        
-        //Set the view controller title to the club's name
-        self.navigationItem.title = clubData["name"] as? String
-        
         //Allow refreshing anytime
         clubContoller.alwaysBounceVertical = true
         
@@ -97,15 +91,45 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         //Add Refresh Control
         addRefreshControl()
         
-        //The announcements
-        //anncRef = clubData["announcements"] as? [String] ?? []
+        print(clubID)
+        getClubSettingsInfo()
+        getBadgeDocs()
         
-        let user = Auth.auth().currentUser
+        //Get club announcements if part of club
+        if partOfClub || allUserFirebaseData.data["status"] as! Int == 2 {
+            getClubAnnc()
+        }
+    }
+    
+    func getClubSettingsInfo(){
+        //Set the view controller title to the club's name
+        self.navigationItem.title = clubData["name"] as? String
+        
+        let user = Auth.auth().currentUser!
         //********CHECK IF USER IS ADMIN*******
-        if ((clubData["admins"] as! [String]).contains((user?.uid)!) || allUserFirebaseData.data["status"] as! Int == 2){
+        if ((clubData["admins"] as! [String]).contains(user.uid) || allUserFirebaseData.data["status"] as! Int == 2){
             isClubAdmin = true
         } else {
             isClubAdmin = false
+        }
+        //Check join status
+        if clubData["joinPref"] as! Int == 0 {
+            acceptingJoinRequests = false
+        } else {
+            acceptingJoinRequests = true
+        }
+        //Stop user from spamming the request button
+        if (clubData["pending"] as! [String]).contains(user.uid) {
+            acceptingJoinRequests = false
+        }
+        //But also make it back open again if its just purely open
+        if clubData["joinPref"] as! Int == 2 {
+            acceptingJoinRequests = true
+        }
+        //And also just flat disable the button if the user pressed join to prevent spam
+        //honestly probably dont need this but u know what im tired its 12 and im on vacation
+        if joinedTheClubPressed {
+            acceptingJoinRequests = false
         }
         
         //*********************CLUB ADMIN PERMS********************
@@ -130,22 +154,39 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             //Assign Buttons to Navigation Bar
             self.navigationItem.rightBarButtonItem = editDetailsBarbutton
         }
-        
-        print(clubID)
-        getBadgeDocs()
-        
-        //Get club announcements if part of club
-        if partOfClub || allUserFirebaseData.data["status"] as! Int == 2 {
-            getClubAnnc()
-        }
     }
     
     //**********************JOINING CLUBS***********************
     @objc func joinButtonTapped(sender: UIButton){
         let joinStatus = clubData["joinPref"] as! Int
         print("wow u want to join the best club. Join status \(joinStatus)")
+        clubListDidUpdateClubDetails.clubAdminUpdatedData = true
         
-        if joinStatus == 2 {
+        if joinStatus == 1 {
+            self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+            let user = Auth.auth().currentUser!
+            functions.httpsCallable("sendEmailToAdmins").call(["adminIDArr": clubData["admins"], "userEmail": user.email, "clubName": clubData["name"]]) { (result, error) in
+                if let error = error as NSError? {
+                    if error.domain == FunctionsErrorDomain {
+                        let code = FunctionsErrorCode(rawValue: error.code)
+                        let message = error.localizedDescription
+                        let details = error.userInfo[FunctionsErrorDetailsKey]
+                        print(code as Any)
+                        print(message)
+                        print(details as Any)
+                    }
+                }
+                print("Email sent to admins")
+                print("Result is: \(String(describing: result?.data))")
+            }
+            //Update the club members array
+            let clubRef = self.db.collection("clubs").document(clubID)
+            clubRef.updateData(["pending": FieldValue.arrayUnion([Auth.auth().currentUser?.uid as Any])])
+            joinedTheClubPressed = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.refreshList()
+            }
+        } else if joinStatus == 2 {
             //Update the club members array
             let clubRef = self.db.collection("clubs").document(clubID)
             clubRef.updateData(["members": FieldValue.arrayUnion([Auth.auth().currentUser?.uid as Any])])
@@ -855,6 +896,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     
     @objc func refreshList(){
         print("I refreshed stuff")
+         self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
         //Wipe all data
         clubData.removeAll()
         //Get Club Data
@@ -865,13 +907,21 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
+                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
             }
             if let document = document, document.exists {
                 self.clubData = document.data()!
-                self.navigationItem.title = self.clubData["name"] as? String
+                self.getClubSettingsInfo()
                 self.getBadgeDocs()
-                self.getClubAnnc()
                 self.getClubBanner()
+                if self.partOfClub || allUserFirebaseData.data["status"] as! Int == 2 {
+                    self.getClubAnnc()
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    self.clubContoller.reloadData()
+                    self.refreshControl?.endRefreshing()
+                })
             } else {
                 print("Document does not exist")
             }
