@@ -42,6 +42,11 @@ class clubHeaderViewCell: UICollectionViewCell, UICollectionViewDataSource, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let alert = UIAlertController(title: badgeData[indexPath.item]["desc"] as? String, message: nil, preferredStyle: .alert)
+        alert.addImage(image: badgeImgs[indexPath.item])
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(okAction)
+        UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
         print(badgeData[indexPath.item])
     }
 }

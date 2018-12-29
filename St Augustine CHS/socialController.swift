@@ -211,7 +211,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     
     func getBadgesImages() {
         for _ in badgeData {
-            badgeImgs.append(UIImage(named: "snoo")!)
+            badgeImgs.append(UIImage())
         }
         for i in 0...badgeImgs.count - 1 {
             let name = badgeData[i]["img"] as? String ?? "Error"

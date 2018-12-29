@@ -23,7 +23,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
     var db: Firestore!
     var docRef: DocumentReference!
     
-    let tempImg = UIImage(named: "space")
+    let tempImg = UIImage()
     var clubNames = [String]()
     let clubs = [String]()
     var banners = [UIImage]()
@@ -197,7 +197,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                         //Check to see if there are more than 1 club. Make array size equal to number of clubs
                         counterTemp += 1
                         if self.personalClubBanners.count < counterTemp {
-                            self.personalClubBanners.append(self.tempImg!)
+                            self.personalClubBanners.append(self.tempImg)
                         }
                     } else {
                         print("Document does not exist")
@@ -241,7 +241,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                     //Check to see if there are more than 1 club. Make array size equal to number of clubs
                     counterTemp += 1
                     if self.banners.count < counterTemp {
-                        self.banners.append(self.tempImg!)
+                        self.banners.append(self.tempImg)
                     }
                 }
                 print("just finsihed names")

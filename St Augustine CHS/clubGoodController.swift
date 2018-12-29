@@ -12,7 +12,7 @@ import Firebase
 class clubGoodController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     //Filler
-    var fillerBanImage = UIImage(named: "space")
+    var fillerBanImage = UIImage()
     
     //Cloud Functions
     lazy var functions = Functions.functions()
@@ -31,7 +31,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     var anncImgs = [UIImage]()
     
     //Error Handling Vars
-    var snooImgFiller = UIImage(named: "snoo")
+    var snooImgFiller = UIImage()
     
     @IBOutlet weak var clubContoller: UICollectionView!
     @IBOutlet weak var addAnncButton: UIButton!
@@ -64,7 +64,12 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     var badgeData = [[String:Any]]()
     var badgeImgs = [UIImage]()
     
-    //Refreshing
+    //Pending
+    @IBOutlet weak var pendingButton: UIButton!
+    
+    //Member List
+    @IBOutlet weak var memberList: UIButton!
+    
     //Returning to club vars
     var joinedANewClubBlock : ((Bool) -> Void)?
     
@@ -132,7 +137,6 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             acceptingJoinRequests = false
         }
         
-        //*********************CLUB ADMIN PERMS********************
         if isClubAdmin {
             //Long Press Gesture Recognizer
             //let lpgr = UILongPressGestureRecognizer(target: self, action: #selector(clubGoodController.handleLongPress))
@@ -141,19 +145,19 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             //lpgr.delegate = self as? UIGestureRecognizerDelegate
             lpgr.delaysTouchesBegan = true
             self.clubContoller.addGestureRecognizer(lpgr)
-            
-            //*****************EDIT CLUB DETAILS BUTTON******************
-            let editClubDeailsButton = UIButton(type: .custom)
-            editClubDeailsButton.setImage(UIImage(named: "3Dots"), for: .normal)
-            //add function for button
-            editClubDeailsButton.addTarget(self, action: #selector(clubSettings), for: .touchUpInside)
-            editClubDeailsButton.frame = CGRect(x: 0, y: 0, width: 48, height: 48)
-            
-            let editDetailsBarbutton = UIBarButtonItem(customView: editClubDeailsButton)
-            
-            //Assign Buttons to Navigation Bar
-            self.navigationItem.rightBarButtonItem = editDetailsBarbutton
         }
+        
+        //*****************EDIT CLUB DETAILS BUTTON******************
+        let editClubDeailsButton = UIButton(type: .custom)
+        editClubDeailsButton.setImage(UIImage(named: "3Dots"), for: .normal)
+        //add function for button
+        editClubDeailsButton.addTarget(self, action: #selector(clubSettings), for: .touchUpInside)
+        editClubDeailsButton.frame = CGRect(x: 0, y: 0, width: 48, height: 48)
+        
+        let editDetailsBarbutton = UIBarButtonItem(customView: editClubDeailsButton)
+        
+        //Assign Buttons to Navigation Bar
+        self.navigationItem.rightBarButtonItem = editDetailsBarbutton
     }
     
     //**********************JOINING CLUBS***********************
@@ -191,7 +195,6 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             let clubRef = self.db.collection("clubs").document(clubID)
             clubRef.updateData(["members": FieldValue.arrayUnion([Auth.auth().currentUser?.uid as Any])])
             
-            //Update the picsOwned array
             let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
             userRef.updateData(["clubs": FieldValue.arrayUnion([clubID])])
             
@@ -203,11 +206,9 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                 if let docSnapshot = docSnapshot {
                     self.partOfClub = true
                     allUserFirebaseData.data = docSnapshot.data()!
-                    
                     if !self.cameFromSocialPage {
                         self.joinedANewClubBlock?(true)
                     }
-                    
                     self.refreshList()
                 } else {
                     print("wow u dont exist")
@@ -220,20 +221,33 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     @objc func clubSettings(sender: Any) {
         //Set up the action sheet options
         let actionSheet = UIAlertController(title: "Choose an Option", message: nil, preferredStyle: .actionSheet)
-        actionSheet.addAction(UIAlertAction(title: "Edit Club Details", style: .default, handler: { (action:UIAlertAction) in
-            print("edit")
-            self.segueNum = 0
-            self.performSegue(withIdentifier: "editClubDetails", sender: self.editClubDetailsButton)
-        }))
-        actionSheet.addAction(UIAlertAction(title: "Add Announcement", style: .default, handler: { (action:UIAlertAction) in
-            print("add")
-            self.isEditingAnnc = false
-            self.segueNum = 1
-            self.performSegue(withIdentifier: "addAnnc", sender: self.addAnncButton)
-        }))
         
+        //************CLUB ADMIN PRIVLAGES************
+        if isClubAdmin {
+            actionSheet.addAction(UIAlertAction(title: "Edit Club Details", style: .default, handler: { (action:UIAlertAction) in
+                print("edit")
+                self.segueNum = 0
+                self.performSegue(withIdentifier: "editClubDetails", sender: self.editClubDetailsButton)
+            }))
+            actionSheet.addAction(UIAlertAction(title: "Add Announcement", style: .default, handler: { (action:UIAlertAction) in
+                print("add")
+                self.isEditingAnnc = false
+                self.segueNum = 1
+                self.performSegue(withIdentifier: "addAnnc", sender: self.addAnncButton)
+            }))
+            actionSheet.addAction(UIAlertAction(title: "View Pending List", style: .default, handler: { (action:UIAlertAction) in
+                print("pendingt")
+                self.segueNum = 2
+                self.performSegue(withIdentifier: "viewPending", sender: self.pendingButton)
+            }))
+        }
+        //************ALL MEMBERS PRIVLAGES************
+        actionSheet.addAction(UIAlertAction(title: "View Members and Admins", style: .default, handler: { (action:UIAlertAction) in
+            print("list")
+            self.segueNum = 3
+            self.performSegue(withIdentifier: "viewMembers", sender: self.memberList)
+        }))
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
         self.present(actionSheet, animated: true, completion: nil)
     }
     
@@ -271,7 +285,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     func getBadgesImages() {
         badgeImgs.removeAll()
         for _ in badgeData {
-            badgeImgs.append(UIImage(named: "snoo")!)
+            badgeImgs.append(UIImage())
         }
 //        print(badgeData)
 //        print(badgeImgs)
@@ -326,6 +340,9 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
             self.clubContoller.reloadData()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
+                self.clubContoller.reloadData()
+            }
         }
     }
     
@@ -374,12 +391,6 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                         print("Deleted the annc");
                         self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                         let theDeleteAnncID = self.anncRef[indexPath.item]
-                        
-//                        //Remove the Announcement from the club annc array
-//                        let anncRef = self.db.collection("clubs").document(self.clubID)
-//                        anncRef.updateData([
-//                            "announcements" : FieldValue.arrayRemove([theDeleteAnncID])
-//                        ])
                         
                         //Remove the announcement document
                         self.db.collection("announcements").document(theDeleteAnncID).delete() { err in
@@ -501,7 +512,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
 
     func sortAnncByDate () {
         for _ in anncRef {
-            anncImgs.append(snooImgFiller!)
+            anncImgs.append(snooImgFiller)
         }
         //print(anncData)
         if anncData.count > 2 {
@@ -575,7 +586,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                     if let error = error {
                         // Uh-oh, an error occurred!
                         self.anncData[i]["img"] = ""
-                        self.anncImgs[i] = self.snooImgFiller!
+                        self.anncImgs[i] = self.snooImgFiller
                         print(error)
                     } else {
                         // Metadata now contains the metadata for 'images/forest.jpg'
@@ -594,7 +605,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                                             //print(error)
                                             print("cant find image \(imageName) + \(self.anncData[i])")
                                             self.anncData[i]["img"] = ""
-                                            self.anncImgs[i] = self.snooImgFiller!
+                                            self.anncImgs[i] = self.snooImgFiller
                                         } else {
                                             // Get the download URL
                                             var image: UIImage?
@@ -614,7 +625,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                     }
                 }
             } else {
-                self.anncImgs[i] = self.snooImgFiller!
+                self.anncImgs[i] = self.snooImgFiller
             }
         }
         
@@ -779,11 +790,11 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         
         //Get an approximation of the title size
         let attributesTitle = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 23)]
-        let estimatedFrameTitle = NSString(string: clubData["name"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
+        let estimatedFrameTitle = NSString(string: clubData["name"] as? String ?? "Error").boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
         
         //Get an approximation of the description size
         let attributesContent = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
-        let estimatedFrameContent = NSString(string: clubData["desc"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
+        let estimatedFrameContent = NSString(string: clubData["desc"] as? String ?? "Error").boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
         
         var joinButtonSizeOrAnnouncmentTextSize: CGFloat
         
@@ -998,6 +1009,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             vc.clubJoinSetting = clubData["joinPref"] as? Int
             vc.clubBannerID = clubData["img"] as? String
             vc.clubID = clubID
+            vc.pendingList = clubData["pending"] as! [String]
             
             //Refresh the club details to get new banners and other stuff!!!
             vc.onDoneBlock = { result in
@@ -1028,6 +1040,25 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                 self.refreshList()
             }
             break
+        case 2:
+            let vc = segue.destination as! clubPendingController
+            vc.pendingList = clubData["pending"] as? [String] ?? ["Error!"]
+            vc.clubID = clubID
+            vc.changedPendingList = { result in
+                clubListDidUpdateClubDetails.clubAdminUpdatedData = true
+                self.refreshList()
+            }
+            break
+        case 3:
+            let vc = segue.destination as! clubMembersController
+            vc.adminsList = clubData["admins"] as? [String] ?? ["Error!"]
+            vc.membersList = clubData["members"] as? [String] ?? ["Error!"]
+            vc.clubID = clubID
+            vc.isClubAdmin = isClubAdmin
+            vc.promotedAMember = { result in
+                clubListDidUpdateClubDetails.clubAdminUpdatedData = true
+                self.refreshList()
+            }
         default:
             print("welp")
         }

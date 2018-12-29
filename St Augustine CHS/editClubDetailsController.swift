@@ -22,6 +22,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     var clubDesc: String!
     var clubJoinSetting: Int!
     var clubID: String!
+    var pendingList = [String]()
     
     //Club IB Outlets
     @IBOutlet weak var clubBanner: UIImageView!
@@ -216,6 +217,28 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
         
         //Update data in the firebase
         let clubRef = db.collection("clubs").document(clubID)
+        
+        if clubJoinSetting == 2 {
+            //Update the club members array
+            let clubRef = self.db.collection("clubs").document(clubID)
+            clubRef.updateData(["members": FieldValue.arrayUnion(pendingList)])
+            for user in pendingList {
+                //Update the picsOwned array
+                let userRef = self.db.collection("users").document(user)
+                userRef.updateData(["clubs": FieldValue.arrayUnion([clubID])])
+            }
+            clubRef.setData([
+                "pending": []
+            ], merge: true) { (err) in
+                if let err = err {
+                    let alert = UIAlertController(title: "Error in updating Club", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                    alert.addAction(okAction)
+                    self.present(alert, animated: true, completion: nil)
+                    print("error in updating club \(err)")
+                }
+            }
+        }
         
         clubRef.setData([
             "desc": newClubDesc,

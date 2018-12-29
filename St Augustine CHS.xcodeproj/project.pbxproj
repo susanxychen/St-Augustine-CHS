@@ -50,6 +50,11 @@
 		B9ACA1EA2175499100302C4B /* signInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACA1E92175499100302C4B /* signInController.swift */; };
 		B9ACA1EC21755BBD00302C4B /* settingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACA1EB21755BBD00302C4B /* settingsController.swift */; };
 		B9ACA1EE2175825800302C4B /* failedLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACA1ED2175825800302C4B /* failedLoginController.swift */; };
+		B9AE584021D563990067B904 /* clubPendingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE583F21D563990067B904 /* clubPendingController.swift */; };
+		B9AE584221D565450067B904 /* pendingListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE584121D565450067B904 /* pendingListCell.swift */; };
+		B9AE584421D582F00067B904 /* clubMembersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE584321D582F00067B904 /* clubMembersController.swift */; };
+		B9AE584621D585930067B904 /* adminCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE584521D585930067B904 /* adminCell.swift */; };
+		B9AE584821D5859F0067B904 /* memberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE584721D5859F0067B904 /* memberCell.swift */; };
 		B9B2E69E2175383C006E1EA4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B9B2E69D2175383C006E1EA4 /* GoogleService-Info.plist */; };
 		B9B2E69F2175383C006E1EA4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B9B2E69D2175383C006E1EA4 /* GoogleService-Info.plist */; };
 		B9B2E6A02175383C006E1EA4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B9B2E69D2175383C006E1EA4 /* GoogleService-Info.plist */; };
@@ -135,6 +140,11 @@
 		B9ACA1E92175499100302C4B /* signInController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = signInController.swift; sourceTree = "<group>"; };
 		B9ACA1EB21755BBD00302C4B /* settingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingsController.swift; sourceTree = "<group>"; };
 		B9ACA1ED2175825800302C4B /* failedLoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = failedLoginController.swift; sourceTree = "<group>"; };
+		B9AE583F21D563990067B904 /* clubPendingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubPendingController.swift; sourceTree = "<group>"; };
+		B9AE584121D565450067B904 /* pendingListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pendingListCell.swift; sourceTree = "<group>"; };
+		B9AE584321D582F00067B904 /* clubMembersController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubMembersController.swift; sourceTree = "<group>"; };
+		B9AE584521D585930067B904 /* adminCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = adminCell.swift; sourceTree = "<group>"; };
+		B9AE584721D5859F0067B904 /* memberCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = memberCell.swift; sourceTree = "<group>"; };
 		B9B2E69D2175383C006E1EA4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B9B3684A21B9EB060059CF9C /* changeCoursesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = changeCoursesController.swift; sourceTree = "<group>"; };
 		B9C6E35A21ACA68500A03650 /* classesDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = classesDetailsController.swift; sourceTree = "<group>"; };
@@ -245,6 +255,8 @@
 				B90669C92186ACF100CAA824 /* addClubController.swift */,
 				B9118FA3218A653200CE4C6A /* clubGoodController.swift */,
 				B995CFF3218F8600004970E0 /* editClubDetailsController.swift */,
+				B9AE583F21D563990067B904 /* clubPendingController.swift */,
+				B9AE584321D582F00067B904 /* clubMembersController.swift */,
 				B90669C72186851800CAA824 /* addAnncController.swift */,
 				B958069C218209AA00B3EE70 /* songReqController.swift */,
 				B961424F21B6193F0070F27B /* suggestASongController.swift */,
@@ -311,6 +323,9 @@
 				B918546D21B4B28000DA14F5 /* picsOwnedViewCell.swift */,
 				B918546F21B4B29000DA14F5 /* picsNotOwnedViewCell.swift */,
 				B958A26521C4036B00726345 /* cafemenuCell.swift */,
+				B9AE584121D565450067B904 /* pendingListCell.swift */,
+				B9AE584521D585930067B904 /* adminCell.swift */,
+				B9AE584721D5859F0067B904 /* memberCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -591,6 +606,7 @@
 				B93F209021738E5100279829 /* menuController.swift in Sources */,
 				B9ACA1EA2175499100302C4B /* signInController.swift in Sources */,
 				B9118FA4218A653200CE4C6A /* clubGoodController.swift in Sources */,
+				B9AE584621D585930067B904 /* adminCell.swift in Sources */,
 				B958069D218209AA00B3EE70 /* songReqController.swift in Sources */,
 				B97CDA492176DCFE00F7F685 /* newsViewCell.swift in Sources */,
 				B958069F21821EA400B3EE70 /* songViewCell.swift in Sources */,
@@ -601,6 +617,7 @@
 				B9C6E35B21ACA68500A03650 /* classesDetailsController.swift in Sources */,
 				B9C6E35D21ACBFE200A03650 /* semester1ViewCell.swift in Sources */,
 				B958A26421C4023A00726345 /* cafeMenuController.swift in Sources */,
+				B9AE584821D5859F0067B904 /* memberCell.swift in Sources */,
 				B9876BB2217ACC5300D57C16 /* clubViewCell.swift in Sources */,
 				B961425021B6193F0070F27B /* suggestASongController.swift in Sources */,
 				B93F208E21738E5100279829 /* AppDelegate.swift in Sources */,
@@ -612,10 +629,13 @@
 				B958A26621C4036B00726345 /* cafemenuCell.swift in Sources */,
 				B9AC701521C1B52C00FEF5EF /* cafeImageController.swift in Sources */,
 				B918546C21B4B26500DA14F5 /* profilePicController.swift in Sources */,
+				B9AE584221D565450067B904 /* pendingListCell.swift in Sources */,
 				B9FECBFF219131E30006CCE3 /* socialController.swift in Sources */,
+				B9AE584421D582F00067B904 /* clubMembersController.swift in Sources */,
 				B958FB54218FC582004C99F0 /* clubListFooterViewCell.swift in Sources */,
 				B9C6E35F21ACBFF200A03650 /* semester2ViewCell.swift in Sources */,
 				B918547021B4B29000DA14F5 /* picsNotOwnedViewCell.swift in Sources */,
+				B9AE584021D563990067B904 /* clubPendingController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
