@@ -14,6 +14,8 @@ pod 'Firebase/Firestore'
 pod 'Firebase/Storage'
 pod 'Firebase/Functions'
 pod 'Firebase/Messaging'
+pod 'Fabric', '~> 1.9.0'
+pod 'Crashlytics', '~> 3.12.0'
 # pod 'Firebase/MLVision'
 # pod 'Firebase/MLVisionTextModel'
 

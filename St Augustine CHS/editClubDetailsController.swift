@@ -35,7 +35,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //Set Up
+        //Set Up 
         // [START setup]
         let settings = FirestoreSettings()
         settings.areTimestampsInSnapshotsEnabled = true
@@ -145,6 +145,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     @IBAction func cancelEditing(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }
+    
     //***************************UPDATE THE CLUB DETAILS***************************
     @IBAction func updateClubDetails(_ sender: Any) {
         var valid = true
@@ -173,6 +174,22 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
+        }
+        
+        if (self.clubNameTxtView.text?.count)! > 50 {
+            let alert = UIAlertController(title: "Error", message: "Title is too long", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
+            valid = false
+        }
+        
+        if (self.clubDescTxtView.text?.count)! > 300 {
+            let alert = UIAlertController(title: "Error", message: "Description is too long", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
+            valid = false
         }
         
         if valid {

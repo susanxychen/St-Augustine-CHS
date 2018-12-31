@@ -11,6 +11,7 @@ import Foundation
 import Firebase
 import WebKit
 import GoogleSignIn
+import SafariServices
 
 //This is the struct that holds all of the users firebase data
 struct allUserFirebaseData {
@@ -34,7 +35,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var dateToString: UILabel!
     @IBOutlet weak var dayNumber: UILabel!
     @IBOutlet weak var snowDay: UILabel!
-    @IBOutlet weak var calendarView: WKWebView!
     
     //Scroll Height
     @IBOutlet weak var homeScrollViewHeight: NSLayoutConstraint!
@@ -55,7 +55,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     let busURL = URL(string: "http://net.schoolbuscity.com/")
     let ytSourceURL = URL(string: "https://staugustinechs.netfirms.com/stayt/")
     let backupURL = URL(string: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-    let schoolCalendarURL = URL(string: "https://calendar.google.com/calendar/embed?showTitle=0&showTz=0&height=230&wkst=1&src=ycdsbk12.ca_f456pem6p0idarcilfuqiakaa8@group.calendar.google.com&color=%23004183&src=ycdsbk12.ca_4tepqngmnt9htbg435bmbpf3tg%40group.calendar.google.com&color=%23711616")
     
     //Annoucment Variables
     var newsData = [[String]]()
@@ -86,7 +85,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     //***********************************SETTING UP EVERYTHING****************************************
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         calendarButton.isHidden = true
         viewAboveAllViews.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.7)
         viewAboveAllViews.frame = UIApplication.shared.keyWindow!.frame
@@ -248,9 +246,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 print("wow u dont exist")
             }
         }
-        
-        //Load the calendar
-        calendarView.load(URLRequest(url: schoolCalendarURL ?? backupURL!))
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -456,6 +451,14 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("you pushed \(indexPath.item)")
+    }
+    
+    @IBAction func calendarButtonPushed(_ sender: Any) {
+        print("wow u calendar")
+        guard let url = URL(string: "https://calendar.google.com/calendar/r?cid=ycdsbk12.ca_f456pem6p0idarcilfuqiakaa8@group.calendar.google.com&cid=ycdsbk12.ca_4tepqngmnt9htbg435bmbpf3tg@group.calendar.google.com") else { return }
+//        UIApplication.shared.open(url) //this is forbidden by apple?
+        let svc = SFSafariViewController(url: url)
+        present(svc, animated: true, completion: nil)
     }
     
     //*****************************************REFRESHING DATA**************************************

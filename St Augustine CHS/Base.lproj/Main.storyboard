@@ -455,17 +455,6 @@
                                                 <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <wkWebView hidden="YES" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Qd5-JT-AqS">
-                                                <rect key="frame" x="0.0" y="719" width="375" height="230"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="230" id="GM2-wA-7yC"/>
-                                                </constraints>
-                                                <wkWebViewConfiguration key="configuration">
-                                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
-                                                    <wkPreferences key="preferences"/>
-                                                </wkWebViewConfiguration>
-                                            </wkWebView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9bF-9O-Uz2">
                                                 <rect key="frame" x="8" y="719" width="359" height="35"/>
                                                 <color key="backgroundColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
@@ -474,15 +463,16 @@
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                                 <state key="normal" title="View Calendar"/>
+                                                <connections>
+                                                    <action selector="calendarButtonPushed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="YIe-Ha-VeQ"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <gestureRecognizers/>
                                         <constraints>
-                                            <constraint firstItem="Qd5-JT-AqS" firstAttribute="top" secondItem="oZ5-Rj-M5A" secondAttribute="bottom" constant="8" id="7ph-sA-DKP"/>
                                             <constraint firstItem="jsh-2k-3AL" firstAttribute="leading" secondItem="tIc-FW-6Oz" secondAttribute="leading" id="944-cC-uN3"/>
                                             <constraint firstItem="9bF-9O-Uz2" firstAttribute="top" secondItem="oZ5-Rj-M5A" secondAttribute="bottom" constant="8" id="KVe-DG-y5t"/>
-                                            <constraint firstItem="Qd5-JT-AqS" firstAttribute="leading" secondItem="tIc-FW-6Oz" secondAttribute="leading" id="Ka5-5E-c6H"/>
                                             <constraint firstItem="SHn-Ri-sPA" firstAttribute="top" secondItem="tIc-FW-6Oz" secondAttribute="top" id="L8N-x7-um0"/>
                                             <constraint firstItem="7K0-b2-8tY" firstAttribute="leading" secondItem="tIc-FW-6Oz" secondAttribute="leading" constant="8" id="Lu6-BM-CqP"/>
                                             <constraint firstAttribute="trailing" secondItem="jsh-2k-3AL" secondAttribute="trailing" id="NaC-hr-SSz"/>
@@ -498,7 +488,6 @@
                                             <constraint firstAttribute="trailing" secondItem="oZ5-Rj-M5A" secondAttribute="trailing" constant="8" id="nZg-7H-5Y9"/>
                                             <constraint firstItem="Q2H-uS-rjb" firstAttribute="leading" secondItem="tIc-FW-6Oz" secondAttribute="leading" id="pGd-9x-Ngw"/>
                                             <constraint firstAttribute="height" constant="1200" id="pH1-jS-mwu"/>
-                                            <constraint firstAttribute="trailing" secondItem="Qd5-JT-AqS" secondAttribute="trailing" id="svS-VA-442"/>
                                             <constraint firstAttribute="trailing" secondItem="9bF-9O-Uz2" secondAttribute="trailing" constant="8" id="tW4-wH-XOO"/>
                                             <constraint firstAttribute="trailing" secondItem="Q2H-uS-rjb" secondAttribute="trailing" id="uUN-ly-hyg"/>
                                         </constraints>
@@ -563,7 +552,6 @@
                         <outlet property="anncViewHeight" destination="Fvi-8E-9yA" id="6lK-tX-rkt"/>
                         <outlet property="annoucView" destination="Q2H-uS-rjb" id="0aW-WA-8KU"/>
                         <outlet property="calendarButton" destination="9bF-9O-Uz2" id="dVi-Zp-uGf"/>
-                        <outlet property="calendarView" destination="Qd5-JT-AqS" id="u3A-f5-vrb"/>
                         <outlet property="clubAnncHeight" destination="UcO-a8-1M7" id="ojd-VN-cZU"/>
                         <outlet property="clubAnncView" destination="jsh-2k-3AL" id="uyH-JX-9xS"/>
                         <outlet property="dateToString" destination="ZA0-bd-msg" id="kKe-yt-uM9"/>
@@ -1614,7 +1602,7 @@
                                 <rect key="frame" x="158.5" y="26" width="58" height="30"/>
                                 <state key="normal" title="addClub"/>
                                 <connections>
-                                    <segue destination="Nrw-v2-Mol" kind="presentation" identifier="addClub" id="ngA-t6-i8G"/>
+                                    <segue destination="iWJ-9D-kEI" kind="presentation" identifier="addClub" id="lTe-mO-dMF"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -1647,69 +1635,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zu1-3g-biB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1796" y="152.47376311844079"/>
-        </scene>
-        <!--Add a Club-->
-        <scene sceneID="6M9-n7-OG5">
-            <objects>
-                <viewController title="Add a Club" id="Nrw-v2-Mol" customClass="addClubController" customModule="St_Augustine_CHS" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="7h8-3c-iQL">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Club Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m6y-uR-PhU">
-                                <rect key="frame" x="16" y="58" width="343" height="39"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="18"/>
-                                <color key="textColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Club Name (Required)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="weM-2O-iL6">
-                                <rect key="frame" x="16" y="105" width="343" height="30"/>
-                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LxR-ja-fM2">
-                                <rect key="frame" x="15" y="20" width="48" height="30"/>
-                                <state key="normal" title="Cancel">
-                                    <color key="titleColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="pressedCancel:" destination="Nrw-v2-Mol" eventType="touchUpInside" id="cR2-cQ-R54"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lpi-2X-5cm">
-                                <rect key="frame" x="296" y="20" width="63" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Add Club">
-                                    <color key="titleColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="pressedAddClub:" destination="Nrw-v2-Mol" eventType="touchUpInside" id="8Yt-vG-WgD"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" red="0.94509803920000002" green="0.88235294119999996" blue="0.76470588240000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="m6y-uR-PhU" firstAttribute="trailing" secondItem="7h8-3c-iQL" secondAttribute="trailingMargin" id="24x-yu-cfQ"/>
-                            <constraint firstItem="weM-2O-iL6" firstAttribute="leading" secondItem="m6y-uR-PhU" secondAttribute="leading" id="2j9-CC-oRx"/>
-                            <constraint firstItem="LxR-ja-fM2" firstAttribute="leading" secondItem="SiA-Z2-zd7" secondAttribute="leading" constant="15" id="AeS-2x-mcU"/>
-                            <constraint firstItem="SiA-Z2-zd7" firstAttribute="bottom" secondItem="m6y-uR-PhU" secondAttribute="bottom" constant="570" id="IxT-2c-imS"/>
-                            <constraint firstItem="LxR-ja-fM2" firstAttribute="top" secondItem="SiA-Z2-zd7" secondAttribute="top" id="M8l-gP-xdA"/>
-                            <constraint firstItem="m6y-uR-PhU" firstAttribute="leading" secondItem="7h8-3c-iQL" secondAttribute="leadingMargin" id="O6I-qQ-bBF"/>
-                            <constraint firstItem="weM-2O-iL6" firstAttribute="trailing" secondItem="m6y-uR-PhU" secondAttribute="trailing" id="UHk-jG-6hp"/>
-                            <constraint firstItem="weM-2O-iL6" firstAttribute="top" secondItem="m6y-uR-PhU" secondAttribute="bottom" constant="8" symbolic="YES" id="by4-pr-MkB"/>
-                            <constraint firstItem="m6y-uR-PhU" firstAttribute="top" secondItem="SiA-Z2-zd7" secondAttribute="top" constant="38" id="yhU-te-Jtu"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="SiA-Z2-zd7"/>
-                    </view>
-                    <connections>
-                        <outlet property="clubNameTxtFld" destination="weM-2O-iL6" id="jv8-dW-lTm"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="5Cc-fw-WdE" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1006" y="1260"/>
         </scene>
         <!--Club Good Controller-->
         <scene sceneID="Yvn-pZ-fXT">
@@ -4286,6 +4211,169 @@
             </objects>
             <point key="canvasLocation" x="6329" y="-1306"/>
         </scene>
+        <!--Add Club Controller-->
+        <scene sceneID="erj-6q-ttB">
+            <objects>
+                <viewController id="iWJ-9D-kEI" customClass="addClubController" customModule="St_Augustine_CHS" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="2VY-3V-KK0">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="905"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0DX-Mv-x1p">
+                                <rect key="frame" x="0.0" y="20" width="375" height="45"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QAN-F8-eET">
+                                        <rect key="frame" x="319" y="11" width="48" height="34"/>
+                                        <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                        <state key="normal" title="Create"/>
+                                        <connections>
+                                            <action selector="pressedAddClub:" destination="iWJ-9D-kEI" eventType="touchUpInside" id="Tps-k5-Grk"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rom-FV-IMr">
+                                        <rect key="frame" x="8" y="11" width="48" height="34"/>
+                                        <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                        <state key="normal" title="Cancel"/>
+                                        <connections>
+                                            <action selector="pressedCancel:" destination="iWJ-9D-kEI" eventType="touchUpInside" id="eeA-HF-kyA"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.55294117649999996" green="0.070588235289999995" blue="0.18823529410000001" alpha="0.94804152399999997" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="rom-FV-IMr" secondAttribute="bottom" id="RU2-e1-3q1"/>
+                                    <constraint firstAttribute="height" constant="45" id="a23-aU-LYY"/>
+                                    <constraint firstAttribute="trailing" secondItem="QAN-F8-eET" secondAttribute="trailing" constant="8" id="eAB-hF-t1q"/>
+                                    <constraint firstItem="rom-FV-IMr" firstAttribute="leading" secondItem="0DX-Mv-x1p" secondAttribute="leading" constant="8" id="ieZ-xB-tjf"/>
+                                    <constraint firstAttribute="bottom" secondItem="QAN-F8-eET" secondAttribute="bottom" id="rYY-9f-ARX"/>
+                                </constraints>
+                            </view>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VIU-8n-4v7">
+                                <rect key="frame" x="0.0" y="65" width="375" height="840"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o2X-lw-YVH">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="850"/>
+                                        <subviews>
+                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="FPT-72-Iwm">
+                                                <rect key="frame" x="12" y="46" width="351" height="31"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="DSB-Vf-kMo"/>
+                                                </constraints>
+                                                <segments>
+                                                    <segment title="No Joining"/>
+                                                    <segment title="Approved Joining"/>
+                                                    <segment title="Anyone can Join"/>
+                                                </segments>
+                                                <color key="tintColor" red="0.55294117649999996" green="0.070588235289999995" blue="0.18823529410000001" alpha="0.94804152399999997" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <connections>
+                                                    <action selector="joinClubDetailsSegment:" destination="iWJ-9D-kEI" eventType="valueChanged" id="gS9-J8-eTB"/>
+                                                </connections>
+                                            </segmentedControl>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Joining Club Options" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3ix-Xt-eeI">
+                                                <rect key="frame" x="12" y="8" width="351" height="30"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="KUx-px-HQ7"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" scrollEnabled="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="MvM-mx-gaX">
+                                                <rect key="frame" x="0.0" y="254" width="375" height="37"/>
+                                                <color key="backgroundColor" red="0.55294117649999996" green="0.070588235289999995" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <fontDescription key="fontDescription" name="Scada-Bold" family="Scada" pointSize="17"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
+                                            </textView>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="space" translatesAutoresizingMaskIntoConstraints="NO" id="e6u-ik-SAH">
+                                                <rect key="frame" x="0.0" y="84" width="375" height="170"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="170" id="GIi-cY-zfD"/>
+                                                </constraints>
+                                            </imageView>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" scrollEnabled="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="oNq-YS-yyP">
+                                                <rect key="frame" x="8" y="299" width="359" height="37.5"/>
+                                                <color key="backgroundColor" red="0.90490476012740118" green="0.91386421319796951" blue="0.91386421319796951" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="textColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
+                                            </textView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pmt-SW-KVd">
+                                                <rect key="frame" x="0.0" y="84" width="375" height="170"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="170" id="oOr-9g-LGL"/>
+                                                </constraints>
+                                                <connections>
+                                                    <action selector="editClubBanner:" destination="iWJ-9D-kEI" eventType="touchUpInside" id="0Di-zU-K5f"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="e6u-ik-SAH" firstAttribute="leading" secondItem="pmt-SW-KVd" secondAttribute="leading" id="3SU-Q4-8s6"/>
+                                            <constraint firstItem="oNq-YS-yyP" firstAttribute="leading" secondItem="o2X-lw-YVH" secondAttribute="leading" constant="8" id="F8o-t1-Nn1"/>
+                                            <constraint firstItem="e6u-ik-SAH" firstAttribute="trailing" secondItem="pmt-SW-KVd" secondAttribute="trailing" id="Ilp-a2-PGg"/>
+                                            <constraint firstAttribute="trailing" secondItem="FPT-72-Iwm" secondAttribute="trailing" constant="12" id="KIA-js-76J"/>
+                                            <constraint firstAttribute="trailing" secondItem="MvM-mx-gaX" secondAttribute="trailing" id="N4f-ri-Q8E"/>
+                                            <constraint firstItem="e6u-ik-SAH" firstAttribute="top" secondItem="FPT-72-Iwm" secondAttribute="bottom" constant="8" id="PUQ-NL-7a0"/>
+                                            <constraint firstItem="FPT-72-Iwm" firstAttribute="leading" secondItem="o2X-lw-YVH" secondAttribute="leading" constant="12" id="RVN-fp-UtZ"/>
+                                            <constraint firstItem="oNq-YS-yyP" firstAttribute="top" secondItem="MvM-mx-gaX" secondAttribute="bottom" constant="8" id="RcG-NX-7kb"/>
+                                            <constraint firstItem="MvM-mx-gaX" firstAttribute="top" secondItem="e6u-ik-SAH" secondAttribute="bottom" id="Wn1-mX-m4T"/>
+                                            <constraint firstItem="3ix-Xt-eeI" firstAttribute="top" secondItem="o2X-lw-YVH" secondAttribute="top" constant="8" id="Wud-E4-LGl"/>
+                                            <constraint firstItem="pmt-SW-KVd" firstAttribute="top" secondItem="FPT-72-Iwm" secondAttribute="bottom" constant="8" id="c9d-x5-pAc"/>
+                                            <constraint firstAttribute="height" constant="850" id="gTR-dy-ONg"/>
+                                            <constraint firstAttribute="trailing" secondItem="pmt-SW-KVd" secondAttribute="trailing" id="j5K-A7-5GM"/>
+                                            <constraint firstItem="MvM-mx-gaX" firstAttribute="top" secondItem="pmt-SW-KVd" secondAttribute="bottom" id="jvE-iZ-zZ8"/>
+                                            <constraint firstItem="3ix-Xt-eeI" firstAttribute="leading" secondItem="o2X-lw-YVH" secondAttribute="leading" constant="12" id="n0b-Ku-qcX"/>
+                                            <constraint firstAttribute="trailing" secondItem="oNq-YS-yyP" secondAttribute="trailing" constant="8" id="olR-4M-Bg0"/>
+                                            <constraint firstItem="FPT-72-Iwm" firstAttribute="top" secondItem="3ix-Xt-eeI" secondAttribute="bottom" constant="8" id="wTP-T4-IFt"/>
+                                            <constraint firstItem="pmt-SW-KVd" firstAttribute="leading" secondItem="o2X-lw-YVH" secondAttribute="leading" id="xIJ-ET-aYE"/>
+                                            <constraint firstItem="MvM-mx-gaX" firstAttribute="leading" secondItem="o2X-lw-YVH" secondAttribute="leading" id="xnC-gQ-B8H"/>
+                                            <constraint firstAttribute="trailing" secondItem="3ix-Xt-eeI" secondAttribute="trailing" constant="12" id="yRx-kL-eHj"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="o2X-lw-YVH" firstAttribute="leading" secondItem="VIU-8n-4v7" secondAttribute="leading" id="0B5-pz-PTL"/>
+                                    <constraint firstAttribute="trailing" secondItem="o2X-lw-YVH" secondAttribute="trailing" id="XGc-1S-pvM"/>
+                                    <constraint firstItem="o2X-lw-YVH" firstAttribute="top" secondItem="VIU-8n-4v7" secondAttribute="top" id="kGU-Qv-poT"/>
+                                    <constraint firstAttribute="bottom" secondItem="o2X-lw-YVH" secondAttribute="bottom" id="vek-5H-WRG"/>
+                                </constraints>
+                            </scrollView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r0H-2x-B7D">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="20"/>
+                                <color key="backgroundColor" red="0.27450980390000002" green="0.031372549020000001" blue="0.090196078430000007" alpha="0.94804152399999997" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="VIU-8n-4v7" firstAttribute="top" secondItem="0DX-Mv-x1p" secondAttribute="bottom" id="0cV-Nv-AHQ"/>
+                            <constraint firstItem="0DX-Mv-x1p" firstAttribute="top" secondItem="St6-Zo-maQ" secondAttribute="top" id="5nN-Zg-ib3"/>
+                            <constraint firstItem="0DX-Mv-x1p" firstAttribute="leading" secondItem="2VY-3V-KK0" secondAttribute="leading" id="AIY-4g-W9J"/>
+                            <constraint firstItem="VIU-8n-4v7" firstAttribute="bottom" secondItem="St6-Zo-maQ" secondAttribute="bottom" id="Dmy-Dh-gz5"/>
+                            <constraint firstItem="VIU-8n-4v7" firstAttribute="trailing" secondItem="St6-Zo-maQ" secondAttribute="trailing" id="F7w-Zk-5qh"/>
+                            <constraint firstItem="r0H-2x-B7D" firstAttribute="leading" secondItem="2VY-3V-KK0" secondAttribute="leading" id="Qw3-Fy-NqF"/>
+                            <constraint firstItem="VIU-8n-4v7" firstAttribute="leading" secondItem="St6-Zo-maQ" secondAttribute="leading" id="cgX-p0-c3f"/>
+                            <constraint firstItem="r0H-2x-B7D" firstAttribute="top" secondItem="2VY-3V-KK0" secondAttribute="top" id="duq-Od-vCT"/>
+                            <constraint firstItem="0DX-Mv-x1p" firstAttribute="top" secondItem="r0H-2x-B7D" secondAttribute="bottom" id="iFy-fo-mbj"/>
+                            <constraint firstItem="o2X-lw-YVH" firstAttribute="width" secondItem="0DX-Mv-x1p" secondAttribute="width" id="le3-o7-sjH"/>
+                            <constraint firstAttribute="trailing" secondItem="0DX-Mv-x1p" secondAttribute="trailing" id="rNo-9F-Ohj"/>
+                            <constraint firstAttribute="trailing" secondItem="r0H-2x-B7D" secondAttribute="trailing" id="yKE-9r-tSY"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="St6-Zo-maQ"/>
+                    </view>
+                    <size key="freeformSize" width="375" height="905"/>
+                    <connections>
+                        <outlet property="clubBanner" destination="e6u-ik-SAH" id="2pW-tp-2wz"/>
+                        <outlet property="clubDescTxtView" destination="oNq-YS-yyP" id="Dd3-cg-cEO"/>
+                        <outlet property="clubNameTxtView" destination="MvM-mx-gaX" id="ILA-Ef-VzH"/>
+                        <outlet property="joinClubSettingsSegmentControl" destination="FPT-72-Iwm" id="fvb-Id-H4l"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Pjl-6P-GWs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1041" y="1039"/>
+        </scene>
     </scenes>
     <resources>
         <image name="3Dots" width="11.520000457763672" height="11.520000457763672"/>
@@ -4307,7 +4395,7 @@
         <segue reference="Bcw-dD-CBe"/>
         <segue reference="dOO-6f-ACp"/>
         <segue reference="ZPw-sW-YUi"/>
-        <segue reference="IJv-sg-69W"/>
+        <segue reference="t4R-bV-FN9"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

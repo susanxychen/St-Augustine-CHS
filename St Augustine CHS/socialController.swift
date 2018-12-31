@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import Crashlytics
 
 class socialController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
@@ -409,13 +410,18 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                 return
             }
             
+            //Turn all cases to lower
+            userInput = userInput.lowercased()
+                
+            if userInput == "theclearingwantsyou" {
+                print("The clearing")
+                Crashlytics.sharedInstance().crash()
+            }
+            
             //*****If the user did not add @ycdsbk12 just add it for them******
             if !userInput.hasSuffix("@ycdsbk12.ca") {
                 userInput = userInput + "@ycdsbk12.ca"
             }
-            
-            //Turn all cases to lower
-            userInput = userInput.lowercased()
             
             //If the user input themselves...silly user
             if userInput == Auth.auth().currentUser?.email {
@@ -714,6 +720,9 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             vc.banImage = clubImage
             vc.clubID = clubID
             vc.cameFromSocialPage = true
+            vc.joinedANewClubBlock = { result in
+                self.getClubData(clubIDRefs: allUserFirebaseData.data["clubs"] as! [String])
+            }
             break
         case 3:
             //Profile pics

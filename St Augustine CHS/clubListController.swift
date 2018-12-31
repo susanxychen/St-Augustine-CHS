@@ -58,7 +58,6 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
             if let connected = snapshot.value as? Bool, connected {
                 print("Connected")
                 iAmConneted = true
-                self.getPersonalClubs()
             } else {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
                     print(iAmConneted)
@@ -76,9 +75,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                 }
             }
         })
-        
         overlayView.frame = UIApplication.shared.keyWindow!.frame
-        
         
         clubListDidUpdateClubDetails.clubAdminUpdatedData = false
         
@@ -87,15 +84,14 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
         clubListView.alwaysBounceVertical = true
         
         if allUserFirebaseData.data["status"] as? Int ?? 0 >= 1 {
+            print("Is a status \(allUserFirebaseData.data["status"] as? Int ?? 0)")
             //create a new button
             let button = UIButton(type: .custom)
             button.setImage(UIImage(named: "addClub"), for: .normal)
             //add function for button
             button.addTarget(self, action: #selector(addClubButtonPressed), for: .touchUpInside)
             button.frame = CGRect(x: 0, y: 0, width: 48, height: 48)
-            
             let barButton = UIBarButtonItem(customView: button)
-            //assign button to navigationbar
             self.navigationItem.rightBarButtonItem = barButton
         }
         
@@ -114,10 +110,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
         // [END setup]
         db = Firestore.firestore()
         
-        //once clubs is done, get pics
-        //Test to see if you already have downloaded the data onto the phone
-        
-        
+        self.getPersonalClubs()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -595,6 +588,16 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if addAClub {
             //do stuff to prepare the add a club controller if needed
+            let vc = segue.destination as! addClubController
+            vc.onDoneBlock = { result in
+                self.viewingPersonalClubs = true
+                self.didNotDownloadData = true
+                self.allClubsData.removeAll()
+                self.clubNames.removeAll()
+                self.banners = [self.tempImg]
+                self.clubIDs.removeAll()
+                self.refreshList()
+            }
         } else {
             let vc = segue.destination as! clubGoodController
             if viewingPersonalClubs {
@@ -602,6 +605,9 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                 vc.partOfClub = true
                 vc.banImage = personalClubBanners[selectedClub]
                 vc.clubID = personalClubIDs[selectedClub]
+                vc.joinedANewClubBlock = { result in
+                    self.refreshList()
+                }
             } else {
                 vc.clubData = self.clubsYouAreNotAPartOf[self.selectedClub]
                 vc.partOfClub = false
@@ -613,7 +619,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                     self.didNotDownloadData = true
                     self.allClubsData.removeAll()
                     self.clubNames.removeAll()
-                    self.banners = [self.tempImg] as! [UIImage]
+                    self.banners = [self.tempImg] 
                     self.clubIDs.removeAll()
                     self.refreshList()
                 }
@@ -637,13 +643,13 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
         if viewingPersonalClubs {
             personaClubsData.removeAll()
             personalClubNames.removeAll()
-            personalClubBanners = [tempImg] as! [UIImage]
+            personalClubBanners = [tempImg] 
             personalClubIDs.removeAll()
             getPersonalClubs()
         } else {
             allClubsData.removeAll()
             clubNames.removeAll()
-            banners = [tempImg] as! [UIImage]
+            banners = [tempImg] 
             clubIDs.removeAll()
             getClubs()
         }

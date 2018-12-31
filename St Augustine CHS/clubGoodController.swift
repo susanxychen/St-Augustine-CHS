@@ -38,7 +38,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     
     var noAnnouncments = false
     
-    //Refresh Variables
+    //Refresh Variables 
     var refreshControl: UIRefreshControl?
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
@@ -47,7 +47,6 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     //Part of Club or not Variables
     var partOfClub = true
     var acceptingJoinRequests = true
-    var joinedTheClubPressed = false
     
     //Admin edit var
     @IBOutlet weak var editClubDetailsButton: UIButton!
@@ -66,6 +65,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     
     //Pending
     @IBOutlet weak var pendingButton: UIButton!
+    var didSubmitApplication = false
     
     //Member List
     @IBOutlet weak var memberList: UIButton!
@@ -126,15 +126,11 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         //Stop user from spamming the request button
         if (clubData["pending"] as! [String]).contains(user.uid) {
             acceptingJoinRequests = false
+            didSubmitApplication = true
         }
         //But also make it back open again if its just purely open
         if clubData["joinPref"] as! Int == 2 {
             acceptingJoinRequests = true
-        }
-        //And also just flat disable the button if the user pressed join to prevent spam
-        //honestly probably dont need this but u know what im tired its 12 and im on vacation
-        if joinedTheClubPressed {
-            acceptingJoinRequests = false
         }
         
         if isClubAdmin {
@@ -186,7 +182,6 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             //Update the club members array
             let clubRef = self.db.collection("clubs").document(clubID)
             clubRef.updateData(["pending": FieldValue.arrayUnion([Auth.auth().currentUser?.uid as Any])])
-            joinedTheClubPressed = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.refreshList()
             }
@@ -241,12 +236,65 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                 self.performSegue(withIdentifier: "viewPending", sender: self.pendingButton)
             }))
         }
+        
+        if partOfClub {
         //************ALL MEMBERS PRIVLAGES************
-        actionSheet.addAction(UIAlertAction(title: "View Members and Admins", style: .default, handler: { (action:UIAlertAction) in
-            print("list")
-            self.segueNum = 3
-            self.performSegue(withIdentifier: "viewMembers", sender: self.memberList)
-        }))
+            actionSheet.addAction(UIAlertAction(title: "View Members and Admins", style: .default, handler: { (action:UIAlertAction) in
+                print("list")
+                self.segueNum = 3
+                self.performSegue(withIdentifier: "viewMembers", sender: self.memberList)
+            }))
+            actionSheet.addAction(UIAlertAction(title: "Leave Club", style: .default, handler: { (action:UIAlertAction) in
+                //Create the alert controller.
+                let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to leave \(self.clubData["name"] ?? "this club")?", preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
+                let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
+                    let clubRef = self.db.collection("clubs").document(self.clubID)
+                    clubRef.updateData([
+                        "admins": FieldValue.arrayRemove([Auth.auth().currentUser?.uid as Any]),
+                        "members": FieldValue.arrayRemove([Auth.auth().currentUser?.uid as Any])
+                    ])
+                    let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+                    userRef.updateData([
+                        "clubs": FieldValue.arrayRemove([self.clubID])
+                    ])
+                    let user = Auth.auth().currentUser
+                    self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                        if let docSnapshot = docSnapshot {
+                            allUserFirebaseData.data = docSnapshot.data()!
+                            self.joinedANewClubBlock?(true)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                                self.navigationController?.popViewController(animated: true)
+                            })
+                        } else {
+                            print("wow u dont exist")
+                        }
+                    }
+                }
+                alert.addAction(confirmAction)
+                alert.addAction(cancelAction)
+                self.present(alert, animated: true, completion: nil)
+            }))
+        }
+        
+        if didSubmitApplication {
+            actionSheet.addAction(UIAlertAction(title: "Cancel Application", style: .default, handler: { (action:UIAlertAction) in
+                //Create the alert controller.
+                let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to cancel your application?", preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
+                let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default) { (action:UIAlertAction) in
+                    let clubRef = self.db.collection("clubs").document(self.clubID)
+                    clubRef.updateData([
+                        "pending": FieldValue.arrayRemove([Auth.auth().currentUser?.uid as Any])
+                    ])
+                    self.didSubmitApplication = false
+                }
+                alert.addAction(confirmAction)
+                alert.addAction(cancelAction)
+                self.present(alert, animated: true, completion: nil)
+            }))
+        }
+        
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         self.present(actionSheet, animated: true, completion: nil)
     }
@@ -382,11 +430,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                 actionSheet.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action:UIAlertAction) in
                     //Create the confirmation alert controller.
                     let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to delete \"\(anncTitle)\"? This cannot be undone.", preferredStyle: .alert)
-                    
-                    let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel) { (action:UIAlertAction) in
-                        //print("You've pressed cancel");
-                    }
-                    
+                    let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
                     let confirmAction = UIAlertAction(title: "Delete", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
                         print("Deleted the annc");
                         self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)

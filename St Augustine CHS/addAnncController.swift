@@ -169,58 +169,6 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
             if let connected = snapshot.value as? Bool, connected {
                 print("Connected")
                 iAmConneted = true
-                if self.titleTxtFld.text == "" {
-                    //Tell the user that information needs to be filled in
-                    let alert = UIAlertController(title: "Error", message: "All announcements require a title", preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                    alert.addAction(okAction)
-                    self.present(alert, animated: true, completion: nil)
-                } else{
-                    //Set up an activity indicator
-                    self.overlayView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
-                    let activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
-                    activityIndicator.center = self.overlayView.center
-                    self.overlayView.addSubview(activityIndicator)
-                    activityIndicator.startAnimating()
-                    self.entireView.addSubview(self.overlayView)
-                    
-                    var imageName = ""
-                    //Check the img field
-                    if self.anncImg.image != UIImage(named: "snoo") {
-                        //Give the photo a random name
-                        if !self.editMode || (self.editImageName == "") {
-                            imageName = self.randomString(length: 20)
-                        } else {
-                            imageName = self.editImageName
-                        }
-                        
-                        //Set up the image data
-                        let storageRef = Storage.storage().reference(withPath: "announcements").child(imageName)
-                        let metaData = StorageMetadata()
-                        metaData.contentType = "image/jpeg"
-                        
-                        //Upload the image to the database
-                        if let uploadData = self.anncImg.image?.resized(toWidth: 475)!.jpegData(compressionQuality: 0.8){
-                            storageRef.putData(uploadData, metadata: metaData) { (metadata, error) in
-                                if let error = error {
-                                    let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
-                                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                                    alert.addAction(okAction)
-                                    self.present(alert, animated: true, completion: nil)
-                                    print(error as Any)
-                                    self.entireView.willRemoveSubview(self.overlayView)
-                                    
-                                    return
-                                }
-                                print(metadata as Any)
-                                self.uploadRestAfterImageIsDone(imageName: imageName)
-                            }
-                        }
-                    } else {
-                        self.uploadRestAfterImageIsDone(imageName: imageName)
-                        print("there is no image available")
-                    }
-                }
             } else {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
                     print(iAmConneted)
@@ -234,6 +182,79 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
                 }
             }
         })
+        
+        var valid = true
+        if self.titleTxtFld.text == "" {
+            valid = false
+            //Tell the user that information needs to be filled in
+            let alert = UIAlertController(title: "Error", message: "All announcements require a title", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
+        }
+        
+        if (self.titleTxtFld.text?.count)! > 50 {
+            let alert = UIAlertController(title: "Error", message: "Title is too long", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
+            valid = false
+        }
+        
+        if (self.contentTxtFld.text?.count)! > 300 {
+            let alert = UIAlertController(title: "Error", message: "Content is too long", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
+            valid = false
+        }
+        
+        if valid {
+            //Set up an activity indicator
+            self.overlayView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
+            let activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
+            activityIndicator.center = self.overlayView.center
+            self.overlayView.addSubview(activityIndicator)
+            activityIndicator.startAnimating()
+            self.entireView.addSubview(self.overlayView)
+            
+            var imageName = ""
+            //Check the img field
+            if self.anncImg.image != UIImage(named: "snoo") {
+                //Give the photo a random name
+                if !self.editMode || (self.editImageName == "") {
+                    imageName = self.randomString(length: 20)
+                } else {
+                    imageName = self.editImageName
+                }
+                
+                //Set up the image data
+                let storageRef = Storage.storage().reference(withPath: "announcements").child(imageName)
+                let metaData = StorageMetadata()
+                metaData.contentType = "image/jpeg"
+                
+                //Upload the image to the database
+                if let uploadData = self.anncImg.image?.resized(toWidth: 475)!.jpegData(compressionQuality: 0.8){
+                    storageRef.putData(uploadData, metadata: metaData) { (metadata, error) in
+                        if let error = error {
+                            let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
+                            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                            alert.addAction(okAction)
+                            self.present(alert, animated: true, completion: nil)
+                            print(error as Any)
+                            self.entireView.willRemoveSubview(self.overlayView)
+                            
+                            return
+                        }
+                        print(metadata as Any)
+                        self.uploadRestAfterImageIsDone(imageName: imageName)
+                    }
+                }
+            } else {
+                self.uploadRestAfterImageIsDone(imageName: imageName)
+                print("there is no image available")
+            }
+        }
     }
     
     func uploadRestAfterImageIsDone(imageName: String){

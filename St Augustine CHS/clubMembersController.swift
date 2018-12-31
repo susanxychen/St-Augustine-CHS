@@ -188,6 +188,27 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                 alert.addAction(cancelAction)
                 self.present(alert, animated: true, completion: nil)
             }))
+            actionSheet.addAction(UIAlertAction(title: "Demote to Member", style: .default, handler: { (action:UIAlertAction) in
+                //Create the alert controller.
+                let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to demote \(self.adminsNamesList[indexPath.item])?", preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
+                let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
+                    self.promotedAMember!(true)
+                    let clubRef = self.db.collection("clubs").document(self.clubID)
+                    clubRef.updateData([
+                        "members": FieldValue.arrayUnion([self.adminsList[indexPath.item]])
+                        ])
+                    clubRef.updateData([
+                        "admins": FieldValue.arrayRemove([self.adminsList[indexPath.item]])
+                        ])
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                        self.getClubData()
+                    })
+                }
+                alert.addAction(confirmAction)
+                alert.addAction(cancelAction)
+                self.present(alert, animated: true, completion: nil)
+            }))
             actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             self.present(actionSheet, animated: true, completion: nil)
         }
@@ -288,7 +309,14 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath.item)
+        var userToSegTo = ""
+        if collectionView == adminsCollectionView {
+            userToSegTo = adminsList[indexPath.item]
+        } else {
+            userToSegTo = membersList[indexPath.item]
+        }
+        print(userToSegTo)
+        
     }
     
     func getPicture(profPic: Int, user: Int, isAdmin: Bool) {
