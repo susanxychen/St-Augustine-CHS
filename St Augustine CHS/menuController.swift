@@ -280,8 +280,69 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             //print(self.clubNewsData)
-            self.clubAnncView.reloadData()
+            self.sortAnncByDate()
         }
+    }
+    
+    func sortAnncByDate() {
+        if clubNewsData.count > 2 {
+            var thereWasASwap = true
+            while thereWasASwap {
+                thereWasASwap = false
+                for i in 0...clubNewsData.count-2 {
+                    //Check if there is an image. If so also add a note saying there is an image
+                    if clubNewsData[i]["img"] as! String != "" {
+                        clubNewsData[i]["content"] = clubNewsData[i]["content"] as! String + "(This announcement has an image)"
+                    }
+                    
+                    let timestamp1: Timestamp = clubNewsData[i]["date"] as! Timestamp
+                    let date1: Date = timestamp1.dateValue()
+                    let timestamp2: Timestamp = clubNewsData[i + 1]["date"] as! Timestamp
+                    let date2: Date = timestamp2.dateValue()
+                    
+                    //Swap values
+                    if date2 > date1 {
+                        thereWasASwap = true
+                        let temp = clubNewsData[i]
+                        clubNewsData[i] = clubNewsData[i+1]
+                        clubNewsData[i+1] = temp
+                    }
+                }
+                //Check if there is an image. If so also add a note saying there is an image
+                if clubNewsData[clubNewsData.count-1]["img"] as! String != "" {
+                    clubNewsData[clubNewsData.count-1]["content"] = clubNewsData[clubNewsData.count-1]["content"] as! String + "(This announcement has an image)"
+                }
+            }
+        } else if clubNewsData.count == 2 {
+            let i = 0
+            let timestamp1: Timestamp = clubNewsData[i]["date"] as! Timestamp
+            let date1: Date = timestamp1.dateValue()
+            let timestamp2: Timestamp = clubNewsData[i + 1]["date"] as! Timestamp
+            let date2: Date = timestamp2.dateValue()
+            
+            //Check if there is an image. If so also add a note saying there is an image
+            if clubNewsData[i]["img"] as! String != "" {
+                clubNewsData[i]["content"] = clubNewsData[i]["content"] as! String + "(This announcement has an image)"
+            }
+            
+            //Check if there is an image. If so also add a note saying there is an image
+            if clubNewsData[1]["img"] as! String != "" {
+                clubNewsData[1]["content"] = clubNewsData[1]["content"] as! String + "(This announcement has an image)"
+            }
+            
+            //Swap values
+            if date2 > date1 {
+                let temp = clubNewsData[i]
+                clubNewsData[i] = clubNewsData[i+1]
+                clubNewsData[i+1] = temp
+            }
+        } else {
+            //Check if there is an image. If so also add a note saying there is an image
+            if clubNewsData[0]["img"] as! String != "" {
+                clubNewsData[0]["content"] = clubNewsData[0]["content"] as! String + "(This announcement has an image)"
+            }
+        }
+        self.clubAnncView.reloadData()
     }
     
     func getPicture(i: Int) {
@@ -454,12 +515,27 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     @IBAction func calendarButtonPushed(_ sender: Any) {
-        print("wow u calendar")
-        guard let url = URL(string: "https://calendar.google.com/calendar/r?cid=ycdsbk12.ca_f456pem6p0idarcilfuqiakaa8@group.calendar.google.com&cid=ycdsbk12.ca_4tepqngmnt9htbg435bmbpf3tg@group.calendar.google.com") else { return }
-//        UIApplication.shared.open(url) //this is forbidden by apple?
-        let svc = SFSafariViewController(url: url)
-        present(svc, animated: true, completion: nil)
+        var didAddCalendar = false
+        
+        if let x = UserDefaults.standard.object(forKey: "didAddCalendar") as? Bool {
+           didAddCalendar = x
+        }
+        
+        if didAddCalendar {
+            let interval = Int(Date().timeIntervalSinceReferenceDate)
+            let url = URL(string: String(format: "calshow:%ld", interval))
+            if let url = url {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        } else {
+            //Prompt user to add calendar
+            UserDefaults.standard.set(true, forKey: "didAddCalendar")
+            guard let url = URL(string: "https://calendar.google.com/calendar/r?cid=ycdsbk12.ca_f456pem6p0idarcilfuqiakaa8@group.calendar.google.com&cid=ycdsbk12.ca_4tepqngmnt9htbg435bmbpf3tg@group.calendar.google.com") else { return }
+            let svc = SFSafariViewController(url: url)
+            present(svc, animated: true, completion: nil)
+        }
     }
+
     
     //*****************************************REFRESHING DATA**************************************
     func addRefreshControl(){

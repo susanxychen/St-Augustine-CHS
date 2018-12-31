@@ -405,6 +405,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         
         //***************SEARCH FOR USER**************
         if var userInput = searchBar.text{
+            self.view.endEditing(true)
             //Nothing is entered
             if userInput == "" {
                 return
@@ -412,10 +413,23 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             
             //Turn all cases to lower
             userInput = userInput.lowercased()
-                
+            
+//            if userInput == "crash" {
+//                Crashlytics.sharedInstance().crash()
+//            }
+            
             if userInput == "theclearingwantsyou" {
                 print("The clearing")
-                Crashlytics.sharedInstance().crash()
+                searchBar.text = "it wants you \(String(Auth.auth().currentUser?.displayName?.split(separator: " ")[0] ?? "").lowercased())"
+                let view = UIView(frame: UIApplication.shared.keyWindow!.frame)
+                view.backgroundColor = UIColor.white
+                UIApplication.shared.keyWindow!.addSubview(view)
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                    print("wants you")
+                    view.removeFromSuperview()
+                }
+                return
             }
             
             //*****If the user did not add @ycdsbk12 just add it for them******
