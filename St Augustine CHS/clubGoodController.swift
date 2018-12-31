@@ -9,7 +9,11 @@
 import UIKit
 import Firebase
 
-class clubGoodController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+protocol HeaderCellDelegate {
+    func badgeWasPressed(index: Int!)
+}
+
+class clubGoodController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, HeaderCellDelegate {
     
     //Filler
     var fillerBanImage = UIImage()
@@ -62,6 +66,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     //Badges
     var badgeData = [[String:Any]]()
     var badgeImgs = [UIImage]()
+    @IBOutlet weak var scanBadgeButton: UIButton!
     
     //Pending
     @IBOutlet weak var pendingButton: UIButton!
@@ -244,6 +249,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                 self.segueNum = 3
                 self.performSegue(withIdentifier: "viewMembers", sender: self.memberList)
             }))
+            
             actionSheet.addAction(UIAlertAction(title: "Leave Club", style: .default, handler: { (action:UIAlertAction) in
                 //Create the alert controller.
                 let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to leave \(self.clubData["name"] ?? "this club")?", preferredStyle: .alert)
@@ -764,13 +770,35 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         }
     }
     
+    func badgeWasPressed(index: Int!) {
+        let alert = UIAlertController(title: badgeData[index]["desc"] as? String, message: nil, preferredStyle: .alert)
+        alert.addImage(image: badgeImgs[index])
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        let editAction = UIAlertAction(title: "Edit", style: .default) { (alertAction) in
+            print("edit")
+        }
+        let giveAction = UIAlertAction(title: "Give Away!", style: .default) { (alertAction) in
+            print("give away")
+            self.segueNum = 4
+            self.performSegue(withIdentifier: "scanner", sender: self.scanBadgeButton)
+        }
+        if isClubAdmin {
+            alert.addAction(editAction)
+            alert.addAction(giveAction)
+        }
+        alert.addAction(okAction)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     //********************CLUB ANNOUNCEMENTS********************
     //Set up the header/Club details
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as! clubHeaderViewCell
-            view.badgeData = badgeData
             view.badgeImgs = badgeImgs
+            view.delegate = self
+            view.isClubAdmin = isClubAdmin
+            
             
             if badgeImgs.count == 0 {
                 view.badgesCollectionHeight.constant = 0
@@ -1103,6 +1131,8 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                 clubListDidUpdateClubDetails.clubAdminUpdatedData = true
                 self.refreshList()
             }
+        case 4:
+            break
         default:
             print("welp")
         }

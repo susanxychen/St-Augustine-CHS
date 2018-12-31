@@ -33,6 +33,7 @@
 		B958A26421C4023A00726345 /* cafeMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A26321C4023A00726345 /* cafeMenuController.swift */; };
 		B958A26621C4036B00726345 /* cafemenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A26521C4036B00726345 /* cafemenuCell.swift */; };
 		B958FB54218FC582004C99F0 /* clubListFooterViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958FB53218FC582004C99F0 /* clubListFooterViewCell.swift */; };
+		B95D36A121DAC1270037903F /* badgeScannerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95D36A021DAC1270037903F /* badgeScannerController.swift */; };
 		B961425021B6193F0070F27B /* suggestASongController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B961424F21B6193F0070F27B /* suggestASongController.swift */; };
 		B96F9F2321C876FE00A841C9 /* Scada-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B96F9F2221C876E700A841C9 /* Scada-Bold.ttf */; };
 		B96F9F2421C8770000A841C9 /* Scada-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B96F9F1F21C876E600A841C9 /* Scada-BoldItalic.ttf */; };
@@ -46,7 +47,6 @@
 		B98F3C6A21C990A9000D8F07 /* updatePrivacyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98F3C6921C990A9000D8F07 /* updatePrivacyController.swift */; };
 		B995CFF4218F8600004970E0 /* editClubDetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B995CFF3218F8600004970E0 /* editClubDetailsController.swift */; };
 		B9AC701321C1A19E00FEF5EF /* clubBadgeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AC701221C1A19D00FEF5EF /* clubBadgeCell.swift */; };
-		B9AC701521C1B52C00FEF5EF /* cafeImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AC701421C1B52C00FEF5EF /* cafeImageController.swift */; };
 		B9ACA1EA2175499100302C4B /* signInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACA1E92175499100302C4B /* signInController.swift */; };
 		B9ACA1EC21755BBD00302C4B /* settingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACA1EB21755BBD00302C4B /* settingsController.swift */; };
 		B9ACA1EE2175825800302C4B /* failedLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACA1ED2175825800302C4B /* failedLoginController.swift */; };
@@ -123,6 +123,7 @@
 		B958A26321C4023A00726345 /* cafeMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cafeMenuController.swift; sourceTree = "<group>"; };
 		B958A26521C4036B00726345 /* cafemenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cafemenuCell.swift; sourceTree = "<group>"; };
 		B958FB53218FC582004C99F0 /* clubListFooterViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubListFooterViewCell.swift; sourceTree = "<group>"; };
+		B95D36A021DAC1270037903F /* badgeScannerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = badgeScannerController.swift; sourceTree = "<group>"; };
 		B961424F21B6193F0070F27B /* suggestASongController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = suggestASongController.swift; sourceTree = "<group>"; };
 		B96F9F1F21C876E600A841C9 /* Scada-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Scada-BoldItalic.ttf"; sourceTree = "<group>"; };
 		B96F9F2021C876E600A841C9 /* Scada-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Scada-Italic.ttf"; sourceTree = "<group>"; };
@@ -136,7 +137,6 @@
 		B98F3C6921C990A9000D8F07 /* updatePrivacyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = updatePrivacyController.swift; sourceTree = "<group>"; };
 		B995CFF3218F8600004970E0 /* editClubDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = editClubDetailsController.swift; sourceTree = "<group>"; };
 		B9AC701221C1A19D00FEF5EF /* clubBadgeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubBadgeCell.swift; sourceTree = "<group>"; };
-		B9AC701421C1B52C00FEF5EF /* cafeImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cafeImageController.swift; sourceTree = "<group>"; };
 		B9ACA1E92175499100302C4B /* signInController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = signInController.swift; sourceTree = "<group>"; };
 		B9ACA1EB21755BBD00302C4B /* settingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingsController.swift; sourceTree = "<group>"; };
 		B9ACA1ED2175825800302C4B /* failedLoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = failedLoginController.swift; sourceTree = "<group>"; };
@@ -250,10 +250,10 @@
 				B94B173E21A0AC5C00BCD86A /* SignInPrefController.swift */,
 				B93F208F21738E5100279829 /* menuController.swift */,
 				B958A26321C4023A00726345 /* cafeMenuController.swift */,
-				B9AC701421C1B52C00FEF5EF /* cafeImageController.swift */,
 				B9876BAD217AC9E800D57C16 /* clubListController.swift */,
 				B90669C92186ACF100CAA824 /* addClubController.swift */,
 				B9118FA3218A653200CE4C6A /* clubGoodController.swift */,
+				B95D36A021DAC1270037903F /* badgeScannerController.swift */,
 				B995CFF3218F8600004970E0 /* editClubDetailsController.swift */,
 				B9AE583F21D563990067B904 /* clubPendingController.swift */,
 				B9AE584321D582F00067B904 /* clubMembersController.swift */,
@@ -623,6 +623,7 @@
 				B9FECBFD2190C79D0006CCE3 /* allExtensions.swift in Sources */,
 				B9876BAE217AC9E800D57C16 /* clubListController.swift in Sources */,
 				B93F209021738E5100279829 /* menuController.swift in Sources */,
+				B95D36A121DAC1270037903F /* badgeScannerController.swift in Sources */,
 				B9ACA1EA2175499100302C4B /* signInController.swift in Sources */,
 				B9118FA4218A653200CE4C6A /* clubGoodController.swift in Sources */,
 				B9AE584621D585930067B904 /* adminCell.swift in Sources */,
@@ -646,7 +647,6 @@
 				B93258A62186313300605689 /* clubNewsViewCell.swift in Sources */,
 				B90669C82186851800CAA824 /* addAnncController.swift in Sources */,
 				B958A26621C4036B00726345 /* cafemenuCell.swift in Sources */,
-				B9AC701521C1B52C00FEF5EF /* cafeImageController.swift in Sources */,
 				B918546C21B4B26500DA14F5 /* profilePicController.swift in Sources */,
 				B9AE584221D565450067B904 /* pendingListCell.swift in Sources */,
 				B9FECBFF219131E30006CCE3 /* socialController.swift in Sources */,

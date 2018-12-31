@@ -22,9 +22,13 @@ class clubHeaderViewCell: UICollectionViewCell, UICollectionViewDataSource, UICo
     @IBOutlet weak var badgesCollectionView: UICollectionView!
     @IBOutlet weak var badgesCollectionHeight: NSLayoutConstraint!
     
+    var isClubAdmin = false
+    
     //Badges
-    var badgeData = [[String:Any]]()
+    //var badgeData = [[String:Any]]()
     var badgeImgs = [UIImage]()
+    
+    var delegate: HeaderCellDelegate?
     
     //***********************************FORMATTING THE BADGES*************************************
     //RETURN Badge COUNT
@@ -42,11 +46,7 @@ class clubHeaderViewCell: UICollectionViewCell, UICollectionViewDataSource, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let alert = UIAlertController(title: badgeData[indexPath.item]["desc"] as? String, message: nil, preferredStyle: .alert)
-        alert.addImage(image: badgeImgs[indexPath.item])
-        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alert.addAction(okAction)
-        UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
-        print(badgeData[indexPath.item])
+        print("did select \(indexPath.item)")
+        self.delegate?.badgeWasPressed(index: indexPath.item)
     }
 }

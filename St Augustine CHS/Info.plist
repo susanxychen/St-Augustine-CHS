@@ -83,9 +83,9 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>In order to take photos for announcements and cafe menu, the app need access to your camera</string>
+	<string>In order to use the camera for announcements, badges, etc, the app needs access to your camera</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>In order to upload photos for announcements, the app needs access to your photos</string>
+	<string>In order to upload photos for announcements or banners, the app needs access to your photos</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Scada-Regular.tff</string>
