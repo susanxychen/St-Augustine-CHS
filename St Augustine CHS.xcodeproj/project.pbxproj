@@ -39,6 +39,7 @@
 		B96F9F2421C8770000A841C9 /* Scada-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B96F9F1F21C876E600A841C9 /* Scada-BoldItalic.ttf */; };
 		B96F9F2521C8770200A841C9 /* Scada-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B96F9F2021C876E600A841C9 /* Scada-Italic.ttf */; };
 		B96F9F2621C8770400A841C9 /* Scada-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B96F9F2121C876E700A841C9 /* Scada-Regular.ttf */; };
+		B976A86421DAD65F0004B3E6 /* SRCopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B976A86321DAD65F0004B3E6 /* SRCopyableLabel.swift */; };
 		B97CDA492176DCFE00F7F685 /* newsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97CDA482176DCFE00F7F685 /* newsViewCell.swift */; };
 		B9876BAE217AC9E800D57C16 /* clubListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9876BAD217AC9E800D57C16 /* clubListController.swift */; };
 		B9876BB2217ACC5300D57C16 /* clubViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9876BB1217ACC5300D57C16 /* clubViewCell.swift */; };
@@ -129,6 +130,7 @@
 		B96F9F2021C876E600A841C9 /* Scada-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Scada-Italic.ttf"; sourceTree = "<group>"; };
 		B96F9F2121C876E700A841C9 /* Scada-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Scada-Regular.ttf"; sourceTree = "<group>"; };
 		B96F9F2221C876E700A841C9 /* Scada-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Scada-Bold.ttf"; sourceTree = "<group>"; };
+		B976A86321DAD65F0004B3E6 /* SRCopyableLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRCopyableLabel.swift; sourceTree = "<group>"; };
 		B97CDA482176DCFE00F7F685 /* newsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = newsViewCell.swift; sourceTree = "<group>"; };
 		B9876BAD217AC9E800D57C16 /* clubListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubListController.swift; sourceTree = "<group>"; };
 		B9876BB1217ACC5300D57C16 /* clubViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubViewCell.swift; sourceTree = "<group>"; };
@@ -239,10 +241,10 @@
 			children = (
 				B96F9F1E21C876C500A841C9 /* Fonts */,
 				B93F209421738E5500279829 /* Assets.xcassets */,
+				B976A86521DAD67A0004B3E6 /* Extensions and Subclasses */,
 				B93F209621738E5500279829 /* LaunchScreen.storyboard */,
 				B93F209121738E5100279829 /* Main.storyboard */,
 				B93F208D21738E5100279829 /* AppDelegate.swift */,
-				B9FECBFC2190C79D0006CCE3 /* allExtensions.swift */,
 				B9ACA1ED2175825800302C4B /* failedLoginController.swift */,
 				B9ACA1E92175499100302C4B /* signInController.swift */,
 				B94B173C21A0AB9D00BCD86A /* SignInCoursesController.swift */,
@@ -328,6 +330,15 @@
 				B9AE584721D5859F0067B904 /* memberCell.swift */,
 			);
 			path = Cell;
+			sourceTree = "<group>";
+		};
+		B976A86521DAD67A0004B3E6 /* Extensions and Subclasses */ = {
+			isa = PBXGroup;
+			children = (
+				B976A86321DAD65F0004B3E6 /* SRCopyableLabel.swift */,
+				B9FECBFC2190C79D0006CCE3 /* allExtensions.swift */,
+			);
+			path = "Extensions and Subclasses";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -630,6 +641,7 @@
 				B958069D218209AA00B3EE70 /* songReqController.swift in Sources */,
 				B97CDA492176DCFE00F7F685 /* newsViewCell.swift in Sources */,
 				B958069F21821EA400B3EE70 /* songViewCell.swift in Sources */,
+				B976A86421DAD65F0004B3E6 /* SRCopyableLabel.swift in Sources */,
 				B98BB1B321CB061000AD6167 /* mainClubNewsCell.swift in Sources */,
 				B9FECC012191337F0006CCE3 /* badgesViewCell.swift in Sources */,
 				B98F3C6A21C990A9000D8F07 /* updatePrivacyController.swift in Sources */,

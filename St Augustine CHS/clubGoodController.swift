@@ -65,8 +65,10 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     
     //Badges
     var badgeData = [[String:Any]]()
+    var badgeIDs = [String]()
     var badgeImgs = [UIImage]()
     @IBOutlet weak var scanBadgeButton: UIButton!
+    var theSelectedBadgeID: String!
     
     //Pending
     @IBOutlet weak var pendingButton: UIButton!
@@ -308,6 +310,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     //********************************BADGES*********************************
     func getBadgeDocs(){
         badgeData.removeAll()
+        badgeIDs.removeAll()
         db.collection("badges").whereField("club", isEqualTo: clubID).getDocuments { (snap, err) in
             if let err = err {
                 let alert = UIAlertController(title: "Error in retrieveing some club images", message: "Please try again later. \(err.localizedDescription)", preferredStyle: .alert)
@@ -321,10 +324,12 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                     for _ in snap!.documents {
                         print("appending")
                         self.badgeData.append(["err":"err"])
+                        self.badgeIDs.append("")
                     }
                     for x in 0...snap!.documents.count - 1 {
                         let data = snap?.documents[x].data()
                         self.badgeData[x] = data!
+                        self.badgeIDs[x] = snap?.documents[x].documentID ?? "Error"
                         if x == snap!.documents.count - 1 {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
                                 self.getBadgesImages()
@@ -341,8 +346,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         for _ in badgeData {
             badgeImgs.append(UIImage())
         }
-//        print(badgeData)
-//        print(badgeImgs)
+        
         for i in 0...badgeImgs.count - 1 {
             let name = badgeData[i]["img"] as? String ?? "Error"
             //Image
@@ -780,6 +784,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         let giveAction = UIAlertAction(title: "Give Away!", style: .default) { (alertAction) in
             print("give away")
             self.segueNum = 4
+            self.theSelectedBadgeID = self.badgeIDs[index]
             self.performSegue(withIdentifier: "scanner", sender: self.scanBadgeButton)
         }
         if isClubAdmin {
@@ -1132,6 +1137,8 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                 self.refreshList()
             }
         case 4:
+            let vc = segue.destination as! badgeScannerController
+            vc.badgeID = theSelectedBadgeID
             break
         default:
             print("welp")

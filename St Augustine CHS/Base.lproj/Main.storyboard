@@ -2028,7 +2028,7 @@
                                                                         <constraint firstAttribute="height" constant="64" id="aka-De-oRh"/>
                                                                     </constraints>
                                                                 </imageView>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="swP-9f-AM8">
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="swP-9f-AM8" customClass="SRCopyableLabel" customModule="St_Augustine_CHS" customModuleProvider="target">
                                                                     <rect key="frame" x="80" y="32" width="287" height="32"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="32" id="Kds-QJ-SMC"/>
@@ -2107,7 +2107,7 @@
                                                                         <constraint firstAttribute="width" constant="64" id="har-H5-XQs"/>
                                                                     </constraints>
                                                                 </imageView>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="nhT-Ne-Jlj">
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="nhT-Ne-Jlj" customClass="SRCopyableLabel" customModule="St_Augustine_CHS" customModuleProvider="target">
                                                                     <rect key="frame" x="80" y="32" width="287" height="32"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="32" id="3px-OU-Z8u"/>

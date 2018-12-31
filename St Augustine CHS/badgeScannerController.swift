@@ -8,9 +8,16 @@
 
 import UIKit
 import AVFoundation
+import Firebase
 
 class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 
+    //The Database
+    var db: Firestore!
+    var docRef: DocumentReference!
+    
+    var badgeID: String!
+    
     @IBOutlet weak var theCameraView: UIView!
     
     var video = AVCaptureVideoPreviewLayer()
@@ -21,6 +28,15 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
     //https://www.youtube.com/watch?v=4Zf9dHDJ2yU
     override func viewDidLoad() {
         super.viewDidLoad()
+        //Set Up
+        // [START setup]
+        let settings = FirestoreSettings()
+        settings.areTimestampsInSnapshotsEnabled = true
+        Firestore.firestore().settings = settings
+        // [END setup]
+        db = Firestore.firestore()
+        
+        print(badgeID)
         
         //The camera
         let captureDevice = AVCaptureDevice.default(for: .video)
@@ -49,13 +65,20 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
         if metadataObjects.count != 0 {
             if let object = metadataObjects[0] as? AVMetadataMachineReadableCodeObject {
                 if object.type == AVMetadataObject.ObjectType.qr {
-                    self.session.stopRunning()
-                    let alert = UIAlertController(title: "Student", message: object.stringValue, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "Retake", style: .default, handler: { (alert) in
-                        self.session.startRunning()
-                    }))
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
+                    if let message = object.stringValue {
+                        self.session.stopRunning()
+                        let alert = UIAlertController(title: "Student", message: message, preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "Retake", style: .default, handler: { (alert) in
+                            self.session.startRunning()
+                        }))
+                        alert.addAction(UIAlertAction(title: "Give Badge", style: .default, handler: { (alert) in
+                            let userRef = self.db.collection("users").document(message)
+                            userRef.updateData([
+                                "badges": FieldValue.arrayUnion([self.badgeID])
+                            ])
+                        }))
+                        self.present(alert, animated: true, completion: nil)
+                    }
                 }
             }
         }
