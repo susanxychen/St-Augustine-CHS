@@ -391,3 +391,18 @@ extension Sequence where Iterator.Element == Character {
         return String(self).utf8.map{UInt8($0)}
     }
 }
+
+extension UIScreen {
+    private static let step: CGFloat = 0.005
+    
+    static func animateBrightness(to value: CGFloat) {
+        guard abs(UIScreen.main.brightness - value) > step else { return }
+        
+        let delta = UIScreen.main.brightness > value ? -step : step
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.003) {
+            UIScreen.main.brightness += delta
+            animateBrightness(to: value)
+        }
+    }
+}

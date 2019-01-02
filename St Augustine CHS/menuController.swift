@@ -82,9 +82,13 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     //Calendar Vars
     @IBOutlet weak var calendarButton: UIButton!
     
+    //Titan Tag Brightness
+    var brightnessBeforeTT:CGFloat = 0
+    
     //***********************************SETTING UP EVERYTHING****************************************
     override func viewDidLoad() {
         super.viewDidLoad()
+        brightnessBeforeTT = UIScreen.main.brightness
         calendarButton.isHidden = true
         viewAboveAllViews.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.7)
         viewAboveAllViews.frame = UIApplication.shared.keyWindow!.frame
@@ -249,6 +253,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        print("i come back")
+        //Adjust the brightness back to whatever it was
+        UIScreen.animateBrightness(to: brightnessBeforeTT)
         profilePicture.image = allUserFirebaseData.profilePic
     }
     

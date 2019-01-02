@@ -706,17 +706,19 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                 print("Removing \(idsToRemove) x: \(x)")
                 x.remove(at: idsToRemove)
                 
-                let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-                guard let items = try? FileManager.default.contentsOfDirectory(atPath: path) else { return }
-                
-                for index in idsToRemove {
-                    let imageName = x[index]
-                    for item in items {
-                        // This can be made better by using pathComponent
-                        let completePath = path.appending("/").appending(item)
-                        if completePath.hasSuffix(imageName) {
-                            print("removing \(imageName)")
-                            try? FileManager.default.removeItem(atPath: completePath)
+                if x.count > 0 {
+                    let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+                    guard let items = try? FileManager.default.contentsOfDirectory(atPath: path) else { return }
+                    
+                    for index in idsToRemove {
+                        let imageName = x[index]
+                        for item in items {
+                            // This can be made better by using pathComponent
+                            let completePath = path.appending("/").appending(item)
+                            if completePath.hasSuffix(imageName) {
+                                print("removing \(imageName)")
+                                try? FileManager.default.removeItem(atPath: completePath)
+                            }
                         }
                     }
                 }

@@ -696,14 +696,22 @@
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                         <state key="normal" title="Cancel"/>
                                         <connections>
-                                            <action selector="cancelPressed:" destination="GuW-yK-lWm" eventType="touchUpInside" id="hFj-XJ-D3e"/>
+                                            <action selector="cancelPressed:" destination="GuW-yK-lWm" eventType="touchUpInside" id="rdM-Zo-FlH"/>
                                         </connections>
                                     </button>
+                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="test" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="SFt-pS-bMH">
+                                        <rect key="frame" x="346.5" y="17.5" width="20.5" height="13.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" red="0.5" green="0.0767248403" blue="0.1712033674" alpha="0.94804152399999997" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="DD8-XA-Vfy" secondAttribute="bottom" id="58f-ew-Aqr"/>
                                     <constraint firstItem="DD8-XA-Vfy" firstAttribute="leading" secondItem="7rf-Ok-wz8" secondAttribute="leading" constant="8" id="EJm-vX-qId"/>
+                                    <constraint firstAttribute="bottom" secondItem="SFt-pS-bMH" secondAttribute="bottom" constant="4" id="eHz-iw-l5B"/>
+                                    <constraint firstAttribute="trailing" secondItem="SFt-pS-bMH" secondAttribute="trailing" constant="8" id="nGr-dJ-tgO"/>
                                     <constraint firstAttribute="height" constant="35" id="puJ-CX-hzY"/>
                                 </constraints>
                             </view>
@@ -733,7 +741,10 @@
                         <viewLayoutGuide key="safeArea" id="maF-9T-k9x"/>
                     </view>
                     <connections>
+                        <outlet property="cancelButtonItself" destination="DD8-XA-Vfy" id="up6-DG-8YY"/>
                         <outlet property="theCameraView" destination="IyB-qx-dCp" id="LeS-m3-eGW"/>
+                        <outlet property="theTestLabel" destination="SFt-pS-bMH" id="bmu-U1-bK0"/>
+                        <outlet property="theViewWithCancel" destination="7rf-Ok-wz8" id="JVu-s8-ZFw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qwk-sh-xcz" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2554,7 +2565,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RYb-DO-qDC">
-                                <rect key="frame" x="144" y="386" width="87" height="40"/>
+                                <rect key="frame" x="144" y="388" width="87" height="38"/>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="22"/>
                                 <state key="normal" title="Go Back">
                                     <color key="titleColor" red="0.70672154389999997" green="0.54701480290000004" blue="0.091173238470000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -3695,32 +3706,61 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UC0-Tz-1Ib">
-                                <rect key="frame" x="62.5" y="104" width="250" height="250"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="250" id="7MR-vK-F32"/>
-                                    <constraint firstAttribute="height" constant="250" id="ZCg-Dj-HPo"/>
-                                </constraints>
-                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This is your personal Titan Tag. You can get it scanned by club admins at events to get badges" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4pC-zz-896">
-                                <rect key="frame" x="16" y="370" width="343" height="71"/>
+                                <rect key="frame" x="16" y="375" width="343" height="71"/>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="19"/>
                                 <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BlX-wA-KMV">
+                                <rect key="frame" x="63" y="91" width="249" height="249"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UC0-Tz-1Ib">
+                                        <rect key="frame" x="0.0" y="0.0" width="249" height="249"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="stalogo" translatesAutoresizingMaskIntoConstraints="NO" id="O45-wa-gLp">
+                                        <rect key="frame" x="89" y="89" width="71" height="71"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="O45-wa-gLp" secondAttribute="height" multiplier="1:1" id="B5D-kb-sq1"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="O45-wa-gLp" firstAttribute="centerX" secondItem="UC0-Tz-1Ib" secondAttribute="centerX" id="9sw-bh-kqz"/>
+                                    <constraint firstItem="O45-wa-gLp" firstAttribute="top" secondItem="BlX-wA-KMV" secondAttribute="top" constant="89" id="FP8-Zl-534"/>
+                                    <constraint firstItem="O45-wa-gLp" firstAttribute="centerY" secondItem="UC0-Tz-1Ib" secondAttribute="centerY" id="PSZ-uq-1QR"/>
+                                    <constraint firstAttribute="bottom" secondItem="UC0-Tz-1Ib" secondAttribute="bottom" id="RFM-TI-nMQ"/>
+                                    <constraint firstAttribute="trailing" secondItem="UC0-Tz-1Ib" secondAttribute="trailing" id="SPm-Rq-KRy"/>
+                                    <constraint firstItem="UC0-Tz-1Ib" firstAttribute="top" secondItem="BlX-wA-KMV" secondAttribute="top" id="ZtS-fU-ddG"/>
+                                    <constraint firstAttribute="width" secondItem="BlX-wA-KMV" secondAttribute="height" multiplier="1:1" id="bLt-yW-nxQ"/>
+                                    <constraint firstItem="UC0-Tz-1Ib" firstAttribute="leading" secondItem="BlX-wA-KMV" secondAttribute="leading" id="dTJ-xA-wud"/>
+                                </constraints>
+                            </view>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="you" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uHo-wd-l83">
+                                <rect key="frame" x="16" y="623" width="343" height="24"/>
+                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="19"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="5JL-88-cyF" firstAttribute="trailing" secondItem="4pC-zz-896" secondAttribute="trailing" constant="16" id="BWc-ET-IdM"/>
-                            <constraint firstItem="4pC-zz-896" firstAttribute="top" secondItem="UC0-Tz-1Ib" secondAttribute="bottom" constant="16" id="F4M-yf-jkV"/>
-                            <constraint firstItem="UC0-Tz-1Ib" firstAttribute="top" secondItem="5JL-88-cyF" secondAttribute="top" constant="40" id="e7H-F7-d3W"/>
-                            <constraint firstItem="4pC-zz-896" firstAttribute="leading" secondItem="5JL-88-cyF" secondAttribute="leading" constant="16" id="gyi-n9-EKo"/>
-                            <constraint firstItem="UC0-Tz-1Ib" firstAttribute="centerX" secondItem="weU-Yh-LYT" secondAttribute="centerX" id="j3b-Bd-bya"/>
+                            <constraint firstItem="BlX-wA-KMV" firstAttribute="top" secondItem="5JL-88-cyF" secondAttribute="top" constant="27" id="0BT-IA-OaA"/>
+                            <constraint firstItem="uHo-wd-l83" firstAttribute="leading" secondItem="5JL-88-cyF" secondAttribute="leading" constant="16" id="9Dg-uL-ecE"/>
+                            <constraint firstItem="5JL-88-cyF" firstAttribute="bottom" secondItem="uHo-wd-l83" secondAttribute="bottom" constant="20" id="NgU-We-6rs"/>
+                            <constraint firstItem="BlX-wA-KMV" firstAttribute="centerX" secondItem="4pC-zz-896" secondAttribute="centerX" id="PcP-un-93d"/>
+                            <constraint firstItem="5JL-88-cyF" firstAttribute="trailing" secondItem="4pC-zz-896" secondAttribute="trailing" constant="16" id="Ph8-L2-dVc"/>
+                            <constraint firstItem="5JL-88-cyF" firstAttribute="trailing" secondItem="uHo-wd-l83" secondAttribute="trailing" constant="16" id="SOg-XT-8pN"/>
+                            <constraint firstItem="4pC-zz-896" firstAttribute="top" secondItem="BlX-wA-KMV" secondAttribute="bottom" constant="35" id="bXX-nY-dwQ"/>
+                            <constraint firstItem="BlX-wA-KMV" firstAttribute="leading" secondItem="5JL-88-cyF" secondAttribute="leading" constant="63" id="iWd-vE-zhX"/>
+                            <constraint firstItem="4pC-zz-896" firstAttribute="leading" secondItem="5JL-88-cyF" secondAttribute="leading" constant="16" id="uyy-l0-xDC"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="5JL-88-cyF"/>
                     </view>
                     <connections>
                         <outlet property="qrImageView" destination="UC0-Tz-1Ib" id="4WN-IH-4is"/>
+                        <outlet property="theGreetingLabel" destination="uHo-wd-l83" id="KZD-5K-IOt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="M4j-8I-oUg" userLabel="First Responder" sceneMemberID="firstResponder"/>

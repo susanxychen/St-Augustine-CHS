@@ -19,11 +19,13 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
     var badgeID: String!
     
     @IBOutlet weak var theCameraView: UIView!
+    @IBOutlet weak var theViewWithCancel: UIView!
+    @IBOutlet weak var cancelButtonItself: UIButton!
     
-    var video = AVCaptureVideoPreviewLayer()
+    @IBOutlet weak var theTestLabel: UILabel!
     
-    //The session/video
-    let session = AVCaptureSession()
+    var captureSession: AVCaptureSession!
+    var previewLayer: AVCaptureVideoPreviewLayer!
     
     //https://www.youtube.com/watch?v=4Zf9dHDJ2yU
     override func viewDidLoad() {
@@ -36,86 +38,124 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
         // [END setup]
         db = Firestore.firestore()
         
-        print(badgeID)
+        print(badgeID!)
         
-        //The camera
-        let captureDevice = AVCaptureDevice.default(for: .video)
-        
-        do {
-            let input = try AVCaptureDeviceInput(device: captureDevice!)
-            session.addInput(input)
-        } catch {
-            print("Error")
+        if allUserFirebaseData.data["status"] as! Int == 2 {
+            theTestLabel.isHidden = false
         }
         
-        let output = AVCaptureMetadataOutput()
-        session.addOutput(output)
+        theViewWithCancel.bringSubviewToFront(cancelButtonItself)
+        view.bringSubviewToFront(cancelButtonItself)
         
-        output.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-        output.metadataObjectTypes = [AVMetadataObject.ObjectType.qr]
+        captureSession = AVCaptureSession()
         
-        video = AVCaptureVideoPreviewLayer(session: session)
-        video.frame = theCameraView.layer.bounds
-        theCameraView.layer.addSublayer(video)
+        guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else { return }
+        let videoInput: AVCaptureDeviceInput
         
-        session.startRunning()
+        do {
+            videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
+        } catch {
+            return
+        }
+        
+        if (captureSession.canAddInput(videoInput)) {
+            captureSession.addInput(videoInput)
+        } else {
+            failed()
+            return
+        }
+        
+        let metadataOutput = AVCaptureMetadataOutput()
+        
+        if (captureSession.canAddOutput(metadataOutput)) {
+            captureSession.addOutput(metadataOutput)
+            
+            metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+            metadataOutput.metadataObjectTypes = [.qr]
+        } else {
+            failed()
+            return
+        }
+        
+        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer.frame = view.layer.bounds
+        previewLayer.videoGravity = .resizeAspectFill
+        theCameraView.layer.addSublayer(previewLayer)
+        
+        captureSession.startRunning()
+    }
+    
+    func failed() {
+        let ac = UIAlertController(title: "Scanning not supported", message: "Your device does not support scanning a code from an item. Please use a device with a camera.", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        present(ac, animated: true)
+        captureSession = nil
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if (captureSession?.isRunning == false) {
+            captureSession.startRunning()
+        }
     }
     
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-        if metadataObjects.count != 0 {
-            if let object = metadataObjects[0] as? AVMetadataMachineReadableCodeObject {
-                if object.type == AVMetadataObject.ObjectType.qr {
-                    if let message = object.stringValue {
-                        print("The message \(message)")
-                        var email = self.decode(data: message)
-                        print("The email \(email)")
-                        
-                        //Check to see if something went wrong while decoding as the tag should only have normal characters
-                        let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.@")
-                        if email.rangeOfCharacter(from: characterset.inverted) != nil {
-                            print("string contains special characters")
+        if let metadataObject = metadataObjects.first {
+            guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
+            guard let stringValue = readableObject.stringValue else { return }
+            found(code: stringValue)
+        }
+    }
+    
+    func found(code: String) {
+        var email = self.decode(data: code)
+        let time: Int = Int(Date().timeIntervalSince1970 / 5)
+        print("c: \(code) m: \(email) t: \(time)")
+        theTestLabel.text = ("c: \(code) m: \(email) t: \(time)")
+        
+        //Check to see if something went wrong while decoding as the tag should only have normal characters
+        let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.@")
+        if email.rangeOfCharacter(from: characterset.inverted) != nil {
+            //there are special characters
+        } else {
+            captureSession.stopRunning()
+            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+            if !email.hasSuffix("@ycdsbk12.ca") {
+                email = email + "@ycdsbk12.ca"
+            }
+
+            let alert = UIAlertController(title: "Student", message: email, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Retake", style: .default, handler: { (alert) in
+                self.captureSession.startRunning()
+            }))
+            alert.addAction(UIAlertAction(title: "Give Badge", style: .default, handler: { (alert) in
+                self.db.collection("users").whereField("email", isEqualTo: email).getDocuments(completion: { (snap, err) in
+                    if let error = err {
+                        let alert = UIAlertController(title: "Error in retrieveing Club Data", message: "Error \(error.localizedDescription)", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (alert) in
+                            self.captureSession.startRunning()
+                        }))
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                    if let snap = snap {
+                        if snap.documents.count == 1 {
+                            let userRef = self.db.collection("users").document(snap.documents[0].documentID)
+                            userRef.updateData([
+                                "badges": FieldValue.arrayUnion([self.badgeID])
+                                ])
+                            print("successfuly gave badge")
+                            self.dismiss(animated: true, completion: nil)
                         } else {
-                            if !email.hasSuffix("@ycdsbk12.ca") {
-                                email = email + "@ycdsbk12.ca"
-                            }
-                            self.session.stopRunning()
-                            
-                            let alert = UIAlertController(title: "Student", message: email, preferredStyle: .alert)
-                            alert.addAction(UIAlertAction(title: "Retake", style: .default, handler: { (alert) in
-                                self.session.startRunning()
-                            }))
-                            alert.addAction(UIAlertAction(title: "Give Badge", style: .default, handler: { (alert) in
-                                self.db.collection("users").whereField("email", isEqualTo: email).getDocuments(completion: { (snap, err) in
-                                    if let error = err {
-                                        let alert = UIAlertController(title: "Error in retrieveing Club Data", message: "Error \(error.localizedDescription)", preferredStyle: .alert)
-                                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (alert) in
-                                            self.session.startRunning()
-                                        }))
-                                        self.present(alert, animated: true, completion: nil)
-                                    }
-                                    if let snap = snap {
-                                        if snap.documents.count == 1 {
-                                            let userRef = self.db.collection("users").document(snap.documents[0].documentID)
-                                            userRef.updateData([
-                                                "badges": FieldValue.arrayUnion([self.badgeID])
-                                                ])
-                                            print("successfuly gave badge")
-                                            self.dismiss(animated: true, completion: nil)
-                                        } else {
-                                            let alert = UIAlertController(title: "Error in giving badges", message: "No user found with \(email)", preferredStyle: .alert)
-                                            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (alert) in
-                                                self.session.startRunning()
-                                            }))
-                                            self.present(alert, animated: true, completion: nil)
-                                        }
-                                    }
-                                })
+                            let alert = UIAlertController(title: "Error in giving badges", message: "No user found with \(email)", preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (alert) in
+                                self.captureSession.startRunning()
                             }))
                             self.present(alert, animated: true, completion: nil)
                         }
                     }
-                }
-            }
+                })
+            }))
+            self.present(alert, animated: true, completion: nil)
         }
     }
     
@@ -134,6 +174,8 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
     }
     
     @IBAction func cancelPressed(_ sender: Any) {
+        print("I cancel")
         self.dismiss(animated: true, completion: nil)
     }
+    
 }

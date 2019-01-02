@@ -12,28 +12,39 @@ import Firebase
 class titanTagController: UIViewController {
 
     @IBOutlet weak var qrImageView: UIImageView!
-    
-    var theTime = 0
+    @IBOutlet weak var theGreetingLabel: UILabel! //the lower hidden one
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        theTime = Int(Date().timeIntervalSince1970 / 5)
         
+        if allUserFirebaseData.data["status"] as! Int == 2 {
+            theGreetingLabel.isHidden = false
+        }
+        
+        UIScreen.animateBrightness(to: 1)
+        
+        update()
+        _ = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
+    }
+    
+    @objc func update() {
         DispatchQueue.main.async {
             let email = Auth.auth().currentUser?.email?.split(separator: "@")
             let emailAfterSplit = String(email?[0] ?? "Error")
-            print("Encoding \(emailAfterSplit)")
+            //print("Encoding \(emailAfterSplit)")
             let encoded = self.encode(data: emailAfterSplit)
-            print("kenn en: \(encoded)")
+            //print("kenn en: \(encoded)")
+            
+            let time: Int = Int(Date().timeIntervalSince1970 / 5)
+            self.theGreetingLabel.text = "m:\(emailAfterSplit) c: \(encoded) t: \(time)"
             
             let image = self.generateQRCode(from: encoded)
             self.qrImageView.image = image
-            
+
             //print("kenn de: \(self.decode(data: encoded))")
         }
     }
     
-    //This is right
     func encode(data: String) -> String {
         let time: Int = Int(Date().timeIntervalSince1970 / 5)
         let btyeArray: [UInt8] = Array(data.utf8)
@@ -61,17 +72,33 @@ class titanTagController: UIViewController {
 //    }
     
     func generateQRCode(from string: String) -> UIImage? {
-        print("Generating from \(string)")
+        //print("Generating from \(string)")
         let data = string.data(using: String.Encoding.utf8)
         if let filter = CIFilter(name: "CIQRCodeGenerator") {
             filter.setValue(data, forKey: "inputMessage")
-            let transform = CGAffineTransform(scaleX: 3, y: 3)
             
-            if let output = filter.outputImage?.transformed(by: transform) {
+            //Set the colour of the QR Code
+            guard let colorFilter = CIFilter(name: "CIFalseColor") else { return nil }
+            filter.setValue("H", forKey: "inputCorrectionLevel")
+            colorFilter.setValue(filter.outputImage, forKey: "inputImage")
+            colorFilter.setValue(CIColor(red: 1, green: 1, blue: 1), forKey: "inputColor1") // Background white
+            colorFilter.setValue(CIColor(red: 216/255.0, green: 175/255.0, blue: 28/255.0), forKey: "inputColor0") // Foreground or the barcode colour
+            guard let qrCodeImage = colorFilter.outputImage
+                else {
+                    return nil
+            }
+            
+            //Change its size
+            let scaleX = qrImageView.frame.size.width / qrCodeImage.extent.size.width
+            let scaleY = qrImageView.frame.size.height / qrCodeImage.extent.size.height
+            let transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
+            
+            if let output = colorFilter.outputImage?.transformed(by: transform) {
                 return UIImage(ciImage: output)
             } else {
-                print("Cant return image")
+                print("Cannot process")
             }
+            
         }
         return nil
     }
