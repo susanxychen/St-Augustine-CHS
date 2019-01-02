@@ -66,22 +66,71 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
             if let object = metadataObjects[0] as? AVMetadataMachineReadableCodeObject {
                 if object.type == AVMetadataObject.ObjectType.qr {
                     if let message = object.stringValue {
-                        self.session.stopRunning()
-                        let alert = UIAlertController(title: "Student", message: message, preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: "Retake", style: .default, handler: { (alert) in
-                            self.session.startRunning()
-                        }))
-                        alert.addAction(UIAlertAction(title: "Give Badge", style: .default, handler: { (alert) in
-                            let userRef = self.db.collection("users").document(message)
-                            userRef.updateData([
-                                "badges": FieldValue.arrayUnion([self.badgeID])
-                            ])
-                        }))
-                        self.present(alert, animated: true, completion: nil)
+                        print("The message \(message)")
+                        var email = self.decode(data: message)
+                        print("The email \(email)")
+                        
+                        //Check to see if something went wrong while decoding as the tag should only have normal characters
+                        let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.@")
+                        if email.rangeOfCharacter(from: characterset.inverted) != nil {
+                            print("string contains special characters")
+                        } else {
+                            if !email.hasSuffix("@ycdsbk12.ca") {
+                                email = email + "@ycdsbk12.ca"
+                            }
+                            self.session.stopRunning()
+                            
+                            let alert = UIAlertController(title: "Student", message: email, preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "Retake", style: .default, handler: { (alert) in
+                                self.session.startRunning()
+                            }))
+                            alert.addAction(UIAlertAction(title: "Give Badge", style: .default, handler: { (alert) in
+                                self.db.collection("users").whereField("email", isEqualTo: email).getDocuments(completion: { (snap, err) in
+                                    if let error = err {
+                                        let alert = UIAlertController(title: "Error in retrieveing Club Data", message: "Error \(error.localizedDescription)", preferredStyle: .alert)
+                                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (alert) in
+                                            self.session.startRunning()
+                                        }))
+                                        self.present(alert, animated: true, completion: nil)
+                                    }
+                                    if let snap = snap {
+                                        if snap.documents.count == 1 {
+                                            let userRef = self.db.collection("users").document(snap.documents[0].documentID)
+                                            userRef.updateData([
+                                                "badges": FieldValue.arrayUnion([self.badgeID])
+                                                ])
+                                            print("successfuly gave badge")
+                                            self.dismiss(animated: true, completion: nil)
+                                        } else {
+                                            let alert = UIAlertController(title: "Error in giving badges", message: "No user found with \(email)", preferredStyle: .alert)
+                                            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (alert) in
+                                                self.session.startRunning()
+                                            }))
+                                            self.present(alert, animated: true, completion: nil)
+                                        }
+                                    }
+                                })
+                            }))
+                            self.present(alert, animated: true, completion: nil)
+                        }
                     }
                 }
             }
         }
+    }
+    
+    func decode(data: String) -> String {
+        let time: Int = Int(Date().timeIntervalSince1970 / 5)
+        let chars = Array(data)
+        var bytes = [UInt8]()
+        for _ in chars {
+            bytes.append(0)
+        }
+        let charAsByteArray = chars.asByteArray()
+        for i in 0..<chars.count {
+            bytes[i] = UInt8(UInt8(charAsByteArray[i]) ^ UInt8(time & 0x000000FF))
+        }
+        return String(bytes: bytes, encoding: .utf8) ?? "Error"
     }
     
     @IBAction func cancelPressed(_ sender: Any) {
