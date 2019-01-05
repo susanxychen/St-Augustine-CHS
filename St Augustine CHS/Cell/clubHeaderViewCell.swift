@@ -17,10 +17,15 @@ class clubHeaderViewCell: UICollectionViewCell, UICollectionViewDataSource, UICo
     @IBOutlet weak var nameHeight: NSLayoutConstraint!
     @IBOutlet weak var descHeight: NSLayoutConstraint!
     @IBOutlet weak var joinClubButton: UIButton!
+    
     @IBOutlet weak var announcmentLabel: UILabel!
+    @IBOutlet weak var badgesLabel: UILabel!
     
     @IBOutlet weak var badgesCollectionView: UICollectionView!
     @IBOutlet weak var badgesCollectionHeight: NSLayoutConstraint!
+    
+    @IBOutlet weak var createBadgeButton: UIButton!
+    @IBOutlet weak var createBadgeHeight: NSLayoutConstraint!
     
     var isClubAdmin = false
     

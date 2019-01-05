@@ -46,6 +46,10 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
     //Returning to club controller
     var promotedAMember : ((Bool) -> Void)?
     
+    //Colours
+    @IBOutlet weak var adminLabel: UILabel!
+    @IBOutlet weak var memberLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //Set Up
@@ -70,6 +74,9 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
             lpgr.delaysTouchesBegan = true
             self.adminsCollectionView.addGestureRecognizer(lpgr)
         }
+        
+        adminLabel.textColor = DefaultColours.primaryColor
+        memberLabel.textColor = DefaultColours.primaryColor
         
         getNames()
     }

@@ -38,6 +38,9 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     @IBOutlet weak var supervoteSlider: UISlider!
     @IBOutlet weak var supervoteDesc: UILabel!
     
+    @IBOutlet weak var spendButton: UIButton!
+    @IBOutlet weak var cancelButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -79,6 +82,11 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         // [END setup]
         db = Firestore.firestore()
         
+        //Colours
+        spendButton.setTitleColor(DefaultColours.accentColor, for: .normal)
+        cancelButton.setTitleColor(DefaultColours.accentColor, for: .normal)
+        supervoteSlider.tintColor = DefaultColours.accentColor
+        
         songView.isHidden = true
         if let x = UserDefaults.standard.object(forKey: "songsVoted") as? [[Any]]{
             //print("Found Default Values: \(x)")
@@ -106,7 +114,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                 supervotedIndex = indexPath.item
                 selectedSuperSongID = voteData.songsVoted[indexPath.item][4] as? String
                 supervoteSongName.text = "Supervote: \(voteData.songsVoted[indexPath.item][1] as? String ?? "Error")"
-                supervoteDesc.text = "Super vote allows you to spend points for votes. You have \(allUserFirebaseData.data["points"] ?? "Error") points"
+                supervoteDesc.text = "Super vote allows you to spend points for votes. You have \(allUserFirebaseData.data["points"] ?? "Error") points. Note it may take a few second to process your vote"
                 supervoteView.isHidden = false
                 self.view.bringSubviewToFront(supervoteView)
                 
@@ -139,6 +147,13 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     //Cloud Functions
     lazy var functions = Functions.functions()
     @IBAction func spendPointsSuper(_ sender: Any) {
+        UIView.animate(withDuration: 0.1, animations: {
+            self.supervoteView.alpha = 0
+        }) { _ in
+            self.supervoteView.isHidden = true
+            self.view.sendSubviewToBack(self.supervoteView)
+        }
+        
         //Take away your points and only upload the song if taken away points
         let user = Auth.auth().currentUser
         self.db.collection("users").document((user?.uid)!).setData([
@@ -176,18 +191,12 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                                 print(details as Any)
                             }
                         }
-                        UIView.animate(withDuration: 0.1, animations: {
-                            self.supervoteView.alpha = 0
-                        }) { _ in
-                            self.supervoteView.isHidden = true
-                            self.view.sendSubviewToBack(self.supervoteView)
-                        }
                         voteData.songsVoted[self.supervotedIndex][0] = 2
                         voteData.songsVoted[self.supervotedIndex][3] = self.supervoteAmount + (voteData.songsVoted[self.supervotedIndex][3] as! Int)
                         UserDefaults.standard.set(voteData.songsVoted, forKey: "songsVoted")
                         print("vote sent to functions")
                         print("Result is: \(String(describing: result?.data))")
-                        self.songView.reloadData()
+                        self.refreshList()
                     }
                 }
             }

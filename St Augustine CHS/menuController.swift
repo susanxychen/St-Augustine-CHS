@@ -30,7 +30,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var menuView: UIView!
     @IBOutlet var homeView: UIView!
-    @IBOutlet weak var gradientSocialView: UIView!
     @IBOutlet weak var tapOutOfMenuButton: UIButton!
     @IBOutlet weak var dateToString: UILabel!
     @IBOutlet weak var dayNumber: UILabel!
@@ -84,6 +83,13 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     //Titan Tag Brightness
     var brightnessBeforeTT:CGFloat = 0
+    
+    //Colors
+    @IBOutlet weak var clubAnnouncementsLabel: UILabel!
+    @IBOutlet weak var dateAndDayView: UIView!
+    @IBOutlet weak var gradientSocialView: UIView!
+    
+    var hasSignedInAtLoadedAtLeastOnce = false
     
     //***********************************SETTING UP EVERYTHING****************************************
     override func viewDidLoad() {
@@ -163,8 +169,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             }
         } else{
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//                self.viewAboveAllViews.removeFromSuperview()
-//                self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
                 print("new user! take em through the sign in flow")
                 self.viewAboveAllViews.removeFromSuperview()
                 self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
@@ -178,9 +182,13 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     //************************************************************************************************
     func getAllStartingInfoAfterSignIn(){
-//        self.navigationController?.navigationBar.titleTextAttributes =
-//            [NSAttributedString.Key.foregroundColor: UIColor.white,
-//             NSAttributedString.Key.font: UIFont(name: "Scada-regular", size: 20)!]
+        InstanceID.instanceID().getID { (result, error) in
+            if let error = error {
+                print("Error fetching remote instange ID: \(error)")
+            } else if let result = result {
+                print("Remote instance ID: \(result)") //POWERRRRRRRRRR
+            }
+        }
         
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 20)!]
         
@@ -213,16 +221,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         profilePicture.layer.cornerRadius = 75/2
         profilePicture.clipsToBounds = true
         
-        let gradient:CAGradientLayer = CAGradientLayer()
-        gradient.frame.size = self.gradientSocialView.frame.size
-        gradient.colors = [UIColor(red: 141/255.0, green: 18/255.0, blue: 48/255.0, alpha: 1.0), UIColor(red: 70/255.0, green: 8/255.0, blue: 23/255.0, alpha: 1.0)] //Or any colors
-        self.gradientSocialView.layer.addSublayer(gradient)
-        
-        //Top Bar Colour
-        navigationController?.navigationBar.barTintColor = UIColor(red: 141/255.0, green: 18/255.0, blue: 48/255.0, alpha: 1.0)
-        //Top Bar Text Colour
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-        
         //Drop Shadow
         menuView.layer.shadowOpacity = 1
         menuView.layer.shadowRadius = 5
@@ -241,22 +239,97 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //Email
         displayEmail.text = user?.email
         
+        setupRemoteConfigDefaults()
+        updateViewWithRCValues()
+        fetchRemoteConfig()
+        
         db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
             if let docSnapshot = docSnapshot {
                 allUserFirebaseData.data = docSnapshot.data()!
+                self.hasSignedInAtLoadedAtLeastOnce = true
                 self.getPicture(i: docSnapshot.data()!["profilePic"] as? Int ?? 0)
                 self.getClubAnncs()
             } else {
                 print("wow u dont exist")
+                let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Try again later?", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: {
+                    self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
+                })
             }
         }
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        print("i come back")
         //Adjust the brightness back to whatever it was
         UIScreen.animateBrightness(to: brightnessBeforeTT)
         profilePicture.image = allUserFirebaseData.profilePic
+        if hasSignedInAtLoadedAtLeastOnce {
+            self.refreshList()
+        }
+    }
+    
+    func setupRemoteConfigDefaults() {
+        let defaultValues = [
+            "primaryColor": UIColor(hex: "#8D1230") as NSObject,
+            "darkerPrimary": UIColor(hex: "#460817") as NSObject,
+            "accentColor": UIColor(hex: "#D8AF1C") as NSObject
+        ]
+        RemoteConfig.remoteConfig().setDefaults(defaultValues)
+    }
+    
+    func fetchRemoteConfig(){
+        RemoteConfig.remoteConfig().fetch(withExpirationDuration: 360) { [unowned self] (status, error) in
+            guard error == nil else {
+                print("cant get colours")
+                return
+            }
+            print("yay")
+            RemoteConfig.remoteConfig().activateFetched()
+            self.updateViewWithRCValues()
+        }
+    }
+    
+    func updateViewWithRCValues() {
+        //apply the remote config values here
+        let primary = RemoteConfig.remoteConfig().configValue(forKey: "primaryColor").stringValue ?? "#8D1230"
+        let darker = RemoteConfig.remoteConfig().configValue(forKey: "darkerPrimary").stringValue ?? "#460817"
+        let accent = RemoteConfig.remoteConfig().configValue(forKey: "accentColor").stringValue ?? "#D8AF1C"
+        let statusTwo = RemoteConfig.remoteConfig().configValue(forKey: "statusTwoPrimary").stringValue ?? "#040405"
+        
+        //Only change UI colours from hex if they are EXACTLY the proper hex format
+        if primary.count == 7 {
+            DefaultColours.primaryColor = UIColor(hex: primary)
+        }
+        
+        if darker.count == 7 {
+            DefaultColours.darkerPrimary = UIColor(hex: darker)
+        }
+        
+        if accent.count == 7 {
+            DefaultColours.accentColor = UIColor(hex: accent)
+        }
+        
+        if statusTwo.count == 7 {
+            DefaultColours.statusTwoPrimary = UIColor(hex: statusTwo)
+        }
+        
+        print(primary)
+        print(darker)
+        print(accent)
+        print(statusTwo)
+        
+        changeMenuControllerColours()
+    }
+    
+    func changeMenuControllerColours() {
+        //Colours
+        gradientSocialView.backgroundColor = DefaultColours.primaryColor
+        dateAndDayView.backgroundColor = DefaultColours.accentColor
+        navigationController?.navigationBar.barTintColor = DefaultColours.primaryColor
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        clubAnnouncementsLabel.textColor = DefaultColours.primaryColor
     }
     
     func getClubAnncs(){
@@ -292,6 +365,11 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func sortAnncByDate() {
+        if clubNewsData.count == 0 {
+            self.clubAnncView.reloadData()
+            return
+        }
+        
         if clubNewsData.count > 2 {
             var thereWasASwap = true
             while thereWasASwap {
@@ -299,7 +377,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 for i in 0...clubNewsData.count-2 {
                     //Check if there is an image. If so also add a note saying there is an image
                     if clubNewsData[i]["img"] as! String != "" {
-                        clubNewsData[i]["content"] = clubNewsData[i]["content"] as! String + "(This announcement has an image)"
+                        clubNewsData[i]["content"] = clubNewsData[i]["content"] as! String + " (This announcement has an image)"
                     }
                     
                     let timestamp1: Timestamp = clubNewsData[i]["date"] as! Timestamp
@@ -317,7 +395,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 }
                 //Check if there is an image. If so also add a note saying there is an image
                 if clubNewsData[clubNewsData.count-1]["img"] as! String != "" {
-                    clubNewsData[clubNewsData.count-1]["content"] = clubNewsData[clubNewsData.count-1]["content"] as! String + "(This announcement has an image)"
+                    clubNewsData[clubNewsData.count-1]["content"] = clubNewsData[clubNewsData.count-1]["content"] as! String + " (This announcement has an image)"
                 }
             }
         } else if clubNewsData.count == 2 {
@@ -329,12 +407,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             
             //Check if there is an image. If so also add a note saying there is an image
             if clubNewsData[i]["img"] as! String != "" {
-                clubNewsData[i]["content"] = clubNewsData[i]["content"] as! String + "(This announcement has an image)"
+                clubNewsData[i]["content"] = clubNewsData[i]["content"] as! String + " (This announcement has an image)"
             }
             
             //Check if there is an image. If so also add a note saying there is an image
             if clubNewsData[1]["img"] as! String != "" {
-                clubNewsData[1]["content"] = clubNewsData[1]["content"] as! String + "(This announcement has an image)"
+                clubNewsData[1]["content"] = clubNewsData[1]["content"] as! String + " (This announcement has an image)"
             }
             
             //Swap values
@@ -346,7 +424,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         } else {
             //Check if there is an image. If so also add a note saying there is an image
             if clubNewsData[0]["img"] as! String != "" {
-                clubNewsData[0]["content"] = clubNewsData[0]["content"] as! String + "(This announcement has an image)"
+                clubNewsData[0]["content"] = clubNewsData[0]["content"] as! String + " (This announcement has an image)"
             }
         }
         self.clubAnncView.reloadData()
@@ -434,14 +512,14 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             //Dynamically change the cell size depending on the announcement length
             let approxWidthOfAnnouncementTextView = view.frame.width
             var size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
-            var attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18.5)]
+            var attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
             var estimatedFrame = NSString(string: newsData[indexPath.row][1]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             
             let contentHeight =  estimatedFrame.height + 10
             contentHeights[indexPath.item] = contentHeight
             
             size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
-            attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18)]
+            attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
             estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             
             let titleHeight = estimatedFrame.height + 10
@@ -499,6 +577,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             let timestamp: Timestamp = clubNewsData[indexPath.row]["date"] as! Timestamp
             let date: Date = timestamp.dateValue()
             
+            //colours
+            cell.clubLabel.backgroundColor = DefaultColours.accentColor
+            cell.dateLabel.backgroundColor = DefaultColours.primaryColor
+            cell.titleLabel.textColor = DefaultColours.primaryColor
+            
+            //text
             cell.clubLabel.text = clubNewsData[indexPath.item]["clubName"] as? String ?? "error"
             cell.dateLabel.text = DateFormatter.localizedString(from: date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
             cell.titleLabel.text = clubNewsData[indexPath.item]["title"] as? String ?? "error"
@@ -553,6 +637,11 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     @objc func refreshList(){
+        //Colours!!
+        setupRemoteConfigDefaults()
+        updateViewWithRCValues()
+        fetchRemoteConfig()
+        
         print("I refreshed stuff indian tech tutorial style")
         //Day Number
         dayTask()
@@ -662,13 +751,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             return "It's a Weekend!"
         } else{
             //Look for last time "Day " is mentioned and output that
-//            let c = content.characters;
             let dayFound = content.lastIndex(of: "Day ")!
-            
             let range = dayFound..<(dayFound + 5)
-            
-            //let r = c.index(c.startIndex, offsetBy: dayFound)..<c.index(c.startIndex, offsetBy: dayFound + 5)
-            //print(content[r])
+
             return String(content[range])
         }
     }
@@ -708,9 +793,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //The Start and End to Get Annoucments
         let start = content.index(of: "ancmnt = \"")?.encodedOffset
         let end = content.index(of: "\".split(\",\");")?.encodedOffset
-        
-//        let c = content.characters;
-//        let r = c.index(c.startIndex, offsetBy: (start! + 10))..<c.index(c.startIndex, offsetBy: end!)
         
         let range = (start! + 10)..<end!
         

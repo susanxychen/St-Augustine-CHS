@@ -18,6 +18,8 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
     var clubID: String!
     var pendingList = [String]()
     var pendingListNames = [String]()
+    var pendingListEmails = [String]()
+    var pendingListPics = [UIImage]()
     
     @IBOutlet weak var pendingListCollectionView: UICollectionView!
     
@@ -115,6 +117,8 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
         self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
         for _ in pendingList {
             pendingListNames.append("")
+            pendingListEmails.append("")
+            pendingListPics.append(UIImage())
         }
         for user in 0..<pendingList.count {
             db.collection("users").document(pendingList[user]).getDocument { (snap, err) in
@@ -128,12 +132,64 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                     let data = snap.data()!
                     //self.pendingListNames.append(data?["name"] as? String ?? "Error")
                     self.pendingListNames[user] = data["name"] as? String ?? "error"
+                    self.pendingListEmails[user] = data["email"] as? String ?? "error"
+                    
+                    //Get the image
+                    self.getPicture(profPic: data["profilePic"] as! Int, user: user)
                 }
             }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
             self.pendingListCollectionView.reloadData()
+        }
+    }
+    
+    func getPicture(profPic: Int, user: Int) {
+        //Image
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        
+        // Create a reference to the file you want to download
+        let imgRef = storageRef.child("profilePictures/\(profPic).png")
+        
+        imgRef.getMetadata { (metadata, error) in
+            if let error = error {
+                // Uh-oh, an error occurred!
+                print("cant find image \(profPic)")
+                print(error)
+            } else {
+                // Metadata now contains the metadata for 'images/forest.jpg'
+                if let metadata = metadata {
+                    let theMetaData = metadata.dictionaryRepresentation()
+                    let updated = theMetaData["updated"]
+                    
+                    if let updated = updated {
+                        if let savedImage = self.getSavedImage(named: "\(profPic)-\(updated)"){
+                            print("already saved \(profPic)-\(updated)")
+                                self.pendingListPics[user] = savedImage
+                        } else {
+                            // Create a reference to the file you want to download
+                            imgRef.downloadURL { url, error in
+                                if error != nil {
+                                    print("cant find image \(profPic)")
+                                } else {
+                                    // Get the download URL
+                                    var image: UIImage?
+                                    let data = try? Data(contentsOf: url!)
+                                    if let imageData = data {
+                                        image = UIImage(data: imageData)!
+                                        self.pendingListPics[user] = image!
+                                        self.clearImageFolder(imageName: "\(profPic)-\(updated)")
+                                        self.saveImageDocumentDirectory(image: image!, imageName: "\(profPic)-\(updated)")
+                                    }
+                                    print("i success now")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -144,6 +200,10 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "name", for: indexPath) as! pendingListCell
         cell.nameLabel.text = pendingListNames[indexPath.item]
+        cell.emailLabel.text = pendingListEmails[indexPath.item]
+        cell.profilePic.image = pendingListPics[indexPath.item]
+        cell.profilePic.clipsToBounds = true
+        cell.profilePic.layer.cornerRadius = 64/2
         return cell
     }
     

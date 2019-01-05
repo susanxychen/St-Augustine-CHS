@@ -15,6 +15,11 @@ class settingsController: UIViewController {
     @IBOutlet weak var cacheSizeLabel: UILabel!
     @IBOutlet weak var clearKeys: UIButton!
     
+    @IBOutlet weak var changePrivacySettingsButton: UIButton!
+    @IBOutlet weak var clearCacheButton: UIButton!
+    @IBOutlet weak var LogOutButton: UIButton!
+    @IBOutlet weak var clearKeysButton: UIButton!
+    
     var stupidButtonPressedCount = 0
     
     override func viewDidLoad() {
@@ -32,6 +37,11 @@ class settingsController: UIViewController {
         let barButton = UIBarButtonItem(customView: button)
         //assign button to navigationbar
         self.navigationItem.rightBarButtonItem = barButton
+        
+        changePrivacySettingsButton.setTitleColor(DefaultColours.primaryColor, for: .normal)
+        clearCacheButton.setTitleColor(DefaultColours.primaryColor, for: .normal)
+        LogOutButton.setTitleColor(DefaultColours.primaryColor, for: .normal)
+        clearKeys.setTitleColor(DefaultColours.primaryColor, for: .normal)
         
         cacheSizeLabel.text = sizeOfDocumentDirectory()
     }
@@ -124,6 +134,11 @@ class settingsController: UIViewController {
             title = "Hm."
             message = "You are persistent"
             break
+        case 1000:
+            title = "OK OK FINE YOU WIN"
+            message = "HERE TAKE THIS JUST LEAVE ME ALONE PLEASE"
+            //give points and/or badge?
+            break
         default:
             specialCase = false
             break
@@ -166,6 +181,7 @@ class settingsController: UIViewController {
         }
     }
     
+    //For debugging
     @IBAction func clearKeys(_ sender: Any) {
         print("Before: \(Array(UserDefaults.standard.dictionaryRepresentation().keys).count) keys")
         let domain = Bundle.main.bundleIdentifier!

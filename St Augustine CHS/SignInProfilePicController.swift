@@ -34,6 +34,11 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
     @IBOutlet weak var profilePicsCollectionView: UICollectionView!
     var counter = 0
     
+    //Colors
+    @IBOutlet weak var statusBarView: UIView!
+    @IBOutlet weak var topBarView: UIView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         overlayView.frame = UIApplication.shared.keyWindow!.frame
@@ -44,6 +49,9 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
         Firestore.firestore().settings = settings
         // [END setup]
         db = Firestore.firestore()
+        
+        statusBarView.backgroundColor = DefaultColours.darkerPrimary
+        topBarView.backgroundColor = DefaultColours.primaryColor
         
         showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
         

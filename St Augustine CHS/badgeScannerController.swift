@@ -27,7 +27,10 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
     
-    //https://www.youtube.com/watch?v=4Zf9dHDJ2yU
+    //colours
+    @IBOutlet weak var statusBarView: UIView!
+    @IBOutlet weak var topBarView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //Set Up
@@ -39,6 +42,9 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
         db = Firestore.firestore()
         
         print(badgeID!)
+        
+        statusBarView.backgroundColor = DefaultColours.darkerPrimary
+        topBarView.backgroundColor = DefaultColours.primaryColor
         
         if allUserFirebaseData.data["status"] as! Int == 2 {
             theTestLabel.isHidden = false

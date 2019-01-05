@@ -11,13 +11,12 @@ import Firebase
 
 class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    @IBOutlet var entireView: UIView!
     var snooFiller = UIImage(named: "snoo")
+    
     //The Database
     var db: Firestore!
     var docRef: DocumentReference!
     var clubID = String()
-    @IBOutlet weak var topBar: UIView!
     
     //Announcement Vars
     @IBOutlet weak var titleTxtFld: UITextField!
@@ -39,6 +38,12 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
     var editImageName = String()
     @IBOutlet weak var createNewAnncInstruction: UILabel!
     @IBOutlet weak var postButton: UIButton!
+    
+    let overlayView = UIView(frame: UIScreen.main.bounds)
+    @IBOutlet var entireView: UIView!
+    
+    @IBOutlet weak var statusBarView: UIView!
+    @IBOutlet weak var topBarView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,6 +81,14 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
         
         print(clubName)
         
+        //Colours
+        statusBarView.backgroundColor = DefaultColours.darkerPrimary
+        topBarView.backgroundColor = DefaultColours.primaryColor
+        createNewAnncInstruction.textColor = DefaultColours.primaryColor
+        titleTxtFld.tintColor = DefaultColours.accentColor
+        contentTxtFld.tintColor = DefaultColours.accentColor
+        removeImage.setTitleColor(DefaultColours.primaryColor, for: .normal)
+        
         //If in edit mode, set it to edit mode
         if editMode {
             print(currentAnncID)
@@ -83,7 +96,8 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
             postButton.setTitle("Update", for: .normal)
             titleTxtFld.text = editTitle
             contentTxtFld.text = editDesc
-            if editImage != snooFiller {
+            
+            if editImageName != "" {
                 anncImg.image = editImage
                 anncImg.isHidden = false
                 removeImage.isHidden = false
@@ -159,7 +173,6 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
         self.dismiss(animated: true, completion: nil)
     }
     
-    let overlayView = UIView(frame: UIScreen.main.bounds)
     //***************************POSTING THE ANNOUNCEMENT***************************
     @IBAction func pressedPost(_ sender: Any) {
         //***************INTERNET CONNECTION**************
@@ -234,7 +247,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
                 metaData.contentType = "image/jpeg"
                 
                 //Upload the image to the database
-                if let uploadData = self.anncImg.image?.resized(toWidth: 475)!.jpegData(compressionQuality: 0.8){
+                if let uploadData = self.anncImg.image?.resized(toWidth: 500)!.jpegData(compressionQuality: 1.0){
                     storageRef.putData(uploadData, metadata: metaData) { (metadata, error) in
                         if let error = error {
                             let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
@@ -348,7 +361,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
     func doneWithAnnc() {
         //print("yes i get run thanks")
         if let presenter = presentingViewController as? clubGoodController {
-            presenter.anncRef.append(currentAnncID)
+            presenter.anncRef.append(currentAnncID) //this line should be roughly useless as i refresh the entire page when returning
         }
         onDoneBlock!(true)
         dismiss(animated: true, completion: nil)
@@ -358,6 +371,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
         onDoneBlock!(true)
         dismiss(animated: true, completion: nil)
     }
+    
 }
 
 

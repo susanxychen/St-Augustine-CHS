@@ -18,8 +18,6 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
     @IBOutlet weak var daymenuLabel: UILabel!
     @IBOutlet weak var menuCollectionView: UICollectionView!
     
-    var foodList = ["Pizza","Fries","Pasta"]
-    var foodPrices = ["3.50","2.50","1.50"]
     var theActualMenu = [[Any]]()
     
     override func viewDidLoad() {
@@ -94,8 +92,9 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
         let priceNSNumber = NSNumber(value: price)
         
         cell.foodLabel.text = theActualMenu[indexPath.item][0] as? String ?? "Error"
-        
         cell.priceLabel.text = ("$" + (formatter.string(from: priceNSNumber) ?? "Error"))
+        cell.priceLabel.textColor = DefaultColours.primaryColor
+        
         return cell
     }
     

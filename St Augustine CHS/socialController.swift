@@ -70,6 +70,15 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     //Filler Data
     var fillerImage = UIImage(named: "blankUser")
     
+    //colors and stuff
+    @IBOutlet weak var lineBetweenPlateAndBadges: UIView!
+    @IBOutlet weak var lineBetweenBadgesandClubs: UIView!
+    @IBOutlet weak var badgesLabel: UILabel!
+    @IBOutlet weak var clubsLabel: UILabel!
+    
+    //Janky Fixes to Leaving/Joining Clubs
+    var otherUserClubRefs = [String]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         overlayView.frame = UIApplication.shared.keyWindow!.frame
@@ -113,11 +122,20 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         
         //*************************SET UP THE USER PROFILE DATA*************************
         if allUserFirebaseData.data["status"] as! Int == 2 {
-            self.profileViewBackground.backgroundColor = UIColor(red: 25/255.0, green: 2/255.0, blue: 6/255.0, alpha: 1.0)
-            self.usersFullName.textColor = UIColor(red: 216/255.0, green: 175/255.0, blue: 28/255.0, alpha: 1.0)
+            self.profileViewBackground.backgroundColor = DefaultColours.statusTwoPrimary
+            self.usersFullName.textColor = DefaultColours.accentColor
         } else {
-            self.profileViewBackground.backgroundColor = UIColor(red: 141/255.0, green: 18/255.0, blue: 48/255.0, alpha: 1.0)
+            self.profileViewBackground.backgroundColor = DefaultColours.primaryColor
+            self.usersFullName.textColor = DefaultColours.primaryColor
         }
+        
+        //Colors
+        searchBarView.backgroundColor = DefaultColours.primaryColor
+        searchBar.tintColor = DefaultColours.accentColor
+        lineBetweenPlateAndBadges.backgroundColor = DefaultColours.primaryColor
+        badgesLabel.textColor = DefaultColours.primaryColor
+        lineBetweenBadgesandClubs.backgroundColor = DefaultColours.primaryColor
+        clubsLabel.textColor = DefaultColours.primaryColor
         
         //Background Shadow
         profileViewBackground.layer.shadowOpacity = 1
@@ -140,6 +158,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         //**********Classes in Common**********
         //Check if the user wants to display classes
         classesInCommon.setTitle("View Your Schedule", for: .normal)
+        classesInCommon.setTitleColor(DefaultColours.primaryColor, for: .normal)
         getCurrentUsersData()
     }
     
@@ -359,6 +378,57 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                     if i == clubIDRefs.count-1{
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                             print(self.userClubIDs)
+                            
+                            if self.userClubNames.count > 1 {
+                                var thereWasASwap = true
+                                while thereWasASwap {
+                                    thereWasASwap = false
+                                    for i in 0...self.userClubNames.count-2 {
+                                        let name1: String = self.userClubNames[i]
+                                        let name2: String = self.userClubNames[i+1]
+                                        
+                                        let shortestLength: Int
+                                        if name1.count < name2.count {
+                                            //print("\(name1) is shorter")
+                                            shortestLength = name1.count
+                                        } else {
+                                            //print("\(name2) is shorter")
+                                            shortestLength = name2.count
+                                        }
+                                        
+                                        for j in 0...shortestLength-1 {
+                                            //Compare Alphabetically
+                                            let index1 = name1.index(name1.startIndex, offsetBy: j)
+                                            let index2 = name2.index(name2.startIndex, offsetBy: j)
+                                            let character1 = Character((String(name1[index1]).lowercased()))
+                                            let character2 = Character((String(name2[index2]).lowercased()))
+                                            
+                                            if character2 < character1 {
+                                                //print("done swap")
+                                                thereWasASwap = true
+                                                let temp = self.userClubNames[i]
+                                                self.userClubNames[i] = self.userClubNames[i+1]
+                                                self.userClubNames[i+1] = temp
+                                                
+                                                let temp2 = self.userClubData[i]
+                                                self.userClubData[i] = self.userClubData[i+1]
+                                                self.userClubData[i+1] = temp2
+                                                
+                                                let temp3 = self.userClubIDs[i]
+                                                self.userClubIDs[i] = self.userClubIDs[i+1]
+                                                self.userClubIDs[i+1] = temp3
+                                                
+                                                break
+                                            } else if character1 == character2 {
+                                                //print("equal so they need to go one higher")
+                                            } else {
+                                                //print("not equal")
+                                                break
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                             self.clubCollectionViewHeight.constant = 275
                             self.clubsCollectionView.reloadData()
@@ -471,10 +541,11 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                 let requestedStudentData = document.data()
                                 
                                 if requestedStudentData["status"] as! Int == 2 {
-                                    self.profileViewBackground.backgroundColor = UIColor(red: 25/255.0, green: 2/255.0, blue: 6/255.0, alpha: 1.0)
-                                    self.usersFullName.textColor = UIColor(red: 216/255.0, green: 175/255.0, blue: 28/255.0, alpha: 1.0)
+                                    self.profileViewBackground.backgroundColor = DefaultColours.statusTwoPrimary
+                                    self.usersFullName.textColor = DefaultColours.accentColor
                                 } else {
-                                    self.profileViewBackground.backgroundColor = UIColor(red: 141/255.0, green: 18/255.0, blue: 48/255.0, alpha: 1.0)
+                                    self.profileViewBackground.backgroundColor = DefaultColours.primaryColor
+                                    self.usersFullName.textColor = DefaultColours.primaryColor
                                 }
                                 
                                 //Get the requested stuends information
@@ -524,10 +595,13 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                 
                                 //Clubs
                                 if requestedStudentData["showClubs"] as! Bool {
+                                    self.chosenToShareClubs = true
                                     let clubIDRefs = requestedStudentData["clubs"] as! [String]
                                     self.clubsCollectionView.isUserInteractionEnabled = true
+                                    self.otherUserClubRefs = clubIDRefs
                                     self.getClubData(clubIDRefs: clubIDRefs)
                                 } else {
+                                    self.chosenToShareClubs = false
                                     self.clubsCollectionView.isUserInteractionEnabled = false
                                     self.userClubNames = ["Student has chosen not to share clubs"]
                                     self.userClubIDs = ["nice"]
@@ -587,6 +661,8 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             let clubsCell = collectionView.dequeueReusableCell(withReuseIdentifier: clubCollectionIdentifier, for: indexPath) as! socialClubsViewCell
             //This if is just to ENSURE that there will NEVER be an array out of bounds exception
             clubsCell.clubName.text = userClubNames[indexPath.item]
+            clubsCell.clubName.backgroundColor = DefaultColours.primaryColor
+            clubsCell.backgroundColor = DefaultColours.primaryColor
             
             //Makes it look prettier
             if clubsCollectionView.contentSize.height < 275 {
@@ -606,15 +682,18 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     //**********************SELECTING A BADGE OR CLUB**********************
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == badgesCollectionView {
-            print("badges \(badgeData[indexPath.item])")
+            let alert = UIAlertController(title: badgeData[indexPath.item]["desc"] as? String, message: nil, preferredStyle: .alert)
+            alert.addImage(image: badgeImgs[indexPath.item])
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
         } else {
             print("clubs \(indexPath.item) \(userClubNames[indexPath.item])")
             self.segDest = 1
             showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
             
             //Check if the user is part of club
-            if (allUserFirebaseData.data["clubs"] as! [String]).contains(userClubIDs[indexPath.item]) || allUserFirebaseData.data["status"] as! Int == 2 {
-                print("yeah part of club")
+            if (allUserFirebaseData.data["clubs"] as! [String]).contains(userClubIDs[indexPath.item]) {
                 partOfClub = true
             } else {
                 partOfClub = false
@@ -735,7 +814,14 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             vc.clubID = clubID
             vc.cameFromSocialPage = true
             vc.joinedANewClubBlock = { result in
-                self.getClubData(clubIDRefs: allUserFirebaseData.data["clubs"] as! [String])
+                if self.lookingAtOtherUserInGeneral {
+                    if self.chosenToShareClubs {
+                        self.getClubData(clubIDRefs: self.otherUserClubRefs)
+                    }
+                } else {
+                    self.getClubData(clubIDRefs: allUserFirebaseData.data["clubs"] as! [String])
+                }
+                
             }
             break
         case 3:

@@ -159,11 +159,9 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                 print("OK I will join clubs");
             }
             alert.addAction(okAction)
-            self.present(alert, animated: true, completion: nil)
+            //self.present(alert, animated: true, completion: nil)
             self.clubListView.isHidden = false
             self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-            //self.notLoadList.text = "Join Some Clubs!"
-            //self.notLoadList.isHidden = false
         } else{
             var counterTemp = 0
             for i in 0...personalClubReferences.count-1 {
@@ -502,6 +500,9 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
         cell.layer.shadowOpacity = 1.0
         cell.layer.masksToBounds = false
         cell.layer.shadowPath = UIBezierPath(roundedRect:cell.bounds, cornerRadius:cell.contentView.layer.cornerRadius).cgPath
+        
+        cell.backgroundColor = DefaultColours.primaryColor
+        cell.name.backgroundColor = DefaultColours.primaryColor
         
         if viewingPersonalClubs {
             cell.name.text = personalClubNames[indexPath.item]

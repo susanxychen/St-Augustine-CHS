@@ -35,13 +35,25 @@ class SignInCoursesController: UIViewController {
     //The final data
     var coursesTypedIn = [String]()
     
+    //Colours
+    @IBOutlet weak var statusBarView: UIView!
+    @IBOutlet weak var topBarView: UIView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print(picChosen)
         
+        statusBarView.backgroundColor = DefaultColours.darkerPrimary
+        topBarView.backgroundColor = DefaultColours.primaryColor
+        
         coursesToCheck = ["ASS","PEE","POO","DIK","KKK","FUK"]
         
         allTextFields = [s1p1TxtField,s1p2TxtField,s1p3TxtField,s1p4TxtField,s2p1TxtField,s2p2TxtField,s2p3TxtField,s2p4TxtField]
+        
+        for txtfld in allTextFields {
+            txtfld.tintColor = DefaultColours.accentColor
+        }
         
         hideKeyboardWhenTappedAround()
         

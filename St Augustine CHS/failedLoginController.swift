@@ -12,9 +12,13 @@ import Firebase
 
 class failedLoginController: UIViewController {
 
+    @IBOutlet weak var loginValidLabel: UILabel!
+    @IBOutlet weak var goBackButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        loginValidLabel.textColor = DefaultColours.primaryColor
+        goBackButton.setTitleColor(DefaultColours.accentColor, for: .normal)
     }
     
     @IBAction func goBack(_ sender: Any) {

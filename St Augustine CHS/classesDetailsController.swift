@@ -19,9 +19,17 @@ class classesDetailsController: UIViewController, UICollectionViewDataSource, UI
     
     @IBOutlet weak var editButton: UIButton!
     
+    //colors
+    @IBOutlet weak var semester1Label: UILabel!
+    @IBOutlet weak var semester2Label: UILabel!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print("The classes: \(classes)")
+        
+        semester1Label.textColor = DefaultColours.primaryColor
+        semester2Label.textColor = DefaultColours.primaryColor
         
         if viewingYourself {
             //create a new button
@@ -56,7 +64,7 @@ class classesDetailsController: UIViewController, UICollectionViewDataSource, UI
             
             //If same class, highlight
             if (!viewingYourself && classes[indexPath.item] == yourClasses[indexPath.item]) {
-                sem1Cell.theClass.textColor = UIColor(red: 216/255.0, green: 175/255.0, blue: 28/255.0, alpha: 1.0)
+                sem1Cell.theClass.textColor = DefaultColours.accentColor
             }
             
             return sem1Cell
@@ -65,7 +73,7 @@ class classesDetailsController: UIViewController, UICollectionViewDataSource, UI
             sem2Cell.theClass.text = classes[indexPath.item + 4]
             
             if (!viewingYourself && classes[indexPath.item + 4] == yourClasses[indexPath.item + 4]) {
-                sem2Cell.theClass.textColor = UIColor(red: 249/255.0, green: 225/255.0, blue: 44/255.0, alpha: 1.0)
+                sem2Cell.theClass.textColor = DefaultColours.accentColor
             }
             
             return sem2Cell

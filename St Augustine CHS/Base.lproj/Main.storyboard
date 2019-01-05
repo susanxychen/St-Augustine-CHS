@@ -4,6 +4,7 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -554,6 +555,8 @@
                         <outlet property="calendarButton" destination="9bF-9O-Uz2" id="dVi-Zp-uGf"/>
                         <outlet property="clubAnncHeight" destination="UcO-a8-1M7" id="ojd-VN-cZU"/>
                         <outlet property="clubAnncView" destination="jsh-2k-3AL" id="uyH-JX-9xS"/>
+                        <outlet property="clubAnnouncementsLabel" destination="7K0-b2-8tY" id="RP4-5J-i35"/>
+                        <outlet property="dateAndDayView" destination="SHn-Ri-sPA" id="2sJ-6h-3g9"/>
                         <outlet property="dateToString" destination="ZA0-bd-msg" id="kKe-yt-uM9"/>
                         <outlet property="dayNumber" destination="PCo-Ct-GwT" id="z5C-u9-3O0"/>
                         <outlet property="displayEmail" destination="vrZ-mV-u1U" id="9JB-id-NAG"/>
@@ -692,8 +695,8 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="35"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DD8-XA-Vfy">
-                                        <rect key="frame" x="8" y="5" width="50" height="30"/>
-                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                        <rect key="frame" x="8" y="4" width="50" height="31"/>
+                                        <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="16"/>
                                         <state key="normal" title="Cancel"/>
                                         <connections>
                                             <action selector="cancelPressed:" destination="GuW-yK-lWm" eventType="touchUpInside" id="rdM-Zo-FlH"/>
@@ -742,14 +745,141 @@
                     </view>
                     <connections>
                         <outlet property="cancelButtonItself" destination="DD8-XA-Vfy" id="up6-DG-8YY"/>
+                        <outlet property="statusBarView" destination="ysF-NJ-Brg" id="1dF-F7-21q"/>
                         <outlet property="theCameraView" destination="IyB-qx-dCp" id="LeS-m3-eGW"/>
                         <outlet property="theTestLabel" destination="SFt-pS-bMH" id="bmu-U1-bK0"/>
                         <outlet property="theViewWithCancel" destination="7rf-Ok-wz8" id="JVu-s8-ZFw"/>
+                        <outlet property="topBarView" destination="7rf-Ok-wz8" id="Ije-wh-lKl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qwk-sh-xcz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1040.8" y="1865.217391304348"/>
+        </scene>
+        <!--Create Badge Controller-->
+        <scene sceneID="Wae-wl-i30">
+            <objects>
+                <viewController id="Y1d-Zc-x37" customClass="createBadgeController" customModule="St_Augustine_CHS" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="UrA-c9-0br">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Ah-3I-QN2">
+                                <rect key="frame" x="0.0" y="20" width="375" height="35"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jLo-TK-hrY">
+                                        <rect key="frame" x="316" y="3" width="51" height="32"/>
+                                        <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                        <state key="normal" title="Create"/>
+                                        <connections>
+                                            <action selector="createPressed:" destination="Y1d-Zc-x37" eventType="touchUpInside" id="c9A-uK-pqT"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ldZ-Ah-Z8D">
+                                        <rect key="frame" x="8" y="3" width="53" height="32"/>
+                                        <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                        <state key="normal" title="Cancel"/>
+                                        <connections>
+                                            <action selector="cancelButtonPushed:" destination="Y1d-Zc-x37" eventType="touchUpInside" id="fBz-Ss-aMU"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.5" green="0.0767248403" blue="0.1712033674" alpha="0.94804152399999997" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="jLo-TK-hrY" secondAttribute="trailing" constant="8" id="3PA-Ty-yT0"/>
+                                    <constraint firstAttribute="bottom" secondItem="jLo-TK-hrY" secondAttribute="bottom" id="Fn6-lL-hUE"/>
+                                    <constraint firstItem="ldZ-Ah-Z8D" firstAttribute="leading" secondItem="3Ah-3I-QN2" secondAttribute="leading" constant="8" id="YgR-zm-IQu"/>
+                                    <constraint firstAttribute="height" constant="35" id="o0e-Xk-slg"/>
+                                    <constraint firstAttribute="bottom" secondItem="ldZ-Ah-Z8D" secondAttribute="bottom" id="qfn-yl-VLk"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8en-KH-bJE">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="20"/>
+                                <color key="backgroundColor" red="0.5" green="0.0767248403" blue="0.1712033674" alpha="0.94804152399999997" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ji-MB-U0v">
+                                <rect key="frame" x="16" y="260" width="343" height="35"/>
+                                <color key="backgroundColor" red="0.84653204159201756" green="0.85491354695431476" blue="0.85491354695431476" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="JZx-Wf-UcK"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                <state key="normal" title="CHOOSE IMAGE">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="chooseImagePressed:" destination="Y1d-Zc-x37" eventType="touchUpInside" id="KnZ-sp-amy"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Badge" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pcl-CD-md5">
+                                <rect key="frame" x="16" y="222" width="343" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="yYK-4S-MI5"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JSt-aI-y4F">
+                                <rect key="frame" x="16" y="303" width="343" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="HHb-4P-kcF"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="fill" borderStyle="roundedRect" placeholder="Description (Required)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MKa-eA-Cel">
+                                <rect key="frame" x="16" y="341" width="343" height="30"/>
+                                <color key="tintColor" red="0.84705882349999995" green="0.68627450980000004" blue="0.10980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="blankUser" translatesAutoresizingMaskIntoConstraints="NO" id="xee-2c-76v">
+                                <rect key="frame" x="112" y="63" width="151" height="151"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="xee-2c-76v" secondAttribute="height" multiplier="1:1" id="CFf-YF-XQ6"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="3Ah-3I-QN2" firstAttribute="top" secondItem="SqX-UO-NOk" secondAttribute="top" id="0J9-Ht-lW4"/>
+                            <constraint firstItem="SqX-UO-NOk" firstAttribute="trailing" secondItem="MKa-eA-Cel" secondAttribute="trailing" constant="16" id="3iY-Tk-E15"/>
+                            <constraint firstItem="3Ah-3I-QN2" firstAttribute="leading" secondItem="SqX-UO-NOk" secondAttribute="leading" id="6nJ-na-ao3"/>
+                            <constraint firstItem="JSt-aI-y4F" firstAttribute="top" secondItem="1ji-MB-U0v" secondAttribute="bottom" constant="8" id="725-9g-yHk"/>
+                            <constraint firstItem="1ji-MB-U0v" firstAttribute="leading" secondItem="SqX-UO-NOk" secondAttribute="leading" constant="16" id="9sU-8m-GSE"/>
+                            <constraint firstAttribute="trailing" secondItem="8en-KH-bJE" secondAttribute="trailing" id="GIF-mE-eIP"/>
+                            <constraint firstItem="MKa-eA-Cel" firstAttribute="top" secondItem="JSt-aI-y4F" secondAttribute="bottom" constant="8" id="GMK-y7-ddl"/>
+                            <constraint firstItem="xee-2c-76v" firstAttribute="centerX" secondItem="Pcl-CD-md5" secondAttribute="centerX" id="Mlt-gE-cUs"/>
+                            <constraint firstItem="xee-2c-76v" firstAttribute="top" secondItem="3Ah-3I-QN2" secondAttribute="bottom" constant="8" id="TPj-jY-Ker"/>
+                            <constraint firstItem="SqX-UO-NOk" firstAttribute="trailing" secondItem="JSt-aI-y4F" secondAttribute="trailing" constant="16" id="Vtl-it-UWi"/>
+                            <constraint firstItem="SqX-UO-NOk" firstAttribute="trailing" secondItem="Pcl-CD-md5" secondAttribute="trailing" constant="16" id="W4S-Bu-wzv"/>
+                            <constraint firstItem="Pcl-CD-md5" firstAttribute="top" secondItem="xee-2c-76v" secondAttribute="bottom" constant="8" id="dQ1-7z-Mvj"/>
+                            <constraint firstItem="3Ah-3I-QN2" firstAttribute="top" secondItem="8en-KH-bJE" secondAttribute="bottom" id="fLn-PL-YkH"/>
+                            <constraint firstItem="Pcl-CD-md5" firstAttribute="leading" secondItem="SqX-UO-NOk" secondAttribute="leading" constant="16" id="gDb-Ob-iDr"/>
+                            <constraint firstItem="MKa-eA-Cel" firstAttribute="leading" secondItem="SqX-UO-NOk" secondAttribute="leading" constant="16" id="gGg-VZ-53W"/>
+                            <constraint firstItem="1ji-MB-U0v" firstAttribute="top" secondItem="Pcl-CD-md5" secondAttribute="bottom" constant="8" id="hCD-jS-5LW"/>
+                            <constraint firstItem="3Ah-3I-QN2" firstAttribute="trailing" secondItem="SqX-UO-NOk" secondAttribute="trailing" id="hcO-lc-CiZ"/>
+                            <constraint firstItem="SqX-UO-NOk" firstAttribute="trailing" secondItem="1ji-MB-U0v" secondAttribute="trailing" constant="16" id="kgm-OJ-Xc2"/>
+                            <constraint firstItem="JSt-aI-y4F" firstAttribute="leading" secondItem="SqX-UO-NOk" secondAttribute="leading" constant="16" id="mVl-Mn-WUc"/>
+                            <constraint firstItem="8en-KH-bJE" firstAttribute="leading" secondItem="UrA-c9-0br" secondAttribute="leading" id="wcF-aC-Mx2"/>
+                            <constraint firstItem="8en-KH-bJE" firstAttribute="top" secondItem="UrA-c9-0br" secondAttribute="top" id="xXV-2b-RGT"/>
+                            <constraint firstItem="xee-2c-76v" firstAttribute="leading" secondItem="SqX-UO-NOk" secondAttribute="leading" constant="112" id="xjf-7w-GM1"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="SqX-UO-NOk"/>
+                    </view>
+                    <connections>
+                        <outlet property="badgeImageView" destination="xee-2c-76v" id="aas-on-etL"/>
+                        <outlet property="descriptionTxtFld" destination="MKa-eA-Cel" id="LS6-im-jAL"/>
+                        <outlet property="statusBarView" destination="8en-KH-bJE" id="3Wy-TH-E2O"/>
+                        <outlet property="topBarView" destination="3Ah-3I-QN2" id="En7-KE-3AM"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ehD-Vv-zgW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1796" y="2237.6311844077964"/>
         </scene>
         <!--Social-->
         <scene sceneID="hHH-bv-BiN">
@@ -1068,9 +1198,13 @@
                     <connections>
                         <outlet property="badgeCollectionViewHeight" destination="RCV-Rj-rnz" id="yMa-dh-HhV"/>
                         <outlet property="badgesCollectionView" destination="4W9-pk-Hne" id="5mJ-9z-kDw"/>
+                        <outlet property="badgesLabel" destination="q91-Fo-Aol" id="Mo8-15-R4f"/>
                         <outlet property="classesInCommon" destination="KnS-0N-uPI" id="z6M-l0-0fB"/>
                         <outlet property="clubCollectionViewHeight" destination="TxO-zz-dcr" id="BaO-NA-9Mu"/>
                         <outlet property="clubsCollectionView" destination="KVY-k7-KZD" id="Yz4-nh-Xku"/>
+                        <outlet property="clubsLabel" destination="JR4-o0-tId" id="p29-8l-lH3"/>
+                        <outlet property="lineBetweenBadgesandClubs" destination="oO3-Tk-NIw" id="DTw-Ne-8sJ"/>
+                        <outlet property="lineBetweenPlateAndBadges" destination="avM-Gy-sec" id="1lS-fx-hRb"/>
                         <outlet property="profilePicture" destination="S31-8T-3Ah" id="3E9-b8-pvW"/>
                         <outlet property="profilePictureButton" destination="U29-v6-z9V" id="dEP-Zf-k8a"/>
                         <outlet property="profilePictureView" destination="eS0-0e-dkG" id="yCc-6O-Yag"/>
@@ -1100,7 +1234,7 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="33"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="osE-mk-C1f">
-                                        <rect key="frame" x="317" y="1" width="50" height="32"/>
+                                        <rect key="frame" x="314" y="2" width="53" height="31"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="16"/>
                                         <state key="normal" title="Update">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1111,7 +1245,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A0K-R2-BNc">
-                                        <rect key="frame" x="8" y="-1" width="48" height="34"/>
+                                        <rect key="frame" x="8" y="1" width="53" height="32"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <state key="normal" title="Cancel">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1294,10 +1428,13 @@
                         <viewLayoutGuide key="safeArea" id="Ti9-xN-Ece"/>
                     </view>
                     <connections>
+                        <outlet property="cancelOrUpdateView" destination="ObL-GJ-59r" id="MDz-jK-0Np"/>
+                        <outlet property="lineBetweenOwnedAndAll" destination="o9U-tc-jsR" id="V5X-49-XFT"/>
                         <outlet property="notOwnedCollectionView" destination="N86-X9-Adj" id="K6Z-na-hIZ"/>
                         <outlet property="ownedCollectionView" destination="6jb-vB-npc" id="bwk-UJ-ECc"/>
                         <outlet property="pointsLabel" destination="Ucs-Gc-7TT" id="THK-QC-eu1"/>
                         <outlet property="theProfilePic" destination="fBV-uG-d7b" id="N8R-u8-3Nx"/>
+                        <outlet property="topStatusBar" destination="B6J-jg-kxs" id="gOP-1C-BWR"/>
                         <outlet property="updateButton" destination="osE-mk-C1f" id="5t0-mM-OoF"/>
                     </connections>
                 </viewController>
@@ -1477,7 +1614,9 @@
                     <connections>
                         <outlet property="editButton" destination="ldi-7Y-UlF" id="DRb-Ex-WXZ"/>
                         <outlet property="semester1CollectionView" destination="0CK-Lk-7fW" id="lsH-GL-wfJ"/>
+                        <outlet property="semester1Label" destination="5K2-wn-VyB" id="aMC-1V-Gwu"/>
                         <outlet property="semester2CollectionView" destination="sIY-jE-GOC" id="zA0-Uk-Lig"/>
+                        <outlet property="semester2Label" destination="CXu-ec-mPo" id="jfu-3R-PJg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bsZ-eN-Jx6" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1500,7 +1639,7 @@
                                 </connections>
                             </button>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No internet Connection" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Maj-0H-z1X">
-                                <rect key="frame" x="16" y="148" width="343" height="27.5"/>
+                                <rect key="frame" x="16" y="148" width="343" height="26"/>
                                 <fontDescription key="fontDescription" name="Scada-Bold" family="Scada" pointSize="22"/>
                                 <color key="textColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -1630,13 +1769,13 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="31b-c7-VJc">
                                     <size key="itemSize" width="375" height="665"/>
-                                    <size key="headerReferenceSize" width="50" height="652"/>
+                                    <size key="headerReferenceSize" width="50" height="680"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="announcement" id="baP-W8-fq2" customClass="clubNewsViewCell" customModule="St_Augustine_CHS" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="652" width="375" height="665"/>
+                                        <rect key="frame" x="0.0" y="680" width="375" height="665"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="665"/>
@@ -1705,7 +1844,7 @@
                                     </collectionViewCell>
                                 </cells>
                                 <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="header" id="6La-Kk-weW" customClass="clubHeaderViewCell" customModule="St_Augustine_CHS" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="652"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="680"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" scrollEnabled="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="iZ8-fM-rql">
@@ -1736,7 +1875,7 @@
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Announcements" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4QB-o9-FaD">
-                                            <rect key="frame" x="8" y="617" width="359" height="35"/>
+                                            <rect key="frame" x="8" y="645" width="359" height="35"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="35" id="Wsz-Vb-tYx"/>
                                             </constraints>
@@ -1745,13 +1884,13 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OO8-JJ-SbL">
-                                            <rect key="frame" x="89" y="401" width="197" height="34"/>
+                                            <rect key="frame" x="89" y="401" width="197" height="32"/>
                                             <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                             <state key="normal" title="Join Club"/>
                                         </button>
                                         <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="mFP-Po-5Ku">
-                                            <rect key="frame" x="0.0" y="509" width="375" height="100"/>
+                                            <rect key="frame" x="0.0" y="491" width="375" height="100"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="100" id="CHI-gH-2f1"/>
@@ -1770,7 +1909,7 @@
                                                         <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
-                                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jcS-A1-3l5">
+                                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jcS-A1-3l5">
                                                                 <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                                             </imageView>
                                                         </subviews>
@@ -1792,7 +1931,7 @@
                                             </connections>
                                         </collectionView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Badges" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AzZ-71-i3V">
-                                            <rect key="frame" x="8" y="471" width="359" height="30"/>
+                                            <rect key="frame" x="8" y="453" width="359" height="30"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="30" id="jZd-u5-WMo"/>
                                             </constraints>
@@ -1800,9 +1939,21 @@
                                             <color key="textColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="znQ-9Z-LL9">
+                                            <rect key="frame" x="8" y="607" width="359" height="35"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="35" id="k8o-QH-Mfg"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                            <state key="normal" title="Create New Badge">
+                                                <color key="titleColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            </state>
+                                        </button>
                                     </subviews>
                                     <constraints>
                                         <constraint firstAttribute="trailingMargin" secondItem="OO8-JJ-SbL" secondAttribute="trailing" constant="81" id="1SS-Mv-Ddt"/>
+                                        <constraint firstItem="4QB-o9-FaD" firstAttribute="top" secondItem="znQ-9Z-LL9" secondAttribute="bottom" constant="3" id="Csj-rd-QXw"/>
                                         <constraint firstItem="iZ8-fM-rql" firstAttribute="trailing" secondItem="6La-Kk-weW" secondAttribute="trailingMargin" id="DYd-yu-UhT"/>
                                         <constraint firstItem="4QB-o9-FaD" firstAttribute="leading" secondItem="6La-Kk-weW" secondAttribute="leading" constant="8" id="GBe-dl-Nzm"/>
                                         <constraint firstItem="N2V-D7-wQW" firstAttribute="leading" secondItem="6La-Kk-weW" secondAttribute="leading" id="Gyh-6W-fvm"/>
@@ -1813,10 +1964,12 @@
                                         <constraint firstItem="OO8-JJ-SbL" firstAttribute="top" secondItem="iZ8-fM-rql" secondAttribute="bottom" constant="8" id="NVw-Es-gTN"/>
                                         <constraint firstItem="AzZ-71-i3V" firstAttribute="trailing" secondItem="6La-Kk-weW" secondAttribute="trailingMargin" id="OrK-6w-3El"/>
                                         <constraint firstAttribute="trailing" secondItem="lqY-OR-cWe" secondAttribute="trailing" id="RXF-IE-eV2"/>
+                                        <constraint firstItem="znQ-9Z-LL9" firstAttribute="top" secondItem="mFP-Po-5Ku" secondAttribute="bottom" constant="16" id="RvS-EL-bCD"/>
                                         <constraint firstItem="lqY-OR-cWe" firstAttribute="top" secondItem="6La-Kk-weW" secondAttribute="top" id="Tw1-On-TjQ"/>
                                         <constraint firstItem="lqY-OR-cWe" firstAttribute="leading" secondItem="6La-Kk-weW" secondAttribute="leading" id="WkG-Qh-7HV"/>
                                         <constraint firstItem="N2V-D7-wQW" firstAttribute="top" secondItem="lqY-OR-cWe" secondAttribute="bottom" id="YVU-k7-kmW"/>
                                         <constraint firstAttribute="bottom" secondItem="4QB-o9-FaD" secondAttribute="bottom" id="ayj-MD-nUQ"/>
+                                        <constraint firstItem="znQ-9Z-LL9" firstAttribute="trailing" secondItem="6La-Kk-weW" secondAttribute="trailingMargin" id="bmB-Es-6yb"/>
                                         <constraint firstAttribute="trailing" secondItem="N2V-D7-wQW" secondAttribute="trailing" id="cls-85-rmI"/>
                                         <constraint firstItem="OO8-JJ-SbL" firstAttribute="leading" secondItem="6La-Kk-weW" secondAttribute="leadingMargin" constant="81" id="iBb-cn-7SJ"/>
                                         <constraint firstAttribute="trailing" secondItem="mFP-Po-5Ku" secondAttribute="trailing" id="jU8-qj-Ppp"/>
@@ -1825,13 +1978,16 @@
                                         <constraint firstItem="mFP-Po-5Ku" firstAttribute="top" secondItem="AzZ-71-i3V" secondAttribute="bottom" constant="8" id="sea-UE-Ya7"/>
                                         <constraint firstAttribute="trailing" secondItem="4QB-o9-FaD" secondAttribute="trailing" constant="8" id="ubH-hU-kOR"/>
                                         <constraint firstItem="iZ8-fM-rql" firstAttribute="leading" secondItem="6La-Kk-weW" secondAttribute="leadingMargin" id="xEk-Mj-iGQ"/>
-                                        <constraint firstItem="4QB-o9-FaD" firstAttribute="top" secondItem="mFP-Po-5Ku" secondAttribute="bottom" constant="8" id="ync-Yx-KKR"/>
+                                        <constraint firstItem="znQ-9Z-LL9" firstAttribute="leading" secondItem="6La-Kk-weW" secondAttribute="leadingMargin" id="y1g-cH-Hon"/>
                                     </constraints>
                                     <connections>
                                         <outlet property="announcmentLabel" destination="4QB-o9-FaD" id="A57-W5-02W"/>
                                         <outlet property="badgesCollectionHeight" destination="CHI-gH-2f1" id="2zB-rd-Msq"/>
                                         <outlet property="badgesCollectionView" destination="mFP-Po-5Ku" id="1Tj-Ab-mqC"/>
+                                        <outlet property="badgesLabel" destination="AzZ-71-i3V" id="Gg9-Zk-KkY"/>
                                         <outlet property="banner" destination="lqY-OR-cWe" id="48r-He-OyY"/>
+                                        <outlet property="createBadgeButton" destination="znQ-9Z-LL9" id="V3M-pt-zsF"/>
+                                        <outlet property="createBadgeHeight" destination="k8o-QH-Mfg" id="Xys-Eg-F9R"/>
                                         <outlet property="desc" destination="iZ8-fM-rql" id="Qba-Ro-2fb"/>
                                         <outlet property="descHeight" destination="sAR-4J-ass" id="LZ3-ne-ZzN"/>
                                         <outlet property="joinClubButton" destination="OO8-JJ-SbL" id="NRi-Au-oZO"/>
@@ -1879,6 +2035,13 @@
                                     <segue destination="GuW-yK-lWm" kind="presentation" identifier="scanner" id="jfk-P1-dEj"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DBS-3c-Va0">
+                                <rect key="frame" x="313" y="20" width="46" height="30"/>
+                                <state key="normal" title="Button"/>
+                                <connections>
+                                    <segue destination="Y1d-Zc-x37" kind="presentation" identifier="createBadge" id="9qk-t1-7fc"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -1894,6 +2057,8 @@
                             <constraint firstItem="Arg-wd-tud" firstAttribute="baseline" secondItem="QFg-hB-TXj" secondAttribute="baseline" id="Uh1-eq-7Ea"/>
                             <constraint firstItem="OXV-rv-B3e" firstAttribute="bottom" secondItem="sNJ-aN-CCQ" secondAttribute="bottom" id="eRy-B9-0OE"/>
                             <constraint firstAttribute="trailing" secondItem="vTR-yJ-4ES" secondAttribute="trailing" id="hJa-xy-O1k"/>
+                            <constraint firstItem="DBS-3c-Va0" firstAttribute="baseline" secondItem="vTR-yJ-4ES" secondAttribute="baseline" id="jbN-Fv-Mgq"/>
+                            <constraint firstItem="DBS-3c-Va0" firstAttribute="leading" secondItem="QFg-hB-TXj" secondAttribute="leading" id="kCI-ZF-Ppy"/>
                             <constraint firstItem="OXV-rv-B3e" firstAttribute="leading" secondItem="sNJ-aN-CCQ" secondAttribute="leading" id="leq-8f-Kf7"/>
                             <constraint firstItem="Arg-wd-tud" firstAttribute="leading" secondItem="QFg-hB-TXj" secondAttribute="leading" id="qsX-zc-nZh"/>
                         </constraints>
@@ -1903,6 +2068,7 @@
                     <connections>
                         <outlet property="addAnncButton" destination="2Bv-3t-Apc" id="gJb-rs-afW"/>
                         <outlet property="clubContoller" destination="OXV-rv-B3e" id="avn-QY-452"/>
+                        <outlet property="createBadgeSegueButton" destination="DBS-3c-Va0" id="YEQ-zE-19W"/>
                         <outlet property="editClubDetailsButton" destination="n5V-N8-jer" id="tZS-Sv-44h"/>
                         <outlet property="memberList" destination="Arg-wd-tud" id="sPU-oH-y9j"/>
                         <outlet property="pendingButton" destination="QFg-hB-TXj" id="ok7-Dk-CCX"/>
@@ -1924,36 +2090,62 @@
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="WZp-Fy-fTi">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="iLu-wo-dmf">
-                                    <size key="itemSize" width="375" height="50"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="18" minimumInteritemSpacing="10" id="iLu-wo-dmf">
+                                    <size key="itemSize" width="375" height="64"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="name" id="826-1z-R0i" customClass="pendingListCell" customModule="St_Augustine_CHS" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="64"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="64"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="S1O-Pj-Fyo">
-                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="cpW-QM-aBX">
+                                                    <rect key="frame" x="80" y="0.0" width="287" height="32"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="32" id="87y-Al-Kwr"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                                    <nil key="textColor"/>
+                                                    <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NI4-oW-bjw">
+                                                    <rect key="frame" x="8" y="0.0" width="64" height="64"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="64" id="flW-Q5-xoa"/>
+                                                        <constraint firstAttribute="height" constant="64" id="ifc-OG-L0S"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Vcz-mf-b5k" customClass="SRCopyableLabel" customModule="St_Augustine_CHS" customModuleProvider="target">
+                                                    <rect key="frame" x="80" y="32" width="287" height="32"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="32" id="Y9g-V1-a3A"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="16"/>
+                                                    <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                         </view>
                                         <constraints>
-                                            <constraint firstItem="S1O-Pj-Fyo" firstAttribute="leading" secondItem="826-1z-R0i" secondAttribute="leading" id="5SR-A0-qXo"/>
-                                            <constraint firstAttribute="trailing" secondItem="S1O-Pj-Fyo" secondAttribute="trailing" id="E0a-9o-7gF"/>
-                                            <constraint firstItem="S1O-Pj-Fyo" firstAttribute="top" secondItem="826-1z-R0i" secondAttribute="top" id="Wfg-OY-mH8"/>
-                                            <constraint firstAttribute="bottom" secondItem="S1O-Pj-Fyo" secondAttribute="bottom" id="XPm-7E-457"/>
+                                            <constraint firstItem="cpW-QM-aBX" firstAttribute="leading" secondItem="NI4-oW-bjw" secondAttribute="trailing" constant="8" id="CPe-0q-yto"/>
+                                            <constraint firstAttribute="bottom" secondItem="NI4-oW-bjw" secondAttribute="bottom" id="OfD-0t-AhR"/>
+                                            <constraint firstItem="cpW-QM-aBX" firstAttribute="top" secondItem="826-1z-R0i" secondAttribute="top" id="Vzr-fr-KPY"/>
+                                            <constraint firstItem="NI4-oW-bjw" firstAttribute="top" secondItem="826-1z-R0i" secondAttribute="top" id="XUX-t2-bTL"/>
+                                            <constraint firstAttribute="trailing" secondItem="cpW-QM-aBX" secondAttribute="trailing" constant="8" id="ccZ-or-KWb"/>
+                                            <constraint firstItem="Vcz-mf-b5k" firstAttribute="leading" secondItem="NI4-oW-bjw" secondAttribute="trailing" constant="8" id="eh0-BT-xb9"/>
+                                            <constraint firstAttribute="trailing" secondItem="Vcz-mf-b5k" secondAttribute="trailing" constant="8" id="lst-CS-EO2"/>
+                                            <constraint firstItem="NI4-oW-bjw" firstAttribute="leading" secondItem="826-1z-R0i" secondAttribute="leading" constant="8" id="rfK-sr-ylJ"/>
+                                            <constraint firstAttribute="bottom" secondItem="Vcz-mf-b5k" secondAttribute="bottom" id="vfk-dJ-125"/>
                                         </constraints>
                                         <connections>
-                                            <outlet property="nameLabel" destination="S1O-Pj-Fyo" id="Fmh-2G-ht2"/>
+                                            <outlet property="emailLabel" destination="Vcz-mf-b5k" id="p4i-en-Dhx"/>
+                                            <outlet property="nameLabel" destination="cpW-QM-aBX" id="swA-yk-FPX"/>
+                                            <outlet property="profilePic" destination="NI4-oW-bjw" id="Q8N-WX-4b6"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -2192,8 +2384,10 @@
                     </view>
                     <size key="freeformSize" width="375" height="900"/>
                     <connections>
+                        <outlet property="adminLabel" destination="3VD-BN-Qeo" id="tFu-l6-iZZ"/>
                         <outlet property="adminsCollectionView" destination="qoC-bh-Zl7" id="EE3-fo-M6t"/>
                         <outlet property="adminsCollectionViewHeight" destination="JJB-5n-WKF" id="lqU-7G-Jkl"/>
+                        <outlet property="memberLabel" destination="NZD-yR-3UN" id="dou-oH-lB3"/>
                         <outlet property="membersCollectionView" destination="Wxd-mQ-z1s" id="Il1-cL-YMg"/>
                         <outlet property="membersCollectionViewHeight" destination="GhJ-gS-Svf" id="Le0-Zw-kGE"/>
                         <outlet property="membersEntireHeight" destination="jiM-iz-RGc" id="Jzu-0x-jWI"/>
@@ -2215,7 +2409,7 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="45"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="22X-Ho-EaX">
-                                        <rect key="frame" x="314" y="11" width="53" height="34"/>
+                                        <rect key="frame" x="310" y="13" width="57" height="32"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <state key="normal" title="Update"/>
                                         <connections>
@@ -2223,7 +2417,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UeQ-Yu-y2p">
-                                        <rect key="frame" x="8" y="11" width="48" height="34"/>
+                                        <rect key="frame" x="8" y="13" width="53" height="32"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <state key="normal" title="Cancel"/>
                                         <connections>
@@ -2284,7 +2478,7 @@
                                                 </constraints>
                                             </imageView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" scrollEnabled="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="rbC-J1-bE7">
-                                                <rect key="frame" x="8" y="299" width="359" height="185.5"/>
+                                                <rect key="frame" x="8" y="299" width="359" height="178.5"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </string>
                                                 <color key="textColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -2361,6 +2555,8 @@
                         <outlet property="clubDescTxtView" destination="rbC-J1-bE7" id="NFf-py-yNU"/>
                         <outlet property="clubNameTxtView" destination="YXq-jZ-2Vs" id="VsP-ad-w1c"/>
                         <outlet property="joinClubSettingsSegmentControl" destination="LkZ-if-AfV" id="2yy-jM-vFS"/>
+                        <outlet property="statusBarView" destination="NXy-hH-ZlP" id="GMB-Du-0sz"/>
+                        <outlet property="topBarView" destination="FKo-z8-RRa" id="eSh-NK-0to"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YMR-IK-j1M" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2385,7 +2581,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5ab-WG-FeZ">
-                                <rect key="frame" x="16" y="118" width="35.5" height="21"/>
+                                <rect key="frame" x="16" y="118" width="37" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="Erd-wW-5xw"/>
                                 </constraints>
@@ -2394,7 +2590,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description (Optional):" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="prx-4w-Jef">
-                                <rect key="frame" x="16" y="185" width="163" height="20"/>
+                                <rect key="frame" x="16" y="185" width="169.5" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="Rfd-6a-I4P"/>
                                 </constraints>
@@ -2403,7 +2599,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Image (Optional):" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LRz-up-DzA">
-                                <rect key="frame" x="16" y="251" width="124.5" height="21"/>
+                                <rect key="frame" x="16" y="251" width="129.5" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="dbM-C6-vPD"/>
                                 </constraints>
@@ -2447,7 +2643,7 @@
                                 <rect key="frame" x="0.0" y="325" width="375" height="342"/>
                             </imageView>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lIc-Gg-pnF">
-                                <rect key="frame" x="251" y="247" width="108" height="28.5"/>
+                                <rect key="frame" x="244" y="247" width="115" height="30"/>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                 <state key="normal" title="Remove Image">
                                     <color key="titleColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -2460,7 +2656,7 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="40"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1hJ-ll-ZUe">
-                                        <rect key="frame" x="8" y="6" width="48" height="34"/>
+                                        <rect key="frame" x="8" y="8" width="53" height="32"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <state key="normal" title="Cancel">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -2470,7 +2666,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1or-9d-NL1">
-                                        <rect key="frame" x="333" y="6" width="34" height="34"/>
+                                        <rect key="frame" x="332" y="8" width="35" height="32"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <state key="normal" title="Post">
                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -2539,8 +2735,9 @@
                         <outlet property="entireView" destination="vya-L2-R71" id="HnF-dg-xGt"/>
                         <outlet property="postButton" destination="1or-9d-NL1" id="eNh-CX-mtV"/>
                         <outlet property="removeImage" destination="lIc-Gg-pnF" id="zG2-tt-yTg"/>
+                        <outlet property="statusBarView" destination="7qW-1G-u5w" id="3U9-9s-oBw"/>
                         <outlet property="titleTxtFld" destination="4LO-Ke-OKm" id="naD-ga-olZ"/>
-                        <outlet property="topBar" destination="UkG-8B-fFj" id="w2F-MJ-mI8"/>
+                        <outlet property="topBarView" destination="UkG-8B-fFj" id="Mju-bz-eJD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2uh-c4-Ala" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2587,6 +2784,10 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="a9M-Io-xzb"/>
                     </view>
+                    <connections>
+                        <outlet property="goBackButton" destination="RYb-DO-qDC" id="tvS-K8-jKG"/>
+                        <outlet property="loginValidLabel" destination="fL7-wk-2ga" id="l85-vG-VEj"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6FZ-T6-Bp5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -2611,7 +2812,7 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="40"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Profile Picture" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UG5-ke-Aqt">
-                                        <rect key="frame" x="8" y="10.5" width="359" height="21.5"/>
+                                        <rect key="frame" x="8" y="12" width="359" height="20"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -2680,7 +2881,7 @@
                                     <constraint firstAttribute="height" constant="105" id="d8C-KN-IKh"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="coA-CE-OVr">
@@ -2729,7 +2930,9 @@
                     <connections>
                         <outlet property="hiddenNextButton" destination="1VI-do-Y1Y" id="LCO-IO-HHb"/>
                         <outlet property="profilePicsCollectionView" destination="GJq-8o-7dQ" id="5Xz-j1-KQU"/>
+                        <outlet property="statusBarView" destination="b8i-ti-Vxh" id="5YM-9Q-eJa"/>
                         <outlet property="theProfilePicture" destination="vdW-9e-rYx" id="4kH-Wl-gj1"/>
+                        <outlet property="topBarView" destination="nH0-8k-BP5" id="qFI-pv-tvr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="77R-zx-34h" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2772,7 +2975,7 @@
                                                     <constraint firstAttribute="height" constant="35" id="Mil-ai-OcU"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                                <nil key="textColor"/>
+                                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Semester 1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Igd-VU-V8K">
@@ -2781,31 +2984,31 @@
                                                     <constraint firstAttribute="height" constant="35" id="3GS-dJ-opK"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                                <nil key="textColor"/>
+                                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="ICS4U1" borderStyle="roundedRect" placeholder="Period 1" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="U8e-Z8-qpR">
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Period 1" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="U8e-Z8-qpR">
                                                 <rect key="frame" x="16" y="195" width="343" height="30"/>
                                                 <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="ICS4U1" borderStyle="roundedRect" placeholder="Period 2" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hvq-Wc-9ep">
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Period 2" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hvq-Wc-9ep">
                                                 <rect key="frame" x="16" y="233" width="343" height="30"/>
                                                 <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="ICS4U1" borderStyle="roundedRect" placeholder="Period 3" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3Il-9e-6zd">
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Period 3" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3Il-9e-6zd">
                                                 <rect key="frame" x="16" y="271" width="343" height="30"/>
                                                 <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="ICS4U1" borderStyle="roundedRect" placeholder="Period 4" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="FQf-CO-ftf">
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Period 4" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="FQf-CO-ftf">
                                                 <rect key="frame" x="16" y="309" width="343" height="30"/>
                                                 <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="textColor"/>
@@ -2818,7 +3021,7 @@
                                                     <constraint firstAttribute="height" constant="38" id="u6a-fn-ZNr"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                                <nil key="textColor"/>
+                                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Semester 2" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kq7-fM-WDV">
@@ -2827,31 +3030,31 @@
                                                     <constraint firstAttribute="height" constant="35" id="src-Z1-xAb"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                                <nil key="textColor"/>
+                                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="ICS4U1" borderStyle="roundedRect" placeholder="Period 1" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="YkT-6Y-Khj">
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Period 1" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="YkT-6Y-Khj">
                                                 <rect key="frame" x="16" y="390" width="343" height="30"/>
                                                 <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="ICS4U1" borderStyle="roundedRect" placeholder="Period 2" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xTU-0l-ML2">
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Period 2" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xTU-0l-ML2">
                                                 <rect key="frame" x="16" y="428" width="343" height="30"/>
                                                 <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="ICS4U1" borderStyle="roundedRect" placeholder="Period 3" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CBD-fU-yK2">
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Period 3" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CBD-fU-yK2">
                                                 <rect key="frame" x="16" y="466" width="343" height="30"/>
                                                 <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="ICS4U1" borderStyle="roundedRect" placeholder="Period 4" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4vL-M0-7xl">
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Period 4" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4vL-M0-7xl">
                                                 <rect key="frame" x="16" y="504" width="343" height="30"/>
                                                 <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="textColor"/>
@@ -2965,6 +3168,8 @@
                         <outlet property="s2p2TxtField" destination="xTU-0l-ML2" id="dt3-CE-hD7"/>
                         <outlet property="s2p3TxtField" destination="CBD-fU-yK2" id="9Kd-0c-Ovp"/>
                         <outlet property="s2p4TxtField" destination="4vL-M0-7xl" id="JYI-TA-oG3"/>
+                        <outlet property="statusBarView" destination="wcO-Ps-kQ7" id="jm6-FF-lnb"/>
+                        <outlet property="topBarView" destination="FPr-h7-uLT" id="w5U-En-HGm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rwc-Xr-8DF" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2983,7 +3188,7 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="40"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I4x-xP-Hal">
-                                        <rect key="frame" x="8" y="10.5" width="359" height="21.5"/>
+                                        <rect key="frame" x="8" y="12" width="359" height="20"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -3023,7 +3228,7 @@
                                     <constraint firstAttribute="height" constant="40" id="9W3-Oi-KhQ"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show courses to other people?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DFP-vs-1bO">
@@ -3033,7 +3238,7 @@
                                     <constraint firstAttribute="height" constant="38" id="wET-WN-X6n"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="YWg-NF-kyI">
@@ -3049,7 +3254,7 @@
                                     <constraint firstAttribute="height" constant="38" id="qYn-wq-Egt"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="uLc-ee-AQJ">
@@ -3095,6 +3300,8 @@
                         <outlet property="nextButtonHidden" destination="RhE-6G-XsV" id="U1p-sa-ih1"/>
                         <outlet property="showClassesSwitch" destination="uLc-ee-AQJ" id="5D5-IB-RWz"/>
                         <outlet property="showCoursesSwitch" destination="YWg-NF-kyI" id="fC7-Kf-pac"/>
+                        <outlet property="statusBarView" destination="E8X-oi-TVr" id="ef7-y1-33O"/>
+                        <outlet property="topBarView" destination="T60-qS-UiJ" id="pzS-ef-3uk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hOB-88-0Va" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3110,7 +3317,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Logging in to App" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ILc-F1-M8q">
-                                <rect key="frame" x="122.5" y="435" width="130" height="21.5"/>
+                                <rect key="frame" x="120" y="435" width="135.5" height="20"/>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                 <color key="textColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -3142,7 +3349,7 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XEe-Yh-U7Y" customClass="GIDSignInButton">
-                                <rect key="frame" x="112" y="499.5" width="151" height="48.5"/>
+                                <rect key="frame" x="112" y="498" width="151" height="50"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XRy-Bd-M4U">
@@ -3276,12 +3483,12 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0 MB" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vyS-cg-YIC">
-                                <rect key="frame" x="320" y="112" width="39" height="38"/>
+                                <rect key="frame" x="318" y="112" width="41" height="38"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="38" id="pTv-AP-FPR"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Maximum of around 200 MB." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ejb-Q1-QI6">
@@ -3317,8 +3524,12 @@
                         <viewLayoutGuide key="safeArea" id="iKn-Qx-xRw"/>
                     </view>
                     <connections>
+                        <outlet property="LogOutButton" destination="Zw3-qE-1lN" id="Qau-WM-4Th"/>
                         <outlet property="cacheSizeLabel" destination="vyS-cg-YIC" id="laF-Xt-ObK"/>
+                        <outlet property="changePrivacySettingsButton" destination="Q0S-ui-FJB" id="EDa-OX-kjj"/>
+                        <outlet property="clearCacheButton" destination="W1Q-Yl-7bm" id="ACx-FF-uZz"/>
                         <outlet property="clearKeys" destination="cMS-II-GjS" id="DEy-H5-Joh"/>
+                        <outlet property="clearKeysButton" destination="cMS-II-GjS" id="LSh-fh-IiC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hze-xJ-Odd" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3365,7 +3576,7 @@
                                                                 <constraint firstAttribute="height" constant="20" id="K7E-eR-eUg"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="13"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
@@ -3453,14 +3664,14 @@
                                     <segue destination="ou6-IM-86u" kind="presentation" identifier="suggestSong" id="krz-mI-ogL"/>
                                 </connections>
                             </button>
-                            <view hidden="YES" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="64E-BA-oGS">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="64E-BA-oGS">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zyA-lx-qzB">
                                         <rect key="frame" x="20" y="168" width="335" height="270"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xKk-tf-ocT">
-                                                <rect key="frame" x="8" y="228" width="48" height="34"/>
+                                                <rect key="frame" x="8" y="230" width="53" height="32"/>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                                 <state key="normal" title="Cancel">
                                                     <color key="titleColor" red="0.70672154389999997" green="0.54701480290000004" blue="0.091173238470000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -3470,7 +3681,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FAy-L9-6X1">
-                                                <rect key="frame" x="282" y="228" width="45" height="34"/>
+                                                <rect key="frame" x="277" y="230" width="50" height="32"/>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                                 <state key="normal" title="Spend">
                                                     <color key="titleColor" red="0.70672154389999997" green="0.54701480290000004" blue="0.091173238470000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -3488,17 +3699,17 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Super vote allows you to spend points for votes" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rSu-Je-GiU">
-                                                <rect key="frame" x="8" y="51" width="319" height="45"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Super vote allows you to spend points for votes" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="rSu-Je-GiU">
+                                                <rect key="frame" x="8" y="51" width="319" height="55"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="45" id="IU3-BZ-euK"/>
+                                                    <constraint firstAttribute="height" constant="55" id="IU3-BZ-euK"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="10" minValue="10" maxValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="Dm6-dd-nu8">
-                                                <rect key="frame" x="6" y="147" width="323" height="31"/>
+                                                <rect key="frame" x="6" y="157" width="323" height="31"/>
                                                 <color key="tintColor" red="0.70672154389999997" green="0.54701480290000004" blue="0.091173238470000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="rne-IJ-Hnm"/>
@@ -3508,7 +3719,7 @@
                                                 </connections>
                                             </slider>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Votes: 10" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zff-YE-uVW">
-                                                <rect key="frame" x="8" y="185" width="319" height="35"/>
+                                                <rect key="frame" x="8" y="195" width="319" height="35"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="35" id="gH9-Ug-gpD"/>
                                                 </constraints>
@@ -3517,7 +3728,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Points: 20" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W9S-WY-70G">
-                                                <rect key="frame" x="8" y="103" width="319" height="35"/>
+                                                <rect key="frame" x="8" y="113" width="319" height="35"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="35" id="9AM-yq-BEr"/>
                                                 </constraints>
@@ -3575,7 +3786,9 @@
                         <viewLayoutGuide key="safeArea" id="nkA-Xt-AkT"/>
                     </view>
                     <connections>
+                        <outlet property="cancelButton" destination="xKk-tf-ocT" id="wp2-3N-MzP"/>
                         <outlet property="songView" destination="5cq-7X-y0B" id="grd-5l-tOy"/>
+                        <outlet property="spendButton" destination="FAy-L9-6X1" id="ONI-xo-2Wt"/>
                         <outlet property="suggestASong" destination="Bvf-ub-6X2" id="QvU-O0-CTZ"/>
                         <outlet property="supervoteDesc" destination="rSu-Je-GiU" id="BIt-4b-1lc"/>
                         <outlet property="supervotePoints" destination="W9S-WY-70G" id="hWc-ZV-xq7"/>
@@ -3603,7 +3816,7 @@
                                     <constraint firstAttribute="height" constant="40" id="BQW-Vx-gJc"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ten: -1000" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sr3-aX-KAY">
@@ -3612,7 +3825,7 @@
                                     <constraint firstAttribute="height" constant="40" id="tvR-wc-djo"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Twelve: -1000" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bzt-8C-9Dg">
@@ -3621,7 +3834,7 @@
                                     <constraint firstAttribute="height" constant="40" id="TRK-0R-exz"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="yB4-MS-SF0">
@@ -3635,7 +3848,7 @@
                                     <constraint firstAttribute="height" constant="40" id="b6w-GS-yUm"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="DpM-CH-uwe">
@@ -3707,7 +3920,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This is your personal Titan Tag. You can get it scanned by club admins at events to get badges" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4pC-zz-896">
-                                <rect key="frame" x="16" y="375" width="343" height="71"/>
+                                <rect key="frame" x="16" y="375" width="343" height="66.5"/>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="19"/>
                                 <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -3738,7 +3951,7 @@
                                 </constraints>
                             </view>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="you" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uHo-wd-l83">
-                                <rect key="frame" x="16" y="623" width="343" height="24"/>
+                                <rect key="frame" x="16" y="624.5" width="343" height="22.5"/>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="19"/>
                                 <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -3779,7 +3992,7 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="35"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jNg-VD-YYj">
-                                        <rect key="frame" x="8" y="4" width="42" height="31"/>
+                                        <rect key="frame" x="8" y="5" width="47" height="30"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="15"/>
                                         <state key="normal" title="Cancel"/>
                                         <connections>
@@ -3788,7 +4001,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="91W-SK-EUe">
-                                        <rect key="frame" x="314" y="4" width="53" height="31"/>
+                                        <rect key="frame" x="311" y="5" width="56" height="30"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="15"/>
                                         <state key="normal" title="Request"/>
@@ -3875,8 +4088,12 @@
                     </view>
                     <connections>
                         <outlet property="artistName" destination="wiS-nO-rUG" id="BUi-uB-v3p"/>
+                        <outlet property="artistNameLabel" destination="UMc-xz-yU5" id="b1b-CA-1v8"/>
                         <outlet property="songName" destination="mKa-mC-Cd6" id="oZL-Tq-Ost"/>
+                        <outlet property="songNameLabel" destination="hgb-IS-2a9" id="inb-Ch-Yit"/>
+                        <outlet property="statusBarView" destination="dzs-L5-KOJ" id="Bjx-1E-Oa6"/>
                         <outlet property="therequestbutton" destination="91W-SK-EUe" id="jDj-GT-zeY"/>
+                        <outlet property="topBarView" destination="7Jp-NY-tL3" id="ace-3p-urx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sai-bq-0j3" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3903,7 +4120,7 @@
                                                     <constraint firstAttribute="height" constant="35" id="Ew9-co-oQQ"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                                <nil key="textColor"/>
+                                                <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Semester 1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2j2-Dg-Sls">
@@ -3912,7 +4129,7 @@
                                                     <constraint firstAttribute="height" constant="35" id="U0P-tV-9ea"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                                <nil key="textColor"/>
+                                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Period 1" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ClX-MC-nI9">
@@ -3949,7 +4166,7 @@
                                                     <constraint firstAttribute="height" constant="38" id="mnd-jS-1es"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                                <nil key="textColor"/>
+                                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Semester 2" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hld-j5-gaC">
@@ -3958,7 +4175,7 @@
                                                     <constraint firstAttribute="height" constant="35" id="Oy6-o0-6IE"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                                <nil key="textColor"/>
+                                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Period 1" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Yd8-7o-IGn">
@@ -4043,7 +4260,7 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="40"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jGc-MM-mvG">
-                                        <rect key="frame" x="314" y="6" width="53" height="34"/>
+                                        <rect key="frame" x="310" y="8" width="57" height="32"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <state key="normal" title="Update"/>
                                         <connections>
@@ -4051,7 +4268,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9ee-Kl-zy7">
-                                        <rect key="frame" x="8" y="6" width="48" height="34"/>
+                                        <rect key="frame" x="8" y="8" width="53" height="32"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <state key="normal" title="Cancel"/>
                                         <connections>
@@ -4092,6 +4309,7 @@
                     </view>
                     <size key="freeformSize" width="375" height="900"/>
                     <connections>
+                        <outlet property="cancelOrUpdateView" destination="bDc-eC-aAU" id="nPR-mu-tC5"/>
                         <outlet property="s1p1" destination="ClX-MC-nI9" id="6TY-nt-PX0"/>
                         <outlet property="s1p2" destination="ecg-pm-Wgi" id="gVg-GW-fGd"/>
                         <outlet property="s1p3" destination="RQI-D0-Tc5" id="SzB-XY-tFn"/>
@@ -4100,6 +4318,7 @@
                         <outlet property="s2p2" destination="zb9-3v-6N8" id="ck8-cA-Km0"/>
                         <outlet property="s2p3" destination="lab-p1-ziM" id="JAD-kP-0Lk"/>
                         <outlet property="s2p4" destination="8k7-C2-g5M" id="GOh-bT-IlO"/>
+                        <outlet property="statusBarView" destination="eti-o4-70a" id="Oj4-Qp-n8D"/>
                         <outlet property="updateButton" destination="jGc-MM-mvG" id="QIr-Aq-X8e"/>
                     </connections>
                 </viewController>
@@ -4119,13 +4338,13 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="40"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hrU-o0-qJg">
-                                        <rect key="frame" x="8" y="10.5" width="359" height="21.5"/>
+                                        <rect key="frame" x="8" y="12" width="359" height="20"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nch-PH-Wv9">
-                                        <rect key="frame" x="7" y="6" width="48" height="34"/>
+                                        <rect key="frame" x="7" y="8" width="53" height="32"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <state key="normal" title="Cancel"/>
                                         <connections>
@@ -4133,7 +4352,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fGM-hv-98p">
-                                        <rect key="frame" x="314" y="6" width="53" height="34"/>
+                                        <rect key="frame" x="310" y="8" width="57" height="32"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <state key="normal" title="Update"/>
                                         <connections>
@@ -4159,7 +4378,7 @@
                                     <constraint firstAttribute="height" constant="40" id="4aN-UX-XdR"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show courses to other people?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OCJ-ij-nM0">
@@ -4169,7 +4388,7 @@
                                     <constraint firstAttribute="width" constant="288" id="qTf-s2-Xyb"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="KJ0-aP-f6P">
@@ -4185,7 +4404,7 @@
                                     <constraint firstAttribute="height" constant="38" id="q5w-FK-9hB"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="cEk-k5-Emy">
@@ -4225,6 +4444,8 @@
                     <connections>
                         <outlet property="showClubsSwitch" destination="cEk-k5-Emy" id="hUY-v5-0p6"/>
                         <outlet property="showCoursesSwitch" destination="KJ0-aP-f6P" id="c50-cg-F98"/>
+                        <outlet property="statusBarView" destination="CKG-dv-yvA" id="cFt-CD-p33"/>
+                        <outlet property="topBarView" destination="TW7-po-yld" id="xbG-sN-3u5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="00h-JA-jvc" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -4243,7 +4464,7 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="45"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QAN-F8-eET">
-                                        <rect key="frame" x="319" y="11" width="48" height="34"/>
+                                        <rect key="frame" x="316" y="13" width="51" height="32"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <state key="normal" title="Create"/>
                                         <connections>
@@ -4251,7 +4472,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rom-FV-IMr">
-                                        <rect key="frame" x="8" y="11" width="48" height="34"/>
+                                        <rect key="frame" x="8" y="13" width="53" height="32"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <state key="normal" title="Cancel"/>
                                         <connections>
@@ -4298,7 +4519,7 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" scrollEnabled="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="MvM-mx-gaX">
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" scrollEnabled="NO" text="Club Name" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="MvM-mx-gaX">
                                                 <rect key="frame" x="0.0" y="254" width="375" height="37"/>
                                                 <color key="backgroundColor" red="0.55294117649999996" green="0.070588235289999995" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -4311,8 +4532,8 @@
                                                     <constraint firstAttribute="height" constant="170" id="GIi-cY-zfD"/>
                                                 </constraints>
                                             </imageView>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" scrollEnabled="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="oNq-YS-yyP">
-                                                <rect key="frame" x="8" y="299" width="359" height="37.5"/>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" scrollEnabled="NO" text="Club Description" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="oNq-YS-yyP">
+                                                <rect key="frame" x="8" y="299" width="359" height="36.5"/>
                                                 <color key="backgroundColor" red="0.90490476012740118" green="0.91386421319796951" blue="0.91386421319796951" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="textColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
@@ -4388,6 +4609,8 @@
                         <outlet property="clubDescTxtView" destination="oNq-YS-yyP" id="Dd3-cg-cEO"/>
                         <outlet property="clubNameTxtView" destination="MvM-mx-gaX" id="ILA-Ef-VzH"/>
                         <outlet property="joinClubSettingsSegmentControl" destination="FPT-72-Iwm" id="fvb-Id-H4l"/>
+                        <outlet property="statusBarView" destination="r0H-2x-B7D" id="mKA-L4-8pp"/>
+                        <outlet property="topBarView" destination="0DX-Mv-x1p" id="VEk-fU-NIA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Pjl-6P-GWs" userLabel="First Responder" sceneMemberID="firstResponder"/>

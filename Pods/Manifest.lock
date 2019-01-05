@@ -7,6 +7,7 @@ PODS:
   - BoringSSL/Interface (10.0.6)
   - Crashlytics (3.12.0):
     - Fabric (~> 1.9.0)
+  - CropViewController (2.4.0)
   - Fabric (1.9.0)
   - Firebase/Auth (5.11.0):
     - Firebase/CoreOnly
@@ -25,12 +26,21 @@ PODS:
   - Firebase/Functions (5.11.0):
     - Firebase/CoreOnly
     - FirebaseFunctions (= 2.1.1)
+  - Firebase/InAppMessagingDisplay (5.11.0):
+    - Firebase/CoreOnly
+    - FirebaseInAppMessagingDisplay (= 0.12.0)
   - Firebase/Messaging (5.11.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (= 3.2.1)
+  - Firebase/RemoteConfig (5.11.0):
+    - Firebase/Core
+    - FirebaseRemoteConfig (= 3.1.0)
   - Firebase/Storage (5.11.0):
     - Firebase/CoreOnly
     - FirebaseStorage (= 3.0.2)
+  - FirebaseABTesting (2.0.0):
+    - FirebaseCore (~> 5.0)
+    - Protobuf (~> 3.5)
   - FirebaseAnalytics (5.3.0):
     - FirebaseCore (~> 5.1)
     - FirebaseInstanceID (~> 3.3)
@@ -72,6 +82,14 @@ PODS:
   - FirebaseFunctions (2.1.1):
     - FirebaseCore (~> 5.0)
     - GTMSessionFetcher/Core (~> 1.1)
+  - FirebaseInAppMessaging (0.12.1):
+    - FirebaseAnalytics (~> 5.3)
+    - FirebaseCore (~> 5.1)
+    - FirebaseInstanceID (~> 3.3)
+    - GoogleUtilities/Environment (~> 5.0)
+  - FirebaseInAppMessagingDisplay (0.12.0):
+    - FirebaseCore
+    - FirebaseInAppMessaging (>= 0.12.0)
   - FirebaseInstanceID (3.3.0):
     - FirebaseCore (~> 5.1)
     - GoogleUtilities/Environment (~> 5.3)
@@ -83,6 +101,14 @@ PODS:
     - GoogleUtilities/Environment (~> 5.2)
     - GoogleUtilities/Reachability (~> 5.2)
     - Protobuf (~> 3.1)
+  - FirebaseRemoteConfig (3.1.0):
+    - FirebaseABTesting (~> 2.0)
+    - FirebaseAnalytics (~> 5.3)
+    - FirebaseCore (~> 5.1)
+    - FirebaseInstanceID (~> 3.3)
+    - GoogleUtilities/Environment (~> 5.2)
+    - "GoogleUtilities/NSData+zlib (~> 5.2)"
+    - Protobuf (~> 3.5)
   - FirebaseStorage (3.0.2):
     - FirebaseAuthInterop (~> 1.0)
     - FirebaseCore (~> 5.0)
@@ -170,13 +196,16 @@ PODS:
 
 DEPENDENCIES:
   - Crashlytics (~> 3.12.0)
+  - CropViewController
   - Fabric (~> 1.9.0)
   - Firebase/Auth
   - Firebase/Core
   - Firebase/Database
   - Firebase/Firestore
   - Firebase/Functions
+  - Firebase/InAppMessagingDisplay
   - Firebase/Messaging
+  - Firebase/RemoteConfig
   - Firebase/Storage
   - GoogleSignIn
 
@@ -184,8 +213,10 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - BoringSSL
     - Crashlytics
+    - CropViewController
     - Fabric
     - Firebase
+    - FirebaseABTesting
     - FirebaseAnalytics
     - FirebaseAnalyticsInterop
     - FirebaseAuth
@@ -194,8 +225,11 @@ SPEC REPOS:
     - FirebaseDatabase
     - FirebaseFirestore
     - FirebaseFunctions
+    - FirebaseInAppMessaging
+    - FirebaseInAppMessagingDisplay
     - FirebaseInstanceID
     - FirebaseMessaging
+    - FirebaseRemoteConfig
     - FirebaseStorage
     - GoogleAppMeasurement
     - GoogleSignIn
@@ -215,8 +249,10 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   BoringSSL: e10f92a27043805c01071fe815a5cd98ae8212e7
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
+  CropViewController: a090820b15fc3da68e694d7c192a4708c576828b
   Fabric: f988e33c97f08930a413e08123064d2e5f68d655
   Firebase: b48f9e653da971ecce5b8c749684bc8bb2d26bd3
+  FirebaseABTesting: 1f50b8d50f5e3469eea54e7463a7b7fe221d1f5e
   FirebaseAnalytics: 63202d2665de4e6adcbdce189135255d8b5962ba
   FirebaseAnalyticsInterop: e5f21be9af6548372e2f0815834ff909bff395a2
   FirebaseAuth: 504b198ceb3472dca5c65bb95544ea44cfc9439e
@@ -225,8 +261,11 @@ SPEC CHECKSUMS:
   FirebaseDatabase: e2bcbc106adc4b11a2da3ec2eb63c0c4a44f2f54
   FirebaseFirestore: 162502df850b584126c609f3449acfb7230d8c1a
   FirebaseFunctions: 6c03d7c5d62520be4678dc3fb7957654aab82b4f
+  FirebaseInAppMessaging: aa04bdbbee12aa132156e6085b3bfad7d6e0dcbb
+  FirebaseInAppMessagingDisplay: 4a154d15e3a3480bab28241c9241084009f1f8b1
   FirebaseInstanceID: e2fa4cb35ef5558c200f7f0ad8a53e212215f93e
   FirebaseMessaging: 0f14a264b0d7f867e8eff5d3556bc5d0d4e57888
+  FirebaseRemoteConfig: 7e11c65f0769c09bff6947997c209515058c5318
   FirebaseStorage: fd82e5e5c474897e19972b34b22ac0f589dce04e
   GoogleAppMeasurement: 5029d78f2b438bd30ffb44e6c558b57c21622727
   GoogleSignIn: 11183592dc63e105475c7305a325045ff95e02b7
@@ -243,6 +282,6 @@ SPEC CHECKSUMS:
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
 
-PODFILE CHECKSUM: 649d3ad2dd766ca24186ef3f2ccee679cbf0e10e
+PODFILE CHECKSUM: 288a71858a54aa71e779b8292ee916cf574b3e01
 
 COCOAPODS: 1.5.3

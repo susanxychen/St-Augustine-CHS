@@ -10,4 +10,7 @@ import UIKit
 
 class pendingListCell: UICollectionViewCell {
     @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var emailLabel: SRCopyableLabel!
+    @IBOutlet weak var profilePic: UIImageView!
+    
 }

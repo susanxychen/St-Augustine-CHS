@@ -8,8 +8,9 @@
 
 import UIKit
 import Firebase
+import CropViewController
 
-class editClubDetailsController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class editClubDetailsController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CropViewControllerDelegate {
 
     //The Database
     var db: Firestore!
@@ -32,6 +33,11 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     
     //Returning to club vars
     var onDoneBlock : ((Bool) -> Void)?
+    
+    //Colours
+    @IBOutlet weak var statusBarView: UIView!
+    @IBOutlet weak var topBarView: UIView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,6 +88,14 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
         
         //Hide keyboard when tapped out
         self.hideKeyboardWhenTappedAround()
+        
+        //Colours
+        statusBarView.backgroundColor = DefaultColours.darkerPrimary
+        topBarView.backgroundColor = DefaultColours.primaryColor
+        joinClubSettingsSegmentControl.tintColor = DefaultColours.primaryColor
+        clubNameTxtView.backgroundColor = DefaultColours.primaryColor
+        clubDescTxtView.textColor = DefaultColours.primaryColor
+        clubDescTxtView.tintColor = DefaultColours.accentColor
     }
     
     //***************************CLUB BANNER***************************
@@ -125,13 +139,31 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     //Picking the image from photo libarry.....Info dictionary contains the image data
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
-        clubBanner.image = image
+//        let resized = image.scaleImage(toSize: CGSize(width: 1280, height: 720))
+//        clubBanner.image = resized
+        let cropVC = CropViewController(image: image)
+        cropVC.delegate = self
+        cropVC.title = "Banners should be in a 1280x720 ratio"
+        cropVC.rotateButtonsHidden = true
+        cropVC.aspectRatioLockEnabled = true
+        cropVC.resetButtonHidden = true
+        cropVC.aspectRatioPickerButtonHidden = true
+        cropVC.imageCropFrame = CGRect(x: 0, y: 0, width: 1280, height: 720)
+        
         picker.dismiss(animated: true, completion: nil)
+        present(cropVC, animated: true, completion: nil)
     }
     
     //If the user cancesl picking image from library
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func cropViewController(_ cropViewController: CropViewController, didCropToImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
+        print("i get here crop")
+        cropViewController.dismiss(animated: true, completion: nil)
+        print(image)
+        clubBanner.image = image
     }
     
     //***************************JOIN CLUB SETTINGS***************************
@@ -167,14 +199,14 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
             self.present(alert, animated: true, completion: nil)
         }
         
-        if clubDescTxtView.text.contains("\n") {
-            valid = false
-            //Tell the user that information needs to be filled in
-            let alert = UIAlertController(title: "Error", message: "Club Description must not contain a return key", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-            alert.addAction(okAction)
-            self.present(alert, animated: true, completion: nil)
-        }
+//        if clubDescTxtView.text.contains("\n") {
+//            valid = false
+//            //Tell the user that information needs to be filled in
+//            let alert = UIAlertController(title: "Error", message: "Club Description must not contain a return key", preferredStyle: .alert)
+//            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//            alert.addAction(okAction)
+//            self.present(alert, animated: true, completion: nil)
+//        }
         
         if (self.clubNameTxtView.text?.count)! > 50 {
             let alert = UIAlertController(title: "Error", message: "Title is too long", preferredStyle: .alert)
@@ -211,7 +243,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
             metaData.contentType = "image/jpeg"
             
             //Upload the image to the database
-            if let uploadData = newClubBanner?.resized(toWidth: 600)!.jpegData(compressionQuality: 0.8){
+            if let uploadData = newClubBanner?.jpegData(compressionQuality: 1.0){
                 storageRef.putData(uploadData, metadata: metaData) { (metadata, error) in
                     if let error = error {
                         let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)

@@ -45,6 +45,11 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
     
     var choseNewPic = false
     
+    //colors
+    @IBOutlet weak var topStatusBar: UIView!
+    @IBOutlet weak var cancelOrUpdateView: UIView!
+    @IBOutlet weak var lineBetweenOwnedAndAll: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -77,6 +82,10 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
         Firestore.firestore().settings = settings
         // [END setup]
         db = Firestore.firestore()
+        
+        topStatusBar.backgroundColor = DefaultColours.darkerPrimary
+        cancelOrUpdateView.backgroundColor = DefaultColours.primaryColor
+        lineBetweenOwnedAndAll.backgroundColor = DefaultColours.primaryColor
         
         //Set up the current profile image
         theProfilePic.image = thePicImage

@@ -25,6 +25,12 @@ class suggestASongController: UIViewController {
     //Allows refreshing the song req controller when done adding song
     var onDoneBlock : ((Bool) -> Void)?
     
+    //Colours
+    @IBOutlet weak var statusBarView: UIView!
+    @IBOutlet weak var topBarView: UIView!
+    @IBOutlet weak var songNameLabel: UILabel!
+    @IBOutlet weak var artistNameLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         overlayView.frame = UIApplication.shared.keyWindow!.frame
@@ -56,6 +62,14 @@ class suggestASongController: UIViewController {
         Firestore.firestore().settings = settings
         // [END setup]
         db = Firestore.firestore()
+        
+        //colours
+        statusBarView.backgroundColor = DefaultColours.darkerPrimary
+        topBarView.backgroundColor = DefaultColours.primaryColor
+        songNameLabel.textColor = DefaultColours.primaryColor
+        songName.tintColor = DefaultColours.accentColor
+        artistNameLabel.textColor = DefaultColours.primaryColor
+        artistName.tintColor = DefaultColours.accentColor
         
         hideKeyboardWhenTappedAround()
     }

@@ -8,8 +8,9 @@
 
 import UIKit
 import Firebase
+import CropViewController
 
-class addClubController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class addClubController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CropViewControllerDelegate {
 
     //The Database
     var db: Firestore!
@@ -32,6 +33,10 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
     let overlayView = UIView(frame: UIScreen.main.bounds)
+    
+    //Colours
+    @IBOutlet weak var statusBarView: UIView!
+    @IBOutlet weak var topBarView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,6 +79,14 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
         
         //Hide keyboard when tapped out
         self.hideKeyboardWhenTappedAround()
+        
+        //Colours
+        statusBarView.backgroundColor = DefaultColours.darkerPrimary
+        topBarView.backgroundColor = DefaultColours.primaryColor
+        joinClubSettingsSegmentControl.tintColor = DefaultColours.primaryColor
+        clubNameTxtView.backgroundColor = DefaultColours.primaryColor
+        clubDescTxtView.textColor = DefaultColours.primaryColor
+        clubDescTxtView.tintColor = DefaultColours.accentColor
     }
     
     //***************************CLUB BANNER***************************
@@ -117,13 +130,31 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
     //Picking the image from photo libarry.....Info dictionary contains the image data
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
-        clubBanner.image = image
+//        let resized = image.scaleImage(toSize: CGSize(width: 1280, height: 720))
+//        clubBanner.image = resized
+        let cropVC = CropViewController(image: image)
+        cropVC.delegate = self
+        cropVC.title = "Banners should be in a 1280x720 ratio"
+        cropVC.rotateButtonsHidden = true
+        cropVC.aspectRatioLockEnabled = true
+        cropVC.resetButtonHidden = true
+        cropVC.aspectRatioPickerButtonHidden = true
+        cropVC.imageCropFrame = CGRect(x: 0, y: 0, width: 1280, height: 720)
+        
         picker.dismiss(animated: true, completion: nil)
+        present(cropVC, animated: true, completion: nil)
     }
     
     //If the user cancesl picking image from library
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func cropViewController(_ cropViewController: CropViewController, didCropToImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
+        print("i get here crop")
+        cropViewController.dismiss(animated: true, completion: nil)
+        print(image)
+        clubBanner.image = image
     }
     
     //***************************JOIN CLUB SETTINGS***************************
@@ -141,10 +172,10 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
     @IBAction func pressedAddClub(_ sender: Any) {
         var valid = true
         
-        if clubNameTxtView.text == "" || clubDescTxtView.text == "" {
+        if (clubNameTxtView.text == "" || clubNameTxtView.text == "Club Name" || clubDescTxtView.text == "" || clubDescTxtView.text == "Club Description") {
             valid = false
             //Tell the user that information needs to be filled in
-            let alert = UIAlertController(title: "Error", message: "No field can be left blank", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Error", message: "Fill in required information", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
@@ -158,14 +189,14 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
             self.present(alert, animated: true, completion: nil)
         }
         
-        if clubDescTxtView.text.contains("\n") {
-            valid = false
-            //Tell the user that information needs to be filled in
-            let alert = UIAlertController(title: "Error", message: "Club Description must not contain a return key", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-            alert.addAction(okAction)
-            self.present(alert, animated: true, completion: nil)
-        }
+//        if clubDescTxtView.text.contains("\n") {
+//            valid = false
+//            //Tell the user that information needs to be filled in
+//            let alert = UIAlertController(title: "Error", message: "Club Description must not contain a return key", preferredStyle: .alert)
+//            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//            alert.addAction(okAction)
+//            self.present(alert, animated: true, completion: nil)
+//        }
         
         if clubBanner.image == UIImage(named: "space") {
             valid = false
@@ -193,33 +224,40 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
         }
         
         if valid {
-            let newClubBanner = clubBanner.image
-            
-            self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-            
-            clubBannerID = randomString(length: 20)
-            
-            //Start to upload image
-            //Set up the image data
-            let storageRef = Storage.storage().reference(withPath: "clubBanners").child(clubBannerID)
-            let metaData = StorageMetadata()
-            metaData.contentType = "image/jpeg"
-            
-            //Upload the image to the database
-            if let uploadData = newClubBanner?.resized(toWidth: 600)!.jpegData(compressionQuality: 1.0){
-                storageRef.putData(uploadData, metadata: metaData) { (metadata, error) in
-                    if let error = error {
-                        let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
-                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                        alert.addAction(okAction)
-                        self.present(alert, animated: true, completion: nil)
-                        print(error as Any)
-                        return
+            let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to create \(clubNameTxtView.text ?? "this club")?", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
+            let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
+                let newClubBanner = self.clubBanner.image
+                
+                self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                
+                self.clubBannerID = self.randomString(length: 20)
+                
+                //Start to upload image
+                //Set up the image data
+                let storageRef = Storage.storage().reference(withPath: "clubBanners").child(self.clubBannerID)
+                let metaData = StorageMetadata()
+                metaData.contentType = "image/jpeg"
+                
+                //Upload the image to the database
+                if let uploadData = newClubBanner?.jpegData(compressionQuality: 1.0){
+                    storageRef.putData(uploadData, metadata: metaData) { (metadata, error) in
+                        if let error = error {
+                            let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
+                            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                            alert.addAction(okAction)
+                            self.present(alert, animated: true, completion: nil)
+                            print(error as Any)
+                            return
+                        }
+                        print(metadata as Any)
+                        self.uploadTheRestOfTheClub()
                     }
-                    print(metadata as Any)
-                    self.uploadTheRestOfTheClub()
                 }
             }
+            alert.addAction(confirmAction)
+            alert.addAction(cancelAction)
+            self.present(alert, animated: true, completion: nil)
         }
     }
     

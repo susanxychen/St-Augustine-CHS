@@ -69,6 +69,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     var badgeImgs = [UIImage]()
     @IBOutlet weak var scanBadgeButton: UIButton!
     var theSelectedBadgeID: String!
+    @IBOutlet weak var createBadgeSegueButton: UIButton!
     
     //Pending
     @IBOutlet weak var pendingButton: UIButton!
@@ -160,7 +161,9 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         let editDetailsBarbutton = UIBarButtonItem(customView: editClubDeailsButton)
         
         //Assign Buttons to Navigation Bar
-        self.navigationItem.rightBarButtonItem = editDetailsBarbutton
+        if partOfClub || didSubmitApplication || (allUserFirebaseData.data["status"] as! Int == 2) {
+            self.navigationItem.rightBarButtonItem = editDetailsBarbutton
+        }
     }
     
     //**********************JOINING CLUBS***********************
@@ -220,6 +223,13 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         }
     }
     
+    //**********************CREATING BADGES ***********************
+    @objc func createBadgeTapped(sender: UIButton){
+        print("Nice create badge")
+        segueNum = 5
+        performSegue(withIdentifier: "createBadge", sender: createBadgeSegueButton)
+    }
+    
     @objc func clubSettings(sender: Any) {
         //Set up the action sheet options
         let actionSheet = UIAlertController(title: "Choose an Option", message: nil, preferredStyle: .actionSheet)
@@ -238,20 +248,23 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                 self.performSegue(withIdentifier: "addAnnc", sender: self.addAnncButton)
             }))
             actionSheet.addAction(UIAlertAction(title: "View Pending List", style: .default, handler: { (action:UIAlertAction) in
-                print("pendingt")
+                print("pending")
                 self.segueNum = 2
                 self.performSegue(withIdentifier: "viewPending", sender: self.pendingButton)
             }))
         }
         
-        if partOfClub {
+        
         //************ALL MEMBERS PRIVLAGES************
+        if partOfClub || (allUserFirebaseData.data["status"] as! Int == 2) {
             actionSheet.addAction(UIAlertAction(title: "View Members and Admins", style: .default, handler: { (action:UIAlertAction) in
                 print("list")
                 self.segueNum = 3
                 self.performSegue(withIdentifier: "viewMembers", sender: self.memberList)
             }))
-            
+        }
+        
+        if partOfClub {
             actionSheet.addAction(UIAlertAction(title: "Leave Club", style: .default, handler: { (action:UIAlertAction) in
                 //Create the alert controller.
                 let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to leave \(self.clubData["name"] ?? "this club")?", preferredStyle: .alert)
@@ -296,6 +309,10 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                         "pending": FieldValue.arrayRemove([Auth.auth().currentUser?.uid as Any])
                     ])
                     self.didSubmitApplication = false
+                    self.joinedANewClubBlock?(true)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                        self.navigationController?.popViewController(animated: true)
+                    })
                 }
                 alert.addAction(confirmAction)
                 alert.addAction(cancelAction)
@@ -806,6 +823,7 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             view.delegate = self
             view.isClubAdmin = isClubAdmin
             
+            view.badgesCollectionView.alwaysBounceHorizontal = true
             
             if badgeImgs.count == 0 {
                 view.badgesCollectionHeight.constant = 0
@@ -819,25 +837,27 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             view.bringSubviewToFront(view.name)
             view.sendSubviewToBack(view.banner)
             
-            //print(clubData["name"])
             //Set the title's height
-            let size = CGSize(width: view.frame.width, height: 1000)
-            let attributesTitle = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 23)]
-            let estimatedFrameTitle = NSString(string: clubData["name"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
-            view.nameHeight.constant = estimatedFrameTitle.height + 20
-            //print(estimatedFrameTitle.height)
+            let size = CGSize(width: view.desc.frame.width, height: 1000)
+            let attributesTitle = [NSAttributedString.Key.font: UIFont(name: "Scada-Bold", size: 22)!]
+            let estimatedFrameTitle = NSString(string: clubData["name"] as? String ?? "Error").boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
+            view.nameHeight.constant = estimatedFrameTitle.height + 15
             
             //Set the content's height
-            let attributesContent = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
-            let estimatedFrameContent = NSString(string: clubData["desc"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
-            view.descHeight.constant = estimatedFrameContent.height + 40
-            //print(estimatedFrameContent.height)
+            let attributesContent = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
+            let estimatedFrameContent = NSString(string: clubData["desc"] as? String ?? "Error").boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
+            view.descHeight.constant = estimatedFrameContent.height + 15
             
             view.banner.image = banImage ?? fillerBanImage
-            view.name.text = clubData["name"] as? String
-            view.desc.text = clubData["desc"] as? String
+            view.name.text = clubData["name"] as? String ?? "Error"
+            view.desc.text = clubData["desc"] as? String ?? "Error"
             view.name.centerVertically()
             view.desc.centerVertically()
+            
+            view.name.backgroundColor = DefaultColours.primaryColor
+            view.desc.textColor = DefaultColours.primaryColor
+            view.announcmentLabel.textColor = DefaultColours.primaryColor
+            view.badgesLabel.textColor = DefaultColours.primaryColor
             
             view.bringSubviewToFront(view.badgesCollectionView)
             
@@ -858,40 +878,57 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
                 
             }
             
+            if isClubAdmin {
+                view.createBadgeHeight.constant = 35
+                view.createBadgeButton.isHidden = false
+                view.bringSubviewToFront(view.createBadgeButton)
+                view.createBadgeButton.addTarget(self, action: #selector(self.createBadgeTapped), for: .touchUpInside)
+            } else {
+                view.createBadgeHeight.constant = 0
+                view.createBadgeButton.isHidden = true
+            }
+            
             return view
         }
         fatalError("Unexpected kind")
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize{
-        //Dynamically change the cell size depending on the announcement length
-        let size = CGSize(width: view.frame.width, height: 1000)
+        //Dynamically change the cell size depending on the description length
+        let size = CGSize(width: view.frame.width - 6, height: 1000)
         
-        //Get an approximation of the title size
-        let attributesTitle = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 23)]
+        //Get an approximation of the name size
+        let attributesTitle = [NSAttributedString.Key.font: UIFont(name: "Scada-Bold", size: 22)!]
         let estimatedFrameTitle = NSString(string: clubData["name"] as? String ?? "Error").boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
         
         //Get an approximation of the description size
-        let attributesContent = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+        let attributesContent = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
         let estimatedFrameContent = NSString(string: clubData["desc"] as? String ?? "Error").boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
         
-        var joinButtonSizeOrAnnouncmentTextSize: CGFloat
-        
-        if partOfClub {
-            //Add size of the join club button
-            joinButtonSizeOrAnnouncmentTextSize = 0
+        var createNewBadgeHeight: CGFloat
+        if isClubAdmin {
+            createNewBadgeHeight = 50
         } else {
-            //Add size of the announcment label
-            joinButtonSizeOrAnnouncmentTextSize = 55
+            createNewBadgeHeight = 24
         }
         
-        var badgeCV:CGFloat = 100
+        //This also acts as the announcment label size as they are the same height
+        var joinButtonSize: CGFloat
+        if partOfClub {
+            joinButtonSize = 16
+        } else {
+            joinButtonSize = 55
+        }
+        
+        var badgeCV: CGFloat
         if badgeImgs.count == 0 {
-            badgeCV = 0
+            badgeCV = 16
+        } else {
+            badgeCV = 100
         }
-        let finalHeight = estimatedFrameContent.height + estimatedFrameTitle.height + joinButtonSizeOrAnnouncmentTextSize + badgeCV + 310
         
-        //Also add the height of the picture and the announcements and the space inbetween
+        let finalHeight = estimatedFrameContent.height + estimatedFrameTitle.height + joinButtonSize + createNewBadgeHeight + badgeCV + 300
+        
         return CGSize(width: view.frame.width, height: finalHeight)
         
     }
@@ -903,14 +940,14 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         //Dynamically change the cell size depending on the announcement length 
-        let size = CGSize(width: view.frame.width, height: 1000)
+        let size = CGSize(width: view.frame.width - 4, height: 1000)
         
         //Get an approximation of the title size
-        let attributesTitle = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 19)]
+        let attributesTitle = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
         let estimatedFrameTitle = NSString(string: anncData[indexPath.row]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
         
         //Get an approximation of the content size
-        let attributesContent = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+        let attributesContent = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
         let estimatedFrameContent = NSString(string: anncData[indexPath.row]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
         
         var imgHeight:CGFloat = 0
@@ -936,12 +973,12 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         if anncData.count != 0 {
             //Set the title's height
             let size = CGSize(width: view.frame.width, height: 1000)
-            let attributesTitle = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 19)]
+            let attributesTitle = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
             let estimatedFrameTitle = NSString(string: anncData[indexPath.row]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
             cell.anncTitleHeight.constant = estimatedFrameTitle.height + 20
             
             //Set the content's height
-            let attributesContent = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+            let attributesContent = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
             let estimatedFrameContent = NSString(string: anncData[indexPath.row]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
             if anncData[indexPath.row]["content"] as? String == "" {
                 cell.anncTextHeight.constant = 1
@@ -959,6 +996,9 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
             cell.anncText.text = anncData[indexPath.row]["content"] as? String
             cell.anncTitle.centerVertically()
             cell.anncText.centerVertically()
+            
+            cell.anncDate.backgroundColor = DefaultColours.primaryColor
+            cell.anncTitle.textColor = DefaultColours.primaryColor
             
             //Set up images
             //Use already downloaded images
@@ -1141,6 +1181,14 @@ class clubGoodController: UIViewController, UICollectionViewDataSource, UICollec
         case 4:
             let vc = segue.destination as! badgeScannerController
             vc.badgeID = theSelectedBadgeID
+            break
+        case 5:
+            let vc = segue.destination as! createBadgeController
+            vc.clubID = clubID
+            vc.onDoneBlock = { result in
+                clubListDidUpdateClubDetails.clubAdminUpdatedData = true
+                self.refreshList()
+            }
             break
         default:
             print("welp")

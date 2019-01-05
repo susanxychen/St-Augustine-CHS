@@ -71,36 +71,62 @@ class titanTagController: UIViewController {
 //        return String(bytes: bytes, encoding: .utf8) ?? "Error"
 //    }
     
+//    func generateQRCode(from string: String) -> UIImage? {
+//        //print("Generating from \(string)")
+//        let data = string.data(using: String.Encoding.utf8)
+//        if let filter = CIFilter(name: "CIQRCodeGenerator") {
+//            filter.setValue(data, forKey: "inputMessage")
+//
+//            //Set the colour of the QR Code
+////            guard let colorFilter = CIFilter(name: "CIFalseColor") else { return nil }
+//            filter.setValue("H", forKey: "inputCorrectionLevel")
+//
+////            colorFilter.setValue(filter.outputImage, forKey: "inputImage")
+////            colorFilter.setValue(CIColor(red: 1, green: 1, blue: 1), forKey: "inputColor1") // Background white
+////            colorFilter.setValue(CIColor(red: 216/255.0, green: 175/255.0, blue: 28/255.0), forKey: "inputColor0") // Foreground or the barcode colour
+//            
+//            //Change its size
+//            let scaleX = qrImageView.frame.size.width / qrCodeImage.extent.size.width
+//            let scaleY = qrImageView.frame.size.height / qrCodeImage.extent.size.height
+//            let transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
+//
+//            if let output = colorFilter.outputImage?.transformed(by: transform) {
+//                // Change the color using CIFilter
+//                let colorParameters = [
+//                    "inputColor0": CIColor(color: UIColor.red), // Foreground
+//                    "inputColor1": CIColor(color: UIColor.black) // Background
+//                ]
+//                let colored = output.applyingFilter("CIFalseColor", parameters: colorParameters)
+//
+//                return UIImage(ciImage: colored)
+//            } else {
+//                print("Cannot process")
+//            }
+//
+//        }
+//        return nil
+//    }
     func generateQRCode(from string: String) -> UIImage? {
-        //print("Generating from \(string)")
-        let data = string.data(using: String.Encoding.utf8)
-        if let filter = CIFilter(name: "CIQRCodeGenerator") {
-            filter.setValue(data, forKey: "inputMessage")
-            
-            //Set the colour of the QR Code
-            guard let colorFilter = CIFilter(name: "CIFalseColor") else { return nil }
-            filter.setValue("H", forKey: "inputCorrectionLevel")
-            colorFilter.setValue(filter.outputImage, forKey: "inputImage")
-            colorFilter.setValue(CIColor(red: 1, green: 1, blue: 1), forKey: "inputColor1") // Background white
-            colorFilter.setValue(CIColor(red: 216/255.0, green: 175/255.0, blue: 28/255.0), forKey: "inputColor0") // Foreground or the barcode colour
-            guard let qrCodeImage = colorFilter.outputImage
-                else {
-                    return nil
-            }
-            
-            //Change its size
-            let scaleX = qrImageView.frame.size.width / qrCodeImage.extent.size.width
-            let scaleY = qrImageView.frame.size.height / qrCodeImage.extent.size.height
-            let transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
-            
-            if let output = colorFilter.outputImage?.transformed(by: transform) {
-                return UIImage(ciImage: output)
-            } else {
-                print("Cannot process")
-            }
-            
-        }
-        return nil
+        let data = string.data(using: .utf8)
+        
+        // Generate the code image with CIFilter
+        guard let filter = CIFilter(name: "CIQRCodeGenerator") else { return nil }
+        filter.setValue(data, forKey: "inputMessage")
+        filter.setValue("H", forKey: "inputCorrectionLevel")
+        
+        // Scale it up (because it is generated as a tiny image)
+        let scale = qrImageView.frame.size.width / (filter.outputImage?.extent.size.width ?? 1.0)
+        let transform = CGAffineTransform(scaleX: scale, y: scale)
+        guard let output = filter.outputImage?.transformed(by: transform) else { return nil }
+        
+        // Change the color using CIFilter
+        let colorParameters = [
+            "inputColor0": CIColor(color: DefaultColours.accentColor), // Foreground
+            "inputColor1": CIColor(color: UIColor.clear) // Background
+        ]
+        let colored = output.applyingFilter("CIFalseColor", parameters: colorParameters)
+        
+        return UIImage(ciImage: colored)
     }
 
 }

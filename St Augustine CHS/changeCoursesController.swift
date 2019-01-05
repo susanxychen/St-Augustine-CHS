@@ -45,6 +45,10 @@ class changeCoursesController: UIViewController {
     let container: UIView = UIView()
     let overlayView = UIView(frame: UIScreen.main.bounds)
     
+    //Colors
+    @IBOutlet weak var statusBarView: UIView!
+    @IBOutlet weak var cancelOrUpdateView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         overlayView.frame = UIApplication.shared.keyWindow!.frame
@@ -73,6 +77,14 @@ class changeCoursesController: UIViewController {
         hideKeyboardWhenTappedAround()
         coursesToCheck = ["ASS","PEE","POO","DIK","KKK","FUK"]
         allTextFields = [s1p1,s1p2,s1p3,s1p4,s2p1,s2p2,s2p3,s2p4]
+        
+        //Colors
+        statusBarView.backgroundColor = DefaultColours.darkerPrimary
+        cancelOrUpdateView.backgroundColor = DefaultColours.primaryColor
+        
+        for x in allTextFields {
+            x.tintColor = DefaultColours.accentColor
+        }
         
         //Set Up
         // [START setup]

@@ -27,10 +27,13 @@ class SignInPrefController: UIViewController {
     @IBOutlet weak var showCoursesSwitch: UISwitch!
     @IBOutlet weak var showClassesSwitch: UISwitch!
     
+    //Colours
+    @IBOutlet weak var statusBarView: UIView!
+    @IBOutlet weak var topBarView: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         //Set Up
         // [START setup]
         let settings = FirestoreSettings()
@@ -38,6 +41,9 @@ class SignInPrefController: UIViewController {
         Firestore.firestore().settings = settings
         // [END setup]
         db = Firestore.firestore()
+        
+        statusBarView.backgroundColor = DefaultColours.darkerPrimary
+        topBarView.backgroundColor = DefaultColours.primaryColor
         
         print(picChosen)
         print(courses)
@@ -75,7 +81,15 @@ class SignInPrefController: UIViewController {
         
         //To get grad year, get the XX@ycdsbk12.ca suffix. Then get the prefix XX of that suffix.
         //Parse it as a string and finally to Int
-        let gradYear = Int(String((user?.email?.suffix(14).prefix(2))!))
+        let possibleGradYear = String((user?.email?.suffix(14).prefix(2))!)
+        let gradYear = Int(possibleGradYear)
+        
+        var status = 0
+        
+        //If u cant cast to int then it means ur a teacher
+        if gradYear == nil {
+            status = 1
+        }
         
         db.collection("users").document((user?.uid)!).setData([
             "badges": [],
@@ -84,12 +98,12 @@ class SignInPrefController: UIViewController {
             "email": user?.email as Any,
             "gradYear": gradYear!,
             "name": user?.displayName as Any,
-            "picsOwned": [],
+            "picsOwned": [picChosen],
             "points": 0,
             "profilePic": picChosen,
             "showClasses": showCourses,
             "showClubs": showClubs,
-            "status": 0
+            "status": status
         ]) { err in
             if let err = err {
                 print("Error writing document: \(err)")

@@ -23,6 +23,10 @@ class updatePrivacyController: UIViewController {
     @IBOutlet weak var showCoursesSwitch: UISwitch!
     @IBOutlet weak var showClubsSwitch: UISwitch!
     
+    //Colurs
+    @IBOutlet weak var statusBarView: UIView!
+    @IBOutlet weak var topBarView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -55,6 +59,9 @@ class updatePrivacyController: UIViewController {
         Firestore.firestore().settings = settings
         // [END setup]
         db = Firestore.firestore()
+        
+        statusBarView.backgroundColor = DefaultColours.darkerPrimary
+        topBarView.backgroundColor = DefaultColours.primaryColor
         
         showClubsSwitch.setOn(allUserFirebaseData.data["showClubs"] as! Bool, animated: true)
         showCoursesSwitch.setOn(allUserFirebaseData.data["showClasses"] as! Bool, animated: true)
