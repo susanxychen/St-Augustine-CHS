@@ -44,10 +44,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var displayEmail: UILabel!
     var menuShowing = false
     
-    //News Vars
-    var titleHeights = [CGFloat]()
-    var contentHeights = [CGFloat]()
-    
     //Online Data Variables
     let dayURL = URL(string: "https://staugustinechs.netfirms.com/stadayonetwo/")
     let newsURL = URL(string: "http://staugustinechs.ca/printable/")
@@ -169,9 +165,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             }
         } else{
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                print("new user! take em through the sign in flow")
                 self.viewAboveAllViews.removeFromSuperview()
-                self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
+                self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
             }
         }
     }
@@ -255,7 +250,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: {
-                    self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
+                    self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
                 })
             }
         }
@@ -494,36 +489,34 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == clubAnncView {
-            let theFont = UIFont(name: "Scada-Regular", size: 17)
+            let theFont = UIFont(name: "Scada-Regular", size: 18)!
             //Dynamically change the cell size depending on the announcement length
-            let size = CGSize(width: view.frame.width, height: 1000)
+            let size = CGSize(width: view.frame.width - 8, height: 1000)
             //Get an approximation of the title size
             let attributesTitle = [NSAttributedString.Key.font: theFont]
-            let estimatedFrameTitle = NSString(string: clubNewsData[indexPath.item]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle as [NSAttributedString.Key : Any], context: nil)
+            let estimatedFrameTitle = NSString(string: clubNewsData[indexPath.item]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
             
             //Get an approximation of the description size
             let attributesContent = [NSAttributedString.Key.font: theFont]
-            let estimatedFrameContent = NSString(string: clubNewsData[indexPath.item]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent as [NSAttributedString.Key : Any], context: nil)
-            let theHeight = estimatedFrameContent.height + estimatedFrameTitle.height + 110
+            let estimatedFrameContent = NSString(string: clubNewsData[indexPath.item]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
+            let theHeight = estimatedFrameContent.height + estimatedFrameTitle.height + 125
             
             //Also add the height of the picture and the announcements and the space inbetween
             return CGSize(width: view.frame.width, height: theHeight)
         } else {
             //Dynamically change the cell size depending on the announcement length
-            let approxWidthOfAnnouncementTextView = view.frame.width
+            let approxWidthOfAnnouncementTextView = view.frame.width - 8
             var size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
-            var attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
+            var attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
             var estimatedFrame = NSString(string: newsData[indexPath.row][1]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             
             let contentHeight =  estimatedFrame.height + 10
-            contentHeights[indexPath.item] = contentHeight
-            
             size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
-            attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
+            attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
             estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             
             let titleHeight = estimatedFrame.height + 10
-            titleHeights[indexPath.item] = titleHeight
+
             
             return CGSize(width: view.frame.width, height: contentHeight + titleHeight + 8)
         }
@@ -562,8 +555,22 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             cell.anncText.text = newsData[indexPath.item][1]
             cell.anncDep.centerVertically()
             cell.anncText.centerVertically()
-            cell.contentHeight.constant = contentHeights[indexPath.item]
-            cell.titleHeight.constant = titleHeights[indexPath.item]
+            
+            let approxWidthOfAnnouncementTextView = cell.anncText.frame.width
+            var size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
+            var attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
+            var estimatedFrame = NSString(string: newsData[indexPath.row][1]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+            
+            let contentHeight =  estimatedFrame.height + 10
+            cell.contentHeight.constant = contentHeight
+            
+            size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
+            attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
+            estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+            
+            let titleHeight = estimatedFrame.height + 10
+            
+            cell.titleHeight.constant = titleHeight
             
             //self.anncViewHeight.constant = self.annoucView.contentSize.height + 10
             
@@ -588,7 +595,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             cell.titleLabel.text = clubNewsData[indexPath.item]["title"] as? String ?? "error"
             cell.contentLabel.text = clubNewsData[indexPath.item]["content"] as? String ?? "error"
             
-            let theFont = UIFont(name: "Scada-Regular", size: 17)
+            let theFont = UIFont(name: "Scada-Regular", size: 18)
             let size = CGSize(width: view.frame.width, height: 1000)
             let attributesContent = [NSAttributedString.Key.font: theFont]
             let estimatedFrameContent = NSString(string: clubNewsData[indexPath.item]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent as [NSAttributedString.Key : Any], context: nil)
@@ -655,6 +662,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 self.getClubAnncs()
             } else {
                 print("wow u dont exist")
+                let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Try again later?", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: {
+                    self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
+                })
             }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -775,10 +788,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 let htmlContent = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!
                 self.newsData = self.processNewsSite(content: htmlContent as String)
                 DispatchQueue.main.async {
-                    for _ in 0..<self.newsData.count {
-                        self.titleHeights.append(0)
-                        self.contentHeights.append(0)
-                    }
                     self.annoucView.reloadData()
                 }
             }

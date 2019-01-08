@@ -1,10 +1,18 @@
-const https = require('https');
+const https = require('follow-redirects').http;
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
-admin.initializeApp({ credential: admin.credential.applicationDefault()});
+var serviceAccount = require('./serviceAccountKey.json');
+admin.initializeApp({ 
+    credential: admin.credential.applicationDefault()
+});
+
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
+
 const settings = {timestampsInSnapshots: true};
 admin.firestore().settings(settings);
+
 
 //The Edit Votes Function
 exports.changeVote = functions.https.onCall((data, context) => {
@@ -180,107 +188,142 @@ exports.sendEmailToAdmins = functions.https.onCall((data, context) => {
 exports.deleteTopSongs = functions.https.onRequest((request, response) => {
     var songsRef = admin.firestore().collection('songs');
     var allSongs = songsRef.get()
-        .then(snapshot => {
-            var votes = []
-            var ids = []
-            var dates = []
-            snapshot.forEach(doc => {
-                //console.log(doc.id, ' => ', doc.data())
-                const songData = doc.data();
-                let upvotes = songData.upvotes;
-                if(!upvotes){
-                    upvotes = 0;
-                }
-                votes.push(upvotes);
-                ids.push(doc.id);
-
-                let timestamp = songData.date;
-                const date = timestamp.toDate();
-                dates.push(date);
-            });
-
-            if (ids.length > 3) {
-                var max = [0,0,0];
-                var maxIDs = ['error','error','error'];
-
-                //Loop through the max array
-                for (let j = 0; j < max.length; j++){
-                    //Go through all the songs
-                    for (let i = 0; i < votes.length; i++){
-                        //Get new max check if we already did that max
-                        if (max[j] <= votes[i] && !maxIDs.includes(ids[i])) {
-                            max[j] = votes[i];
-                            maxIDs[j] = ids[i];
-                        }
-                    }
-                }
-
-                //Delete the top songs
-                for (let i = 0; i < maxIDs.length; i++){
-                    admin.firestore().collection('songs').doc(maxIDs[i]).delete();
-                }
-
-                //Delete songs older than 2 days and under 100 votes
-                var daysAgo = new Date().getTime() - (2*24*60*60*1000)
-                var oldSongIds = []
-
-                for (let i = 0; i < ids.length; i++){
-                    if (dates[i] < daysAgo && votes[i] < 100){
-                        oldSongIds.push(ids[i]);
-                    }
-                }
-
-                //Delete the old songs
-                for (let i = 0; i < oldSongIds.length; i++){
-                    admin.firestore().collection('songs').doc(oldSongIds[i]).delete();
-                }
-
-                response.send(oldSongIds + ' ' + maxIDs);
-                return oldSongIds;
-            } else {
-                response.send('not enough songs');
-                return 'not enough songs';
+    .then(snapshot => {
+        var votes = []
+        var ids = []
+        var dates = []
+        snapshot.forEach(doc => {
+            console.log(doc.id, ' => ', doc.data())
+            const songData = doc.data();
+            let upvotes = songData.upvotes;
+            if(!upvotes){
+                upvotes = 0;
             }
-        })
-        .catch(error => {
-            console.log(error);
-            response.status(500).send(error);
-        })
+            votes.push(upvotes);
+            ids.push(doc.id);
+
+            let timestamp = songData.date;
+            const date = timestamp.toDate();
+            dates.push(date);
+        });
+
+        if (ids.length > 3) {
+            var max = [0,0,0];
+            var maxIDs = ['error','error','error'];
+
+            //Loop through the max array
+            for (let j = 0; j < max.length; j++){
+                //Go through all the songs
+                for (let i = 0; i < votes.length; i++){
+                    //Get new max check if we already did that max
+                    if (max[j] <= votes[i] && !maxIDs.includes(ids[i])) {
+                        max[j] = votes[i];
+                        maxIDs[j] = ids[i];
+                    }
+                }
+            }
+
+            //Delete the top songs
+            for (let i = 0; i < maxIDs.length; i++){
+                admin.firestore().collection('songs').doc(maxIDs[i]).delete();
+            }
+
+            //Delete songs older than 2 days and under 100 votes
+            var daysAgo = new Date().getTime() - (2*24*60*60*1000)
+            var oldSongIds = []
+
+            for (let i = 0; i < ids.length; i++){
+                if (dates[i] < daysAgo && votes[i] < 100){
+                    oldSongIds.push(ids[i]);
+                }
+            }
+
+            //Delete the old songs
+            for (let i = 0; i < oldSongIds.length; i++){
+                admin.firestore().collection('songs').doc(oldSongIds[i]).delete();
+            }
+
+            response.send(oldSongIds + ' ' + maxIDs);
+            return oldSongIds;
+        } else {
+            response.send('not enough songs');
+            return 'not enough songs';
+        }
+    })
+    .catch(error => {
+        console.log(error);
+        response.status(500).send(error);
+    })
 });
 
-// exports.sendEmailTest = functions.https.onRequest((request, response) => {
-//     var transporter = nodemailer.createTransport({
-//         service: 'gmail',
-//         auth: {
-//           user: 'sachsappteam@gmail.com',
-//           pass: 'takecompsciyoun00bs'
-//         }
-//       });
-      
-//       var mailOptions = {
-//         from: '"The App Team" <sachsappteam@gmail.com>',
-//         to: 'kenny.miu19@ycdsbk12.ca',
-//         subject: 'Sending Email using Node.js',
-//         text: 'That was easy!'
-//       };
-      
-//       transporter.sendMail(mailOptions, (error, info) =>{
-//         if (error) {
-//           console.log(error);
-//           response.send('Error!')
-//         } else {
-//           console.log('Email sent: ' + info.response);
-//           response.send('Success!');
-//         }
-//       });
-// });
+exports.deleteOldAnnouncements = functions.https.onRequest((request, response) => {
+    var anncRef = admin.firestore().collection('announcements');
+    anncRef.get()
+    .then(snapshot => {
+        var ids = []
+        var imgs = []
+        var dates = []
+        snapshot.forEach(doc => {
+            //console.log(doc.id, ' => ', doc.data())
+            const anncData = doc.data();
+            ids.push(doc.id);
+
+            let imgID = anncData.img;
+            if(!imgID){
+                imgID = "";
+            }
+            imgs.push(imgID);
+
+            let timestamp = anncData.date;
+            const date = timestamp.toDate();
+            dates.push(date);
+        });
+
+        //Delete announcements older than 30 days
+        var daysAgo = new Date().getTime() - (30*24*60*60*1000)
+        var oldAnncIds = []
+        var oldImgIds = []
+
+        for (let i = 0; i < ids.length; i++){
+            if (dates[i] < daysAgo){
+                oldAnncIds.push(ids[i]);
+                oldImgIds.push(imgs[i]);
+            }
+        }
+
+        console.log('annc ' + oldAnncIds + ' imgs ' + oldImgIds);
+
+        //Delete the old announcements
+        for (let i = 0; i < oldAnncIds.length; i++){
+            admin.firestore().collection('announcements').doc(oldAnncIds[i]).delete();
+        }
+
+        // Creates a client
+        for (let i = 0; i < oldImgIds.length; i++){
+            if (oldImgIds[i] !== "") {
+                console.log('delete ' + oldImgIds[i]);
+                //const bucket = storage.bucket('staugustinechsapp.appspot.com/announcements');
+                //bucket.file(oldImgIds[i]).delete()
+                const myBucket = storage.bucket('staugustinechsapp.appspot.com');
+                myBucket.file('announcements/' + oldImgIds[i]).delete()
+                //storage.bucket('staugustinechsapp.appspot.com/announcements').file(oldImgIds[i]).delete();
+                //admin.storage().bucket('staugustinechsapp.appspot.com/announcements').file(oldImgIds[i]).delete();
+            }
+        }
+
+        response.send(oldAnncIds + ' img: ' + oldImgIds);
+        return oldAnncIds;
+    })
+    .catch(error => {
+        console.log(error);
+        response.status(500).send(error);
+    })
+});
 
 exports.getDayNumber = functions.https.onRequest((request, response) => {
     https.get({
         host: 'staugustinechs.netfirms.com',
-        port: 443,
         path: '/stadayonetwo',
-        famliy: 4
     }, (resp) => {
     let data = '';
 
@@ -291,34 +334,33 @@ exports.getDayNumber = functions.https.onRequest((request, response) => {
 
     // The whole response has been received
     resp.on('end', () => {
+        //console.log(data);
         var index = data.lastIndexOf("Day ");
-        var dayNum = data.substring(index+4, index + 5)
-        response.send(dayNum);
-        console.log(dayNum);
-    });
+        var dayNum = data.substring(index+4, index + 5);
+        //var dayNumAsInt = parseInt(dayNum, 10);
 
+        admin.firestore().doc('info/dayNumber').get()
+        .then(snapshot => {
+            if (snapshot.exists) {
+                console.log('Do i even get in here ' + dayNum);
+                response.send(dayNum);
+                return snapshot.ref.set({
+                    dayNumber: dayNum
+                }, {merge: true});
+            } else {
+                console.log('no day number')
+                response.send('no day number')
+                throw new Error('no day number')
+            }
+        })
+        .catch(error => {
+            //handle the error
+            console.log(error);
+            response.status(error.status >= 100 && error.status < 600 ? error.code : 500).send("Error accessing firestore: " + error.message);
+        });
+    });
     }).on("error", (err) => {
-        response.send(err.message);
+        response.send("Error getting day number " + err.message);
         console.log("Error: " + err.message);
     });
-
 });
-
-// admin.firestore().doc('info/dayNumber').get()
-        // .then(snapshot => {
-        //     if (snapshot.exists) {
-        //         response.send(dayNum);
-        //         return snapshot.ref.set({
-        //             dayNumber: dayNum
-        //         }, {merge: true});
-        //     } else {
-        //         console.log('no day number')
-        //         response.send('no day number')
-        //         throw new Error('no day number')
-        //     }
-        // })
-        // .catch(error => {
-        //     //handle the error
-        //     console.log(error);
-        //     response.status(500).send(error);
-        // });
