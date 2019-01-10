@@ -484,9 +484,9 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             //Turn all cases to lower
             userInput = userInput.lowercased()
             
-//            if userInput == "crash" {
-//                Crashlytics.sharedInstance().crash()
-//            }
+            if userInput == "crash" {
+                Crashlytics.sharedInstance().crash()
+            }
             
             if userInput == "theclearingwantsyou" {
                 print("The clearing")

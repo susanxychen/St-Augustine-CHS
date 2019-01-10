@@ -12,6 +12,7 @@ import Firebase
 import WebKit
 import GoogleSignIn
 import SafariServices
+import UserNotifications
 
 //This is the struct that holds all of the users firebase data
 struct allUserFirebaseData {
@@ -185,7 +186,29 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             }
         }
         
+        InstanceID.instanceID().instanceID { (result, error) in
+            if let error = error {
+                print("Error fetching remote instance ID: \(error)")
+            } else if let result = result {
+                print("Remote instance ID token: \(result.token)")
+                
+                //self.instanceIDTokenMessage.text  = "Remote InstanceID token: \(result.token)"
+            }
+        }
+        
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 20)!]
+        
+        //Following will push a notification when out of the app 5 seconds later
+//        let content = UNMutableNotificationContent()
+//        content.title = "title"
+//        content.body = "body"
+//        content.sound = UNNotificationSound.default
+//
+//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+//
+//        let request = UNNotificationRequest(identifier: "testIdentifier", content: content, trigger: trigger)
+//
+//        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
         
         //News Data
         newsTask()
@@ -244,6 +267,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 self.hasSignedInAtLoadedAtLeastOnce = true
                 self.getPicture(i: docSnapshot.data()!["profilePic"] as? Int ?? 0)
                 self.getClubAnncs()
+                self.updateDatabaseWithNewRemoteID()
             } else {
                 print("wow u dont exist")
                 let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Try again later?", preferredStyle: .alert)
@@ -310,10 +334,10 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             DefaultColours.statusTwoPrimary = UIColor(hex: statusTwo)
         }
         
-        print(primary)
-        print(darker)
-        print(accent)
-        print(statusTwo)
+//        print(primary)
+//        print(darker)
+//        print(accent)
+//        print(statusTwo)
         
         changeMenuControllerColours()
     }
@@ -325,6 +349,17 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         navigationController?.navigationBar.barTintColor = DefaultColours.primaryColor
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         clubAnnouncementsLabel.textColor = DefaultColours.primaryColor
+    }
+    
+    func updateDatabaseWithNewRemoteID() {
+        InstanceID.instanceID().instanceID { (result, error) in
+            if let error = error {
+                print("Error fetching remote instance ID: \(error)")
+            } else if let result = result {
+                //print("Remote instance ID token: \(result.token)")
+                self.db.collection("users").document((Auth.auth().currentUser?.uid)!).setData(["msgToken": result.token], merge: true)
+            }
+        }
     }
     
     func getClubAnncs(){
@@ -660,6 +695,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 allUserFirebaseData.data = docSnapshot.data()!
                 self.getPicture(i: docSnapshot.data()!["profilePic"] as? Int ?? 0)
                 self.getClubAnncs()
+                self.updateDatabaseWithNewRemoteID()
             } else {
                 print("wow u dont exist")
                 let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Try again later?", preferredStyle: .alert)
