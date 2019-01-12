@@ -17,7 +17,7 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
     //Loading Vars
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIScreen.main.bounds)
+    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
     
     //Database Variables
     var db: Firestore!
@@ -32,7 +32,6 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
     
     //Collection View Vars
     @IBOutlet weak var profilePicsCollectionView: UICollectionView!
-    var counter = 0
     
     //Colors
     @IBOutlet weak var statusBarView: UIView!
@@ -41,7 +40,6 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        overlayView.frame = UIApplication.shared.keyWindow!.frame
         //Set Up
         // [START setup]
         let settings = FirestoreSettings()
@@ -128,6 +126,11 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
                     self.theProfilePicture.image = self.allProfileImages[0]
                     self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                     self.profilePicsCollectionView.reloadData()
+                    
+                    //Back up because images dont all load sometimes
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        self.profilePicsCollectionView.reloadData()
+                    }
                 }
                 
             }
@@ -153,11 +156,7 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
         //Format the picture boarder
         picsCell.picture.layer.cornerRadius = 100/2
         picsCell.picture.clipsToBounds = true
-        
-        if counter < allProfileImages.count {
-            picsCell.picture.image = allProfileImages[counter]
-            counter += 1
-        }
+        picsCell.picture.image = allProfileImages[indexPath.item]
         return picsCell
     }
     

@@ -22,6 +22,7 @@ class classesDetailsController: UIViewController, UICollectionViewDataSource, UI
     //colors
     @IBOutlet weak var semester1Label: UILabel!
     @IBOutlet weak var semester2Label: UILabel!
+    @IBOutlet weak var dayCourseLabel: UILabel!
     
     
     override func viewDidLoad() {
@@ -30,6 +31,7 @@ class classesDetailsController: UIViewController, UICollectionViewDataSource, UI
         
         semester1Label.textColor = DefaultColours.primaryColor
         semester2Label.textColor = DefaultColours.primaryColor
+        dayCourseLabel.textColor = DefaultColours.darkerPrimary
         
         if viewingYourself {
             //create a new button

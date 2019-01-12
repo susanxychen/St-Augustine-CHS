@@ -8,6 +8,7 @@
 
 import UIKit
 
+//This is for Clubs
 class clubBadgeCell: UICollectionViewCell {
     @IBOutlet weak var badge: UIImageView!
 }

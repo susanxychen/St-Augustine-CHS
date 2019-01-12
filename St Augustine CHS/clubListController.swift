@@ -245,7 +245,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
     func sortClubsAlphaOrder(){
         print("sort alpha")
         //Only sort when have more than 1 club
-        if (personaClubsData.count >= 2) || (allClubsData.count >= 2){
+        if (personaClubsData.count > 1) || (allClubsData.count > 1){
             if viewingPersonalClubs {
                 var thereWasASwap = true
                 while thereWasASwap {
@@ -600,7 +600,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                 self.refreshList()
             }
         } else {
-            let vc = segue.destination as! clubGoodController
+            let vc = segue.destination as! clubFinalController
             if viewingPersonalClubs {
                 vc.clubData = self.personaClubsData[self.selectedClub]
                 vc.partOfClub = true

@@ -13,11 +13,10 @@
 		B90669C82186851800CAA824 /* addAnncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90669C72186851800CAA824 /* addAnncController.swift */; };
 		B90669CA2186ACF100CAA824 /* addClubController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90669C92186ACF100CAA824 /* addClubController.swift */; };
 		B909434221DEE1740004433F /* DefaultConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B909434121DEE1740004433F /* DefaultConstants.swift */; };
-		B9118FA4218A653200CE4C6A /* clubGoodController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9118FA3218A653200CE4C6A /* clubGoodController.swift */; };
-		B9118FA8218A70AB00CE4C6A /* clubHeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9118FA7218A70AB00CE4C6A /* clubHeaderViewCell.swift */; };
 		B918546C21B4B26500DA14F5 /* profilePicController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B918546B21B4B26500DA14F5 /* profilePicController.swift */; };
 		B918546E21B4B28000DA14F5 /* picsOwnedViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B918546D21B4B28000DA14F5 /* picsOwnedViewCell.swift */; };
 		B918547021B4B29000DA14F5 /* picsNotOwnedViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B918546F21B4B29000DA14F5 /* picsNotOwnedViewCell.swift */; };
+		B91E7DF121E9473C00BA499B /* clubFinalController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91E7DF021E9473C00BA499B /* clubFinalController.swift */; };
 		B925621121E677D100F5F1D9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B925621021E677D000F5F1D9 /* GoogleService-Info.plist */; };
 		B93258A62186313300605689 /* clubNewsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93258A52186313300605689 /* clubNewsViewCell.swift */; };
 		B93F208E21738E5100279829 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93F208D21738E5100279829 /* AppDelegate.swift */; };
@@ -99,11 +98,10 @@
 		B90669C92186ACF100CAA824 /* addClubController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addClubController.swift; sourceTree = "<group>"; };
 		B909434121DEE1740004433F /* DefaultConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultConstants.swift; sourceTree = "<group>"; };
 		B90A7C4121E6AAC7007157BB /* St Augustine CHS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "St Augustine CHS.entitlements"; sourceTree = "<group>"; };
-		B9118FA3218A653200CE4C6A /* clubGoodController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubGoodController.swift; sourceTree = "<group>"; };
-		B9118FA7218A70AB00CE4C6A /* clubHeaderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubHeaderViewCell.swift; sourceTree = "<group>"; };
 		B918546B21B4B26500DA14F5 /* profilePicController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = profilePicController.swift; sourceTree = "<group>"; };
 		B918546D21B4B28000DA14F5 /* picsOwnedViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = picsOwnedViewCell.swift; sourceTree = "<group>"; };
 		B918546F21B4B29000DA14F5 /* picsNotOwnedViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = picsNotOwnedViewCell.swift; sourceTree = "<group>"; };
+		B91E7DF021E9473C00BA499B /* clubFinalController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubFinalController.swift; sourceTree = "<group>"; };
 		B925621021E677D000F5F1D9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B93258A52186313300605689 /* clubNewsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubNewsViewCell.swift; sourceTree = "<group>"; };
 		B93F208A21738E5100279829 /* St Augustine CHS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "St Augustine CHS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -258,7 +256,7 @@
 				B958A26321C4023A00726345 /* cafeMenuController.swift */,
 				B9876BAD217AC9E800D57C16 /* clubListController.swift */,
 				B90669C92186ACF100CAA824 /* addClubController.swift */,
-				B9118FA3218A653200CE4C6A /* clubGoodController.swift */,
+				B91E7DF021E9473C00BA499B /* clubFinalController.swift */,
 				B95D36A021DAC1270037903F /* badgeScannerController.swift */,
 				B9BFE8C421DD66BD00BDB5F1 /* createBadgeController.swift */,
 				B995CFF3218F8600004970E0 /* editClubDetailsController.swift */,
@@ -319,10 +317,9 @@
 				B9876BB1217ACC5300D57C16 /* clubViewCell.swift */,
 				B958069E21821EA400B3EE70 /* songViewCell.swift */,
 				B93258A52186313300605689 /* clubNewsViewCell.swift */,
-				B9118FA7218A70AB00CE4C6A /* clubHeaderViewCell.swift */,
 				B9AC701221C1A19D00FEF5EF /* clubBadgeCell.swift */,
-				B958FB53218FC582004C99F0 /* clubListFooterViewCell.swift */,
 				B9FECC002191337F0006CCE3 /* badgesViewCell.swift */,
+				B958FB53218FC582004C99F0 /* clubListFooterViewCell.swift */,
 				B9FECC02219133950006CCE3 /* socialClubsViewCell.swift */,
 				B9EAF7B221A0D3D40062736B /* signInProfilePicViewCell.swift */,
 				B9C6E35C21ACBFE200A03650 /* semester1ViewCell.swift */,
@@ -635,7 +632,6 @@
 				B94B173D21A0AB9D00BCD86A /* SignInCoursesController.swift in Sources */,
 				B9ACA1EC21755BBD00302C4B /* settingsController.swift in Sources */,
 				B94B173B21A0AAD000BCD86A /* SignInProfilePicController.swift in Sources */,
-				B9118FA8218A70AB00CE4C6A /* clubHeaderViewCell.swift in Sources */,
 				B90669CA2186ACF100CAA824 /* addClubController.swift in Sources */,
 				B94B173F21A0AC5C00BCD86A /* SignInPrefController.swift in Sources */,
 				B9FECBFD2190C79D0006CCE3 /* allExtensions.swift in Sources */,
@@ -643,7 +639,6 @@
 				B93F209021738E5100279829 /* menuController.swift in Sources */,
 				B95D36A121DAC1270037903F /* badgeScannerController.swift in Sources */,
 				B9ACA1EA2175499100302C4B /* signInController.swift in Sources */,
-				B9118FA4218A653200CE4C6A /* clubGoodController.swift in Sources */,
 				B9AE584621D585930067B904 /* adminCell.swift in Sources */,
 				B958069D218209AA00B3EE70 /* songReqController.swift in Sources */,
 				B97CDA492176DCFE00F7F685 /* newsViewCell.swift in Sources */,
@@ -668,6 +663,7 @@
 				B90669C82186851800CAA824 /* addAnncController.swift in Sources */,
 				B958A26621C4036B00726345 /* cafemenuCell.swift in Sources */,
 				B918546C21B4B26500DA14F5 /* profilePicController.swift in Sources */,
+				B91E7DF121E9473C00BA499B /* clubFinalController.swift in Sources */,
 				B9AE584221D565450067B904 /* pendingListCell.swift in Sources */,
 				B9FECBFF219131E30006CCE3 /* socialController.swift in Sources */,
 				B9AE584421D582F00067B904 /* clubMembersController.swift in Sources */,

@@ -71,8 +71,55 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
                 for (food,cost) in snap.data()! {
                     self.theActualMenu.append([food,cost])
                 }
-                self.menuCollectionView.reloadData()
+                self.sortAlphaOrder()
             }
+        }
+    }
+    
+    func sortAlphaOrder(){
+        if self.theActualMenu.count > 1 {
+            var thereWasASwap = true
+            while thereWasASwap {
+                thereWasASwap = false
+                for i in 0...self.theActualMenu.count-2 {
+                    let name1: String = self.theActualMenu[i][0] as! String
+                    let name2: String = self.theActualMenu[i+1][0] as! String
+                    
+                    let shortestLength: Int
+                    if name1.count < name2.count {
+                        //print("\(name1) is shorter")
+                        shortestLength = name1.count
+                    } else {
+                        //print("\(name2) is shorter")
+                        shortestLength = name2.count
+                    }
+                    
+                    for j in 0...shortestLength-1 {
+                        //Compare Alphabetically
+                        let index1 = name1.index(name1.startIndex, offsetBy: j)
+                        let index2 = name2.index(name2.startIndex, offsetBy: j)
+                        let character1 = Character((String(name1[index1]).lowercased()))
+                        let character2 = Character((String(name2[index2]).lowercased()))
+                        
+                        if character2 < character1 {
+                            //print("done swap")
+                            thereWasASwap = true
+                            let temp = self.theActualMenu[i]
+                            self.theActualMenu[i] = self.theActualMenu[i+1]
+                            self.theActualMenu[i+1] = temp
+                            break
+                        } else if character1 == character2 {
+                            //print("equal so they need to go one higher")
+                        } else {
+                            //print("not equal")
+                            break
+                        }
+                    }
+                }
+            }
+            self.menuCollectionView.reloadData()
+        } else {
+            self.menuCollectionView.reloadData()
         }
     }
     
@@ -88,7 +135,7 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
         formatter.minimumFractionDigits = 2
         formatter.maximumFractionDigits = 2
         
-        let price = theActualMenu[indexPath.item][1] as! Double
+        let price = theActualMenu[indexPath.item][1] as? Double ?? -1
         let priceNSNumber = NSNumber(value: price)
         
         cell.foodLabel.text = theActualMenu[indexPath.item][0] as? String ?? "Error"

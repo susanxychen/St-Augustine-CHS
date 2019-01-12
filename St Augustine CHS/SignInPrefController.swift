@@ -82,13 +82,14 @@ class SignInPrefController: UIViewController {
         //To get grad year, get the XX@ycdsbk12.ca suffix. Then get the prefix XX of that suffix.
         //Parse it as a string and finally to Int
         let possibleGradYear = String((user?.email?.suffix(14).prefix(2))!)
-        let gradYear = Int(possibleGradYear)
+        var gradYear = Int(possibleGradYear)
         
         var status = 0
         
         //If u cant cast to int then it means ur a teacher
         if gradYear == nil {
             status = 1
+            gradYear = 0
         }
         
         db.collection("users").document((user?.uid)!).setData([

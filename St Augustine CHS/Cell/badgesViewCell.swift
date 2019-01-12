@@ -8,6 +8,7 @@
 
 import UIKit
 
+//This is for social screen
 class badgesViewCell: UICollectionViewCell {
     @IBOutlet weak var theBadge: UIImageView!
 }

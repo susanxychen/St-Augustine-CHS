@@ -10,6 +10,10 @@ import UIKit
 import Firebase
 import GoogleSignIn
 
+struct cameFromFailedLogin {
+    static var didComeFromFailedScreen = false
+}
+
 class signInController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
     
     @IBOutlet weak var continueButton: UIButton!
@@ -79,7 +83,7 @@ class signInController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate
                 self.performSegue(withIdentifier: "failedLogin", sender: self.failedButton)
             }
         }
-        else if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))!){
+        else if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))! || (checkEmail == "sachstesterforapple@gmail.com")){
             //print("wow nice sign in")
             //************************Firebase Auth************************ 
             guard let authentication = user.authentication else {
@@ -109,6 +113,7 @@ class signInController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate
                     
                     if lastSignIn == creation {
                         print("new user! take em through the sign in flow")
+                        cameFromFailedLogin.didComeFromFailedScreen = true
                         self.performSegue(withIdentifier: "signInFlow", sender: self.signInFlowButton)
                     } else {
                         self.performSegue(withIdentifier: "loggedIn", sender: self.continueButton)

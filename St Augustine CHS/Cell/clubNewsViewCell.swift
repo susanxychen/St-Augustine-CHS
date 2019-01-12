@@ -9,7 +9,6 @@
 import UIKit
 
 class clubNewsViewCell: UICollectionViewCell {
-    
     @IBOutlet weak var anncDate: UILabel!
     @IBOutlet weak var anncTitle: UITextView!
     @IBOutlet weak var anncText: UITextView!

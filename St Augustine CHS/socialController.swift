@@ -807,7 +807,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             break
         case 1:
             //Get all information for the club
-            let vc = segue.destination as! clubGoodController
+            let vc = segue.destination as! clubFinalController
             vc.clubData = clubData
             vc.partOfClub = partOfClub
             vc.banImage = clubImage

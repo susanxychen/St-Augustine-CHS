@@ -43,7 +43,7 @@ class changeCoursesController: UIViewController {
     //Refresh Vars
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIScreen.main.bounds)
+    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
     
     //Colors
     @IBOutlet weak var statusBarView: UIView!
@@ -51,7 +51,14 @@ class changeCoursesController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        overlayView.frame = UIApplication.shared.keyWindow!.frame
+        //Set Up
+        // [START setup]
+        let settings = FirestoreSettings()
+        settings.areTimestampsInSnapshotsEnabled = true
+        Firestore.firestore().settings = settings
+        // [END setup]
+        db = Firestore.firestore()
+        
         //***************INTERNET CONNECTION**************
         var iAmConneted = false
         let connectedRef = Database.database().reference(withPath: ".info/connected")
@@ -75,7 +82,23 @@ class changeCoursesController: UIViewController {
         })
         
         hideKeyboardWhenTappedAround()
-        coursesToCheck = ["ASS","PEE","POO","DIK","KKK","FUK"]
+        
+        showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
+        db.collection("info").document("validCourses").getDocument { (snap, err) in
+            if let error = err {
+                let alert = UIAlertController(title: "Error in getting course codes", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+            }
+            
+            if let snap = snap {
+                let data = snap.data()!
+                self.coursesToCheck = data["validCourses"] as! [String]
+                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+            }
+        }
+        
         allTextFields = [s1p1,s1p2,s1p3,s1p4,s2p1,s2p2,s2p3,s2p4]
         
         //Colors
@@ -85,14 +108,6 @@ class changeCoursesController: UIViewController {
         for x in allTextFields {
             x.tintColor = DefaultColours.accentColor
         }
-        
-        //Set Up
-        // [START setup]
-        let settings = FirestoreSettings()
-        settings.areTimestampsInSnapshotsEnabled = true
-        Firestore.firestore().settings = settings
-        // [END setup]
-        db = Firestore.firestore()
         
         //Set up courses
         for i in 0..<8 {
@@ -106,49 +121,53 @@ class changeCoursesController: UIViewController {
     @IBAction func updateButton(_ sender: Any) {
         print("wow i am going next")
         var validCourses = true
-        print(allTextFields.count)
+        print(coursesToCheck)
         
         //Checking for invalid courses
         for course in allTextFields {
             //The course
-            let temp = Array(course.text!)
+            //let temp = Array(course.text!)
             //print("Course: \(temp)")
-            
-            //Check to see if the course subject is valid
-            for check in coursesToCheck {
-                if (course.text?.contains(check))! {
-                    print("invalid course")
-                    validCourses = false
-                    break
-                }
-            }
+            //print(course.text!)
             
             //Allow spare to be written and don't check the below stuff
             if course.text?.uppercased() == "SPARE" {
+                course.text = course.text?.uppercased()
+            }
+            
+            //Clear all leading and trailing whitespaces
+            let trimmedString = course.text!.trimmingCharacters(in: .whitespaces)
+            course.text = trimmedString
+            
+            //Check to see if the course subject is valid
+            let theCourse = course.text!
+            if !(coursesToCheck.contains(theCourse)) {
+                print("invalid course: " + theCourse)
+                validCourses = false
                 break
             }
             
-            //Not the proper length course code
-            if course.text?.count != 7 {
-                print("not proper length")
-                validCourses = false
-                break
-            } else if !(temp[3] == "1" || temp[3] == "2" || temp[3] == "3" || temp[3] == "4"){
-                //grade is not number
-                print("not a grade")
-                validCourses = false
-                break
-            } else if !(temp[4] == "D" || temp[4] == "O" || temp[4] == "U" || temp[4] == "M" || temp[4] == "C" || temp[4] == "A") {
-                //not a course type
-                print("not a course type")
-                validCourses = false
-                break
-            } else if !(temp[5] == "1" || temp[5] == "E") {
-                //Last part is not a 1 or an E
-                print("invalid last")
-                validCourses = false
-                break
-            }
+//                //Not the proper length course code
+//            else if course.text?.count != 7 {
+//                print("not proper length")
+//                validCourses = false
+//                break
+//            } else if !(temp[3] == "1" || temp[3] == "2" || temp[3] == "3" || temp[3] == "4"){
+//                //grade is not number
+//                print("not a grade")
+//                validCourses = false
+//                break
+//            } else if !(temp[4] == "D" || temp[4] == "O" || temp[4] == "U" || temp[4] == "M" || temp[4] == "C" || temp[4] == "A") {
+//                //not a course type
+//                print("not a course type")
+//                validCourses = false
+//                break
+//            } else if !(temp[5] == "1" || temp[5] == "E") {
+//                //Last part is not a 1 or an E
+//                print("invalid last")
+//                validCourses = false
+//                break
+//            }
         }
         
         if validCourses {

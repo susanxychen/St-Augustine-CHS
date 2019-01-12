@@ -89,6 +89,8 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
         contentTxtFld.tintColor = DefaultColours.accentColor
         removeImage.setTitleColor(DefaultColours.primaryColor, for: .normal)
         
+        
+        
         //If in edit mode, set it to edit mode
         if editMode {
             print(currentAnncID)
@@ -360,7 +362,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
     
     func doneWithAnnc() {
         //print("yes i get run thanks")
-        if let presenter = presentingViewController as? clubGoodController {
+        if let presenter = presentingViewController as? clubFinalController {
             presenter.anncRef.append(currentAnncID) //this line should be roughly useless as i refresh the entire page when returning
         }
         onDoneBlock!(true)

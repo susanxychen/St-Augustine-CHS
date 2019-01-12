@@ -61,8 +61,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
                 UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
             application.registerUserNotificationSettings(settings)
         }
-        
         application.registerForRemoteNotifications()
+        
+        //Reseting all notifiactions
+        //application.applicationIconBadgeNumber = 0 // For Clear Badge Counts
+        let center = UNUserNotificationCenter.current()
+        center.removeAllDeliveredNotifications() // To remove all delivered notifications
+        center.removeAllPendingNotificationRequests() // To remove all pending notifications which are not delivered yet but scheduled.
         
         // [END register_for_notifications]
         
@@ -85,6 +90,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+        //Reseting all notifiactions
+        //application.applicationIconBadgeNumber = 0 // For Clear Badge Counts... doesnt work oh well
+        let center = UNUserNotificationCenter.current()
+        center.removeAllDeliveredNotifications() // To remove all delivered notifications
+        center.removeAllPendingNotificationRequests() // To remove all pending notifications which are not delivered yet but scheduled.
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -122,6 +133,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     }
     
     // [START receive_message]
+    //these methods are called twice? one to recieve the push and the second when user interacts??
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         // If you are receiving a notification message while your app is in the background,
         // this callback will not be fired till the user taps on the notification launching the application.
@@ -133,12 +145,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             print("Message ID: \(messageID)")
         }
         
+        //Add Badge Number
+        //application.applicationIconBadgeNumber += 1
+        
         // Print full message.
         print(userInfo)
     }
     
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
-                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         // If you are receiving a notification message while your app is in the background,
         // this callback will not be fired till the user taps on the notification launching the application.
         // TODO: Handle data of notification
@@ -148,6 +162,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         if let messageID = userInfo[gcmMessageIDKey] {
             print("Message ID: \(messageID)")
         }
+        
+        //Add Badge Number
+        //application.applicationIconBadgeNumber += 1
         
         // Print full message.
         print(userInfo)

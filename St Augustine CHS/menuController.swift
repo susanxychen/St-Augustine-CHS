@@ -34,7 +34,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var tapOutOfMenuButton: UIButton!
     @IBOutlet weak var dateToString: UILabel!
     @IBOutlet weak var dayNumber: UILabel!
-    @IBOutlet weak var snowDay: UILabel!
     
     //Scroll Height
     @IBOutlet weak var homeScrollViewHeight: NSLayoutConstraint!
@@ -48,9 +47,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     //Online Data Variables
     let dayURL = URL(string: "https://staugustinechs.netfirms.com/stadayonetwo/")
     let newsURL = URL(string: "http://staugustinechs.ca/printable/")
-    let busURL = URL(string: "http://net.schoolbuscity.com/")
-    let ytSourceURL = URL(string: "https://staugustinechs.netfirms.com/stayt/")
-    let backupURL = URL(string: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
     
     //Annoucment Variables
     var newsData = [[String]]()
@@ -126,13 +122,14 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             return
         }
         let checkEmail = user.profile.email
+        
         if (checkEmail?.count ?? 100 < 8) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.viewAboveAllViews.removeFromSuperview()
                 self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
             }
         }
-        else if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))!){
+        else if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))! || (checkEmail == "sachstesterforapple@gmail.com")){
             //print("wow nice sign in")
             //************************Firebase Auth************************
             guard let authentication = user.authentication else {
@@ -155,7 +152,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                     let lastSignIn = Auth.auth().currentUser?.metadata.lastSignInDate
                     let creation = Auth.auth().currentUser?.metadata.creationDate
                     
-                    if lastSignIn == creation {
+                    //if the user didnt come from the failed login as a new user
+                    if ((lastSignIn == creation) && (!cameFromFailedLogin.didComeFromFailedScreen)) {
+                        print(cameFromFailedLogin.didComeFromFailedScreen)
                         print("new user! take em through the sign in flow")
                         self.viewAboveAllViews.removeFromSuperview()
                         self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
@@ -199,6 +198,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 20)!]
         
         //Following will push a notification when out of the app 5 seconds later
+        //Purely for testing
 //        let content = UNMutableNotificationContent()
 //        content.title = "title"
 //        content.body = "body"
@@ -248,7 +248,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         
         //Remainin Tasks
         dayTask()
-        snowTask()
+        //snowTask()
         
         //*******************SET UP USER PROFILE ON MENU*****************
         let user = Auth.auth().currentUser
@@ -688,7 +688,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //Day Number
         dayTask()
         newsTask()
-        snowTask()
+        //snowTask()
         let user = Auth.auth().currentUser
         db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
             if let docSnapshot = docSnapshot {
@@ -747,31 +747,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         view.layoutIfNeeded()
     }
     
-    //************************************CHECK SNOW DAY************************************
-    func snowTask() {
-        let task3 = URLSession.shared.dataTask(with: busURL!) { (data, response, error) in
-            if error != nil {
-                //can't find website lol
-                print("cant find bus city")
-            } else{
-                let htmlContent = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!
-                //Need this because UILabel cannot be called out of main thread
-                DispatchQueue.main.async {
-                    self.snowDay.isHidden = !self.checkSnowDay(content: htmlContent as String)
-                }
-            }
-        }
-        task3.resume()
-    }
-    
-    func checkSnowDay(content: String) -> Bool {
-        if content.lowercased().range(of: "snow day") != nil{
-            //It is a snow day as it found the words "Snow day"
-            return true
-        }
-        return false
-    }
-    
     //*************************************UPDATE THE DAY NUMBER**************************************
     func dayTask() {
         var dayTemp = "Error Occured"
@@ -795,9 +770,25 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     func updateDay(content: String) -> String{
         let theDay = DateFormatter.localizedString(from: NSDate() as Date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
-        //Weekend, don't look for the Day number
         if (theDay.range(of:"Sunday") != nil) || (theDay.range(of:"Saturday") != nil){
-            return "It's a Weekend!"
+            db.collection("info").document("dayNumber").getDocument { (snap, err) in
+                if let err = err {
+                    self.dayNumber.text = "Error: \(err.localizedDescription)"
+                }
+                if let snap = snap {
+                    let data = snap.data()!
+                    let fridayDayNumber = data["dayNumber"] as! String
+                    
+                    if fridayDayNumber == "1" {
+                        self.dayNumber.text = "Monday will be Day 2"
+                    } else {
+                        self.dayNumber.text = "Monday will be Day 1"
+                    }
+                    
+                }
+            }
+            
+            return "Day "
         } else{
             //Look for last time "Day " is mentioned and output that
             let dayFound = content.lastIndex(of: "Day ")!
