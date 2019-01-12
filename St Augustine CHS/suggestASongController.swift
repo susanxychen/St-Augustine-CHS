@@ -81,7 +81,7 @@ class suggestASongController: UIViewController {
     
     //**********Suggest the song**********
     @IBAction func suggestPressed(_ sender: Any) {
-        let alert = UIAlertController(title: "Are you sure you want to spend 10 points to request a song? (You currently have \(allUserFirebaseData.data["points"] ?? "error") points)", message: "Songs with less than 100 votes will be removed after 2 days from the date they were requested. No refunds.\n\nAdministration will be able to see who requested what song and have the power to ban those who request inappropriate or irrelevant content", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Are you sure you want to spend 10 points to request a song? (You currently have \(allUserFirebaseData.data["points"] ?? "error") points)", message: "Songs with less than 100 votes will be removed after 2 days from the date they were requested. No refunds.\n\nAdministration will be able to see who requested what song and have the power to ban those who request inappropriate or irrelevant content. Do not spam request songs.", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel) { (action:UIAlertAction) in
             print("You've pressed cancel");

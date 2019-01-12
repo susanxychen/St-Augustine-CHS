@@ -21,7 +21,19 @@ class songViewCell: UICollectionViewCell {
     //Cloud Functions
     lazy var functions = Functions.functions()
     
+    //The Database
+    var db: Firestore!
+    var docRef: DocumentReference!
+    
     @IBAction func upvoteAction(_ sender: Any) {
+        //Set Up
+        // [START setup]
+        let settings = FirestoreSettings()
+        settings.areTimestampsInSnapshotsEnabled = true
+        Firestore.firestore().settings = settings
+        // [END setup]
+        db = Firestore.firestore()
+        
         print("voted")
         upvotedButton.isEnabled = false
         //If the user has not voted on the current song, do upvote calculation
@@ -36,21 +48,54 @@ class songViewCell: UICollectionViewCell {
         
         if voteData.songsVoted[theSong][0] as! Int == 0 {
             //Send the vote to cloud functions
-            functions.httpsCallable("changeVote").call(["id": songID.text!, "uservote": voteAmount]) { (result, error) in
-                if let error = error as NSError? {
-                    if error.domain == FunctionsErrorDomain {
-                        let code = FunctionsErrorCode(rawValue: error.code)
-                        let message = error.localizedDescription
-                        let details = error.userInfo[FunctionsErrorDetailsKey]
-                        print(code as Any)
-                        print(message)
-                        print(details as Any)
-                    }
+//            functions.httpsCallable("changeVote").call(["id": songID.text!, "uservote": voteAmount]) { (result, error) in
+//                if let error = error as NSError? {
+//                    if error.domain == FunctionsErrorDomain {
+//                        let code = FunctionsErrorCode(rawValue: error.code)
+//                        let message = error.localizedDescription
+//                        let details = error.userInfo[FunctionsErrorDetailsKey]
+//                        print(code as Any)
+//                        print(message)
+//                        print(details as Any)
+//                    }
+//                }
+//                print("vote sent to functions")
+//                print("Result is: \(String(describing: result?.data))")
+//                self.upvotedButton.isEnabled = true
+//            }
+            
+            let songRef = self.db.collection("songs").document(songID.text!)
+            self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                let uDoc: DocumentSnapshot
+                do {
+                    try uDoc = transaction.getDocument(songRef)
+                } catch let fetchError as NSError {
+                    errorPointer?.pointee = fetchError
+                    return nil
                 }
-                print("vote sent to functions")
-                print("Result is: \(String(describing: result?.data))")
-                self.upvotedButton.isEnabled = true
-            }
+                
+                guard let oldPoints = uDoc.data()?["upvotes"] as? Int else {
+                    let error = NSError(
+                        domain: "AppErrorDomain",
+                        code: -1,
+                        userInfo: [
+                            NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+                        ]
+                    )
+                    errorPointer?.pointee = error
+                    return nil
+                }
+                transaction.updateData(["upvotes": oldPoints + voteAmount], forDocument: songRef)
+                return nil
+            }, completion: { (object, err) in
+                if let error = err {
+                    print("Transaction failed: \(error)")
+                } else {
+                    print("Transaction successfully committed!")
+                    print("successfuly upvoted")
+                    self.upvotedButton.isEnabled = true
+                }
+            })
             
             voteArrow.image = UIImage(named: "voteArrowActive")
             print("Upvoted: \(voteData.songsVoted[theSong][1])")
@@ -69,22 +114,56 @@ class songViewCell: UICollectionViewCell {
             voteArrow.image = UIImage(named: "voteArrowEmpty")
             
             if votes > 0 {
-                //Send the vote to cloud functions
-                functions.httpsCallable("changeVote").call(["id": songID.text!, "uservote": (voteAmount * -1)]) { (result, error) in
-                    if let error = error as NSError? {
-                        if error.domain == FunctionsErrorDomain {
-                            let code = FunctionsErrorCode(rawValue: error.code)
-                            let message = error.localizedDescription
-                            let details = error.userInfo[FunctionsErrorDetailsKey]
-                            print(code as Any)
-                            print(message)
-                            print(details as Any)
-                        }
+//                //Send the vote to cloud functions
+//                functions.httpsCallable("changeVote").call(["id": songID.text!, "uservote": (voteAmount * -1)]) { (result, error) in
+//                    if let error = error as NSError? {
+//                        if error.domain == FunctionsErrorDomain {
+//                            let code = FunctionsErrorCode(rawValue: error.code)
+//                            let message = error.localizedDescription
+//                            let details = error.userInfo[FunctionsErrorDetailsKey]
+//                            print(code as Any)
+//                            print(message)
+//                            print(details as Any)
+//                        }
+//                    }
+//                    print("vote sent to functions")
+//                    print("Result is: \(String(describing: result?.data))")
+//                    self.upvotedButton.isEnabled = true
+//                }
+                
+                let songRef = self.db.collection("songs").document(songID.text!)
+                self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                    let uDoc: DocumentSnapshot
+                    do {
+                        try uDoc = transaction.getDocument(songRef)
+                    } catch let fetchError as NSError {
+                        errorPointer?.pointee = fetchError
+                        return nil
                     }
-                    print("vote sent to functions")
-                    print("Result is: \(String(describing: result?.data))")
-                    self.upvotedButton.isEnabled = true
-                }
+                    
+                    guard let oldPoints = uDoc.data()?["upvotes"] as? Int else {
+                        let error = NSError(
+                            domain: "AppErrorDomain",
+                            code: -1,
+                            userInfo: [
+                                NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+                            ]
+                        )
+                        errorPointer?.pointee = error
+                        return nil
+                    }
+                    transaction.updateData(["upvotes": oldPoints + (voteAmount * -1)], forDocument: songRef)
+                    return nil
+                }, completion: { (object, err) in
+                    if let error = err {
+                        print("Transaction failed: \(error)")
+                    } else {
+                        print("Transaction successfully committed!")
+                        print("successfuly upvoted")
+                        self.upvotedButton.isEnabled = true
+                    }
+                })
+                
                 votes -= voteAmount
                 voteData.songsVoted[theSong][3] = votes
             } else {

@@ -358,27 +358,29 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
         else {
             print("\(indexPath.item) you want to buy \(picsNotOwnedNums[indexPath.item])")
             if allUserFirebaseData.data["points"] as! Int >= picsCosts[picsNotOwnedNums[indexPath.item]] {
-                //Set up the alert controller
-                let alertController = UIAlertController(title: "Confirmation", message: "Are you sure you want to purchase this picture for \(picsCosts[picsNotOwnedNums[indexPath.item]]) points?", preferredStyle: .alert)
                 
-                //Add the image
-                let image = picsNotOwned[indexPath.item]
-                alertController.addImage(image: image)
+                let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let imageVC: showImageController = storyboard.instantiateViewController(withIdentifier: "showImage") as! showImageController
+                imageVC.modalPresentationStyle = .overCurrentContext
                 
-                //Add the cancel
-                alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                imageVC.showLeftButton = true
+                imageVC.customizingButtonActions = 0
                 
-                //Add the confirm button
-                alertController.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
+                imageVC.inputtedImage = picsNotOwned[indexPath.item]
+                imageVC.inputtedText = "Are you sure you want to buy this picture? You have \(allUserFirebaseData.data["points"] ?? "some amount of") points. Cost: \(picsCosts[picsNotOwnedNums[indexPath.item]]) points"
+                
+                imageVC.rightButtonText = "Confirm"
+                imageVC.leftButtonText = "Cancel"
+                
+                imageVC.onDoneBlock = {result in
                     print("wow u confirmed")
-                    
                     self.choseNewPic = true
                     self.newPicChosen = self.picsNotOwnedNums[indexPath.item]
                     self.theProfilePic.image = self.picsNotOwned[indexPath.item]
-                    
+
                     //Reload all data
                     self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-                    
+
                     //Update the picsOwned array
                     let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
                     userRef.updateData(["picsOwned": FieldValue.arrayUnion([self.newPicChosen])])
@@ -398,26 +400,28 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                         } else {
                             print("Document successfully updated")
                             allUserFirebaseData.profilePic = self.theProfilePic.image!
-                            
+
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
-                                self.getPicsCost() 
+                                self.getPicsCost()
                             }
                         }
                     }
-                }))
+                }
                 
-                self.present(alertController, animated: true, completion: nil)
+                self.present(imageVC, animated: true, completion: nil)
             } else {
-                //Set up the alert controller
-                let alertController = UIAlertController(title: "Error", message: "You do not have enough points for this picture. Cost: \(picsCosts[picsNotOwnedNums[indexPath.item]]) points", preferredStyle: .alert)
+                let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let imageVC: showImageController = storyboard.instantiateViewController(withIdentifier: "showImage") as! showImageController
+                imageVC.modalPresentationStyle = .overCurrentContext
                 
-                //Add the image
-                let image = picsNotOwned[indexPath.item]
-                alertController.addImage(image: image)
+                imageVC.customizingButtonActions = 1
                 
-                //Add the cancel
-                alertController.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-                self.present(alertController, animated: true, completion: nil)
+                imageVC.inputtedImage = picsNotOwned[indexPath.item]
+                imageVC.inputtedText = "You do not have enough points for this picture. Cost: \(picsCosts[picsNotOwnedNums[indexPath.item]]) points"
+                
+                imageVC.rightButtonText = "OK"
+                
+                self.present(imageVC, animated: true, completion: nil)
             }
         }
     }

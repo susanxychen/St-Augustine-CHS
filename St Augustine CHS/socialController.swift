@@ -64,7 +64,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     //Refresh Vars
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIScreen.main.bounds)
+    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
     var forceRefresh = false
     
     //Filler Data
@@ -79,10 +79,11 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     //Janky Fixes to Leaving/Joining Clubs
     var otherUserClubRefs = [String]()
     
+    //Constraints and making clubs list long
+    @IBOutlet weak var entrieSocialViewHeight: NSLayoutConstraint!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        overlayView.frame = UIApplication.shared.keyWindow!.frame
-        
         //***************INTERNET CONNECTION**************
         var iAmConneted = false
         let connectedRef = Database.database().reference(withPath: ".info/connected")
@@ -128,6 +129,8 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             self.profileViewBackground.backgroundColor = DefaultColours.primaryColor
             self.usersFullName.textColor = DefaultColours.primaryColor
         }
+        
+        badgesCollectionView.alwaysBounceHorizontal = true
         
         //Colors
         searchBarView.backgroundColor = DefaultColours.primaryColor
@@ -344,6 +347,8 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         userClubNames.removeAll()
         print("The club IDs: \(clubIDRefs)")
         
+        clubCollectionViewHeight.constant = 600
+        
         //Show the Club labels
         if clubIDRefs.count != 0 {
             for i in 0...clubIDRefs.count-1 {
@@ -430,7 +435,6 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                 }
                             }
                             self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-                            self.clubCollectionViewHeight.constant = 275
                             self.clubsCollectionView.reloadData()
                         }
                     }
@@ -604,6 +608,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                     self.chosenToShareClubs = false
                                     self.clubsCollectionView.isUserInteractionEnabled = false
                                     self.userClubNames = ["Student has chosen not to share clubs"]
+                                    self.clubCollectionViewHeight.constant = 0
                                     self.userClubIDs = ["nice"]
                                     self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                                     self.clubsCollectionView.reloadData()
@@ -643,6 +648,24 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        var badgeHeight: CGFloat = 100
+        if badgeData.count == 0 {
+            badgeHeight = 0
+        }
+        
+        let height = self.clubsCollectionView.contentSize.height + badgeHeight + 550
+        
+        self.clubCollectionViewHeight.constant = self.clubsCollectionView.contentSize.height + 10
+//        print(self.clubsCollectionView.contentSize.height)
+//        print(self.clubCollectionViewHeight.constant)
+        
+        //If the screen is too small to fit all announcements, just change the height to whatever it is
+        if height > UIScreen.main.bounds.height {
+            self.entrieSocialViewHeight.constant = height
+        } else {
+            self.entrieSocialViewHeight.constant = UIScreen.main.bounds.height
+        }
+        
         //**********************FORMAT THE BADGES**********************
         if collectionView == badgesCollectionView {
             let badgesCell = collectionView.dequeueReusableCell(withReuseIdentifier: badgeCollectionIdentifier, for: indexPath) as! badgesViewCell
@@ -682,11 +705,19 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     //**********************SELECTING A BADGE OR CLUB**********************
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == badgesCollectionView {
-            let alert = UIAlertController(title: badgeData[indexPath.item]["desc"] as? String, message: nil, preferredStyle: .alert)
-            alert.addImage(image: badgeImgs[indexPath.item])
-            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-            alert.addAction(okAction)
-            self.present(alert, animated: true, completion: nil)
+//            let alert = UIAlertController(title: badgeData[indexPath.item]["desc"] as? String, message: nil, preferredStyle: .alert)
+//            //alert.addImage(image: badgeImgs[indexPath.item])
+//            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//            alert.addAction(okAction)
+//            self.present(alert, animated: true, completion: nil)
+            let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            let imageVC: showImageController = storyboard.instantiateViewController(withIdentifier: "showImage") as! showImageController
+            imageVC.modalPresentationStyle = .overCurrentContext
+            imageVC.customizingButtonActions = 2
+            imageVC.inputtedImage = badgeImgs[indexPath.item]
+            imageVC.inputtedText = badgeData[indexPath.item]["desc"] as? String ?? "Error Occured"
+            imageVC.rightButtonText = "OK"
+            self.present(imageVC, animated: true, completion: nil)
         } else {
             print("clubs \(indexPath.item) \(userClubNames[indexPath.item])")
             self.segDest = 1

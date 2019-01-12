@@ -670,6 +670,88 @@
             </objects>
             <point key="canvasLocation" x="1796" y="-565.36731634182911"/>
         </scene>
+        <!--Show Image Controller-->
+        <scene sceneID="KTW-yH-NRy">
+            <objects>
+                <viewController storyboardIdentifier="showImage" id="Tll-yT-J3t" customClass="showImageController" customModule="St_Augustine_CHS" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="IrB-lF-XhT">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ogR-sp-Sd0">
+                                <rect key="frame" x="23" y="139" width="329" height="389"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1Lk-VB-mhz">
+                                        <rect key="frame" x="64" y="24" width="201" height="201"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="201" id="2Bc-DO-u2N"/>
+                                            <constraint firstAttribute="width" constant="201" id="Hk3-8m-81U"/>
+                                        </constraints>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dDf-J2-jDu">
+                                        <rect key="frame" x="291" y="347" width="30" height="34"/>
+                                        <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                        <state key="normal" title="OK">
+                                            <color key="titleColor" red="0.84705882349999995" green="0.68627450980000004" blue="0.10980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="rightButtonPressed:" destination="Tll-yT-J3t" eventType="touchUpInside" id="1VT-FU-gzd"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tV1-QX-PHN">
+                                        <rect key="frame" x="8" y="233" width="313" height="85"/>
+                                        <string key="text">The individual particular is paradoxically superiror to the universal because of the teleological suspsion of the ethical or abraham is lost</string>
+                                        <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="77I-ok-JlO">
+                                        <rect key="frame" x="8" y="347" width="79" height="34"/>
+                                        <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                        <state key="normal" title="Give Away!">
+                                            <color key="titleColor" red="0.84705882349999995" green="0.68627450980000004" blue="0.10980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="leftButtonPresssed:" destination="Tll-yT-J3t" eventType="touchUpInside" id="Ggg-as-09q"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="tV1-QX-PHN" secondAttribute="trailing" constant="8" id="CI8-ac-fU6"/>
+                                    <constraint firstItem="tV1-QX-PHN" firstAttribute="top" secondItem="1Lk-VB-mhz" secondAttribute="bottom" constant="8" id="IIV-R0-52D"/>
+                                    <constraint firstItem="tV1-QX-PHN" firstAttribute="leading" secondItem="ogR-sp-Sd0" secondAttribute="leading" constant="8" id="IfG-9N-oUb"/>
+                                    <constraint firstItem="dDf-J2-jDu" firstAttribute="trailing" secondItem="ogR-sp-Sd0" secondAttribute="trailingMargin" id="KQI-Da-wbc"/>
+                                    <constraint firstItem="1Lk-VB-mhz" firstAttribute="centerX" secondItem="ogR-sp-Sd0" secondAttribute="centerX" id="T07-y3-ISa"/>
+                                    <constraint firstAttribute="bottom" secondItem="77I-ok-JlO" secondAttribute="bottom" constant="8" id="bed-b9-KQW"/>
+                                    <constraint firstItem="77I-ok-JlO" firstAttribute="leading" secondItem="ogR-sp-Sd0" secondAttribute="leading" constant="8" id="fzS-S2-vDZ"/>
+                                    <constraint firstItem="1Lk-VB-mhz" firstAttribute="leading" secondItem="ogR-sp-Sd0" secondAttribute="leading" constant="64" id="hMr-n6-86F"/>
+                                    <constraint firstItem="dDf-J2-jDu" firstAttribute="bottom" secondItem="ogR-sp-Sd0" secondAttribute="bottomMargin" id="kb2-6h-t28"/>
+                                    <constraint firstItem="1Lk-VB-mhz" firstAttribute="top" secondItem="ogR-sp-Sd0" secondAttribute="topMargin" constant="16" id="zD7-F0-e01"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="ogR-sp-Sd0" firstAttribute="centerY" secondItem="IrB-lF-XhT" secondAttribute="centerY" id="FdC-PT-UtS"/>
+                            <constraint firstItem="ogR-sp-Sd0" firstAttribute="leading" secondItem="eVa-Jy-J9v" secondAttribute="leading" constant="23" id="sCP-8c-hwF"/>
+                            <constraint firstItem="ogR-sp-Sd0" firstAttribute="centerX" secondItem="IrB-lF-XhT" secondAttribute="centerX" id="sc2-7C-2Xf"/>
+                            <constraint firstItem="ogR-sp-Sd0" firstAttribute="top" secondItem="eVa-Jy-J9v" secondAttribute="top" constant="119" id="tG7-3i-OEu"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="eVa-Jy-J9v"/>
+                    </view>
+                    <connections>
+                        <outlet property="backPanelView" destination="ogR-sp-Sd0" id="wt1-bp-fOy"/>
+                        <outlet property="leftButton" destination="77I-ok-JlO" id="nMO-MJ-SWP"/>
+                        <outlet property="rightButton" destination="dDf-J2-jDu" id="uem-UD-zKg"/>
+                        <outlet property="theImage" destination="1Lk-VB-mhz" id="IN8-ll-l0n"/>
+                        <outlet property="theLabel" destination="tV1-QX-PHN" id="ver-r8-ehd"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="L9c-jI-tFx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2648.8000000000002" y="-564.46776611694156"/>
+        </scene>
         <!--Badge Scanner Controller-->
         <scene sceneID="yiu-UZ-OAJ">
             <objects>
@@ -939,6 +1021,7 @@
                                                     <constraint firstItem="jks-pd-be2" firstAttribute="top" secondItem="eS0-0e-dkG" secondAttribute="bottom" constant="8" id="E1P-Vo-D2q"/>
                                                     <constraint firstAttribute="trailing" secondItem="eS0-0e-dkG" secondAttribute="trailing" constant="115" id="EYK-YG-kUp"/>
                                                     <constraint firstAttribute="trailing" secondItem="jks-pd-be2" secondAttribute="trailing" id="Ikm-0N-e3i"/>
+                                                    <constraint firstAttribute="height" constant="263" id="KKg-6s-CyD"/>
                                                     <constraint firstItem="KnS-0N-uPI" firstAttribute="top" secondItem="jks-pd-be2" secondAttribute="bottom" constant="23" id="NkY-sa-lOR"/>
                                                     <constraint firstItem="eS0-0e-dkG" firstAttribute="leading" secondItem="9NZ-ai-kCl" secondAttribute="leading" constant="114" id="a4K-mY-rhk"/>
                                                     <constraint firstItem="jks-pd-be2" firstAttribute="leading" secondItem="9NZ-ai-kCl" secondAttribute="leading" id="azY-0S-V6M"/>
@@ -1124,7 +1207,6 @@
                                             <constraint firstItem="9NZ-ai-kCl" firstAttribute="centerX" secondItem="2eo-yI-zNL" secondAttribute="centerX" id="TQi-Pz-y94"/>
                                             <constraint firstAttribute="trailing" secondItem="oO3-Tk-NIw" secondAttribute="trailing" constant="8" id="Vab-jv-2M5"/>
                                             <constraint firstItem="KVY-k7-KZD" firstAttribute="leading" secondItem="xFE-bW-jYN" secondAttribute="leading" constant="8" id="cwX-MH-M1z"/>
-                                            <constraint firstAttribute="bottom" secondItem="avM-Gy-sec" secondAttribute="bottom" constant="677" id="dYI-kK-AT4"/>
                                             <constraint firstItem="avM-Gy-sec" firstAttribute="trailing" secondItem="9NZ-ai-kCl" secondAttribute="trailing" id="ff0-2h-Sh3"/>
                                             <constraint firstItem="q91-Fo-Aol" firstAttribute="top" secondItem="avM-Gy-sec" secondAttribute="bottom" constant="8" id="lWl-ca-YN4"/>
                                             <constraint firstAttribute="trailing" secondItem="2eo-yI-zNL" secondAttribute="trailing" id="myh-eg-T3t"/>
@@ -1132,7 +1214,6 @@
                                             <constraint firstItem="avM-Gy-sec" firstAttribute="top" secondItem="9NZ-ai-kCl" secondAttribute="bottom" constant="8" symbolic="YES" id="rC7-Kc-ifG"/>
                                             <constraint firstItem="9NZ-ai-kCl" firstAttribute="top" secondItem="2eo-yI-zNL" secondAttribute="bottom" constant="8" symbolic="YES" id="rDZ-Qe-7Vr"/>
                                             <constraint firstItem="2eo-yI-zNL" firstAttribute="top" secondItem="xFE-bW-jYN" secondAttribute="top" id="rPs-hF-rE0"/>
-                                            <constraint firstAttribute="bottom" secondItem="9NZ-ai-kCl" secondAttribute="bottom" constant="689" id="zLL-0Z-xYr"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -1187,9 +1268,10 @@
                         <outlet property="badgesCollectionView" destination="4W9-pk-Hne" id="5mJ-9z-kDw"/>
                         <outlet property="badgesLabel" destination="q91-Fo-Aol" id="Mo8-15-R4f"/>
                         <outlet property="classesInCommon" destination="KnS-0N-uPI" id="z6M-l0-0fB"/>
-                        <outlet property="clubCollectionViewHeight" destination="TxO-zz-dcr" id="BaO-NA-9Mu"/>
+                        <outlet property="clubCollectionViewHeight" destination="TxO-zz-dcr" id="i7W-SA-6Ev"/>
                         <outlet property="clubsCollectionView" destination="KVY-k7-KZD" id="Yz4-nh-Xku"/>
                         <outlet property="clubsLabel" destination="JR4-o0-tId" id="p29-8l-lH3"/>
+                        <outlet property="entrieSocialViewHeight" destination="EBu-c0-Wt3" id="djX-wD-dyW"/>
                         <outlet property="lineBetweenBadgesandClubs" destination="oO3-Tk-NIw" id="DTw-Ne-8sJ"/>
                         <outlet property="lineBetweenPlateAndBadges" destination="avM-Gy-sec" id="1lS-fx-hRb"/>
                         <outlet property="profilePicture" destination="S31-8T-3Ah" id="3E9-b8-pvW"/>
@@ -3673,7 +3755,6 @@
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="15"/>
                                         <state key="normal" title="Cancel"/>
                                         <connections>
-                                            <action selector="cancelEditing:" destination="fz6-mg-zNU" eventType="touchUpInside" id="iQq-Wd-xc7"/>
                                             <action selector="cancelPressed:" destination="ou6-IM-86u" eventType="touchUpInside" id="y27-JT-d7N"/>
                                         </connections>
                                     </button>

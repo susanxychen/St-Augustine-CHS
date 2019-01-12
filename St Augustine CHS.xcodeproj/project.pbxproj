@@ -26,6 +26,7 @@
 		B93F209821738E5500279829 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B93F209621738E5500279829 /* LaunchScreen.storyboard */; };
 		B93F20A321738E5500279829 /* St_Augustine_CHSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93F20A221738E5500279829 /* St_Augustine_CHSTests.swift */; };
 		B93F20AE21738E5500279829 /* St_Augustine_CHSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93F20AD21738E5500279829 /* St_Augustine_CHSUITests.swift */; };
+		B943EC6221EAA4F400DEBCC1 /* showImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B943EC6121EAA4F400DEBCC1 /* showImageController.swift */; };
 		B94B173B21A0AAD000BCD86A /* SignInProfilePicController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94B173A21A0AAD000BCD86A /* SignInProfilePicController.swift */; };
 		B94B173D21A0AB9D00BCD86A /* SignInCoursesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94B173C21A0AB9D00BCD86A /* SignInCoursesController.swift */; };
 		B94B173F21A0AC5C00BCD86A /* SignInPrefController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94B173E21A0AC5C00BCD86A /* SignInPrefController.swift */; };
@@ -117,6 +118,7 @@
 		B93F20A921738E5500279829 /* St Augustine CHSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "St Augustine CHSUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B93F20AD21738E5500279829 /* St_Augustine_CHSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = St_Augustine_CHSUITests.swift; sourceTree = "<group>"; };
 		B93F20AF21738E5500279829 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B943EC6121EAA4F400DEBCC1 /* showImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = showImageController.swift; sourceTree = "<group>"; };
 		B94B173A21A0AAD000BCD86A /* SignInProfilePicController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInProfilePicController.swift; sourceTree = "<group>"; };
 		B94B173C21A0AB9D00BCD86A /* SignInCoursesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInCoursesController.swift; sourceTree = "<group>"; };
 		B94B173E21A0AC5C00BCD86A /* SignInPrefController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPrefController.swift; sourceTree = "<group>"; };
@@ -273,6 +275,7 @@
 				B918546B21B4B26500DA14F5 /* profilePicController.swift */,
 				B9C6E35A21ACA68500A03650 /* classesDetailsController.swift */,
 				B9B3684A21B9EB060059CF9C /* changeCoursesController.swift */,
+				B943EC6121EAA4F400DEBCC1 /* showImageController.swift */,
 				B93F209921738E5500279829 /* Info.plist */,
 				B925621021E677D000F5F1D9 /* GoogleService-Info.plist */,
 				B96F9F2821C8772500A841C9 /* Cell */,
@@ -639,6 +642,7 @@
 				B93F209021738E5100279829 /* menuController.swift in Sources */,
 				B95D36A121DAC1270037903F /* badgeScannerController.swift in Sources */,
 				B9ACA1EA2175499100302C4B /* signInController.swift in Sources */,
+				B943EC6221EAA4F400DEBCC1 /* showImageController.swift in Sources */,
 				B9AE584621D585930067B904 /* adminCell.swift in Sources */,
 				B958069D218209AA00B3EE70 /* songReqController.swift in Sources */,
 				B97CDA492176DCFE00F7F685 /* newsViewCell.swift in Sources */,

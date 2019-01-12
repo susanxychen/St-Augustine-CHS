@@ -16,6 +16,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
     var docRef: DocumentReference!
     
     var clubID: String!
+    var clubBadge: String!
     var pendingList = [String]()
     var pendingListNames = [String]()
     var pendingListEmails = [String]()
@@ -62,6 +63,8 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
             let actionSheet = UIAlertController(title: "Choose an Option for \(pendingListNames[indexPath.item])", message: nil, preferredStyle: .actionSheet)
             actionSheet.addAction(UIAlertAction(title: "Accept", style: .default, handler: { (action:UIAlertAction) in
                 self.changedPendingList!(true)
+                
+                //Update club data
                 let clubRef = self.db.collection("clubs").document(self.clubID)
                 clubRef.updateData([
                     "pending": FieldValue.arrayRemove([self.pendingList[indexPath.item]])
@@ -69,10 +72,43 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                 clubRef.updateData([
                     "members": FieldValue.arrayUnion([self.pendingList[indexPath.item]])
                 ])
+                
+                //update user data
                 let userRef = self.db.collection("users").document(self.pendingList[indexPath.item])
-                userRef.updateData([
-                    "clubs": FieldValue.arrayUnion([self.clubID])
-                ])
+                userRef.updateData(["clubs": FieldValue.arrayUnion([self.clubID])])
+                userRef.updateData(["badges": FieldValue.arrayUnion([self.clubBadge])])
+                
+                //give em points
+                self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                    let uDoc: DocumentSnapshot
+                    do {
+                        try uDoc = transaction.getDocument(userRef)
+                    } catch let fetchError as NSError {
+                        errorPointer?.pointee = fetchError
+                        return nil
+                    }
+                    
+                    guard let oldPoints = uDoc.data()?["points"] as? Int else {
+                        let error = NSError(
+                            domain: "AppErrorDomain",
+                            code: -1,
+                            userInfo: [
+                                NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+                            ]
+                        )
+                        errorPointer?.pointee = error
+                        return nil
+                    }
+                    transaction.updateData(["points": oldPoints + 10], forDocument: userRef)
+                    return nil
+                }, completion: { (object, err) in
+                    if let error = err {
+                        print("Transaction failed: \(error)")
+                    } else {
+                        print("Transaction successfully committed!")
+                    }
+                })
+                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
                     self.getClubData()
                 })

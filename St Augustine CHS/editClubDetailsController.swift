@@ -19,6 +19,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     //Club Details
     var clubBannerImage: UIImage!
     var clubBannerID: String!
+    var clubBadge: String!
     var clubName: String!
     var clubDesc: String!
     var clubJoinSetting: Int!
@@ -275,6 +276,39 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
                 //Update the picsOwned array
                 let userRef = self.db.collection("users").document(user)
                 userRef.updateData(["clubs": FieldValue.arrayUnion([clubID])])
+                userRef.updateData(["badges": FieldValue.arrayUnion([clubBadge])])
+                
+                //Also give them points
+                self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                    let uDoc: DocumentSnapshot
+                    do {
+                        try uDoc = transaction.getDocument(userRef)
+                    } catch let fetchError as NSError {
+                        errorPointer?.pointee = fetchError
+                        return nil
+                    }
+                    
+                    guard let oldPoints = uDoc.data()?["points"] as? Int else {
+                        let error = NSError(
+                            domain: "AppErrorDomain",
+                            code: -1,
+                            userInfo: [
+                                NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+                            ]
+                        )
+                        errorPointer?.pointee = error
+                        return nil
+                    }
+                    transaction.updateData(["points": oldPoints + 10], forDocument: userRef)
+                    return nil
+                }, completion: { (object, err) in
+                    if let error = err {
+                        print("Transaction failed: \(error)")
+                    } else {
+                        print("Transaction successfully committed!")
+                        print("successfuly gave badge")
+                    }
+                })
             }
             clubRef.setData([
                 "pending": []

@@ -161,7 +161,6 @@ class settingsController: UIViewController {
         
         if specialCase {
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            alert.view.tintColor = UIColor.black
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)

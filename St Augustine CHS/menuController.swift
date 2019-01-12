@@ -396,11 +396,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     func sortAnncByDate() {
         if clubNewsData.count == 0 {
+            clubAnncHeight.constant = 0
             self.clubAnncView.reloadData()
             return
         }
         
-        if clubNewsData.count > 2 {
+        if clubNewsData.count > 1 {
             var thereWasASwap = true
             while thereWasASwap {
                 thereWasASwap = false
@@ -427,29 +428,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 if clubNewsData[clubNewsData.count-1]["img"] as! String != "" {
                     clubNewsData[clubNewsData.count-1]["content"] = clubNewsData[clubNewsData.count-1]["content"] as! String + " (This announcement has an image)"
                 }
-            }
-        } else if clubNewsData.count == 2 {
-            let i = 0
-            let timestamp1: Timestamp = clubNewsData[i]["date"] as! Timestamp
-            let date1: Date = timestamp1.dateValue()
-            let timestamp2: Timestamp = clubNewsData[i + 1]["date"] as! Timestamp
-            let date2: Date = timestamp2.dateValue()
-            
-            //Check if there is an image. If so also add a note saying there is an image
-            if clubNewsData[i]["img"] as! String != "" {
-                clubNewsData[i]["content"] = clubNewsData[i]["content"] as! String + " (This announcement has an image)"
-            }
-            
-            //Check if there is an image. If so also add a note saying there is an image
-            if clubNewsData[1]["img"] as! String != "" {
-                clubNewsData[1]["content"] = clubNewsData[1]["content"] as! String + " (This announcement has an image)"
-            }
-            
-            //Swap values
-            if date2 > date1 {
-                let temp = clubNewsData[i]
-                clubNewsData[i] = clubNewsData[i+1]
-                clubNewsData[i+1] = temp
             }
         } else {
             //Check if there is an image. If so also add a note saying there is an image

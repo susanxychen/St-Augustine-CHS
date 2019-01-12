@@ -180,24 +180,59 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                     self.present(alert, animated: true, completion: nil)
                 } else {
                     print("Document successfully updated")
-                    self.functions.httpsCallable("changeVote").call(["id": self.selectedSuperSongID, "uservote": self.supervoteAmount]) { (result, error) in
-                        if let error = error as NSError? {
-                            if error.domain == FunctionsErrorDomain {
-                                let code = FunctionsErrorCode(rawValue: error.code)
-                                let message = error.localizedDescription
-                                let details = error.userInfo[FunctionsErrorDetailsKey]
-                                print(code as Any)
-                                print(message)
-                                print(details as Any)
-                            }
+//                    self.functions.httpsCallable("changeVote").call(["id": self.selectedSuperSongID, "uservote": self.supervoteAmount]) { (result, error) in
+//                        if let error = error as NSError? {
+//                            if error.domain == FunctionsErrorDomain {
+//                                let code = FunctionsErrorCode(rawValue: error.code)
+//                                let message = error.localizedDescription
+//                                let details = error.userInfo[FunctionsErrorDetailsKey]
+//                                print(code as Any)
+//                                print(message)
+//                                print(details as Any)
+//                            }
+//                        }
+//                        voteData.songsVoted[self.supervotedIndex][0] = 2
+//                        voteData.songsVoted[self.supervotedIndex][3] = self.supervoteAmount + (voteData.songsVoted[self.supervotedIndex][3] as! Int)
+//                        UserDefaults.standard.set(voteData.songsVoted, forKey: "songsVoted")
+//                        print("vote sent to functions")
+//                        print("Result is: \(String(describing: result?.data))")
+//                        self.refreshList()
+//                    }
+                    let songRef = self.db.collection("songs").document(self.selectedSuperSongID)
+                    self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                        let uDoc: DocumentSnapshot
+                        do {
+                            try uDoc = transaction.getDocument(songRef)
+                        } catch let fetchError as NSError {
+                            errorPointer?.pointee = fetchError
+                            return nil
                         }
-                        voteData.songsVoted[self.supervotedIndex][0] = 2
-                        voteData.songsVoted[self.supervotedIndex][3] = self.supervoteAmount + (voteData.songsVoted[self.supervotedIndex][3] as! Int)
-                        UserDefaults.standard.set(voteData.songsVoted, forKey: "songsVoted")
-                        print("vote sent to functions")
-                        print("Result is: \(String(describing: result?.data))")
-                        self.refreshList()
-                    }
+                        
+                        guard let oldPoints = uDoc.data()?["upvotes"] as? Int else {
+                            let error = NSError(
+                                domain: "AppErrorDomain",
+                                code: -1,
+                                userInfo: [
+                                    NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+                                ]
+                            )
+                            errorPointer?.pointee = error
+                            return nil
+                        }
+                        transaction.updateData(["upvotes": oldPoints + self.supervoteAmount], forDocument: songRef)
+                        return nil
+                    }, completion: { (object, err) in
+                        if let error = err {
+                            print("Transaction failed: \(error)")
+                        } else {
+                            print("Transaction successfully committed!")
+                            print("successfuly upvoted")
+                            voteData.songsVoted[self.supervotedIndex][0] = 2
+                            voteData.songsVoted[self.supervotedIndex][3] = self.supervoteAmount + (voteData.songsVoted[self.supervotedIndex][3] as! Int)
+                            UserDefaults.standard.set(voteData.songsVoted, forKey: "songsVoted")
+                            self.refreshList()
+                        }
+                    })
                 }
             }
         }

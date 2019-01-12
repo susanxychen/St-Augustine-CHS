@@ -113,6 +113,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         //Add Refresh Control
         addRefreshControl()
         
+        badgeCollectionView.alwaysBounceHorizontal = true
+        
         print(clubID)
         getClubSettingsInfo()
         getBadgeDocs()
@@ -144,6 +146,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             announcementLabel.isHidden = true
             anncCollectionView.isHidden = true
         }
+        
     }
     
     func getClubSettingsInfo(){
@@ -172,6 +175,12 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         //But also make it back open again if its just purely open
         if clubData["joinPref"] as! Int == 2 {
             acceptingJoinRequests = true
+        }
+        
+        if acceptingJoinRequests {
+            joinClubButton.isEnabled = true
+        } else {
+            joinClubButton.isEnabled = false
         }
         
         if isClubAdmin {
@@ -237,12 +246,20 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             
             let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
             userRef.updateData(["clubs": FieldValue.arrayUnion([clubID])])
+            userRef.updateData(["badges": FieldValue.arrayUnion([clubData["clubBadge"] as Any])])
             
-            var ref = allUserFirebaseData.data["clubs"] as! [String]
-            allUserFirebaseData.data["clubs"] = ref.append(clubID)
+//            var ref = allUserFirebaseData.data["clubs"] as! [String]
+//            allUserFirebaseData.data["clubs"] = ref.append(clubID)
+            
+            //Make label visible and announcements visible and also hide the join club button obviously
+            announcementLabel.isHidden = false
+            anncCollectionView.isHidden = false
+            joinClubButton.isHidden = true
+            constraintBetweenDescAndBadgeLabel.constant = 8
+            joinClubButton.frame.size = CGSize(width: joinClubButton.frame.width, height: 0)
             
             let user = Auth.auth().currentUser
-            db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+            self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
                 if let docSnapshot = docSnapshot {
                     self.partOfClub = true
                     allUserFirebaseData.data = docSnapshot.data()!
@@ -255,6 +272,50 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                 }
             }
             
+//            self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+//                let uDoc: DocumentSnapshot
+//                do {
+//                    try uDoc = transaction.getDocument(userRef)
+//                } catch let fetchError as NSError {
+//                    errorPointer?.pointee = fetchError
+//                    return nil
+//                }
+//
+//                guard let oldPoints = uDoc.data()?["points"] as? Int else {
+//                    let error = NSError(
+//                        domain: "AppErrorDomain",
+//                        code: -1,
+//                        userInfo: [
+//                            NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+//                        ]
+//                    )
+//                    errorPointer?.pointee = error
+//                    return nil
+//                }
+//                transaction.updateData(["points": oldPoints + 10], forDocument: userRef)
+//                return nil
+//            }, completion: { (object, err) in
+//                if let error = err {
+//                    print("Transaction failed: \(error)")
+//                } else {
+//                    print("Transaction successfully committed!")
+//                    print("successfuly gave badge")
+//
+//                    let user = Auth.auth().currentUser
+//                    self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+//                        if let docSnapshot = docSnapshot {
+//                            self.partOfClub = true
+//                            allUserFirebaseData.data = docSnapshot.data()!
+//                            if !self.cameFromSocialPage {
+//                                self.joinedANewClubBlock?(true)
+//                            }
+//                            self.refreshList()
+//                        } else {
+//                            print("wow u dont exist")
+//                        }
+//                    }
+//                }
+//            })
         }
     }
     
@@ -310,11 +371,11 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     clubRef.updateData([
                         "admins": FieldValue.arrayRemove([Auth.auth().currentUser?.uid as Any]),
                         "members": FieldValue.arrayRemove([Auth.auth().currentUser?.uid as Any])
-                        ])
+                    ])
                     let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
-                    userRef.updateData([
-                        "clubs": FieldValue.arrayRemove([self.clubID])
-                        ])
+                    userRef.updateData(["clubs": FieldValue.arrayRemove([self.clubID])])
+                    userRef.updateData(["badges": FieldValue.arrayRemove([self.clubData["clubBadge"] as Any])])
+                    
                     let user = Auth.auth().currentUser
                     self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
                         if let docSnapshot = docSnapshot {
@@ -448,7 +509,10 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     
     func getBadgesImages() {
         if badgeData.count == 0 {
+            badgeCollectionViewHieght.constant = 0
             return
+        } else {
+            badgeCollectionViewHieght.constant = 100
         }
         
         badgeImgs.removeAll()
@@ -1006,24 +1070,28 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == badgeCollectionView {
-            let alert = UIAlertController(title: badgeData[indexPath.item]["desc"] as? String, message: nil, preferredStyle: .alert)
-            alert.addImage(image: badgeImgs[indexPath.item])
-            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-            let editAction = UIAlertAction(title: "Edit", style: .default) { (alertAction) in
-                print("edit")
-            }
-            let giveAction = UIAlertAction(title: "Give Away!", style: .default) { (alertAction) in
+            let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            let imageVC: showImageController = storyboard.instantiateViewController(withIdentifier: "showImage") as! showImageController
+            imageVC.modalPresentationStyle = .overCurrentContext
+            imageVC.inputtedImage = badgeImgs[indexPath.item]
+            imageVC.inputtedText = badgeData[indexPath.item]["desc"] as? String ?? "Error"
+            imageVC.customizingButtonActions = 3
+            imageVC.onDoneBlock = { result in
                 print("give away")
-                self.segueNum = 4
-                self.theSelectedBadgeID = self.badgeIDs[indexPath.item]
-                self.performSegue(withIdentifier: "scanner", sender: self.scanBadgeButton)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                    self.segueNum = 4
+                    self.theSelectedBadgeID = self.badgeIDs[indexPath.item]
+                    self.performSegue(withIdentifier: "scanner", sender: self.scanBadgeButton)
+                })
             }
+            imageVC.rightButtonText = "OK"
+            imageVC.leftButtonText = "Give Away!"
+            
             if isClubAdmin {
-                alert.addAction(editAction)
-                alert.addAction(giveAction)
+                imageVC.showLeftButton = true
             }
-            alert.addAction(okAction)
-            self.present(alert, animated: true, completion: nil)
+            
+            self.present(imageVC, animated: true, completion: nil)
         }
     }
     
@@ -1084,6 +1152,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             vc.clubBannerID = clubData["img"] as? String
             vc.clubID = clubID
             vc.pendingList = clubData["pending"] as! [String]
+            vc.clubBadge = clubData["badge"] as? String
             
             //Refresh the club details to get new banners and other stuff!!!
             vc.onDoneBlock = { result in
@@ -1118,6 +1187,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             let vc = segue.destination as! clubPendingController
             vc.pendingList = clubData["pending"] as? [String] ?? ["Error!"]
             vc.clubID = clubID
+            vc.clubBadge = (clubData["clubBadge"] as! String)
             vc.changedPendingList = { result in
                 clubListDidUpdateClubDetails.clubAdminUpdatedData = true
                 self.refreshList()
@@ -1128,6 +1198,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             vc.adminsList = clubData["admins"] as? [String] ?? ["Error!"]
             vc.membersList = clubData["members"] as? [String] ?? ["Error!"]
             vc.clubID = clubID
+            vc.clubBadge = (clubData["clubBadge"] as! String)
             vc.isClubAdmin = isClubAdmin
             vc.promotedAMember = { result in
                 clubListDidUpdateClubDetails.clubAdminUpdatedData = true

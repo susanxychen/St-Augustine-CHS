@@ -16,6 +16,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
     var docRef: DocumentReference!
     
     var clubID: String!
+    var clubBadge: String!
     var isClubAdmin: Bool!
     
     var adminsList = [String]()
@@ -180,13 +181,11 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                 let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
                     self.promotedAMember!(true)
                     let clubRef = self.db.collection("clubs").document(self.clubID)
-                    clubRef.updateData([
-                        "admins": FieldValue.arrayRemove([self.adminsList[indexPath.item]])
-                    ])
+                    clubRef.updateData(["admins": FieldValue.arrayRemove([self.adminsList[indexPath.item]])])
                     let userRef = self.db.collection("users").document(self.adminsList[indexPath.item])
-                    userRef.updateData([
-                        "clubs": FieldValue.arrayRemove([self.clubID])
-                    ])
+                    userRef.updateData(["clubs": FieldValue.arrayRemove([self.clubID])])
+                    userRef.updateData(["badges": FieldValue.arrayRemove([self.clubBadge])])
+                    
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
                         self.getClubData()
                     })
@@ -202,12 +201,9 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                 let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
                     self.promotedAMember!(true)
                     let clubRef = self.db.collection("clubs").document(self.clubID)
-                    clubRef.updateData([
-                        "members": FieldValue.arrayUnion([self.adminsList[indexPath.item]])
-                        ])
-                    clubRef.updateData([
-                        "admins": FieldValue.arrayRemove([self.adminsList[indexPath.item]])
-                        ])
+                    clubRef.updateData(["members": FieldValue.arrayUnion([self.adminsList[indexPath.item]])])
+                    clubRef.updateData(["admins": FieldValue.arrayRemove([self.adminsList[indexPath.item]])])
+                    
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
                         self.getClubData()
                     })
@@ -235,12 +231,9 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                 let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default) { (action:UIAlertAction) in
                     self.promotedAMember!(true)
                     let clubRef = self.db.collection("clubs").document(self.clubID)
-                    clubRef.updateData([
-                        "members": FieldValue.arrayRemove([self.membersList[indexPath.item]])
-                        ])
-                    clubRef.updateData([
-                        "admins": FieldValue.arrayUnion([self.membersList[indexPath.item]])
-                        ])
+                    clubRef.updateData(["members": FieldValue.arrayRemove([self.membersList[indexPath.item]])])
+                    clubRef.updateData(["admins": FieldValue.arrayUnion([self.membersList[indexPath.item]])])
+                    
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
                         self.getClubData()
                     })
@@ -256,13 +249,11 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                 let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
                     self.promotedAMember!(true)
                     let clubRef = self.db.collection("clubs").document(self.clubID)
-                    clubRef.updateData([
-                        "members": FieldValue.arrayRemove([self.membersList[indexPath.item]])
-                    ])
+                    clubRef.updateData(["members": FieldValue.arrayRemove([self.membersList[indexPath.item]])])
                     let userRef = self.db.collection("users").document(self.membersList[indexPath.item])
-                    userRef.updateData([
-                        "clubs": FieldValue.arrayRemove([self.clubID])
-                    ])
+                    userRef.updateData(["clubs": FieldValue.arrayRemove([self.clubID])])
+                    userRef.updateData(["badges": FieldValue.arrayRemove([self.clubBadge])])
+                    
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
                         self.getClubData()
                     })

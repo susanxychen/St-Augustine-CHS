@@ -148,9 +148,39 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
                             let userRef = self.db.collection("users").document(snap.documents[0].documentID)
                             userRef.updateData([
                                 "badges": FieldValue.arrayUnion([self.badgeID])
-                                ])
-                            print("successfuly gave badge")
-                            self.dismiss(animated: true, completion: nil)
+                            ])
+                            
+                            self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                                let uDoc: DocumentSnapshot
+                                do {
+                                    try uDoc = transaction.getDocument(userRef)
+                                } catch let fetchError as NSError {
+                                    errorPointer?.pointee = fetchError
+                                    return nil
+                                }
+                                
+                                guard let oldPoints = uDoc.data()?["points"] as? Int else {
+                                    let error = NSError(
+                                        domain: "AppErrorDomain",
+                                        code: -1,
+                                        userInfo: [
+                                            NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+                                        ]
+                                    )
+                                    errorPointer?.pointee = error
+                                    return nil
+                                }
+                                transaction.updateData(["points": oldPoints + 10], forDocument: userRef)
+                                return nil
+                            }, completion: { (object, err) in
+                                if let error = err {
+                                    print("Transaction failed: \(error)")
+                                } else {
+                                    print("Transaction successfully committed!")
+                                    print("successfuly gave badge")
+                                    self.dismiss(animated: true, completion: nil)
+                                }
+                            })
                         } else {
                             let alert = UIAlertController(title: "Error in giving badges", message: "No user found with \(email)", preferredStyle: .alert)
                             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (alert) in
