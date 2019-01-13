@@ -114,7 +114,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                 supervotedIndex = indexPath.item
                 selectedSuperSongID = voteData.songsVoted[indexPath.item][4] as? String
                 supervoteSongName.text = "Supervote: \(voteData.songsVoted[indexPath.item][1] as? String ?? "Error")"
-                supervoteDesc.text = "Super vote allows you to spend points for votes. You have \(allUserFirebaseData.data["points"] ?? "Error") points. Note it may take a few second to process your vote"
+                supervoteDesc.text = "Super vote allows you to spend points for votes. You have \(allUserFirebaseData.data["points"] ?? "Error") points."
                 supervoteView.isHidden = false
                 self.view.bringSubviewToFront(supervoteView)
                 

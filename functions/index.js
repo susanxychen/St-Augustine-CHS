@@ -13,48 +13,6 @@ const storage = new Storage();
 const settings = {timestampsInSnapshots: true};
 admin.firestore().settings(settings);
 
-
-//The Edit Votes Function
-exports.changeVote = functions.https.onCall((data, context) => {
-    const id = data.id;
-    const uservote = data.uservote;
-    //console.log('Id: ' + id + ' Vote: ' + uservote);
-
-    admin.firestore().doc('songs/' + id).get()
-    .then(snapshot => {
-        if (snapshot.exists) {
-            const songData = snapshot.data();
-            
-            //Attempt to update the database
-            let votes = songData.upvotes;
-            if (!votes) {
-                votes = 0;
-            }
-            
-            //Prevent vote from going below 0
-            if (votes === 0 && uservote < 0){
-                return snapshot.ref.set({
-                    upvotes: 0
-                }, {merge: true});
-            }
-
-            return snapshot.ref.set({
-                upvotes: votes + uservote
-            }, {merge: true});
-            
-        } else {
-            console.log('id doesnt exist')
-            response.send('Song Doesnt exist')
-            throw new Error('Song doesn\'t Exist')
-        }
-    })
-    .catch(error => {
-        //handle the error
-        console.log(error);
-        response.status(500).send(error);
-    });
-});
-
 // const gmailEmail = functions.config().gmail.email;
 // const gmailPassword = functions.config().gmail.password;
 // const mailTransport = nodemailer.createTransport({
@@ -74,6 +32,7 @@ exports.sendEmailToAdmins = functions.https.onCall((data, context) => {
     //Convert ids to emails
     for (let i = 0; i < adminIDArr.length; i++){
         admin.firestore().doc('users/' + adminIDArr[i]).get()
+        // eslint-disable-next-line no-loop-func
         .then(doc => {
             if (!doc.exists) {
                 console.log('No such document!');
@@ -91,7 +50,7 @@ exports.sendEmailToAdmins = functions.https.onCall((data, context) => {
                 });
                     
                 var mailOptions = {
-                    from: '"The App Team" <sachsappteam@gmail.com>',
+                    from: '"St. Augustine App" <sachsappteam@gmail.com>',
                     to: theAdminEmail,
                     subject: clubName + ' Join Request',
                     text: userEmail + ' would like to join ' + clubName
@@ -109,81 +68,12 @@ exports.sendEmailToAdmins = functions.https.onCall((data, context) => {
                 return theAdminEmail;
             }
         })
+        // eslint-disable-next-line no-loop-func
         .catch(err => {
             console.log('Error getting document', err);
         });
     }
 });
-
-// exports.changeSpiritPointsHTTP = functions.https.onRequest((request, response) => {
-//     const grade = "11";
-//     const change = -20;
-
-//     admin.firestore().doc('info/spiritPoints').get()
-//     .then(snapshot => {
-//         if (snapshot.exists) {
-//             const spiritData = snapshot.data();
-//             let points;
-
-//             //Get the points of each grade
-//             switch(grade) {
-//                 case "9":
-//                     points = spiritData.nine;
-//                     break;
-//                 case "10":
-//                     points = spiritData.ten;
-//                     break;
-//                 case "11":
-//                     points = spiritData.eleven;
-//                     break;
-//                 case "12":
-//                     points = spiritData.twelve;
-//                     break;
-//             }
-
-//             //Attempt to update the database
-//             if (!points) {
-//                 response.send('Cannot get grade points');
-//                 throw new Error('Cannot Get Points');
-//             } else {
-//                 //Set the points of each grade
-//                 switch(grade){
-//                     case "9":
-//                         response.send('success 9!');
-//                         return snapshot.ref.set({
-//                             nine: points + change
-//                         }, {merge: true});
-//                     case "10":
-//                         response.send('success 10!');
-//                         return snapshot.ref.set({
-//                             ten: points + change
-//                         }, {merge: true});
-//                     case "11":
-//                         response.send('success 11!');
-//                         return snapshot.ref.set({
-//                             eleven: points + change
-//                         }, {merge: true});
-//                     case "12":
-//                         response.send('success 12!');
-//                         return snapshot.ref.set({
-//                             twelve: points + change
-//                         }, {merge: true});
-//                     default:
-//                         throw new Error('Cannot find grade');
-//                 }
-//             }
-//         } else {
-//             console.log('spirit doesnt exist');
-//             response.send('Cannot find spirit points');
-//             throw new Error('spirit doesnt exist');
-//         }
-//     })
-//     .catch(error => {
-//         //handle the error
-//         console.log(error);
-//         response.status(500).send(error);
-//     });
-// });
 
 exports.deleteTopSongs = functions.https.onRequest((request, response) => {
     var songsRef = admin.firestore().collection('songs');
@@ -207,7 +97,7 @@ exports.deleteTopSongs = functions.https.onRequest((request, response) => {
             dates.push(date);
         });
 
-        if (ids.length > 3) {
+        if (ids.length >= 3) {
             var max = [0,0,0];
             var maxIDs = ['error','error','error'];
 
@@ -245,9 +135,16 @@ exports.deleteTopSongs = functions.https.onRequest((request, response) => {
 
             response.send(oldSongIds + ' ' + maxIDs);
             return oldSongIds;
+        } else if (ids.length > 0) {
+            //Just delete everything
+            for (let i = 0; i < ids.length; i++){
+                admin.firestore().collection('songs').doc(ids[i]).delete();
+            }
+            response.send('deleted last songs');
+            return 'deleted last songs';
         } else {
-            response.send('not enough songs');
-            return 'not enough songs';
+            response.send('no songs at all');
+            return 'no songs at all';
         }
     })
     .catch(error => {
@@ -364,3 +261,44 @@ exports.getDayNumber = functions.https.onRequest((request, response) => {
         console.log("Error: " + err.message);
     });
 });
+
+// //The Edit Votes Function
+// exports.changeVote = functions.https.onCall((data, context) => {
+//     const id = data.id;
+//     const uservote = data.uservote;
+//     //console.log('Id: ' + id + ' Vote: ' + uservote);
+
+//     admin.firestore().doc('songs/' + id).get()
+//     .then(snapshot => {
+//         if (snapshot.exists) {
+//             const songData = snapshot.data();
+            
+//             //Attempt to update the database
+//             let votes = songData.upvotes;
+//             if (!votes) {
+//                 votes = 0;
+//             }
+            
+//             //Prevent vote from going below 0
+//             if (votes === 0 && uservote < 0){
+//                 return snapshot.ref.set({
+//                     upvotes: 0
+//                 }, {merge: true});
+//             }
+
+//             return snapshot.ref.set({
+//                 upvotes: votes + uservote
+//             }, {merge: true});
+            
+//         } else {
+//             console.log('id doesnt exist')
+//             response.send('Song Doesnt exist')
+//             throw new Error('Song doesn\'t Exist')
+//         }
+//     })
+//     .catch(error => {
+//         //handle the error
+//         console.log(error);
+//         response.status(500).send(error);
+//     });
+// });

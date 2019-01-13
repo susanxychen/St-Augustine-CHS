@@ -12,7 +12,7 @@ import Crashlytics
 
 class socialController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    //User Data
+    //User Data (including both you and other people
     var userData = [String:Any]()
     var userCourses = [String]()
     var userClubNames = [String]()
@@ -575,16 +575,10 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                         self.theOtherPersonsClasses = ["hey","something","went","wrong","here","courses","got","error"]
                                     }
                                     
-                                    //Fail safe just incase the courses aren't 8
-                                    if self.userCourses.count != 8{
-                                        print("oh shit we have to fix")
-                                        self.userCourses = ["hey","something","went","wrong","here","courses","got","error"]
-                                    }
-                                    
                                     //Day 1 Only uploaded
                                     self.numOfSameCourses = 0
-                                    for i in 0...self.userCourses.count - 1 {
-                                        if self.theOtherPersonsClasses[i] == self.userCourses[i] {
+                                    for i in 0...(allUserFirebaseData.data["classes"] as! [String]).count - 1 {
+                                        if self.theOtherPersonsClasses[i] == (allUserFirebaseData.data["classes"] as! [String])[i] {
                                             self.numOfSameCourses += 1
                                         }
                                     }

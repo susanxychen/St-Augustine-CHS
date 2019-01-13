@@ -88,105 +88,89 @@ class suggestASongController: UIViewController {
         }
         
         let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default) { (action:UIAlertAction) in
-            var iAmConneted = false
-            let connectedRef = Database.database().reference(withPath: ".info/connected")
-            connectedRef.observe(.value, with: { snapshot in
-                if let connected = snapshot.value as? Bool, connected {
-                    print("Connected")
-                    iAmConneted = true
+            //Check to see if user is broke
+            if allUserFirebaseData.data["points"] as? Int ?? 0 >= 10 {
+                let artist = self.artistName.text
+                let song = self.songName.text
+                let id = self.randomString(length: 20)
+                
+                var valid = true
+                
+                //Disallow empty strings
+                if artist == "" || song == "" {
+                    valid = false
+                    let alert = UIAlertController(title: "Error", message: "Fill in both artist name and song name", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                    alert.addAction(okAction)
+                    self.present(alert, animated: true, completion: nil)
+                }
+                
+                if valid {
+                    self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                     
-                    let artist = self.artistName.text
-                    let song = self.songName.text
-                    let id = self.randomString(length: 20)
+                    let user = Auth.auth().currentUser
                     
-                    var valid = true
-                    
-                    //Disallow empty strings
-                    if artist == "" || song == "" {
-                        valid = false
-                        let alert = UIAlertController(title: "Error", message: "Fill in both artist name and song name", preferredStyle: .alert)
-                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                        alert.addAction(okAction)
-                        self.present(alert, animated: true, completion: nil)
-                    }
-                    
-                    if valid {
-                        self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    //Take away your points and only upload the song if taken away points
+                    self.db.collection("users").document((user?.uid)!).setData([
+                        "points": (allUserFirebaseData.data["points"] as! Int) - 10
+                    ], mergeFields: ["points"]) { (err) in
+                        if let err = err {
+                            print("Error writing document: \(err)")
+                            let alert = UIAlertController(title: "Error in retrieveing songs", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                            alert.addAction(okAction)
+                            self.present(alert, animated: true, completion: nil)
+                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                        }
                         
-                        let user = Auth.auth().currentUser
-                        
-                        //Take away your points and only upload the song if taken away points
-                        self.db.collection("users").document((user?.uid)!).setData([
-                            "points": (allUserFirebaseData.data["points"] as! Int) - 10
-                        ], mergeFields: ["points"]) { (err) in
+                        self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
                             if let err = err {
                                 print("Error writing document: \(err)")
-                                let alert = UIAlertController(title: "Error in retrieveing songs", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                                let alert = UIAlertController(title: "Error in retrieveing users", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
                                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                                 alert.addAction(okAction)
                                 self.present(alert, animated: true, completion: nil)
                                 self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                             }
                             
-                            self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
-                                if let err = err {
-                                    print("Error writing document: \(err)")
-                                    let alert = UIAlertController(title: "Error in retrieveing users", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
-                                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                                    alert.addAction(okAction)
-                                    self.present(alert, animated: true, completion: nil)
-                                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-                                }
+                            if let docSnapshot = docSnapshot {
+                                allUserFirebaseData.data = docSnapshot.data()!
                                 
-                                if let docSnapshot = docSnapshot {
-                                    allUserFirebaseData.data = docSnapshot.data()!
-                                    
-                                    //Add the song
-                                    self.db.collection("songs").document(id).setData([
-                                        "artist": artist as Any,
-                                        "date": Date(),
-                                        "name": song as Any,
-                                        "suggestor": Auth.auth().currentUser?.uid as Any,
-                                        "upvotes": 0
-                                    ]) { (err) in
-                                        if let err = err {
-                                            print("Error writing document: \(err)")
-                                            let alert = UIAlertController(title: "Error in retrieveing songs", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
-                                            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                                            alert.addAction(okAction)
-                                            self.present(alert, animated: true, completion: nil)
-                                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-                                        } else {
-                                            print("Document successfully written!")
-                                            self.onDoneBlock!(true)
-                                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-                                            self.dismiss(animated: true, completion: nil)
-                                        }
+                                //Add the song
+                                self.db.collection("songs").document(id).setData([
+                                    "artist": artist as Any,
+                                    "date": Date(),
+                                    "name": song as Any,
+                                    "suggestor": Auth.auth().currentUser?.uid as Any,
+                                    "upvotes": 0
+                                ]) { (err) in
+                                    if let err = err {
+                                        print("Error writing document: \(err)")
+                                        let alert = UIAlertController(title: "Error in retrieveing songs", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                                        alert.addAction(okAction)
+                                        self.present(alert, animated: true, completion: nil)
+                                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                    } else {
+                                        print("Document successfully written!")
+                                        self.onDoneBlock!(true)
+                                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                        self.dismiss(animated: true, completion: nil)
                                     }
                                 }
                             }
                         }
                     }
-                } else {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
-                        print(iAmConneted)
-                        if !iAmConneted{
-                            print("Not connected")
-                            let alert = UIAlertController(title: "Error", message: "You are not connected to the internet", preferredStyle: .alert)
-                            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                            alert.addAction(okAction)
-                            self.present(alert, animated: true, completion: nil)
-                            self.therequestbutton.isEnabled = false
-                        }
-                    }
                 }
-            })
+            } else {
+                let alert = UIAlertController(title: "Error", message: "You don't have enough points to request a song :(", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK...", style: .default, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+            }
         }
-        
         alert.addAction(confirmAction)
         alert.addAction(cancelAction)
-        
-        // 4. Present the alert.
         self.present(alert, animated: true, completion: nil)
         
     }

@@ -84,7 +84,7 @@ class changeCoursesController: UIViewController {
         hideKeyboardWhenTappedAround()
         
         showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
-        db.collection("info").document("validCourses").getDocument { (snap, err) in
+        db.collection("info").document("courses").getDocument { (snap, err) in
             if let error = err {
                 let alert = UIAlertController(title: "Error in getting course codes", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -94,7 +94,7 @@ class changeCoursesController: UIViewController {
             
             if let snap = snap {
                 let data = snap.data()!
-                self.coursesToCheck = data["validCourses"] as! [String]
+                self.coursesToCheck = data["courses"] as! [String]
                 self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
             }
         }
@@ -121,53 +121,26 @@ class changeCoursesController: UIViewController {
     @IBAction func updateButton(_ sender: Any) {
         print("wow i am going next")
         var validCourses = true
-        print(coursesToCheck)
         
         //Checking for invalid courses
         for course in allTextFields {
-            //The course
-            //let temp = Array(course.text!)
-            //print("Course: \(temp)")
-            //print(course.text!)
-            
-            //Allow spare to be written and don't check the below stuff
-            if course.text?.uppercased() == "SPARE" {
-                course.text = course.text?.uppercased()
-            }
-            
             //Clear all leading and trailing whitespaces
             let trimmedString = course.text!.trimmingCharacters(in: .whitespaces)
             course.text = trimmedString
             
-            //Check to see if the course subject is valid
-            let theCourse = course.text!
-            if !(coursesToCheck.contains(theCourse)) {
-                print("invalid course: " + theCourse)
-                validCourses = false
-                break
+            //Allow spare to be written and don't check the below stuff
+            if course.text?.uppercased() == "SPARE" {
+                course.text = course.text?.uppercased()
+            } else {
+                //Check to see if the course subject is valid
+                let theCourse = String(course.text!.prefix(6))
+                
+                if !(coursesToCheck.contains(theCourse)) {
+                    print("invalid course: " + theCourse)
+                    validCourses = false
+                    break
+                }
             }
-            
-//                //Not the proper length course code
-//            else if course.text?.count != 7 {
-//                print("not proper length")
-//                validCourses = false
-//                break
-//            } else if !(temp[3] == "1" || temp[3] == "2" || temp[3] == "3" || temp[3] == "4"){
-//                //grade is not number
-//                print("not a grade")
-//                validCourses = false
-//                break
-//            } else if !(temp[4] == "D" || temp[4] == "O" || temp[4] == "U" || temp[4] == "M" || temp[4] == "C" || temp[4] == "A") {
-//                //not a course type
-//                print("not a course type")
-//                validCourses = false
-//                break
-//            } else if !(temp[5] == "1" || temp[5] == "E") {
-//                //Last part is not a 1 or an E
-//                print("invalid last")
-//                validCourses = false
-//                break
-//            }
         }
         
         if validCourses {
