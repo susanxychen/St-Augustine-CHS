@@ -29,9 +29,9 @@ class classesDetailsController: UIViewController, UICollectionViewDataSource, UI
         super.viewDidLoad()
         print("The classes: \(classes)")
         
-        semester1Label.textColor = DefaultColours.primaryColor
-        semester2Label.textColor = DefaultColours.primaryColor
-        dayCourseLabel.textColor = DefaultColours.darkerPrimary
+        semester1Label.textColor = Defaults.primaryColor
+        semester2Label.textColor = Defaults.primaryColor
+        dayCourseLabel.textColor = Defaults.darkerPrimary
         
         if viewingYourself {
             //create a new button
@@ -66,7 +66,7 @@ class classesDetailsController: UIViewController, UICollectionViewDataSource, UI
             
             //If same class, highlight
             if (!viewingYourself && classes[indexPath.item] == yourClasses[indexPath.item]) {
-                sem1Cell.theClass.textColor = DefaultColours.accentColor
+                sem1Cell.theClass.textColor = Defaults.accentColor
             }
             
             return sem1Cell
@@ -75,7 +75,7 @@ class classesDetailsController: UIViewController, UICollectionViewDataSource, UI
             sem2Cell.theClass.text = classes[indexPath.item + 4]
             
             if (!viewingYourself && classes[indexPath.item + 4] == yourClasses[indexPath.item + 4]) {
-                sem2Cell.theClass.textColor = DefaultColours.accentColor
+                sem2Cell.theClass.textColor = Defaults.accentColor
             }
             
             return sem2Cell

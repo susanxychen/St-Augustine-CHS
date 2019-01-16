@@ -57,10 +57,10 @@ class spiritMeterController: UIViewController {
         // [END setup]
         db = Firestore.firestore()
         
-        nineBar.tintColor = DefaultColours.accentColor
-        tenBar.tintColor = DefaultColours.accentColor
-        elevenBar.tintColor = DefaultColours.accentColor
-        twelveBar.tintColor = DefaultColours.accentColor
+        nineBar.tintColor = Defaults.accentColor
+        tenBar.tintColor = Defaults.accentColor
+        elevenBar.tintColor = Defaults.accentColor
+        twelveBar.tintColor = Defaults.accentColor
         
         //Format the progress bars
         let transform = CGAffineTransform(scaleX: 1.0, y: 10.0)

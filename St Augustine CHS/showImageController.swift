@@ -47,8 +47,8 @@ class showImageController: UIViewController {
         theImage.image = inputtedImage
         theLabel.text = inputtedText
         leftButton.isHidden = !showLeftButton
-        rightButton.tintColor = DefaultColours.accentColor
-        leftButton.tintColor = DefaultColours.accentColor
+        rightButton.tintColor = Defaults.accentColor
+        leftButton.tintColor = Defaults.accentColor
     }
     
     @IBAction func leftButtonPresssed(_ sender: Any) {

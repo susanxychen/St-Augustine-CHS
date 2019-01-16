@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import Floaty
 
 class clubFinalController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     //Filler
@@ -19,6 +20,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     //The Database
     var db: Firestore!
     var docRef: DocumentReference!
+    
+    @IBOutlet weak var clubScrollView: UIScrollView!
     
     //The Club Data
     var clubData = [String:Any]()
@@ -119,10 +122,10 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         getClubSettingsInfo()
         getBadgeDocs()
         
-        clubNameTextView.backgroundColor = DefaultColours.primaryColor
-        clubDescTextView.textColor = DefaultColours.primaryColor
-        announcementLabel.textColor = DefaultColours.primaryColor
-        badgeLabel.textColor = DefaultColours.primaryColor
+        clubNameTextView.backgroundColor = Defaults.primaryColor
+        clubDescTextView.textColor = Defaults.primaryColor
+        announcementLabel.textColor = Defaults.primaryColor
+        badgeLabel.textColor = Defaults.primaryColor
         
         bannerImageView.image = banImage
         clubNameTextView.text = clubData["name"] as? String ?? "error"
@@ -146,7 +149,6 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             announcementLabel.isHidden = true
             anncCollectionView.isHidden = true
         }
-        
     }
     
     func getClubSettingsInfo(){
@@ -190,6 +192,25 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             //lpgr.delegate = self as? UIGestureRecognizerDelegate
             lpgr.delaysTouchesBegan = true
             self.anncCollectionView.addGestureRecognizer(lpgr)
+            
+            //Add floaty
+            let floaty = Floaty()
+            floaty.overlayColor = UIColor.clear
+            floaty.addItem("Add Announcement", icon: UIImage(named: "megaphone")!, handler: { item in
+                print("nice")
+                print("add")
+                self.isEditingAnnc = false
+                self.segueNum = 1
+                self.performSegue(withIdentifier: "addAnnc", sender: self.addAnncButton)
+                floaty.close()
+            })
+            floaty.items.forEach {
+                $0.titleLabel.font = UIFont(name: "Scada-Regular", size: 17)
+                $0.titleLabel.textColor = Defaults.primaryColor
+            }
+            floaty.openAnimationType = .slideLeft
+            floaty.sticky = true
+            clubScrollView.addSubview(floaty)
         } else {
             createBadgeButton.isHidden = true
             constraintBetweenBadgeViewAndAnnouncements.constant = 12
@@ -338,12 +359,12 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                 self.segueNum = 0
                 self.performSegue(withIdentifier: "editClubDetails", sender: self.editClubDetailsButton)
             }))
-            actionSheet.addAction(UIAlertAction(title: "Add Announcement", style: .default, handler: { (action:UIAlertAction) in
-                print("add")
-                self.isEditingAnnc = false
-                self.segueNum = 1
-                self.performSegue(withIdentifier: "addAnnc", sender: self.addAnncButton)
-            }))
+//            actionSheet.addAction(UIAlertAction(title: "Add Announcement", style: .default, handler: { (action:UIAlertAction) in
+//                print("add")
+//                self.isEditingAnnc = false
+//                self.segueNum = 1
+//                self.performSegue(withIdentifier: "addAnnc", sender: self.addAnncButton)
+//            }))
             actionSheet.addAction(UIAlertAction(title: "View Pending List", style: .default, handler: { (action:UIAlertAction) in
                 print("pending")
                 self.segueNum = 2
@@ -1041,8 +1062,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                 cell.anncTitle.centerVertically()
                 cell.anncText.centerVertically()
                 
-                cell.anncDate.backgroundColor = DefaultColours.primaryColor
-                cell.anncTitle.textColor = DefaultColours.primaryColor
+                cell.anncDate.backgroundColor = Defaults.primaryColor
+                cell.anncTitle.textColor = Defaults.primaryColor
                 
                 //Set up images
                 //Use already downloaded images

@@ -49,9 +49,9 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
         badgeImageView.layer.cornerRadius = badgeImageView.frame.width / 2
         badgeImageView.clipsToBounds = true
         
-        statusBarView.backgroundColor = DefaultColours.darkerPrimary
-        topBarView.backgroundColor = DefaultColours.primaryColor
-        descriptionTxtFld.tintColor = DefaultColours.accentColor
+        statusBarView.backgroundColor = Defaults.darkerPrimary
+        topBarView.backgroundColor = Defaults.primaryColor
+        descriptionTxtFld.tintColor = Defaults.accentColor
     }
     
     @IBAction func chooseImagePressed(_ sender: Any) {

@@ -38,10 +38,10 @@ class settingsController: UIViewController {
         //assign button to navigationbar
         self.navigationItem.rightBarButtonItem = barButton
         
-        changePrivacySettingsButton.setTitleColor(DefaultColours.primaryColor, for: .normal)
-        clearCacheButton.setTitleColor(DefaultColours.primaryColor, for: .normal)
-        LogOutButton.setTitleColor(DefaultColours.primaryColor, for: .normal)
-        clearKeys.setTitleColor(DefaultColours.primaryColor, for: .normal)
+        changePrivacySettingsButton.setTitleColor(Defaults.primaryColor, for: .normal)
+        clearCacheButton.setTitleColor(Defaults.primaryColor, for: .normal)
+        LogOutButton.setTitleColor(Defaults.primaryColor, for: .normal)
+        clearKeys.setTitleColor(Defaults.primaryColor, for: .normal)
         
         cacheSizeLabel.text = sizeOfDocumentDirectory()
     }

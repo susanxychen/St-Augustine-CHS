@@ -40,8 +40,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
     var refreshControl: UIRefreshControl?
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    
-    let overlayView = UIView(frame: UIScreen.main.bounds)
+    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
     
     //Showing Personal Clubs
     var viewingPersonalClubs: Bool!
@@ -75,7 +74,6 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                 }
             }
         })
-        overlayView.frame = UIApplication.shared.keyWindow!.frame
         
         clubListDidUpdateClubDetails.clubAdminUpdatedData = false
         
@@ -501,8 +499,8 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
         cell.layer.masksToBounds = false
         cell.layer.shadowPath = UIBezierPath(roundedRect:cell.bounds, cornerRadius:cell.contentView.layer.cornerRadius).cgPath
         
-        cell.backgroundColor = DefaultColours.primaryColor
-        cell.name.backgroundColor = DefaultColours.primaryColor
+        cell.backgroundColor = Defaults.primaryColor
+        cell.name.backgroundColor = Defaults.primaryColor
         
         if viewingPersonalClubs {
             cell.name.text = personalClubNames[indexPath.item]

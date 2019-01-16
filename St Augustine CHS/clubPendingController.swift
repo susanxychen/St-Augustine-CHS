@@ -99,7 +99,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                         errorPointer?.pointee = error
                         return nil
                     }
-                    transaction.updateData(["points": oldPoints + 10], forDocument: userRef)
+                    transaction.updateData(["points": oldPoints + Defaults.joiningClub], forDocument: userRef)
                     return nil
                 }, completion: { (object, err) in
                     if let error = err {

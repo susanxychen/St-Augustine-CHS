@@ -60,8 +60,8 @@ class updatePrivacyController: UIViewController {
         // [END setup]
         db = Firestore.firestore()
         
-        statusBarView.backgroundColor = DefaultColours.darkerPrimary
-        topBarView.backgroundColor = DefaultColours.primaryColor
+        statusBarView.backgroundColor = Defaults.darkerPrimary
+        topBarView.backgroundColor = Defaults.primaryColor
         
         showClubsSwitch.setOn(allUserFirebaseData.data["showClubs"] as! Bool, animated: true)
         showCoursesSwitch.setOn(allUserFirebaseData.data["showClasses"] as! Bool, animated: true)

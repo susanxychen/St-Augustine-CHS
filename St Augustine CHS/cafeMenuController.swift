@@ -140,7 +140,7 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
         
         cell.foodLabel.text = theActualMenu[indexPath.item][0] as? String ?? "Error"
         cell.priceLabel.text = ("$" + (formatter.string(from: priceNSNumber) ?? "Error"))
-        cell.priceLabel.textColor = DefaultColours.primaryColor
+        cell.priceLabel.textColor = Defaults.primaryColor
         
         return cell
     }

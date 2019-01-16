@@ -76,8 +76,8 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
             self.adminsCollectionView.addGestureRecognizer(lpgr)
         }
         
-        adminLabel.textColor = DefaultColours.primaryColor
-        memberLabel.textColor = DefaultColours.primaryColor
+        adminLabel.textColor = Defaults.primaryColor
+        memberLabel.textColor = Defaults.primaryColor
         
         getNames()
     }

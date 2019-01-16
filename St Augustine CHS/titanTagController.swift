@@ -121,7 +121,7 @@ class titanTagController: UIViewController {
         
         // Change the color using CIFilter
         let colorParameters = [
-            "inputColor0": CIColor(color: DefaultColours.accentColor), // Foreground
+            "inputColor0": CIColor(color: Defaults.accentColor), // Foreground
             "inputColor1": CIColor(color: UIColor.clear) // Background
         ]
         let colored = output.applyingFilter("CIFalseColor", parameters: colorParameters)

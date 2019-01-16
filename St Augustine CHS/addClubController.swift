@@ -81,12 +81,12 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
         self.hideKeyboardWhenTappedAround()
         
         //Colours
-        statusBarView.backgroundColor = DefaultColours.darkerPrimary
-        topBarView.backgroundColor = DefaultColours.primaryColor
-        joinClubSettingsSegmentControl.tintColor = DefaultColours.primaryColor
-        clubNameTxtView.backgroundColor = DefaultColours.primaryColor
-        clubDescTxtView.textColor = DefaultColours.primaryColor
-        clubDescTxtView.tintColor = DefaultColours.accentColor
+        statusBarView.backgroundColor = Defaults.darkerPrimary
+        topBarView.backgroundColor = Defaults.primaryColor
+        joinClubSettingsSegmentControl.tintColor = Defaults.primaryColor
+        clubNameTxtView.backgroundColor = Defaults.primaryColor
+        clubDescTxtView.textColor = Defaults.primaryColor
+        clubDescTxtView.tintColor = Defaults.accentColor
     }
     
     //***************************CLUB BANNER***************************

@@ -43,8 +43,8 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
         
         print(badgeID!)
         
-        statusBarView.backgroundColor = DefaultColours.darkerPrimary
-        topBarView.backgroundColor = DefaultColours.primaryColor
+        statusBarView.backgroundColor = Defaults.darkerPrimary
+        topBarView.backgroundColor = Defaults.primaryColor
         
         if allUserFirebaseData.data["status"] as! Int == 2 {
             theTestLabel.isHidden = false

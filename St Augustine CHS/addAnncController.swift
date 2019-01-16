@@ -82,12 +82,12 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
         print(clubName)
         
         //Colours
-        statusBarView.backgroundColor = DefaultColours.darkerPrimary
-        topBarView.backgroundColor = DefaultColours.primaryColor
-        createNewAnncInstruction.textColor = DefaultColours.primaryColor
-        titleTxtFld.tintColor = DefaultColours.accentColor
-        contentTxtFld.tintColor = DefaultColours.accentColor
-        removeImage.setTitleColor(DefaultColours.primaryColor, for: .normal)
+        statusBarView.backgroundColor = Defaults.darkerPrimary
+        topBarView.backgroundColor = Defaults.primaryColor
+        createNewAnncInstruction.textColor = Defaults.primaryColor
+        titleTxtFld.tintColor = Defaults.accentColor
+        contentTxtFld.tintColor = Defaults.accentColor
+        removeImage.setTitleColor(Defaults.primaryColor, for: .normal)
         
         
         

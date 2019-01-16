@@ -42,8 +42,8 @@ class SignInPrefController: UIViewController {
         // [END setup]
         db = Firestore.firestore()
         
-        statusBarView.backgroundColor = DefaultColours.darkerPrimary
-        topBarView.backgroundColor = DefaultColours.primaryColor
+        statusBarView.backgroundColor = Defaults.darkerPrimary
+        topBarView.backgroundColor = Defaults.primaryColor
         
         print(picChosen)
         print(courses)
@@ -100,7 +100,7 @@ class SignInPrefController: UIViewController {
             "gradYear": gradYear!,
             "name": user?.displayName as Any,
             "picsOwned": [picChosen],
-            "points": 0,
+            "points": Defaults.startingPoints,
             "profilePic": picChosen,
             "showClasses": showCourses,
             "showClubs": showClubs,

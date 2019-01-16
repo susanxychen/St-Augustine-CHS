@@ -123,22 +123,22 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         
         //*************************SET UP THE USER PROFILE DATA*************************
         if allUserFirebaseData.data["status"] as! Int == 2 {
-            self.profileViewBackground.backgroundColor = DefaultColours.statusTwoPrimary
-            self.usersFullName.textColor = DefaultColours.accentColor
+            self.profileViewBackground.backgroundColor = Defaults.statusTwoPrimary
+            self.usersFullName.textColor = Defaults.accentColor
         } else {
-            self.profileViewBackground.backgroundColor = DefaultColours.primaryColor
-            self.usersFullName.textColor = DefaultColours.primaryColor
+            self.profileViewBackground.backgroundColor = Defaults.primaryColor
+            self.usersFullName.textColor = Defaults.primaryColor
         }
         
         badgesCollectionView.alwaysBounceHorizontal = true
         
         //Colors
-        searchBarView.backgroundColor = DefaultColours.primaryColor
-        searchBar.tintColor = DefaultColours.accentColor
-        lineBetweenPlateAndBadges.backgroundColor = DefaultColours.primaryColor
-        badgesLabel.textColor = DefaultColours.primaryColor
-        lineBetweenBadgesandClubs.backgroundColor = DefaultColours.primaryColor
-        clubsLabel.textColor = DefaultColours.primaryColor
+        searchBarView.backgroundColor = Defaults.primaryColor
+        searchBar.tintColor = Defaults.accentColor
+        lineBetweenPlateAndBadges.backgroundColor = Defaults.primaryColor
+        badgesLabel.textColor = Defaults.primaryColor
+        lineBetweenBadgesandClubs.backgroundColor = Defaults.primaryColor
+        clubsLabel.textColor = Defaults.primaryColor
         
         //Background Shadow
         profileViewBackground.layer.shadowOpacity = 1
@@ -161,7 +161,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         //**********Classes in Common**********
         //Check if the user wants to display classes
         classesInCommon.setTitle("View Your Schedule", for: .normal)
-        classesInCommon.setTitleColor(DefaultColours.primaryColor, for: .normal)
+        classesInCommon.setTitleColor(Defaults.primaryColor, for: .normal)
         getCurrentUsersData()
     }
     
@@ -545,11 +545,11 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                 let requestedStudentData = document.data()
                                 
                                 if requestedStudentData["status"] as! Int == 2 {
-                                    self.profileViewBackground.backgroundColor = DefaultColours.statusTwoPrimary
-                                    self.usersFullName.textColor = DefaultColours.accentColor
+                                    self.profileViewBackground.backgroundColor = Defaults.statusTwoPrimary
+                                    self.usersFullName.textColor = Defaults.accentColor
                                 } else {
-                                    self.profileViewBackground.backgroundColor = DefaultColours.primaryColor
-                                    self.usersFullName.textColor = DefaultColours.primaryColor
+                                    self.profileViewBackground.backgroundColor = Defaults.primaryColor
+                                    self.usersFullName.textColor = Defaults.primaryColor
                                 }
                                 
                                 //Get the requested stuends information
@@ -678,8 +678,8 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             let clubsCell = collectionView.dequeueReusableCell(withReuseIdentifier: clubCollectionIdentifier, for: indexPath) as! socialClubsViewCell
             //This if is just to ENSURE that there will NEVER be an array out of bounds exception
             clubsCell.clubName.text = userClubNames[indexPath.item]
-            clubsCell.clubName.backgroundColor = DefaultColours.primaryColor
-            clubsCell.backgroundColor = DefaultColours.primaryColor
+            clubsCell.clubName.backgroundColor = Defaults.primaryColor
+            clubsCell.backgroundColor = Defaults.primaryColor
             
             //Makes it look prettier
             if clubsCollectionView.contentSize.height < 275 {

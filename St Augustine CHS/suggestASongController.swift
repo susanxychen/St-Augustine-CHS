@@ -64,12 +64,12 @@ class suggestASongController: UIViewController {
         db = Firestore.firestore()
         
         //colours
-        statusBarView.backgroundColor = DefaultColours.darkerPrimary
-        topBarView.backgroundColor = DefaultColours.primaryColor
-        songNameLabel.textColor = DefaultColours.primaryColor
-        songName.tintColor = DefaultColours.accentColor
-        artistNameLabel.textColor = DefaultColours.primaryColor
-        artistName.tintColor = DefaultColours.accentColor
+        statusBarView.backgroundColor = Defaults.darkerPrimary
+        topBarView.backgroundColor = Defaults.primaryColor
+        songNameLabel.textColor = Defaults.primaryColor
+        songName.tintColor = Defaults.accentColor
+        artistNameLabel.textColor = Defaults.primaryColor
+        artistName.tintColor = Defaults.accentColor
         
         hideKeyboardWhenTappedAround()
     }
@@ -81,7 +81,7 @@ class suggestASongController: UIViewController {
     
     //**********Suggest the song**********
     @IBAction func suggestPressed(_ sender: Any) {
-        let alert = UIAlertController(title: "Are you sure you want to spend 10 points to request a song? (You currently have \(allUserFirebaseData.data["points"] ?? "error") points)", message: "Songs with less than 100 votes will be removed after 2 days from the date they were requested. No refunds.\n\nAdministration will be able to see who requested what song and have the power to ban those who request inappropriate or irrelevant content. Do not spam request songs.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Are you sure you want to spend \(Defaults.requestSong) points to request a song? (You currently have \(allUserFirebaseData.data["points"] ?? "error") points)", message: "Songs with less than 100 votes will be removed after 2 days from the date they were requested. No refunds.\n\nAdministration will be able to see who requested what song and have the power to ban those who request inappropriate or irrelevant content. Do not spam request songs.", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel) { (action:UIAlertAction) in
             print("You've pressed cancel");
@@ -89,7 +89,7 @@ class suggestASongController: UIViewController {
         
         let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default) { (action:UIAlertAction) in
             //Check to see if user is broke
-            if allUserFirebaseData.data["points"] as? Int ?? 0 >= 10 {
+            if allUserFirebaseData.data["points"] as? Int ?? 0 >= Defaults.requestSong {
                 let artist = self.artistName.text
                 let song = self.songName.text
                 let id = self.randomString(length: 20)
@@ -112,7 +112,7 @@ class suggestASongController: UIViewController {
                     
                     //Take away your points and only upload the song if taken away points
                     self.db.collection("users").document((user?.uid)!).setData([
-                        "points": (allUserFirebaseData.data["points"] as! Int) - 10
+                        "points": (allUserFirebaseData.data["points"] as! Int) - Defaults.requestSong
                     ], mergeFields: ["points"]) { (err) in
                         if let err = err {
                             print("Error writing document: \(err)")

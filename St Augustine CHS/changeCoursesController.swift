@@ -102,11 +102,11 @@ class changeCoursesController: UIViewController {
         allTextFields = [s1p1,s1p2,s1p3,s1p4,s2p1,s2p2,s2p3,s2p4]
         
         //Colors
-        statusBarView.backgroundColor = DefaultColours.darkerPrimary
-        cancelOrUpdateView.backgroundColor = DefaultColours.primaryColor
+        statusBarView.backgroundColor = Defaults.darkerPrimary
+        cancelOrUpdateView.backgroundColor = Defaults.primaryColor
         
         for x in allTextFields {
-            x.tintColor = DefaultColours.accentColor
+            x.tintColor = Defaults.accentColor
         }
         
         //Set up courses

@@ -48,12 +48,10 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
         // [END setup]
         db = Firestore.firestore()
         
-        statusBarView.backgroundColor = DefaultColours.darkerPrimary
-        topBarView.backgroundColor = DefaultColours.primaryColor
+        statusBarView.backgroundColor = Defaults.darkerPrimary
+        topBarView.backgroundColor = Defaults.primaryColor
         
         showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
-        
-        var numOfPics = 0
         
         //Get the profile pictures
         db.collection("info").document("profilePics").getDocument { (snapshot, error) in
@@ -65,24 +63,29 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
                 self.present(alert, animated: true, completion: nil)
             }
             if let data = snapshot?.data() {
-                numOfPics = data["numOfFreePics"] as? Int ?? 0
+                let picRarities = data["rarities"] as! [Int]
+                var freePics = [Int]()
                 
-                print("i get here \(numOfPics))")
+                for x in 0..<picRarities.count {
+                    if picRarities[x] == 0 {
+                        freePics.append(x)
+                    }
+                }
                 
-                self.allProfileImages = [UIImage](repeating: self.fillerImage, count: numOfPics)
+                self.allProfileImages = [UIImage](repeating: self.fillerImage, count: freePics.count)
                 print(self.allProfileImages)
                 
-                for i in 0...self.allProfileImages.count-1 {
+                for imgNum in 0...self.allProfileImages.count-1 {
                     let storage = Storage.storage()
                     let storageRef = storage.reference()
                     
                     // Create a reference to the file you want to download
-                    let imgRef = storageRef.child("profilePictures/\(i).png")
+                    let imgRef = storageRef.child("profilePictures/\(freePics[imgNum]).png")
                     
                     imgRef.getMetadata { (metadata, error) in
                         if let error = error {
                             // Uh-oh, an error occurred!
-                            print("cant find image \(i)")
+                            print("cant find image \(freePics[imgNum])")
                             print(error)
                         } else {
                             // Metadata now contains the metadata for 'images/forest.jpg'
@@ -91,25 +94,25 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
                                 let updated = theMetaData["updated"]
                                 
                                 if let updated = updated {
-                                    if let savedImage = self.getSavedImage(named: "\(i)-\(updated)"){
-                                        print("already saved \(i)-\(updated)")
-                                        self.allProfileImages[i] = savedImage
+                                    if let savedImage = self.getSavedImage(named: "\(freePics[imgNum])-\(updated)"){
+                                        print("already saved \(freePics[imgNum])-\(updated)")
+                                        self.allProfileImages[imgNum] = savedImage
                                     } else {
                                         // Create a reference to the file you want to download
                                         imgRef.downloadURL { url, error in
                                             if error != nil {
                                                 //print(error)
-                                                print("cant find image \(i) + \(self.allProfileImages[i])")
-                                                self.allProfileImages[i] = self.fillerImage
+                                                print("cant find image \(freePics[imgNum])")
+                                                self.allProfileImages[imgNum] = self.fillerImage
                                             } else {
                                                 // Get the download URL
                                                 var image: UIImage?
                                                 let data = try? Data(contentsOf: url!)
                                                 if let imageData = data {
                                                     image = UIImage(data: imageData)!
-                                                    self.allProfileImages[i] = image!
-                                                    self.clearImageFolder(imageName: "\(i)-\(updated)")
-                                                    self.saveImageDocumentDirectory(image: image!, imageName: "\(i)-\(updated)")
+                                                    self.allProfileImages[imgNum] = image!
+                                                    self.clearImageFolder(imageName: "\(freePics[imgNum])-\(updated)")
+                                                    self.saveImageDocumentDirectory(image: image!, imageName: "\(freePics[imgNum])-\(updated)")
                                                 }
                                                 print("i success now")
                                             }

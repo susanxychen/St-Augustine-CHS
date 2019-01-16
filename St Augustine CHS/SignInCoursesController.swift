@@ -78,13 +78,13 @@ class SignInCoursesController: UIViewController {
             }
         }
         
-        statusBarView.backgroundColor = DefaultColours.darkerPrimary
-        topBarView.backgroundColor = DefaultColours.primaryColor
+        statusBarView.backgroundColor = Defaults.darkerPrimary
+        topBarView.backgroundColor = Defaults.primaryColor
         
         allTextFields = [s1p1TxtField,s1p2TxtField,s1p3TxtField,s1p4TxtField,s2p1TxtField,s2p2TxtField,s2p3TxtField,s2p4TxtField]
         
         for txtfld in allTextFields {
-            txtfld.tintColor = DefaultColours.accentColor
+            txtfld.tintColor = Defaults.accentColor
         }
         
         hideKeyboardWhenTappedAround()

@@ -28,7 +28,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
     
     //Data vars
     var thePicImage: UIImage!
-    var picsCosts = [Int]()
+    var picRarities = [Int]()
     
     var picsOwned = [UIImage]()
     var picsOwnedNums = [Int]()
@@ -83,9 +83,9 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
         // [END setup]
         db = Firestore.firestore()
         
-        topStatusBar.backgroundColor = DefaultColours.darkerPrimary
-        cancelOrUpdateView.backgroundColor = DefaultColours.primaryColor
-        lineBetweenOwnedAndAll.backgroundColor = DefaultColours.primaryColor
+        topStatusBar.backgroundColor = Defaults.darkerPrimary
+        cancelOrUpdateView.backgroundColor = Defaults.primaryColor
+        lineBetweenOwnedAndAll.backgroundColor = Defaults.primaryColor
         
         //Set up the current profile image
         theProfilePic.image = thePicImage
@@ -119,7 +119,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                 self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
             }
             if let data = snapshot?.data() {
-                self.picsCosts = data["costs"] as! [Int]
+                self.picRarities = data["rarities"] as! [Int]
                 self.getAllPics()
             }
         }
@@ -127,7 +127,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
     
     func getAllPics() {
         //Get the profile pictures
-        self.picsNotOwned = [UIImage](repeating: self.fillerImage, count: picsCosts.count)
+        self.picsNotOwned = [UIImage](repeating: self.fillerImage, count: picRarities.count)
         
         //Just for safety get out of here to prevent going from 0 to -1
         if picsNotOwned.count == 0 {
@@ -139,7 +139,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
             return
         }
         
-        for i in 0...self.picsCosts.count-1 {
+        for i in 0...self.picRarities.count-1 {
             //Set up the pics not owned num array
             picsNotOwnedNums.append(i)
             
@@ -356,8 +356,10 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
             print("you switched to \(newPicChosen)")
         }
         else {
-            print("\(indexPath.item) you want to buy \(picsNotOwnedNums[indexPath.item])")
-            if allUserFirebaseData.data["points"] as! Int >= picsCosts[picsNotOwnedNums[indexPath.item]] {
+            //get the cost: Get the picture number, then get the rarity, then get the cost
+            let theCost = Defaults.picCosts[picRarities[picsNotOwnedNums[indexPath.item]]]
+            
+            if allUserFirebaseData.data["points"] as! Int >= theCost {
                 
                 let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
                 let imageVC: showImageController = storyboard.instantiateViewController(withIdentifier: "showImage") as! showImageController
@@ -367,7 +369,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                 imageVC.customizingButtonActions = 0
                 
                 imageVC.inputtedImage = picsNotOwned[indexPath.item]
-                imageVC.inputtedText = "Are you sure you want to buy this picture? You have \(allUserFirebaseData.data["points"] ?? "some amount of") points. Cost: \(picsCosts[picsNotOwnedNums[indexPath.item]]) points"
+                imageVC.inputtedText = "Are you sure you want to buy this picture? You have \(allUserFirebaseData.data["points"] ?? "some amount of") points. Cost: \(theCost) points"
                 
                 imageVC.rightButtonText = "Confirm"
                 imageVC.leftButtonText = "Cancel"
@@ -386,7 +388,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                     userRef.updateData(["picsOwned": FieldValue.arrayUnion([self.newPicChosen])])
                     
                     //Subtact the points
-                    allUserFirebaseData.data["points"] = allUserFirebaseData.data["points"] as! Int - self.picsCosts[self.picsNotOwnedNums[indexPath.item]]
+                    allUserFirebaseData.data["points"] = allUserFirebaseData.data["points"] as! Int - theCost
                     userRef.setData([
                         "profilePic" : self.newPicChosen,
                         "points" : allUserFirebaseData.data["points"] as! Int
@@ -417,7 +419,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                 imageVC.customizingButtonActions = 1
                 
                 imageVC.inputtedImage = picsNotOwned[indexPath.item]
-                imageVC.inputtedText = "You do not have enough points for this picture. Cost: \(picsCosts[picsNotOwnedNums[indexPath.item]]) points"
+                imageVC.inputtedText = "You do not have enough points for this picture. Cost: \(theCost) points"
                 
                 imageVC.rightButtonText = "OK"
                 

@@ -45,7 +45,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     var menuShowing = false
     
     //Online Data Variables
-    let dayURL = URL(string: "https://staugustinechs.netfirms.com/stadayonetwo/")
+    //let dayURL = URL(string: "https://staugustinechs.netfirms.com/stadayonetwo/")
     let newsURL = URL(string: "http://staugustinechs.ca/printable/")
     
     //Annoucment Variables
@@ -61,6 +61,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     //Refresh Variables
     var refreshControl: UIRefreshControl?
     @IBOutlet weak var homeScrollView: UIScrollView!
+    let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
+    let container: UIView = UIView()
+    let overlayView = UIView() //this one you cant do ui application frame
     
     //Database Variables
     var db: Firestore!
@@ -177,6 +180,20 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     //************************************************************************************************
     func getAllStartingInfoAfterSignIn(){
+        //Set Up
+        // [START setup]
+        let settings = FirestoreSettings()
+        settings.areTimestampsInSnapshotsEnabled = true
+        Firestore.firestore().settings = settings
+        // [END setup]
+        db = Firestore.firestore()
+        
+        //Add refresh control
+        addRefreshControl()
+        
+        overlayView.frame = UIApplication.shared.keyWindow!.frame
+        showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: overlayView)
+        
         InstanceID.instanceID().getID { (result, error) in
             if let error = error {
                 print("Error fetching remote instange ID: \(error)")
@@ -215,17 +232,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         
         homeScrollView.alwaysBounceVertical = true
         
-        //Set Up
-        // [START setup]
-        let settings = FirestoreSettings()
-        settings.areTimestampsInSnapshotsEnabled = true
-        Firestore.firestore().settings = settings
-        // [END setup]
-        db = Firestore.firestore()
-        
-        //Add refresh control
-        addRefreshControl()
-        
         //Brings the menu to the front on top of everything and make sure it is out of view
         homeView.bringSubviewToFront(menuView)
         homeView.bringSubviewToFront(tapOutOfMenuButton)
@@ -247,8 +253,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         dateToString.text = DateFormatter.localizedString(from: NSDate() as Date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
         
         //Remainin Tasks
-        dayTask()
-        //snowTask()
+        getDayNumber()
         
         //*******************SET UP USER PROFILE ON MENU*****************
         let user = Auth.auth().currentUser
@@ -257,13 +262,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //Email
         displayEmail.text = user?.email
         
-        setupRemoteConfigDefaults()
-        updateViewWithRCValues()
-        fetchRemoteConfig()
-        
         db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+            print("do i even reach in here to get the data")
             if let docSnapshot = docSnapshot {
+                print("i get the data")
                 allUserFirebaseData.data = docSnapshot.data()!
+                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                 self.hasSignedInAtLoadedAtLeastOnce = true
                 self.getPicture(i: docSnapshot.data()!["profilePic"] as? Int ?? 0)
                 self.getClubAnncs()
@@ -278,6 +282,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 })
             }
         }
+        
+        DispatchQueue.main.async {
+            self.setupRemoteConfigDefaults()
+            self.updateViewWithRCValues()
+            self.fetchRemoteConfig()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -290,10 +300,37 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func setupRemoteConfigDefaults() {
+        /*
+         static var joiningClub: Int = 300
+         static var attendingEvent: Int = 100
+         static var startingPoints: Int = 100
+         
+         static var basicPic: Int = 30
+         static var commonPic: Int = 50
+         static var rarePic: Int = 100
+         static var coolPic: Int = 200
+         static var legendaryPic: Int = 500
+         
+         static var requestSong: Int = 20
+         static var supervoteMin: Int = 10
+         static var supervoteRatio: CGFloat = 1.0
+ */
         let defaultValues = [
             "primaryColor": UIColor(hex: "#8D1230") as NSObject,
             "darkerPrimary": UIColor(hex: "#460817") as NSObject,
-            "accentColor": UIColor(hex: "#D8AF1C") as NSObject
+            "accentColor": UIColor(hex: "#D8AF1C") as NSObject,
+            "joiningClub": 300 as NSObject,
+            "attendingEvent": 100 as NSObject,
+            "startingPoints": 100 as NSObject,
+            "basicPic": 30 as NSObject,
+            "commonPic": 50 as NSObject,
+            "rarePic": 100 as NSObject,
+            "coolPic": 200 as NSObject,
+            "legendaryPic": 500 as NSObject,
+            "requestSong": 20 as NSObject,
+            "supervoteMin": 10 as NSObject,
+            "supervoteRatio": 1.0 as NSObject,
+            "maxSongs": 20 as NSObject
         ]
         RemoteConfig.remoteConfig().setDefaults(defaultValues)
     }
@@ -304,7 +341,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 print("cant get colours")
                 return
             }
-            print("yay")
+            print("yay i got rc")
             RemoteConfig.remoteConfig().activateFetched()
             self.updateViewWithRCValues()
         }
@@ -319,36 +356,49 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         
         //Only change UI colours from hex if they are EXACTLY the proper hex format
         if primary.count == 7 {
-            DefaultColours.primaryColor = UIColor(hex: primary)
+            Defaults.primaryColor = UIColor(hex: primary)
         }
         
         if darker.count == 7 {
-            DefaultColours.darkerPrimary = UIColor(hex: darker)
+            Defaults.darkerPrimary = UIColor(hex: darker)
         }
         
         if accent.count == 7 {
-            DefaultColours.accentColor = UIColor(hex: accent)
+            Defaults.accentColor = UIColor(hex: accent)
         }
         
         if statusTwo.count == 7 {
-            DefaultColours.statusTwoPrimary = UIColor(hex: statusTwo)
+            Defaults.statusTwoPrimary = UIColor(hex: statusTwo)
         }
         
-//        print(primary)
-//        print(darker)
-//        print(accent)
-//        print(statusTwo)
+        //Clubs and points
+        Defaults.joiningClub = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "joiningClub").numberValue ?? 300)
+        Defaults.attendingEvent = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "attendingEvent").numberValue ?? 100)
+        Defaults.startingPoints = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "startingPoints").numberValue ?? 100)
+        
+        //Pic costs
+        Defaults.picCosts[0] = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "basicPic").numberValue ?? 30)
+        Defaults.picCosts[1] = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "commonPic").numberValue ?? 50)
+        Defaults.picCosts[2] = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "rarePic").numberValue ?? 100)
+        Defaults.picCosts[3] = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "coolPic").numberValue ?? 200)
+        Defaults.picCosts[4] = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "legendaryPic").numberValue ?? 500)
+        
+        //Song Requests
+        Defaults.maxSongs = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "maxSongs").numberValue ?? 20)
+        Defaults.requestSong = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "requestSong").numberValue ?? 20)
+        Defaults.supervoteMin = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "supervoteMin").numberValue ?? 10)
+        Defaults.supervoteRatio = CGFloat(truncating: RemoteConfig.remoteConfig().configValue(forKey: "supervoteRatio").numberValue ?? 1.0)
         
         changeMenuControllerColours()
     }
     
     func changeMenuControllerColours() {
         //Colours
-        gradientSocialView.backgroundColor = DefaultColours.primaryColor
-        dateAndDayView.backgroundColor = DefaultColours.accentColor
-        navigationController?.navigationBar.barTintColor = DefaultColours.primaryColor
+        gradientSocialView.backgroundColor = Defaults.primaryColor
+        dateAndDayView.backgroundColor = Defaults.accentColor
+        navigationController?.navigationBar.barTintColor = Defaults.primaryColor
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-        clubAnnouncementsLabel.textColor = DefaultColours.primaryColor
+        clubAnnouncementsLabel.textColor = Defaults.primaryColor
     }
     
     func updateDatabaseWithNewRemoteID() {
@@ -598,9 +648,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             let date: Date = timestamp.dateValue()
             
             //colours
-            cell.clubLabel.backgroundColor = DefaultColours.accentColor
-            cell.dateLabel.backgroundColor = DefaultColours.primaryColor
-            cell.titleLabel.textColor = DefaultColours.primaryColor
+            cell.clubLabel.backgroundColor = Defaults.accentColor
+            cell.dateLabel.backgroundColor = Defaults.primaryColor
+            cell.titleLabel.textColor = Defaults.primaryColor
             
             //text
             cell.clubLabel.text = clubNewsData[indexPath.item]["clubName"] as? String ?? "error"
@@ -663,8 +713,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         fetchRemoteConfig()
         
         print("I refreshed stuff indian tech tutorial style")
-        //Day Number
-        dayTask()
+        getDayNumber()
         newsTask()
         //snowTask()
         let user = Auth.auth().currentUser
@@ -726,55 +775,94 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     //*************************************UPDATE THE DAY NUMBER**************************************
-    func dayTask() {
-        var dayTemp = "Error Occured"
-        let task = URLSession.shared.dataTask(with: dayURL!) { (data, response, error) in
-            if error != nil {
-                DispatchQueue.main.async {
-                    self.dayNumber.text = "Cannot find day website URL"
-                }
-            } else{
-                let htmlContent = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!
-                dayTemp = self.updateDay(content: htmlContent as String)
-                
-                //Need this because UILabel cannot be called out of main thread
-                DispatchQueue.main.async {
-                    self.dayNumber.text = dayTemp
-                }
+    func getDayNumber() {
+        db.collection("info").document("dayNumber").getDocument { (snap, err) in
+            if let err = err {
+                self.dayNumber.text = "Error: \(err.localizedDescription)"
             }
-        }
-        task.resume()
-    }
-    
-    func updateDay(content: String) -> String{
-        let theDay = DateFormatter.localizedString(from: NSDate() as Date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
-        if (theDay.range(of:"Sunday") != nil) || (theDay.range(of:"Saturday") != nil){
-            db.collection("info").document("dayNumber").getDocument { (snap, err) in
-                if let err = err {
-                    self.dayNumber.text = "Error: \(err.localizedDescription)"
-                }
-                if let snap = snap {
-                    let data = snap.data()!
-                    let fridayDayNumber = data["dayNumber"] as! String
-                    
-                    if fridayDayNumber == "1" {
-                        self.dayNumber.text = "Monday will be Day 2"
-                    } else {
-                        self.dayNumber.text = "Monday will be Day 1"
+            if let snap = snap {
+                let data = snap.data()!
+                let theDayNumber = data["dayNumber"] as! String
+                let haveFun = data["haveFun"] as! Bool
+                
+                if theDayNumber == "0" {
+                    self.dayNumber.isHidden = true
+                } else if (theDayNumber == "1" || theDayNumber == "2") {
+                    let theDay = DateFormatter.localizedString(from: NSDate() as Date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
+                    //If its a weekend set up the "monday will be message"
+                    if (theDay.range(of:"Sunday") != nil) || (theDay.range(of:"Saturday") != nil){
+                        if theDayNumber == "1" {
+                            self.dayNumber.text = "Monday will be Day 2"
+                        } else if theDayNumber == "2" {
+                            self.dayNumber.text = "Monday will be Day 1"
+                        }
                     }
                     
+                    //Otherwise just display the normal day number
+                    else {
+                        self.dayNumber.text = "Day \(theDayNumber)"
+                    }
+                } else {
+                    if haveFun {
+                        //directly show the text entered in db
+                        self.dayNumber.text = theDayNumber
+                    } else {
+                        //Any other values like "O" or anything just dont show the label
+                        self.dayNumber.isHidden = true
+                    }
                 }
-            }
-            
-            return "Day "
-        } else{
-            //Look for last time "Day " is mentioned and output that
-            let dayFound = content.lastIndex(of: "Day ")!
-            let range = dayFound..<(dayFound + 5)
 
-            return String(content[range])
+            }
         }
+//        var dayTemp = "Error Occured"
+//        let task = URLSession.shared.dataTask(with: dayURL!) { (data, response, error) in
+//            if error != nil {
+//                DispatchQueue.main.async {
+//                    self.dayNumber.text = "Cannot find day website URL"
+//                }
+//            } else{
+//                let htmlContent = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!
+//                dayTemp = self.updateDay(content: htmlContent as String)
+//
+//                //Need this because UILabel cannot be called out of main thread
+//                DispatchQueue.main.async {
+//                    self.dayNumber.text = dayTemp
+//                }
+//            }
+//        }
+//        task.resume()
     }
+    
+//    func updateDay(content: String) -> String{
+//        let theDay = DateFormatter.localizedString(from: NSDate() as Date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
+//        if (theDay.range(of:"Sunday") != nil) || (theDay.range(of:"Saturday") != nil){
+//            db.collection("info").document("dayNumber").getDocument { (snap, err) in
+//                if let err = err {
+//                    self.dayNumber.text = "Error: \(err.localizedDescription)"
+//                }
+//                if let snap = snap {
+//                    let data = snap.data()!
+//                    let fridayDayNumber = data["dayNumber"] as! String
+//
+//                    if fridayDayNumber == "1" {
+//                        self.dayNumber.text = "Monday will be Day 2"
+//                    } else if fridayDayNumber == "2" {
+//                        self.dayNumber.text = "Monday will be Day 1"
+//                    } else {
+//                        self.dayNumber.text = "Could not get day number"
+//                    }
+//
+//                }
+//            }
+//            return "Day "
+//        } else{
+//            //Look for last time "Day " is mentioned and output that
+//            let dayFound = content.lastIndex(of: "Day ")!
+//            let range = dayFound..<(dayFound + 5)
+//
+//            return String(content[range])
+//        }
+//    }
     
     //*********************************************GETTING NEWS**************************************************
     func newsTask(){

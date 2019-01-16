@@ -83,9 +83,12 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         db = Firestore.firestore()
         
         //Colours
-        spendButton.setTitleColor(DefaultColours.accentColor, for: .normal)
-        cancelButton.setTitleColor(DefaultColours.accentColor, for: .normal)
-        supervoteSlider.tintColor = DefaultColours.accentColor
+        spendButton.setTitleColor(Defaults.accentColor, for: .normal)
+        cancelButton.setTitleColor(Defaults.accentColor, for: .normal)
+        supervoteSlider.tintColor = Defaults.accentColor
+        
+        supervoteSlider.minimumValue = Float(Defaults.supervoteMin)
+        supervoteSlider.maximumValue = allUserFirebaseData.data["points"] as! Float
         
         songView.isHidden = true
         if let x = UserDefaults.standard.object(forKey: "songsVoted") as? [[Any]]{
@@ -128,11 +131,12 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     var supervoteAmount = 0
     var supervoteCost = 0
     @IBAction func sliderMoved(_ sender: Any) {
-        let value = Int(supervoteSlider.value)
-        supervoteVotes.text = "Votes: \(value)"
-        supervoteAmount = value
-        supervotePoints.text = "Points: \(value*2)"
-        supervoteCost = value*2
+        let value = CGFloat(supervoteSlider.value)
+        supervoteAmount = Int(value)
+        supervoteVotes.text = "Votes: \(supervoteAmount)"
+        
+        supervoteCost = Int(value * Defaults.supervoteRatio)
+        supervotePoints.text = "Points: \(supervoteCost)"
     }
     
     @IBAction func cancelSuperVote(_ sender: Any) {
@@ -274,8 +278,8 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
             } else {
                 var latestSongs = [[Any]]()
                 
-                //Disable the add song button if there are over 20 songs
-                if querySnapshot!.documents.count > 20 {
+                //Disable the add song button if there are over max songs
+                if querySnapshot!.documents.count > Defaults.maxSongs {
                     if allUserFirebaseData.data["status"] as? Int ?? 0 < 1 {
                         self.songReqButton.isEnabled = false
                     }
