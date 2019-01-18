@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Firebase
 
 class allExtensions: UIViewController {
     var clubAdminUpdatedData = false
@@ -394,26 +395,6 @@ extension UIColor {
     }
 }
 
-//this one sucks
-extension CIColor {
-    convenience init(red: Int, green: Int, blue: Int) {
-        assert(red >= 0 && red <= 255, "Invalid red component")
-        assert(green >= 0 && green <= 255, "Invalid green component")
-        assert(blue >= 0 && blue <= 255, "Invalid blue component")
-        
-        self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
-    }
-    
-    convenience init(rgb: Int) {
-        self.init(
-            red: (rgb >> 16) & 0xFF,
-            green: (rgb >> 8) & 0xFF,
-            blue: rgb & 0xFF
-        )
-    }
-    
-}
-
 //True hex string to a colour
 extension UIColor {
     convenience init(hex: String, alpha: CGFloat = 1) {
@@ -433,3 +414,31 @@ extension UIColor {
     }
 }
 
+//Dont think i can do this because i do unique things such as disabling requesting songs if not connected
+//Cannot return a boolean as you cannot return in closure
+//Closure does not finish before function ends
+//extension UIViewController {
+//
+//    func checkInternetConnection() -> Bool {
+//        //***************INTERNET CONNECTION**************
+//        var iAmConnected = false
+//        let connectedRef = Database.database().reference(withPath: ".info/connected")
+//        connectedRef.observe(.value, with: { snapshot in
+//            if let connected = snapshot.value as? Bool, connected {
+//                print("Connected")
+//                iAmConnected = true
+//            } else {
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
+//                    print(iAmConnected)
+//                    if !iAmConnected{
+//                        print("Not connected")
+//                        let alert = UIAlertController(title: "Error", message: "You are not connected to the internet", preferredStyle: .alert)
+//                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+//                        alert.addAction(okAction)
+//                        self.present(alert, animated: true, completion: nil)
+//                    }
+//                }
+//            }
+//        })
+//    }
+//}

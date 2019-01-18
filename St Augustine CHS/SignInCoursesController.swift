@@ -103,6 +103,10 @@ class SignInCoursesController: UIViewController {
             let trimmedString = course.text!.trimmingCharacters(in: .whitespaces)
             course.text = trimmedString
             
+            if course.text == "" || course.text == nil {
+                course.text = "SPARE"
+            }
+            
             //Allow spare to be written and don't check the below stuff
             if course.text?.uppercased() == "SPARE" {
                 course.text = course.text?.uppercased()

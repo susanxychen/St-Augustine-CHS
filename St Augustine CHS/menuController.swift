@@ -85,7 +85,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var dateAndDayView: UIView!
     @IBOutlet weak var gradientSocialView: UIView!
     
-    var hasSignedInAtLoadedAtLeastOnce = false
+    var signedInAndIsDone = false
     
     //***********************************SETTING UP EVERYTHING****************************************
     override func viewDidLoad() {
@@ -96,6 +96,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         viewAboveAllViews.frame = UIApplication.shared.keyWindow!.frame
         UIApplication.shared.keyWindow!.addSubview(viewAboveAllViews)
         definesPresentationContext = true
+        
+        //Only sign in if you have not come from there
         GIDSignIn.sharedInstance()?.delegate = self
         GIDSignIn.sharedInstance()?.uiDelegate = self
         GIDSignIn.sharedInstance()?.signIn()
@@ -156,12 +158,27 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                     let creation = Auth.auth().currentUser?.metadata.creationDate
                     
                     //if the user didnt come from the failed login as a new user
-                    if ((lastSignIn == creation) && (!cameFromFailedLogin.didComeFromFailedScreen)) {
-                        print(cameFromFailedLogin.didComeFromFailedScreen)
-                        print("new user! take em through the sign in flow")
-                        self.viewAboveAllViews.removeFromSuperview()
-                        self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
+                    if (lastSignIn == creation) {
+                        var didSignInBefore: Bool
+                        
+                        if let x = UserDefaults.standard.object(forKey: "didSignInBefore") as? Bool {
+                            didSignInBefore = x
+                        } else {
+                            didSignInBefore = false
+                        }
+                        
+                        if !didSignInBefore {
+                            print("new user! take em through the sign in flow")
+                            self.viewAboveAllViews.removeFromSuperview()
+                            self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
+                        } else {
+                            print("already signed up")
+                            self.signedInAndIsDone = true
+                            self.getAllStartingInfoAfterSignIn()
+                        }
                     } else {
+                        print("not new")
+                        self.signedInAndIsDone = true
                         self.getAllStartingInfoAfterSignIn()
                     }
                 }
@@ -180,6 +197,10 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     //************************************************************************************************
     func getAllStartingInfoAfterSignIn(){
+        getTimeFromServer { (serverDate) in
+            self.theDate = serverDate
+        }
+        
         //Set Up
         // [START setup]
         let settings = FirestoreSettings()
@@ -250,7 +271,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         menuView.layer.shadowRadius = 5
         
         //The Date
-        dateToString.text = DateFormatter.localizedString(from: NSDate() as Date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
+        dateToString.text = DateFormatter.localizedString(from: theDate, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
         
         //Remainin Tasks
         getDayNumber()
@@ -265,21 +286,33 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
             print("do i even reach in here to get the data")
             if let docSnapshot = docSnapshot {
-                print("i get the data")
-                allUserFirebaseData.data = docSnapshot.data()!
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-                self.hasSignedInAtLoadedAtLeastOnce = true
-                self.getPicture(i: docSnapshot.data()!["profilePic"] as? Int ?? 0)
-                self.getClubAnncs()
-                self.updateDatabaseWithNewRemoteID()
+               //Check if the user even exists
+                if docSnapshot.data() != nil {
+                    print("i get the data")
+                    allUserFirebaseData.data = docSnapshot.data()!
+                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    self.getPicture(i: docSnapshot.data()!["profilePic"] as? Int ?? 0)
+                    self.getClubAnncs()
+                    self.updateDatabaseWithNewRemoteID()
+                } else {
+                    print("wow u dont exist")
+                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Please enter your details again or contact the app dev team.", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default , handler: { (action) in
+                        self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
+                    })
+                    alert.addAction(okAction)
+                    self.present(alert, animated: true, completion: nil)
+                }
             } else {
                 print("wow u dont exist")
-                let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Try again later?", preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                alert.addAction(okAction)
-                self.present(alert, animated: true, completion: {
+                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Try again later or contact the app dev team.", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .cancel, handler: { (action) in
                     self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
                 })
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
             }
         }
         
@@ -294,27 +327,10 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //Adjust the brightness back to whatever it was
         UIScreen.animateBrightness(to: brightnessBeforeTT)
         profilePicture.image = allUserFirebaseData.profilePic
-        if hasSignedInAtLoadedAtLeastOnce {
-            self.refreshList()
-        }
+        self.refreshList()
     }
     
     func setupRemoteConfigDefaults() {
-        /*
-         static var joiningClub: Int = 300
-         static var attendingEvent: Int = 100
-         static var startingPoints: Int = 100
-         
-         static var basicPic: Int = 30
-         static var commonPic: Int = 50
-         static var rarePic: Int = 100
-         static var coolPic: Int = 200
-         static var legendaryPic: Int = 500
-         
-         static var requestSong: Int = 20
-         static var supervoteMin: Int = 10
-         static var supervoteRatio: CGFloat = 1.0
- */
         let defaultValues = [
             "primaryColor": UIColor(hex: "#8D1230") as NSObject,
             "darkerPrimary": UIColor(hex: "#460817") as NSObject,
@@ -338,7 +354,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     func fetchRemoteConfig(){
         RemoteConfig.remoteConfig().fetch(withExpirationDuration: 360) { [unowned self] (status, error) in
             guard error == nil else {
-                print("cant get colours")
+                print("cant get values + \(error?.localizedDescription)")
                 return
             }
             print("yay i got rc")
@@ -372,22 +388,32 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         }
         
         //Clubs and points
-        Defaults.joiningClub = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "joiningClub").numberValue ?? 300)
-        Defaults.attendingEvent = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "attendingEvent").numberValue ?? 100)
-        Defaults.startingPoints = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "startingPoints").numberValue ?? 100)
+        Defaults.joiningClub = Int(RemoteConfig.remoteConfig().configValue(forKey: "joiningClub").stringValue ?? "300") ?? 300
+        Defaults.attendingEvent = Int(RemoteConfig.remoteConfig().configValue(forKey: "attendingEvent").stringValue ?? "100") ?? 100
+        Defaults.startingPoints = Int(RemoteConfig.remoteConfig().configValue(forKey: "startingPoints").stringValue ?? "100") ?? 100
+        
+//        print("\(RemoteConfig.remoteConfig().configValue(forKey: "joiningClub").stringValue) is remote config?")
+//        print(Defaults.joiningClub)
+//        
+//        print("\(RemoteConfig.remoteConfig().configValue(forKey: "attendingEvent").stringValue) is remote config?")
+//        print(Defaults.attendingEvent)
+//        
+//        print("\(RemoteConfig.remoteConfig().configValue(forKey: "startingPoints").stringValue) is remote config?")
+//        print(Defaults.startingPoints)
         
         //Pic costs
-        Defaults.picCosts[0] = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "basicPic").numberValue ?? 30)
-        Defaults.picCosts[1] = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "commonPic").numberValue ?? 50)
-        Defaults.picCosts[2] = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "rarePic").numberValue ?? 100)
-        Defaults.picCosts[3] = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "coolPic").numberValue ?? 200)
-        Defaults.picCosts[4] = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "legendaryPic").numberValue ?? 500)
+        Defaults.picCosts[0] = Int(RemoteConfig.remoteConfig().configValue(forKey: "basicPic").stringValue ?? "30") ?? 30
+        Defaults.picCosts[1] = Int(RemoteConfig.remoteConfig().configValue(forKey: "commonPic").stringValue ?? "50") ?? 50
+        Defaults.picCosts[2] = Int(RemoteConfig.remoteConfig().configValue(forKey: "rarePic").stringValue ?? "100") ?? 100
+        Defaults.picCosts[3] = Int(RemoteConfig.remoteConfig().configValue(forKey: "coolPic").stringValue ?? "200") ?? 200
+        Defaults.picCosts[4] = Int(RemoteConfig.remoteConfig().configValue(forKey: "legendaryPic").stringValue ?? "500") ?? 500
         
         //Song Requests
-        Defaults.maxSongs = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "maxSongs").numberValue ?? 20)
-        Defaults.requestSong = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "requestSong").numberValue ?? 20)
-        Defaults.supervoteMin = Int(truncating: RemoteConfig.remoteConfig().configValue(forKey: "supervoteMin").numberValue ?? 10)
-        Defaults.supervoteRatio = CGFloat(truncating: RemoteConfig.remoteConfig().configValue(forKey: "supervoteRatio").numberValue ?? 1.0)
+        Defaults.maxSongs = Int(RemoteConfig.remoteConfig().configValue(forKey: "maxSongs").stringValue ?? "20") ?? 20
+        Defaults.requestSong = Int(RemoteConfig.remoteConfig().configValue(forKey: "requestSong").stringValue ?? "20") ?? 20
+        Defaults.supervoteMin = Int(RemoteConfig.remoteConfig().configValue(forKey: "supervoteMin").stringValue ?? "10") ?? 10
+        
+        Defaults.supervoteRatio = CGFloat(((RemoteConfig.remoteConfig().configValue(forKey: "supervoteRatio").stringValue ?? "1.0") as NSString).floatValue)
         
         changeMenuControllerColours()
     }
@@ -429,7 +455,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                         //Get the date the announcement was made
                         let timestamp: Timestamp = data["date"] as! Timestamp
                         let date: Date = timestamp.dateValue()
-                        let weekAgoDate = Calendar.current.date(byAdding: .day, value: -7, to: Date())
+                        let weekAgoDate = Calendar.current.date(byAdding: .day, value: -7, to: self.theDate)
                         
                         if date > weekAgoDate! {
                             self.clubNewsData.append(data)
@@ -683,7 +709,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         }
         
         if didAddCalendar {
-            let interval = Int(Date().timeIntervalSinceReferenceDate)
+            let interval = Int(theDate.timeIntervalSinceReferenceDate)
             let url = URL(string: String(format: "calshow:%ld", interval))
             if let url = url {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
@@ -707,34 +733,49 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     @objc func refreshList(){
-        //Colours!!
-        setupRemoteConfigDefaults()
-        updateViewWithRCValues()
-        fetchRemoteConfig()
-        
-        print("I refreshed stuff indian tech tutorial style")
-        getDayNumber()
-        newsTask()
-        //snowTask()
-        let user = Auth.auth().currentUser
-        db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
-            if let docSnapshot = docSnapshot {
-                allUserFirebaseData.data = docSnapshot.data()!
-                self.getPicture(i: docSnapshot.data()!["profilePic"] as? Int ?? 0)
-                self.getClubAnncs()
-                self.updateDatabaseWithNewRemoteID()
-            } else {
-                print("wow u dont exist")
-                let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Try again later?", preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                alert.addAction(okAction)
-                self.present(alert, animated: true, completion: {
-                    self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
-                })
+        if signedInAndIsDone {
+            //Colours!!
+            setupRemoteConfigDefaults()
+            updateViewWithRCValues()
+            fetchRemoteConfig()
+            
+            print("I refreshed stuff indian tech tutorial style")
+            getDayNumber()
+            newsTask()
+            //snowTask()
+            let user = Auth.auth().currentUser
+            db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                if let docSnapshot = docSnapshot {
+                    //Check if the user even exists
+                    if docSnapshot.data() != nil {
+                        print("i get the data")
+                        allUserFirebaseData.data = docSnapshot.data()!
+                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                        self.getPicture(i: docSnapshot.data()!["profilePic"] as? Int ?? 0)
+                        self.getClubAnncs()
+                        self.updateDatabaseWithNewRemoteID()
+                    } else {
+                        print("wow 100% dont exist")
+                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                        let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Please enter your details again or contact the app dev team.", preferredStyle: .alert)
+                        let okAction = UIAlertAction(title: "OK", style: .default , handler: { (action) in
+                            self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
+                        })
+                        alert.addAction(okAction)
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                } else {
+                    print("wow u dont exist")
+                    let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Try again later or contact the app dev team.", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .cancel, handler: { (action) in
+                        self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
+                    })
+                    alert.addAction(okAction)
+                }
             }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.refreshControl?.endRefreshing()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.refreshControl?.endRefreshing()
+            }
         }
     }
     
@@ -781,14 +822,14 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 self.dayNumber.text = "Error: \(err.localizedDescription)"
             }
             if let snap = snap {
-                let data = snap.data()!
+                let data = snap.data() ?? ["dayNumber": "0", "haveFun": false]
                 let theDayNumber = data["dayNumber"] as! String
                 let haveFun = data["haveFun"] as! Bool
                 
                 if theDayNumber == "0" {
                     self.dayNumber.isHidden = true
                 } else if (theDayNumber == "1" || theDayNumber == "2") {
-                    let theDay = DateFormatter.localizedString(from: NSDate() as Date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
+                    let theDay = DateFormatter.localizedString(from: self.theDate, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
                     //If its a weekend set up the "monday will be message"
                     if (theDay.range(of:"Sunday") != nil) || (theDay.range(of:"Saturday") != nil){
                         if theDayNumber == "1" {
@@ -896,6 +937,10 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         let start = content.index(of: "ancmnt = \"")?.encodedOffset
         let end = content.index(of: "\".split(\",\");")?.encodedOffset
         
+        if start == nil || end == nil {
+            return [["No internet connection","Can't find news"]]
+        }
+        
         let range = (start! + 10)..<end!
         
         var notFormattedCodedNews = String(content[range]).components(separatedBy: ",")
@@ -919,5 +964,21 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     //Make the status bar white
     func preferredStatusBarStyle() -> UIStatusBarStyle {
         return UIStatusBarStyle.lightContent;
+    }
+    
+    var theDate: Date! = Date()
+    func getTimeFromServer(completionHandler:@escaping (_ getResDate: Date?) -> Void){
+        let url = URL(string: "https://www.apple.com")
+        let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
+            let httpResponse = response as? HTTPURLResponse
+            if let contentType = httpResponse!.allHeaderFields["Date"] as? String {
+                //print(httpResponse)
+                let dFormatter = DateFormatter()
+                dFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss z"
+                let serverTime = dFormatter.date(from: contentType)
+                completionHandler(serverTime)
+            }
+        }
+        task.resume()
     }
 }

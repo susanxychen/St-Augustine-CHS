@@ -13,6 +13,9 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
     
     var snooFiller = UIImage(named: "snoo")
     
+    //Cloud Functions
+    lazy var functions = Functions.functions()
+    
     //The Database
     var db: Firestore!
     var docRef: DocumentReference!
@@ -225,6 +228,10 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
         }
         
         if valid {
+            getTimeFromServer { (serverDate) in
+                self.theDate = serverDate
+            }
+            
             //Set up an activity indicator
             self.overlayView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
             let activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
@@ -272,6 +279,8 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
         }
     }
     
+    var theDesc = ""
+    var theTitle = ""
     func uploadRestAfterImageIsDone(imageName: String){
         let anncTitle = titleTxtFld.text!
         var anncDesc = ""
@@ -289,12 +298,16 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
             currentAnncID = randomString(length: 20)
             let user = Auth.auth().currentUser
             print("Added annc id \(currentAnncID)")
+            
+            theDesc = anncDesc
+            theTitle = anncTitle
+            
             db.collection("announcements").document(currentAnncID).setData([
                 "club": clubID,
                 "clubName": clubName,
                 "content": anncDesc,
                 "creator": user?.uid as Any,
-                "date": Date(),
+                "date": self.theDate,
                 "img": imageName,
                 "title": anncTitle
             ]) { err in
@@ -360,7 +373,38 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
         return randomString
     }
     
+    var theDate: Date! = Date()
+    func getTimeFromServer(completionHandler:@escaping (_ getResDate: Date?) -> Void){
+        let url = URL(string: "https://www.apple.com")
+        let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
+            let httpResponse = response as? HTTPURLResponse
+            if let contentType = httpResponse!.allHeaderFields["Date"] as? String {
+                //print(httpResponse)
+                let dFormatter = DateFormatter()
+                dFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss z"
+                let serverTime = dFormatter.date(from: contentType)
+                completionHandler(serverTime)
+            }
+        }
+        task.resume()
+    }
+    
     func doneWithAnnc() {
+        functions.httpsCallable("sendToTopic").call(["body": theDesc, "title": theTitle, "clubID": clubID]) { (result, error) in
+            if let error = error as NSError? {
+                if error.domain == FunctionsErrorDomain {
+                    let code = FunctionsErrorCode(rawValue: error.code)
+                    let message = error.localizedDescription
+                    let details = error.userInfo[FunctionsErrorDetailsKey]
+                    print(code as Any)
+                    print(message)
+                    print(details as Any)
+                }
+            }
+            print("Email sent to admins")
+            print("Result is: \(String(describing: result?.data))")
+        }
+        
         //print("yes i get run thanks")
         if let presenter = presentingViewController as? clubFinalController {
             presenter.anncRef.append(currentAnncID) //this line should be roughly useless as i refresh the entire page when returning

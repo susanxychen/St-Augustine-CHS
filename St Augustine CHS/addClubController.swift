@@ -268,6 +268,8 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
         let user = Auth.auth().currentUser
         print("Added club id \(clubID)")
         
+        Messaging.messaging().subscribe(toTopic: clubID)
+        
         let userRef = self.db.collection("users").document(user!.uid)
         userRef.updateData([
             "clubs": FieldValue.arrayUnion([clubID])
@@ -283,7 +285,7 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
             "pending": []
         ]) { err in
             if let err = err {
-                let alert = UIAlertController(title: "Error in adding announcement", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Error in adding club", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)

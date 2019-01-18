@@ -277,9 +277,9 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                 print("Error getting documents: \(err)")
             } else {
                 var latestSongs = [[Any]]()
-                
+                print("\(Defaults.maxSongs) max and \(querySnapshot!.documents.count)")
                 //Disable the add song button if there are over max songs
-                if querySnapshot!.documents.count > Defaults.maxSongs {
+                if querySnapshot!.documents.count >= Defaults.maxSongs {
                     if allUserFirebaseData.data["status"] as? Int ?? 0 < 1 {
                         self.songReqButton.isEnabled = false
                     }

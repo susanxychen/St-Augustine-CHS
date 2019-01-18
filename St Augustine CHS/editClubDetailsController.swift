@@ -16,6 +16,9 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     var db: Firestore!
     var docRef: DocumentReference!
     
+    //Cloud Functions
+    lazy var functions = Functions.functions()
+    
     //Club Details
     var clubBannerImage: UIImage!
     var clubBannerID: String!
@@ -272,44 +275,69 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
             //Update the club members array
             let clubRef = self.db.collection("clubs").document(clubID)
             clubRef.updateData(["members": FieldValue.arrayUnion(pendingList)])
+            
             for user in pendingList {
                 //Update the picsOwned array
                 let userRef = self.db.collection("users").document(user)
                 userRef.updateData(["clubs": FieldValue.arrayUnion([clubID])])
                 userRef.updateData(["badges": FieldValue.arrayUnion([clubBadge])])
                 
-                //Also give them points
-                self.db.runTransaction({ (transaction, errorPointer) -> Any? in
-                    let uDoc: DocumentSnapshot
-                    do {
-                        try uDoc = transaction.getDocument(userRef)
-                    } catch let fetchError as NSError {
-                        errorPointer?.pointee = fetchError
-                        return nil
+                userRef.getDocument { (snap, err) in
+                    if let snap = snap {
+                        let data = snap.data()
+                        let msgToken = data?["msgToken"] as? String ?? "error"
+                        self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [msgToken], "isSubscribing": true, "clubID": self.clubID]) { (result, error) in
+                            if let error = error as NSError? {
+                                if error.domain == FunctionsErrorDomain {
+                                    let code = FunctionsErrorCode(rawValue: error.code)
+                                    let message = error.localizedDescription
+                                    let details = error.userInfo[FunctionsErrorDetailsKey]
+                                    print(code as Any)
+                                    print(message)
+                                    print(details as Any)
+                                }
+                            }
+                            print("Result is: \(String(describing: result?.data))")
+                        }
                     }
-                    
-                    guard let oldPoints = uDoc.data()?["points"] as? Int else {
-                        let error = NSError(
-                            domain: "AppErrorDomain",
-                            code: -1,
-                            userInfo: [
-                                NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
-                            ]
-                        )
-                        errorPointer?.pointee = error
-                        return nil
+                    if let err = err {
+                        print(err)
                     }
-                    transaction.updateData(["points": oldPoints + Defaults.joiningClub], forDocument: userRef)
-                    return nil
-                }, completion: { (object, err) in
-                    if let error = err {
-                        print("Transaction failed: \(error)")
-                    } else {
-                        print("Transaction successfully committed!")
-                        print("successfuly gave badge")
-                    }
-                })
+                }
+                
+//                //Also give them points
+//                self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+//                    let uDoc: DocumentSnapshot
+//                    do {
+//                        try uDoc = transaction.getDocument(userRef)
+//                    } catch let fetchError as NSError {
+//                        errorPointer?.pointee = fetchError
+//                        return nil
+//                    }
+//
+//                    guard let oldPoints = uDoc.data()?["points"] as? Int else {
+//                        let error = NSError(
+//                            domain: "AppErrorDomain",
+//                            code: -1,
+//                            userInfo: [
+//                                NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+//                            ]
+//                        )
+//                        errorPointer?.pointee = error
+//                        return nil
+//                    }
+//                    transaction.updateData(["points": oldPoints + Defaults.joiningClub], forDocument: userRef)
+//                    return nil
+//                }, completion: { (object, err) in
+//                    if let error = err {
+//                        print("Transaction failed: \(error)")
+//                    } else {
+//                        print("Transaction successfully committed!")
+//                        print("successfuly gave badge")
+//                    }
+//                })
             }
+            
             clubRef.setData([
                 "pending": []
             ], merge: true) { (err) in

@@ -72,6 +72,15 @@ class SignInPrefController: UIViewController {
     @IBAction func pressedFinishedButton(_ sender: Any) {
         print("wow u finished sign in")
         
+        Messaging.messaging().subscribe(toTopic: "general") { error in
+            print("Subscribed to general topic")
+            UserDefaults.standard.set(true, forKey: "subscribedToGeneral")
+        }
+        
+        Messaging.messaging().subscribe(toTopic: "alerts") { error in
+            print("Subscribed to alerts topic")
+        }
+        
         //CREATE THE USER IN THE DATABASE WITH GIVEN PREFERENCES
         print(picChosen)
         print(courses)
@@ -115,7 +124,14 @@ class SignInPrefController: UIViewController {
             } else {
                 print("Document successfully written!")
                 self.performSegue(withIdentifier: "doneSeg", sender: self.nextButtonHidden)
+                UserDefaults.standard.set(true, forKey: "didSignInBefore")
             }
         }
     }
+    
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        let nav = segue.destination as! UINavigationController
+//        let vc = nav.topViewController as! menuController
+//        vc.cameFromSignUpFlow = true
+//    }
 }

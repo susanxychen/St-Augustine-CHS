@@ -15,6 +15,9 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
     var db: Firestore!
     var docRef: DocumentReference!
     
+    //Cloud Functions
+    lazy var functions = Functions.functions()
+    
     var clubID: String!
     var clubBadge: String!
     var isClubAdmin: Bool!
@@ -27,6 +30,9 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
     
     var adminsEmailsList = [String]()
     var membersEmailsList = [String]()
+    
+    var adminsMsgList = [String]()
+    var membersMsgList = [String]()
     
     var adminsPics = [UIImage]()
     var membersPics = [UIImage]()
@@ -113,12 +119,14 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
         for _ in adminsList {
             adminsNamesList.append("")
             adminsEmailsList.append("")
+            adminsMsgList.append("")
             adminsPics.append(UIImage())
         }
         
         for _ in membersList {
             membersNamesList.append("")
             membersEmailsList.append("")
+            membersMsgList.append("")
             membersPics.append(UIImage())
         }
         
@@ -134,6 +142,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     let data = snap.data()!
                     self.adminsNamesList[user] = data["name"] as? String ?? "error"
                     self.adminsEmailsList[user] = data["email"] as? String ?? "error"
+                    self.adminsMsgList[user] = data["msgToken"] as? String ?? "error"
                     
                     //Get the image
                     self.getPicture(profPic: data["profilePic"] as! Int, user: user, isAdmin: true)
@@ -153,6 +162,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     let data = snap.data()!
                     self.membersNamesList[user] = data["name"] as? String ?? "error"
                     self.membersEmailsList[user] = data["email"] as? String ?? "error"
+                    self.membersMsgList[user] = data["msgToken"] as? String ?? "error"
                     
                     //Get the image
                     self.getPicture(profPic: data["profilePic"] as! Int, user: user, isAdmin: false)
@@ -185,6 +195,21 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     let userRef = self.db.collection("users").document(self.adminsList[indexPath.item])
                     userRef.updateData(["clubs": FieldValue.arrayRemove([self.clubID])])
                     userRef.updateData(["badges": FieldValue.arrayRemove([self.clubBadge])])
+                    
+                    self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [self.adminsMsgList[indexPath.item]], "isSubscribing": false, "clubID": self.clubID]) { (result, error) in
+                        if let error = error as NSError? {
+                            if error.domain == FunctionsErrorDomain {
+                                let code = FunctionsErrorCode(rawValue: error.code)
+                                let message = error.localizedDescription
+                                let details = error.userInfo[FunctionsErrorDetailsKey]
+                                print(code as Any)
+                                print(message)
+                                print(details as Any)
+                            }
+                        }
+                        print("Email sent to admins")
+                        print("Result is: \(String(describing: result?.data))")
+                    }
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
                         self.getClubData()
@@ -253,6 +278,21 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     let userRef = self.db.collection("users").document(self.membersList[indexPath.item])
                     userRef.updateData(["clubs": FieldValue.arrayRemove([self.clubID])])
                     userRef.updateData(["badges": FieldValue.arrayRemove([self.clubBadge])])
+                    
+                    self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [self.membersMsgList[indexPath.item]], "isSubscribing": false, "clubID": self.clubID]) { (result, error) in
+                        if let error = error as NSError? {
+                            if error.domain == FunctionsErrorDomain {
+                                let code = FunctionsErrorCode(rawValue: error.code)
+                                let message = error.localizedDescription
+                                let details = error.userInfo[FunctionsErrorDetailsKey]
+                                print(code as Any)
+                                print(message)
+                                print(details as Any)
+                            }
+                        }
+                        print("Email sent to admins")
+                        print("Result is: \(String(describing: result?.data))")
+                    }
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
                         self.getClubData()

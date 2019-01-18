@@ -10,10 +10,6 @@ import UIKit
 import Firebase
 import GoogleSignIn
 
-struct cameFromFailedLogin {
-    static var didComeFromFailedScreen = false
-}
-
 class signInController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate {
     
     @IBOutlet weak var continueButton: UIButton!
@@ -112,9 +108,20 @@ class signInController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate
                     let creation = Auth.auth().currentUser?.metadata.creationDate
                     
                     if lastSignIn == creation {
-                        print("new user! take em through the sign in flow")
-                        cameFromFailedLogin.didComeFromFailedScreen = true
-                        self.performSegue(withIdentifier: "signInFlow", sender: self.signInFlowButton)
+                        var didSignInBefore: Bool
+                        
+                        if let x = UserDefaults.standard.object(forKey: "didSignInBefore") as? Bool {
+                            didSignInBefore = x
+                        } else {
+                            didSignInBefore = false
+                        }
+                        
+                        if !didSignInBefore {
+                            print("new user! take em through the sign in flow")
+                            self.performSegue(withIdentifier: "signInFlow", sender: self.signInFlowButton)
+                        } else {
+                            self.performSegue(withIdentifier: "loggedIn", sender: self.continueButton)
+                        }
                     } else {
                         self.performSegue(withIdentifier: "loggedIn", sender: self.continueButton)
                     }

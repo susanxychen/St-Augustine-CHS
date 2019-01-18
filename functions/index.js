@@ -118,12 +118,12 @@ exports.deleteTopSongs = functions.https.onRequest((request, response) => {
                 admin.firestore().collection('songs').doc(maxIDs[i]).delete();
             }
 
-            //Delete songs older than 2 days and under 100 votes
+            //Delete songs older than 2 days
             var daysAgo = new Date().getTime() - (2*24*60*60*1000)
             var oldSongIds = []
 
             for (let i = 0; i < ids.length; i++){
-                if (dates[i] < daysAgo && votes[i] < 100){
+                if (dates[i] < daysAgo /*&& votes[i] < 100*/){
                     oldSongIds.push(ids[i]);
                 }
             }
@@ -260,6 +260,94 @@ exports.getDayNumber = functions.https.onRequest((request, response) => {
         response.send("Error getting day number " + err.message);
         console.log("Error: " + err.message);
     });
+});
+
+exports.sendToTopic = functions.https.onCall((data, response) => {
+    const body = data.body;
+    const title = data.title;
+    const clubID = data.clubID;
+
+    console.log(clubID);
+
+    // See the "Defining the message payload" section below for details
+    var payload = {
+    notification: {
+        title: title,
+        body: body
+    }
+    };
+
+    // Send a message to devices subscribed to the provided topic.
+    admin.messaging().sendToTopic(clubID, payload)
+    .then((response) => {
+        // See the MessagingTopicResponse reference documentation for the
+        // contents of response.
+        console.log('Successfully sent message:', response);
+        return 'sucess';
+    })
+    .catch((error) => {
+        console.log('Error sending message:', error);
+        return 'error';
+    });
+
+    // // See documentation on defining a message payload.
+    // var message = {
+    // notification: {
+    //     title: title,
+    //     body: body
+    // },
+    // topic: clubID
+    // };
+
+    // // Send a message to devices subscribed to the provided topic.
+    // admin.messaging().send(message)
+    // .then((response) => {
+    //     // Response is a message ID string.
+    //     console.log('Successfully sent message:', response);
+    //     response.send('success');
+    //     return 'success';
+    // })
+    // .catch((error) => {
+    //     console.log('Error sending message:', error);
+    //     response.send(error);
+    //     return error;
+    // });
+});
+
+exports.manageSubscriptions = functions.https.onCall((data, context) => {
+    const registrationTokens = data.registrationTokens;
+    const isSubscribing = data.isSubscribing;
+    const clubID = data.clubID;
+    
+    if (isSubscribing) {
+        // Subscribe the devices corresponding to the registration tokens from
+        // the topic.
+        admin.messaging().subscribeToTopic(registrationTokens, clubID)
+        .then((response)=>  {
+            // See the MessagingTopicManagementResponse reference documentation
+            // for the contents of response.
+            console.log('Successfully subscribed to topic:', response);
+            return 'success';
+        })
+        .catch((error) => {
+            console.log('Error subscribing from topic:', error);
+            return error;
+        });
+    } else {
+        // Unsubscribe the devices corresponding to the registration tokens from
+        // the topic.
+        admin.messaging().unsubscribeFromTopic(registrationTokens, clubID)
+        .then((response)=>  {
+            // See the MessagingTopicManagementResponse reference documentation
+            // for the contents of response.
+            console.log('Successfully unsubscribed from topic:', response);
+            return 'success';
+        })
+        .catch((error) => {
+            console.log('Error unsubscribing from topic:', error);
+            return error;
+        });
+    }
 });
 
 // //The Edit Votes Function

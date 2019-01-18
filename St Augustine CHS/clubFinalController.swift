@@ -97,6 +97,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     var theCurrentAnncID = String()
     
     var cameFromSocialPage = false
+    var addedFloatyAlready = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //Temporary just to let all things load and prevent them from stopping due to "not enough space"
@@ -185,7 +187,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             joinClubButton.isEnabled = false
         }
         
-        if isClubAdmin {
+        if isClubAdmin && !addedFloatyAlready {
             //Long Press Gesture Recognizer
             let lpgr: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(clubFinalController.handleLongPress(gestureRecognizer:)))
             lpgr.minimumPressDuration = 0.5
@@ -196,7 +198,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             //Add floaty
             let floaty = Floaty()
             floaty.overlayColor = UIColor.clear
-            floaty.addItem("Add Announcement", icon: UIImage(named: "megaphone")!, handler: { item in
+            floaty.addItem("", icon: UIImage(named: "megaphone")!, handler: { item in
                 print("nice")
                 print("add")
                 self.isEditingAnnc = false
@@ -211,6 +213,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             floaty.openAnimationType = .slideLeft
             floaty.sticky = true
             clubScrollView.addSubview(floaty)
+            addedFloatyAlready = true
         } else {
             createBadgeButton.isHidden = true
             constraintBetweenBadgeViewAndAnnouncements.constant = 12
@@ -261,6 +264,10 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                 self.refreshList()
             }
         } else if joinStatus == 2 {
+            Messaging.messaging().subscribe(toTopic: clubID) { error in
+                print("Subscribed to topic")
+            }
+            
             //Update the club members array
             let clubRef = self.db.collection("clubs").document(clubID)
             clubRef.updateData(["members": FieldValue.arrayUnion([Auth.auth().currentUser?.uid as Any])])
@@ -365,13 +372,15 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
 //                self.segueNum = 1
 //                self.performSegue(withIdentifier: "addAnnc", sender: self.addAnncButton)
 //            }))
-            actionSheet.addAction(UIAlertAction(title: "View Pending List", style: .default, handler: { (action:UIAlertAction) in
-                print("pending")
-                self.segueNum = 2
-                self.performSegue(withIdentifier: "viewPending", sender: self.pendingButton)
-            }))
+            
+            if (clubData["joinPref"] as? Int ?? 0) == 1 {
+                actionSheet.addAction(UIAlertAction(title: "View Pending List", style: .default, handler: { (action:UIAlertAction) in
+                    print("pending")
+                    self.segueNum = 2
+                    self.performSegue(withIdentifier: "viewPending", sender: self.pendingButton)
+                }))
+            }
         }
-        
         
         //************ALL MEMBERS PRIVLAGES************
         if partOfClub || (allUserFirebaseData.data["status"] as! Int == 2) {
@@ -384,6 +393,10 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         
         if partOfClub {
             actionSheet.addAction(UIAlertAction(title: "Leave Club", style: .default, handler: { (action:UIAlertAction) in
+                Messaging.messaging().unsubscribe(fromTopic: self.clubID) { error in
+                    print("unsubscribed to topic")
+                }
+                
                 //Create the alert controller.
                 let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to leave \(self.clubData["name"] ?? "this club")?", preferredStyle: .alert)
                 let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
@@ -900,13 +913,15 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     guard let items = try? FileManager.default.contentsOfDirectory(atPath: path) else { return }
                     
                     for index in idsToRemove {
-                        let imageName = x[index]
-                        for item in items {
-                            // This can be made better by using pathComponent
-                            let completePath = path.appending("/").appending(item)
-                            if completePath.hasSuffix(imageName) {
-                                print("removing \(imageName)")
-                                try? FileManager.default.removeItem(atPath: completePath)
+                        if index < x.count {
+                            let imageName = x[index]
+                            for item in items {
+                                // This can be made better by using pathComponent
+                                let completePath = path.appending("/").appending(item)
+                                if completePath.hasSuffix(imageName) {
+                                    print("removing \(imageName)")
+                                    try? FileManager.default.removeItem(atPath: completePath)
+                                }
                             }
                         }
                     }
@@ -981,11 +996,11 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             let size = CGSize(width: view.frame.width - 4, height: 1000)
             
             //Get an approximation of the title size
-            let attributesTitle = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
+            let attributesTitle = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
             let estimatedFrameTitle = NSString(string: anncData[indexPath.row]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
             
             //Get an approximation of the content size
-            let attributesContent = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
+            let attributesContent = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
             let estimatedFrameContent = NSString(string: anncData[indexPath.row]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
             
             var imgHeight:CGFloat = 0
@@ -995,7 +1010,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             
             var contentHeight:CGFloat = 0
             if anncData[indexPath.row]["content"] as? String != "" {
-                contentHeight = estimatedFrameContent.height
+                contentHeight = estimatedFrameContent.height + 10
             }
             
             let finalHeight = estimatedFrameTitle.height + contentHeight + imgHeight + 75
@@ -1121,7 +1136,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         refreshControl = UIRefreshControl()
         refreshControl?.tintColor = UIColor.red
         refreshControl?.addTarget(self, action: #selector(refreshList), for: .valueChanged)
-        anncCollectionView.addSubview(refreshControl!)
+        clubScrollView.addSubview(refreshControl!)
     }
     
     @objc func refreshList(){
@@ -1141,6 +1156,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             }
             if let document = document, document.exists {
                 self.clubData = document.data()!
+                self.clubNameTextView.text = self.clubData["name"] as? String ?? "error"
+                self.clubDescTextView.text = self.clubData["desc"] as? String ?? "error"
                 self.getClubSettingsInfo()
                 self.getBadgeDocs()
                 self.getClubBanner()

@@ -6,11 +6,12 @@
 //  Copyright © 2018 St Augustine CHS. All rights reserved.
 //
 
+import Foundation
 import UIKit
 import AVFoundation
 import Firebase
 
-class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+class badgeScannerController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
 
     //The Database
     var db: Firestore!
@@ -21,11 +22,11 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
     @IBOutlet weak var theCameraView: UIView!
     @IBOutlet weak var theViewWithCancel: UIView!
     @IBOutlet weak var cancelButtonItself: UIButton!
-    
     @IBOutlet weak var theTestLabel: UILabel!
     
-    var captureSession: AVCaptureSession!
-    var previewLayer: AVCaptureVideoPreviewLayer!
+    let session = AVCaptureSession()
+    lazy var vision = Vision.vision()
+    var barcodeDetector :VisionBarcodeDetector?
     
     //colours
     @IBOutlet weak var statusBarView: UIView!
@@ -53,63 +54,59 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
         theViewWithCancel.bringSubviewToFront(cancelButtonItself)
         view.bringSubviewToFront(cancelButtonItself)
         
-        captureSession = AVCaptureSession()
-        
-        guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else { return }
-        let videoInput: AVCaptureDeviceInput
-        
-        do {
-            videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
-        } catch {
-            return
-        }
-        
-        if (captureSession.canAddInput(videoInput)) {
-            captureSession.addInput(videoInput)
-        } else {
-            failed()
-            return
-        }
-        
-        let metadataOutput = AVCaptureMetadataOutput()
-        
-        if (captureSession.canAddOutput(metadataOutput)) {
-            captureSession.addOutput(metadataOutput)
-            
-            metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-            metadataOutput.metadataObjectTypes = [.qr]
-        } else {
-            failed()
-            return
-        }
-        
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.frame = view.layer.bounds
-        previewLayer.videoGravity = .resizeAspectFill
-        theCameraView.layer.addSublayer(previewLayer)
-        
-        captureSession.startRunning()
+        startLiveVideo()
+        self.barcodeDetector = vision.barcodeDetector()
     }
     
-    func failed() {
-        let ac = UIAlertController(title: "Scanning not supported", message: "Your device does not support scanning a code from an item. Please use a device with a camera.", preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "OK", style: .default))
-        present(ac, animated: true)
-        captureSession = nil
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        if (captureSession?.isRunning == false) {
+//            captureSession.startRunning()
+//        }
+//    }
+    
+//    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+//        if let metadataObject = metadataObjects.first {
+//            guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
+//            guard let stringValue = readableObject.stringValue else { return }
+//            found(code: stringValue)
+//        }
+//    }
+
+    private func startLiveVideo() {
+        session.sessionPreset = AVCaptureSession.Preset.photo
+        let captureDevice = AVCaptureDevice.default(for: AVMediaType.video)
+        
+        let deviceInput = try! AVCaptureDeviceInput(device: captureDevice!)
+        let deviceOutput = AVCaptureVideoDataOutput()
+        deviceOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
+        deviceOutput.setSampleBufferDelegate(self, queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.default))
+        session.addInput(deviceInput)
+        session.addOutput(deviceOutput)
+        
+        let imageLayer = AVCaptureVideoPreviewLayer(session: session)
+        imageLayer.frame = CGRect(x: 0, y: 0, width: self.theCameraView.frame.size.width + 100, height: self.theCameraView.frame.size.height)
+        imageLayer.videoGravity = .resizeAspectFill
+        theCameraView.layer.addSublayer(imageLayer)
+        
+        session.startRunning()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if (captureSession?.isRunning == false) {
-            captureSession.startRunning()
-        }
-    }
-    
-    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-        if let metadataObject = metadataObjects.first {
-            guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
-            guard let stringValue = readableObject.stringValue else { return }
-            found(code: stringValue)
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        //print("he")
+        if let barcodeDetector = self.barcodeDetector {
+            let visionImage = VisionImage(buffer: sampleBuffer)
+            barcodeDetector.detect(in: visionImage) { (barcodes, error) in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+                
+                for barcode in barcodes! {
+                    print(barcode.rawValue!)
+                    self.found(code: barcode.rawValue!)
+                }
+            }
         }
     }
     
@@ -118,13 +115,13 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
         let time: Int = Int(Date().timeIntervalSince1970 / 5)
         print("c: \(code) m: \(email) t: \(time)")
         theTestLabel.text = ("c: \(code) m: \(email) t: \(time)")
-        
+
         //Check to see if something went wrong while decoding as the tag should only have normal characters
         let characterset = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.@")
         if email.rangeOfCharacter(from: characterset.inverted) != nil {
             //there are special characters
         } else {
-            captureSession.stopRunning()
+            session.stopRunning()
             AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
             if !email.hasSuffix("@ycdsbk12.ca") {
                 email = email + "@ycdsbk12.ca"
@@ -132,15 +129,13 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
 
             let alert = UIAlertController(title: "Student", message: email, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Retake", style: .default, handler: { (alert) in
-                self.captureSession.startRunning()
+                self.session.startRunning()
             }))
             alert.addAction(UIAlertAction(title: "Give Badge", style: .default, handler: { (alert) in
                 self.db.collection("users").whereField("email", isEqualTo: email).getDocuments(completion: { (snap, err) in
                     if let error = err {
                         let alert = UIAlertController(title: "Error in retrieveing Club Data", message: "Error \(error.localizedDescription)", preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (alert) in
-                            self.captureSession.startRunning()
-                        }))
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                         self.present(alert, animated: true, completion: nil)
                     }
                     if let snap = snap {
@@ -149,7 +144,7 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
                             userRef.updateData([
                                 "badges": FieldValue.arrayUnion([self.badgeID])
                             ])
-                            
+
                             self.db.runTransaction({ (transaction, errorPointer) -> Any? in
                                 let uDoc: DocumentSnapshot
                                 do {
@@ -158,7 +153,7 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
                                     errorPointer?.pointee = fetchError
                                     return nil
                                 }
-                                
+
                                 guard let oldPoints = uDoc.data()?["points"] as? Int else {
                                     let error = NSError(
                                         domain: "AppErrorDomain",
@@ -183,9 +178,7 @@ class badgeScannerController: UIViewController, AVCaptureMetadataOutputObjectsDe
                             })
                         } else {
                             let alert = UIAlertController(title: "Error in giving badges", message: "No user found with \(email)", preferredStyle: .alert)
-                            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (alert) in
-                                self.captureSession.startRunning()
-                            }))
+                            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                             self.present(alert, animated: true, completion: nil)
                         }
                     }

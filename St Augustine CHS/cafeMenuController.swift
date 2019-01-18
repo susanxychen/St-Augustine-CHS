@@ -52,9 +52,15 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
         // [END setup]
         db = Firestore.firestore()
         
-        let fullDate = String(DateFormatter.localizedString(from: NSDate() as Date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)).split(separator: ",")
+        let fullDate = String(DateFormatter.localizedString(from: Date(), dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)).split(separator: ",")
         
         daymenuLabel.text = "\(String(fullDate[0]).uppercased()) MENU"
+        
+        let theDay = DateFormatter.localizedString(from: Date(), dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
+        //If its a weekend set up the "monday will be message"
+        if (theDay.range(of:"Sunday") != nil) || (theDay.range(of:"Saturday") != nil){
+            daymenuLabel.isHidden = true
+        }
         
         getCafeMenu()
     }

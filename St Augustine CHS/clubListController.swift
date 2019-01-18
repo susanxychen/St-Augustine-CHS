@@ -503,11 +503,15 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
         cell.name.backgroundColor = Defaults.primaryColor
         
         if viewingPersonalClubs {
-            cell.name.text = personalClubNames[indexPath.item]
-            cell.banner.image = personalClubBanners[indexPath.item]
+            if indexPath.item < personalClubNames.count && indexPath.item < personalClubBanners.count {
+                cell.name.text = personalClubNames[indexPath.item]
+                cell.banner.image = personalClubBanners[indexPath.item]
+            }
         } else {
-            cell.name.text = clubNames[indexPath.item]
-            cell.banner.image = banners[indexPath.item]
+            if indexPath.item < clubNames.count && indexPath.item < banners.count {
+                cell.name.text = clubNames[indexPath.item]
+                cell.banner.image = banners[indexPath.item]
+            }
         }
         
         cell.sendSubviewToBack(cell.banner)

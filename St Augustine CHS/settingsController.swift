@@ -19,24 +19,14 @@ class settingsController: UIViewController {
     @IBOutlet weak var clearCacheButton: UIButton!
     @IBOutlet weak var LogOutButton: UIButton!
     @IBOutlet weak var clearKeysButton: UIButton!
-    
-    var stupidButtonPressedCount = 0
+    @IBOutlet weak var subscribedToGeneralSwitch: UISwitch!
+    var subscribedToGeneral = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         if allUserFirebaseData.data["status"] as! Int == 2 {
             clearKeys.isHidden = false
         }
-        //create a new button
-        let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "info"), for: .normal)
-        //add function for button
-        button.addTarget(self, action: #selector(stupidButtonPressed), for: .touchUpInside)
-        button.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
-        
-        let barButton = UIBarButtonItem(customView: button)
-        //assign button to navigationbar
-        self.navigationItem.rightBarButtonItem = barButton
         
         changePrivacySettingsButton.setTitleColor(Defaults.primaryColor, for: .normal)
         clearCacheButton.setTitleColor(Defaults.primaryColor, for: .normal)
@@ -44,128 +34,35 @@ class settingsController: UIViewController {
         clearKeys.setTitleColor(Defaults.primaryColor, for: .normal)
         
         cacheSizeLabel.text = sizeOfDocumentDirectory()
+        
+        if let x = UserDefaults.standard.object(forKey: "subscribedToGeneral") as? Bool {
+            subscribedToGeneral = x
+        } else {
+            subscribedToGeneral = false
+        }
+        subscribedToGeneralSwitch.setOn(subscribedToGeneral, animated: true)
     }
     
-    @objc func stupidButtonPressed(){
-        stupidButtonPressedCount += 1
-        //print(stupidButtonPressedCount)
-        
-        var specialCase = true
-        var title = ""
-        var message = ""
-        
-        switch (stupidButtonPressedCount){
-        case 20:
-            title = "Um why"
-            message = "why are you still pressing this button?"
-            break
-        case 25:
-            title = "??"
-            message = "What are you doing?"
-            break
-        case 30:
-            title = "Button is confused"
-            message = "Why do you keep pressing me? I'm just a button doing my job no one else presses me this much please be normal"
-            break
-        case 40:
-            title = "Why do this"
-            message = "My name is Chumbus the Button, we can be friends. I took this job voluntarily and it's been chill up until now but now you keep poking me in the belly button"
-        case 50:
-            title = "i appreciate you here"
-            message = "thanks for staying with me...but can you please stop pushing me?"
-            break
-        case 60:
-            title = "maybe?"
-            message = "maybe you are bored? There's a lot to do on the internet....and your homework"
-            break
-        case 70:
-            title = "hmmm"
-            message = "maybe you don't have anything better to do. sometimes there is no homework to do"
-            break
-        case 75:
-            title = "hmmm"
-            message = "Some courses just don't have a lot of homework. Or maybe you finished it all"
-            break
-        case 80:
-            title = "welp"
-            message = "Im bored. Want to hear a cool quote?"
-            break
-        case 85:
-            title = "Kierkegarrd"
-            message = "The individual particular is paradoxically superior to the universal because of the teleological suspension of the ethical or Abraham is lost"
-            break
-        case 90:
-            title = "Heh"
-            message = "If you don't get that ask Mr Hoffman. He will tell you what it means."
-            break
-        case 100:
-            title = "Yawn"
-            message = "im getting tired. im going to sleep now"
-            break
-        case 110:
-            title = "*rolls over*"
-            message = "no stop im sleeping. please go away ZZZZZZZZ"
-            break
-        case 125:
-            title = "COME ON"
-            message = "I was in the middle of the best dream! ughhh im going to see if I can recreate it"
-            break
-        case 130:
-            title = "Oh I'm angry"
-            message = "I'm awake now and I'm going to ignore you now"
-            break
-        case 155:
-            title = "Hey stop"
-            message = "a little red mark is starting to form where you keep poking me"
-            break
-        case 200:
-            title = "Hehe"
-            message = "it tickeles a little, but i might just be going numb."
-            break
-        case 260:
-            title = "Ow"
-            message = "yeah thats definetly a bruise forming"
-            break
-        case 300:
-            title = "That's it"
-            message = "You've reach the end of my story. Nothing more as I need to go now. Thanks."
-            break
-        case 600:
-            title = "Hm."
-            message = "You are persistent"
-            break
-        case 1000:
-            title = "OK OK FINE YOU WIN"
-            message = "HERE TAKE THIS JUST LEAVE ME ALONE PLEASE"
-            //give points and/or badge?
-            break
-        default:
-            specialCase = false
-            break
-        }
-        
-        //Just the beginning bits to hide the fact there is an easter egg
-        if stupidButtonPressedCount < 5 {
-            title = "Info"
-            message = "Find any bugs? Sorry! Report it to the app dev team!"
-            specialCase = true
-        } else if stupidButtonPressedCount < 13 {
-            title = "Info?"
-            message = "Find any bugs?? Sorry!? Report it to the app dev team!?"
-            specialCase = true
-        } else if stupidButtonPressedCount < 19 {
-            title = "Info???"
-            message = "Did you find any bugs?? Please report it!"
-            specialCase = true
-        }
-        
-        if specialCase {
-            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-            alert.addAction(okAction)
+    @IBAction func subscribedToGeneralPressed(_ sender: UISwitch) {
+        if sender.isOn {
+            Messaging.messaging().subscribe(toTopic: "general") { error in
+                print("Subscribed to general topic")
+                UserDefaults.standard.set(true, forKey: "subscribedToGeneral")
+            }
+        } else {
+            //Create the alert controller.
+            let alert = UIAlertController(title: "Confirmation", message: "Are you sure you don't want to receive general announcements??", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
+            let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
+                Messaging.messaging().unsubscribe(fromTopic: "general") { error in
+                    print("Unsubscribed to general topic")
+                    UserDefaults.standard.set(false, forKey: "subscribedToGeneral")
+                }
+            }
+            alert.addAction(confirmAction)
+            alert.addAction(cancelAction)
             self.present(alert, animated: true, completion: nil)
         }
-        
     }
     
     @IBAction func pressedLogOut(_ sender: Any) {

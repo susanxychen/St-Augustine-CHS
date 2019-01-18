@@ -20,7 +20,8 @@ pod 'Firebase/InAppMessagingDisplay'
 pod 'Firebase/RemoteConfig'
 pod 'CropViewController'
 pod "Floaty", "~> 4.1.0"
-# pod 'Firebase/MLVision'
+pod 'Firebase/MLVision'
+pod 'Firebase/MLVisionBarcodeModel'
 # pod 'Firebase/MLVisionTextModel'
 
   target 'St Augustine CHSTests' do
