@@ -88,7 +88,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         supervoteSlider.tintColor = Defaults.accentColor
         
         supervoteSlider.minimumValue = Float(Defaults.supervoteMin)
-        supervoteSlider.maximumValue = allUserFirebaseData.data["points"] as! Float
+        supervoteSlider.maximumValue = Float(allUserFirebaseData.data["points"] as! Int)
         
         songView.isHidden = true
         if let x = UserDefaults.standard.object(forKey: "songsVoted") as? [[Any]]{
@@ -132,10 +132,10 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     var supervoteCost = 0
     @IBAction func sliderMoved(_ sender: Any) {
         let value = CGFloat(supervoteSlider.value)
-        supervoteAmount = Int(value)
-        supervoteVotes.text = "Votes: \(supervoteAmount)"
+        supervoteAmount = Int(value * Defaults.supervoteRatio)
+        supervoteCost = Int(value)
         
-        supervoteCost = Int(value * Defaults.supervoteRatio)
+        supervoteVotes.text = "Votes: \(supervoteAmount)"
         supervotePoints.text = "Points: \(supervoteCost)"
     }
     
@@ -154,90 +154,62 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         UIView.animate(withDuration: 0.1, animations: {
             self.supervoteView.alpha = 0
         }) { _ in
+            self.supervoteSlider.setValue(0, animated: false)
             self.supervoteView.isHidden = true
             self.view.sendSubviewToBack(self.supervoteView)
         }
         
-        //Take away your points and only upload the song if taken away points
-        let user = Auth.auth().currentUser
-        self.db.collection("users").document((user?.uid)!).setData([
-            "points": (allUserFirebaseData.data["points"] as! Int) - self.supervoteCost
+        //Subtact the points
+        allUserFirebaseData.data["points"] = allUserFirebaseData.data["points"] as! Int - self.supervoteCost
+        supervoteSlider.maximumValue = Float(allUserFirebaseData.data["points"] as! Int)
+        
+        let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+        userRef.setData([
+            "points" : allUserFirebaseData.data["points"] as! Int
         ], mergeFields: ["points"]) { (err) in
             if let err = err {
-                print("Error writing document: \(err)")
-                let alert = UIAlertController(title: "Error in retrieveing users", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Error in supervoting", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
-            }
-            
-            //Subtact the points
-            let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
-            allUserFirebaseData.data["points"] = allUserFirebaseData.data["points"] as! Int - self.supervoteCost
-            userRef.setData([
-                "points" : allUserFirebaseData.data["points"] as! Int
-            ], mergeFields: ["points"]) { (err) in
-                if let err = err {
-                    let alert = UIAlertController(title: "Error in supervoting", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                    alert.addAction(okAction)
-                    self.present(alert, animated: true, completion: nil)
-                } else {
-                    print("Document successfully updated")
-//                    self.functions.httpsCallable("changeVote").call(["id": self.selectedSuperSongID, "uservote": self.supervoteAmount]) { (result, error) in
-//                        if let error = error as NSError? {
-//                            if error.domain == FunctionsErrorDomain {
-//                                let code = FunctionsErrorCode(rawValue: error.code)
-//                                let message = error.localizedDescription
-//                                let details = error.userInfo[FunctionsErrorDetailsKey]
-//                                print(code as Any)
-//                                print(message)
-//                                print(details as Any)
-//                            }
-//                        }
-//                        voteData.songsVoted[self.supervotedIndex][0] = 2
-//                        voteData.songsVoted[self.supervotedIndex][3] = self.supervoteAmount + (voteData.songsVoted[self.supervotedIndex][3] as! Int)
-//                        UserDefaults.standard.set(voteData.songsVoted, forKey: "songsVoted")
-//                        print("vote sent to functions")
-//                        print("Result is: \(String(describing: result?.data))")
-//                        self.refreshList()
-//                    }
-                    let songRef = self.db.collection("songs").document(self.selectedSuperSongID)
-                    self.db.runTransaction({ (transaction, errorPointer) -> Any? in
-                        let uDoc: DocumentSnapshot
-                        do {
-                            try uDoc = transaction.getDocument(songRef)
-                        } catch let fetchError as NSError {
-                            errorPointer?.pointee = fetchError
-                            return nil
-                        }
-                        
-                        guard let oldPoints = uDoc.data()?["upvotes"] as? Int else {
-                            let error = NSError(
-                                domain: "AppErrorDomain",
-                                code: -1,
-                                userInfo: [
-                                    NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
-                                ]
-                            )
-                            errorPointer?.pointee = error
-                            return nil
-                        }
-                        transaction.updateData(["upvotes": oldPoints + self.supervoteAmount], forDocument: songRef)
+            } else {
+                print("Document successfully updated")
+                
+                let songRef = self.db.collection("songs").document(self.selectedSuperSongID)
+                self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                    let uDoc: DocumentSnapshot
+                    do {
+                        try uDoc = transaction.getDocument(songRef)
+                    } catch let fetchError as NSError {
+                        errorPointer?.pointee = fetchError
                         return nil
-                    }, completion: { (object, err) in
-                        if let error = err {
-                            print("Transaction failed: \(error)")
-                        } else {
-                            print("Transaction successfully committed!")
-                            print("successfuly upvoted")
-                            voteData.songsVoted[self.supervotedIndex][0] = 2
-                            voteData.songsVoted[self.supervotedIndex][3] = self.supervoteAmount + (voteData.songsVoted[self.supervotedIndex][3] as! Int)
-                            UserDefaults.standard.set(voteData.songsVoted, forKey: "songsVoted")
-                            self.refreshList()
-                        }
-                    })
-                }
+                    }
+                    
+                    guard let oldPoints = uDoc.data()?["upvotes"] as? Int else {
+                        let error = NSError(
+                            domain: "AppErrorDomain",
+                            code: -1,
+                            userInfo: [
+                                NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+                            ]
+                        )
+                        errorPointer?.pointee = error
+                        return nil
+                    }
+                    transaction.updateData(["upvotes": oldPoints + self.supervoteAmount], forDocument: songRef)
+                    return nil
+                }, completion: { (object, err) in
+                    if let error = err {
+                        print("Transaction failed: \(error)")
+                    } else {
+                        print("Transaction successfully committed!")
+                        print("successfuly upvoted")
+                        voteData.songsVoted[self.supervotedIndex][0] = 2
+                        voteData.songsVoted[self.supervotedIndex][3] = self.supervoteAmount + (voteData.songsVoted[self.supervotedIndex][3] as! Int)
+                        UserDefaults.standard.set(voteData.songsVoted, forKey: "songsVoted")
+                        self.refreshList()
+                    }
+                })
             }
         }
     }

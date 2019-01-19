@@ -86,7 +86,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var gradientSocialView: UIView!
     
     var signedInAndIsDone = false
-    
+    var cameFromTT = false
     //***********************************SETTING UP EVERYTHING****************************************
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -96,6 +96,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         viewAboveAllViews.frame = UIApplication.shared.keyWindow!.frame
         UIApplication.shared.keyWindow!.addSubview(viewAboveAllViews)
         definesPresentationContext = true
+        
+        dateToString.text = DateFormatter.localizedString(from: Date(), dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
         
         //Only sign in if you have not come from there
         GIDSignIn.sharedInstance()?.delegate = self
@@ -287,11 +289,11 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             print("do i even reach in here to get the data")
             if let docSnapshot = docSnapshot {
                //Check if the user even exists
-                if docSnapshot.data() != nil {
+                if let data = docSnapshot.data() {
                     print("i get the data")
-                    allUserFirebaseData.data = docSnapshot.data()!
+                    allUserFirebaseData.data = data
                     self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-                    self.getPicture(i: docSnapshot.data()!["profilePic"] as? Int ?? 0)
+                    self.getPicture(i: data["profilePic"] as? Int ?? 0)
                     self.getClubAnncs()
                     self.updateDatabaseWithNewRemoteID()
                 } else {
@@ -324,8 +326,17 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        //Adjust the brightness back to whatever it was
-        UIScreen.animateBrightness(to: brightnessBeforeTT)
+        if let x = UserDefaults.standard.object(forKey: "didEnterTT") as? Bool {
+            if x {
+                UIScreen.animateBrightness(to: brightnessBeforeTT)
+                UserDefaults.standard.set(false, forKey: "didEnterTT")
+            } else {
+                brightnessBeforeTT = UIScreen.main.brightness
+            }
+        } else {
+            brightnessBeforeTT = UIScreen.main.brightness
+        }
+        
         profilePicture.image = allUserFirebaseData.profilePic
         self.refreshList()
     }
@@ -354,7 +365,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     func fetchRemoteConfig(){
         RemoteConfig.remoteConfig().fetch(withExpirationDuration: 360) { [unowned self] (status, error) in
             guard error == nil else {
-                print("cant get values + \(error?.localizedDescription)")
+                print("cant get values + \(String(describing: error?.localizedDescription))")
                 return
             }
             print("yay i got rc")
@@ -734,7 +745,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     @objc func refreshList(){
         if signedInAndIsDone {
-            //Colours!!
+            //Colours
             setupRemoteConfigDefaults()
             updateViewWithRCValues()
             fetchRemoteConfig()
@@ -747,11 +758,11 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
                 if let docSnapshot = docSnapshot {
                     //Check if the user even exists
-                    if docSnapshot.data() != nil {
+                    if let data = docSnapshot.data() {
                         print("i get the data")
-                        allUserFirebaseData.data = docSnapshot.data()!
+                        allUserFirebaseData.data = data
                         self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-                        self.getPicture(i: docSnapshot.data()!["profilePic"] as? Int ?? 0)
+                        self.getPicture(i: data["profilePic"] as? Int ?? 0)
                         self.getClubAnncs()
                         self.updateDatabaseWithNewRemoteID()
                     } else {

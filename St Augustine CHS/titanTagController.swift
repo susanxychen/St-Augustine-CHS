@@ -16,6 +16,7 @@ class titanTagController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        UserDefaults.standard.set(true, forKey: "didEnterTT")
         
         if allUserFirebaseData.data["status"] as! Int == 2 {
             theGreetingLabel.isHidden = false

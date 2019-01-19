@@ -30,6 +30,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     var pendingList = [String]()
     
     //Club IB Outlets
+    @IBOutlet weak var updateButton: UIButton!
     @IBOutlet weak var clubBanner: UIImageView!
     @IBOutlet weak var clubNameTxtView: UITextView!
     @IBOutlet weak var clubDescTxtView: UITextView!
@@ -69,6 +70,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
                         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                         alert.addAction(okAction)
                         self.present(alert, animated: true, completion: nil)
+                        self.updateButton.isEnabled = false
                     }
                 }
             }

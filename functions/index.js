@@ -266,13 +266,14 @@ exports.sendToTopic = functions.https.onCall((data, response) => {
     const body = data.body;
     const title = data.title;
     const clubID = data.clubID;
+    const clubName = data.clubName;
 
     console.log(clubID);
 
     // See the "Defining the message payload" section below for details
     var payload = {
     notification: {
-        title: title,
+        title: '(' + clubName + ')' + title,
         body: body
     }
     };
@@ -289,29 +290,6 @@ exports.sendToTopic = functions.https.onCall((data, response) => {
         console.log('Error sending message:', error);
         return 'error';
     });
-
-    // // See documentation on defining a message payload.
-    // var message = {
-    // notification: {
-    //     title: title,
-    //     body: body
-    // },
-    // topic: clubID
-    // };
-
-    // // Send a message to devices subscribed to the provided topic.
-    // admin.messaging().send(message)
-    // .then((response) => {
-    //     // Response is a message ID string.
-    //     console.log('Successfully sent message:', response);
-    //     response.send('success');
-    //     return 'success';
-    // })
-    // .catch((error) => {
-    //     console.log('Error sending message:', error);
-    //     response.send(error);
-    //     return error;
-    // });
 });
 
 exports.manageSubscriptions = functions.https.onCall((data, context) => {

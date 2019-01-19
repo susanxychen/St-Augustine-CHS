@@ -31,6 +31,8 @@ class SignInPrefController: UIViewController {
     @IBOutlet weak var statusBarView: UIView!
     @IBOutlet weak var topBarView: UIView!
     
+    @IBOutlet weak var privacyPolicyButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -47,6 +49,7 @@ class SignInPrefController: UIViewController {
         
         print(picChosen)
         print(courses)
+        
     }
     
     @IBAction func switchTapped(_ sender: UISwitch) {
@@ -68,6 +71,14 @@ class SignInPrefController: UIViewController {
             }
         }
     }
+    
+    @IBAction func pressedPrivacyPolicy(_ sender: Any) {
+        if let url = URL(string: "https://app.staugustinechs.ca/privacy/") {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+
+    }
+    
     
     @IBAction func pressedFinishedButton(_ sender: Any) {
         print("wow u finished sign in")

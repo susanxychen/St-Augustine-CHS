@@ -16,10 +16,13 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
     var db: Firestore!
     var docRef: DocumentReference!
     
+    var clubID: String!
     var clubBannerID: String!
+    var clubBadgeID: String!
     var clubJoinSetting: Int!
     
     //Club IB Outlets
+    @IBOutlet weak var clubBadge: UIImageView!
     @IBOutlet weak var clubBanner: UIImageView!
     @IBOutlet weak var clubNameTxtView: UITextView!
     @IBOutlet weak var clubDescTxtView: UITextView!
@@ -37,6 +40,8 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
     //Colours
     @IBOutlet weak var statusBarView: UIView!
     @IBOutlet weak var topBarView: UIView!
+    
+    var isCroppingClubBadge = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,10 +92,23 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
         clubNameTxtView.backgroundColor = Defaults.primaryColor
         clubDescTxtView.textColor = Defaults.primaryColor
         clubDescTxtView.tintColor = Defaults.accentColor
+        
+        clubBadge.layer.cornerRadius = 100/2
+        clubBadge.clipsToBounds = true
+    }
+    
+    @IBAction func editClubBadge(_ sender: Any) {
+        isCroppingClubBadge = true
+        showImagePicker()
     }
     
     //***************************CLUB BANNER***************************
     @IBAction func editClubBanner(_ sender: Any) {
+        isCroppingClubBadge = false
+        showImagePicker()
+    }
+    
+    func showImagePicker(){
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         
@@ -130,19 +148,26 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
     //Picking the image from photo libarry.....Info dictionary contains the image data
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
-//        let resized = image.scaleImage(toSize: CGSize(width: 1280, height: 720))
-//        clubBanner.image = resized
-        let cropVC = CropViewController(image: image)
-        cropVC.delegate = self
-        cropVC.title = "Banners should be in a 1280x720 ratio"
-        cropVC.rotateButtonsHidden = true
-        cropVC.aspectRatioLockEnabled = true
-        cropVC.resetButtonHidden = true
-        cropVC.aspectRatioPickerButtonHidden = true
-        cropVC.imageCropFrame = CGRect(x: 0, y: 0, width: 1280, height: 720)
         
-        picker.dismiss(animated: true, completion: nil)
-        present(cropVC, animated: true, completion: nil)
+        if isCroppingClubBadge {
+            let cropVC = CropViewController(croppingStyle: .circular, image: image)
+            cropVC.delegate = self
+            
+            picker.dismiss(animated: true, completion: nil)
+            present(cropVC, animated: true, completion: nil)
+        } else {
+            let cropVC = CropViewController(image: image)
+            cropVC.delegate = self
+            cropVC.title = "Banners should be in a 1280x720 ratio"
+            cropVC.rotateButtonsHidden = true
+            cropVC.aspectRatioLockEnabled = true
+            cropVC.resetButtonHidden = true
+            cropVC.aspectRatioPickerButtonHidden = true
+            cropVC.imageCropFrame = CGRect(x: 0, y: 0, width: 1280, height: 720)
+            
+            picker.dismiss(animated: true, completion: nil)
+            present(cropVC, animated: true, completion: nil)
+        }
     }
     
     //If the user cancesl picking image from library
@@ -154,7 +179,13 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
         print("i get here crop")
         cropViewController.dismiss(animated: true, completion: nil)
         print(image)
-        clubBanner.image = image
+        
+        if isCroppingClubBadge {
+            clubBadge.image = image
+        } else {
+            clubBanner.image = image
+        }
+        
     }
     
     //***************************JOIN CLUB SETTINGS***************************
@@ -189,14 +220,14 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
             self.present(alert, animated: true, completion: nil)
         }
         
-//        if clubDescTxtView.text.contains("\n") {
-//            valid = false
-//            //Tell the user that information needs to be filled in
-//            let alert = UIAlertController(title: "Error", message: "Club Description must not contain a return key", preferredStyle: .alert)
-//            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-//            alert.addAction(okAction)
-//            self.present(alert, animated: true, completion: nil)
-//        }
+        if clubBadge.image == UIImage(named: "space") {
+            valid = false
+            //Tell the user that information needs to be filled in
+            let alert = UIAlertController(title: "Error", message: "Clubs must have a club badge", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
+        }
         
         if clubBanner.image == UIImage(named: "space") {
             valid = false
@@ -208,7 +239,7 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
         }
         
         if (self.clubNameTxtView.text?.count)! > 50 {
-            let alert = UIAlertController(title: "Error", message: "Title is too long", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Error", message: "Title is too long (50 characters max)", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
@@ -216,7 +247,7 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
         }
         
         if (self.clubDescTxtView.text?.count)! > 300 {
-            let alert = UIAlertController(title: "Error", message: "Description is too long", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Error", message: "Description is too long (300 characters max)", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
@@ -243,6 +274,7 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
                 if let uploadData = newClubBanner?.jpegData(compressionQuality: 1.0){
                     storageRef.putData(uploadData, metadata: metaData) { (metadata, error) in
                         if let error = error {
+                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                             let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
                             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                             alert.addAction(okAction)
@@ -251,7 +283,7 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
                             return
                         }
                         print(metadata as Any)
-                        self.uploadTheRestOfTheClub()
+                        self.uploadClubBadge()
                     }
                 }
             }
@@ -261,10 +293,65 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
         }
     }
     
+    func uploadClubBadge(){
+        let newClubBadge = self.clubBadge.image
+        self.clubID = self.randomString(length: 20)
+        self.clubBadgeID = self.randomString(length: 20)
+        
+        let user = Auth.auth().currentUser
+        let userRef = self.db.collection("users").document((user?.uid)!)
+        userRef.updateData(["badges": FieldValue.arrayUnion([clubBadgeID])])
+        
+        //Start to upload image
+        //Set up the image data
+        let storageRef = Storage.storage().reference(withPath: "badges").child(self.clubBadgeID)
+        let metaData = StorageMetadata()
+        metaData.contentType = "image/jpeg"
+        
+        //Upload the image to the database
+        if let uploadData = newClubBadge?.jpegData(compressionQuality: 1.0){
+            storageRef.putData(uploadData, metadata: metaData) { (metadata, error) in
+                if let error = error {
+                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                    alert.addAction(okAction)
+                    self.present(alert, animated: true, completion: nil)
+                    print(error as Any)
+                    return
+                }
+                print(metadata as Any)
+                self.createBadgeDoc()
+            }
+        }
+    }
+    
+    func createBadgeDoc(){
+        let user = Auth.auth().currentUser
+        print("Added badge id \(clubBadgeID)")
+        db.collection("badges").document(clubBadgeID).setData([
+            "club": clubID,
+            "desc": "\(clubNameTxtView.text ?? "Club") Member",
+            "creator": user?.uid as Any,
+            "img": clubBadgeID,
+            "type": -1
+        ]) { err in
+            if let err = err {
+                let alert = UIAlertController(title: "Error in adding badge", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+            } else {
+                print("Document successfully written!")
+                self.uploadTheRestOfTheClub()
+            }
+        }
+    }
+    
     func uploadTheRestOfTheClub(){
         //Send the data to firebase
         // Add a new document in collection "announcements"
-        let clubID = randomString(length: 20)
+        
         let user = Auth.auth().currentUser
         print("Added club id \(clubID)")
         
@@ -277,6 +364,7 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
         
         db.collection("clubs").document(clubID).setData([
             "admins": [user?.uid],
+            "clubBadge": clubBadgeID,
             "desc": clubDescTxtView.text,
             "img": clubBannerID,
             "joinPref": clubJoinSetting,

@@ -98,6 +98,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     
     var cameFromSocialPage = false
     var addedFloatyAlready = false
+    var isSubscribedToClub = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -151,6 +152,12 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             announcementLabel.isHidden = true
             anncCollectionView.isHidden = true
         }
+        
+        if let x = UserDefaults.standard.object(forKey: "subscribe.\(clubID)") as? Bool {
+            isSubscribedToClub = x
+        } else {
+            isSubscribedToClub = true
+        }
     }
     
     func getClubSettingsInfo(){
@@ -197,6 +204,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             
             //Add floaty
             let floaty = Floaty()
+            floaty.buttonColor = Defaults.accentColor
+            floaty.plusColor = UIColor.white
             floaty.overlayColor = UIColor.clear
             floaty.addItem("", icon: UIImage(named: "megaphone")!, handler: { item in
                 print("nice")
@@ -389,6 +398,63 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                 self.segueNum = 3
                 self.performSegue(withIdentifier: "viewMembers", sender: self.memberList)
             }))
+            
+            if isSubscribedToClub {
+                actionSheet.addAction(UIAlertAction(title: "Unsubscribe to Club Annnouncements", style: .default, handler: { (action:UIAlertAction) in
+                    
+                    let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to unsubscribe? You won't recieve any more notifications from this club.", preferredStyle: .alert)
+                    let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
+                    let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default) { (action:UIAlertAction) in
+                        Messaging.messaging().unsubscribe(fromTopic: self.clubID) { error in
+                            if let error = error {
+                                let alert = UIAlertController(title: "Error", message: "Cannot unsubscribe: \(error.localizedDescription)", preferredStyle: .alert)
+                                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                                self.present(alert, animated: true, completion: nil)
+                            } else {
+                                print("unsubscribed to topic")
+                                
+                                //Show alert for around 2 seconds
+                                let alert = UIAlertController(title: "", message: "Unsubscribed", preferredStyle: .alert)
+                                self.present(alert, animated: true, completion: nil)
+                                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5){
+                                    alert.dismiss(animated: true, completion: nil)
+                                }
+                                
+                                self.isSubscribedToClub = false
+                                UserDefaults.standard.set(false, forKey: "subscribe.\(self.clubID)")
+                            }
+                        }
+                    }
+                    alert.addAction(confirmAction)
+                    alert.addAction(cancelAction)
+                    self.present(alert, animated: true, completion: nil)
+                    
+                }))
+            } else {
+                actionSheet.addAction(UIAlertAction(title: "Subscribe to Club Annnouncements", style: .default, handler: { (action:UIAlertAction) in
+                    Messaging.messaging().subscribe(toTopic: self.clubID) { error in
+                        print("subscribed to topic")
+                        
+                        if let error = error {
+                            let alert = UIAlertController(title: "Error", message: "Cannot subscribe: \(error.localizedDescription)", preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                        } else {
+                            //Show alert for around 2 seconds
+                            let alert = UIAlertController(title: "", message: "Subscribed!", preferredStyle: .alert)
+                            self.present(alert, animated: true, completion: nil)
+                            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5){
+                                alert.dismiss(animated: true, completion: nil)
+                            }
+                            
+                            self.isSubscribedToClub = true
+                            UserDefaults.standard.set(true, forKey: "subscribe.\(self.clubID)")
+                        }
+                    }
+                }))
+            }
+            
+            
         }
         
         if partOfClub {

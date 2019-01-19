@@ -94,15 +94,9 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
     //Picking the image from photo libarry.....Info dictionary contains the image data
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
-//        let theResizedImage = image.scaleImage(toSize: CGSize(width: 150, height: 150))
-//        badgeImageView.image = theResizedImage
-//        print(theResizedImage)
+        
         let cropVC = CropViewController(croppingStyle: .circular, image: image)
         cropVC.delegate = self
-//        cropVC.rotateButtonsHidden = true
-//        cropVC.aspectRatioLockEnabled = true
-//        cropVC.resetButtonHidden = true
-//        cropVC.aspectRatioPickerButtonHidden = true
         
         picker.dismiss(animated: true, completion: nil)
         present(cropVC, animated: true, completion: nil)

@@ -24,7 +24,8 @@ class settingsController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if allUserFirebaseData.data["status"] as! Int == 2 {
+
+        if allUserFirebaseData.data["status"] as? Int ?? 0 == 2 {
             clearKeys.isHidden = false
         }
         
@@ -51,8 +52,10 @@ class settingsController: UIViewController {
             }
         } else {
             //Create the alert controller.
-            let alert = UIAlertController(title: "Confirmation", message: "Are you sure you don't want to receive general announcements??", preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
+            let alert = UIAlertController(title: "Confirmation", message: "Are you sure you don't want to receive general announcements? You may miss out on important information", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel) { (alert) in
+                self.subscribedToGeneralSwitch.setOn(true, animated: true)
+            }
             let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
                 Messaging.messaging().unsubscribe(fromTopic: "general") { error in
                     print("Unsubscribed to general topic")
@@ -84,6 +87,12 @@ class settingsController: UIViewController {
         UserDefaults.standard.removePersistentDomain(forName: domain)
         UserDefaults.standard.synchronize()
         print("After: \(Array(UserDefaults.standard.dictionaryRepresentation().keys).count) keys")
+        
+        let alert = UIAlertController(title: "", message: "Cleared", preferredStyle: .alert)
+        self.present(alert, animated: true, completion: nil)
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1){
+            alert.dismiss(animated: true, completion: nil)
+        }
     }
     
     //********************************CACHE********************************

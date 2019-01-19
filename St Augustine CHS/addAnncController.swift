@@ -74,6 +74,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
                         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                         alert.addAction(okAction)
                         self.present(alert, animated: true, completion: nil)
+                        self.postButton.isEnabled = false
                     }
                 }
             }
@@ -193,8 +194,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
                     if !iAmConneted{
                         print("Not connected")
                         let alert = UIAlertController(title: "Error", message: "You are not connected to the internet", preferredStyle: .alert)
-                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                        alert.addAction(okAction)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                         self.present(alert, animated: true, completion: nil)
                     }
                 }
@@ -390,7 +390,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
     }
     
     func doneWithAnnc() {
-        functions.httpsCallable("sendToTopic").call(["body": theDesc, "title": theTitle, "clubID": clubID]) { (result, error) in
+        functions.httpsCallable("sendToTopic").call(["body": theDesc, "title": theTitle, "clubID": clubID, "clubName": clubName]) { (result, error) in
             if let error = error as NSError? {
                 if error.domain == FunctionsErrorDomain {
                     let code = FunctionsErrorCode(rawValue: error.code)
