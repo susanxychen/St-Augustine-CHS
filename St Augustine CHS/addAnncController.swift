@@ -11,8 +11,6 @@ import Firebase
 
 class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    var snooFiller = UIImage(named: "snoo")
-    
     //Cloud Functions
     lazy var functions = Functions.functions()
     
@@ -105,7 +103,6 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
             
             if editImageName != "" {
                 anncImg.image = editImage
-                anncImg.isHidden = false
                 removeImage.isHidden = false
             }
         }
@@ -153,7 +150,6 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
         removeImage.isHidden = false
-        anncImg.isHidden = false
         anncImg.image = image
         
         if editMode {
@@ -169,8 +165,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
     }
     
     @IBAction func removeImage(_ sender: Any) {
-        anncImg.isHidden = true
-        anncImg.image = UIImage(named: "snoo")
+        anncImg.image = nil
         removeImage.isHidden = true
     }
     
@@ -242,7 +237,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
             
             var imageName = ""
             //Check the img field
-            if self.anncImg.image != UIImage(named: "snoo") {
+            if self.anncImg.image != nil {
                 //Give the photo a random name
                 if !self.editMode || (self.editImageName == "") {
                     imageName = self.randomString(length: 20)
@@ -273,6 +268,17 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
                     }
                 }
             } else {
+                if editMode && self.editImageName != "" {
+                    let storageRef = Storage.storage().reference(withPath: "announcements").child(editImageName)
+                    storageRef.delete(completion: { err in
+                        if let err = err {
+                            print("Error deleteing anncImg \(err.localizedDescription)")
+                        } else {
+                            print("Annc Img successfully deleted")
+                        }
+                    })
+                }
+                
                 self.uploadRestAfterImageIsDone(imageName: imageName)
                 print("there is no image available")
             }

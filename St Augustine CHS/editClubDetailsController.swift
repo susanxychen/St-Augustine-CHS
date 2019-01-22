@@ -304,6 +304,19 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
                             }
                             print("Result is: \(String(describing: result?.data))")
                         }
+                        
+                        self.functions.httpsCallable("sendToUser").call(["token": msgToken, "title": "You've been accepted into \(newClubName)", "body": "Congrats!"]) { (result, error) in
+                            if let error = error as NSError? {
+                                if error.domain == FunctionsErrorDomain {
+                                    let code = FunctionsErrorCode(rawValue: error.code)
+                                    let message = error.localizedDescription
+                                    let details = error.userInfo[FunctionsErrorDetailsKey]
+                                    print(code as Any)
+                                    print(message)
+                                    print(details as Any)
+                                }
+                            }
+                        }
                     }
                     if let err = err {
                         print(err)

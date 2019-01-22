@@ -17,7 +17,6 @@ exports.sendEmailToAdmins = functions.https.onCall((data, response) => {
     const adminIDArr = data.adminIDArr;
     const userEmail = data.userEmail;
     const clubName = data.clubName;
-    const adminEmails = []
 
     //Convert ids to emails
     for (let i = 0; i < adminIDArr.length; i++){
@@ -58,12 +57,10 @@ exports.sendEmailToAdmins = functions.https.onCall((data, response) => {
                 // eslint-disable-next-line promise/no-nesting
                 admin.messaging().send(message)
                 .then((response2) => {
-                    response.send('nice');
                     console.log('Successfully sent message:', response2);
                     return 'sucess';
                 })
                 .catch((error) => {
-                    response.send(error);
                     console.log('Error sending message:', error);
                     return 'error';
                 });
@@ -86,10 +83,8 @@ exports.sendEmailToAdmins = functions.https.onCall((data, response) => {
                 transporter.sendMail(mailOptions, (error, info) =>{
                     if (error) {
                         console.log(error);
-                        response.send('Error!')
                     } else {
                         console.log('Email sent: ' + info.response);
-                        response.send('Success!');
                     }
                 });
                 return theAdminEmail;

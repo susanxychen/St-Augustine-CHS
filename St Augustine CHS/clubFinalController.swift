@@ -738,46 +738,45 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                         self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
                         let theDeleteAnncID = self.anncRef[indexPath.item]
                         
-                        //Remove the announcement document
-                        self.db.collection("announcements").document(theDeleteAnncID).delete() { err in
-                            if let err = err {
-                                print("Error in removing document: \(err.localizedDescription)")
-                                let alert = UIAlertController(title: "Error in deleting announcement", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
-                                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                                alert.addAction(okAction)
-                                self.present(alert, animated: true, completion: nil)
-                            } else {
-                                print("Document removed!")
-                            }
-                        }
-                        
-                        //Delete the image from the database
-                        let imageName = self.anncData[indexPath.item]["img"] as? String ?? ""
-                        if imageName != "" {
-                            let storageRef = Storage.storage().reference(withPath: "announcements").child(imageName)
-                            storageRef.delete(completion: { err in
+                        DispatchQueue.main.async {
+                            //Remove the announcement document
+                            self.db.collection("announcements").document(theDeleteAnncID).delete() { err in
                                 if let err = err {
-                                    print("Error deleteing anncImg \(err.localizedDescription)")
+                                    print("Error in removing document: \(err.localizedDescription)")
+                                    let alert = UIAlertController(title: "Error in deleting announcement", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                                    alert.addAction(okAction)
+                                    self.present(alert, animated: true, completion: nil)
                                 } else {
-                                    print("Annc Img successfully deleted")
+                                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                    self.refreshList()
                                 }
-                            })
-                        }
-                        
-                        let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-                        guard let items = try? FileManager.default.contentsOfDirectory(atPath: path) else { return }
-                        
-                        for item in items {
-                            // This can be made better by using pathComponent
-                            let completePath = path.appending("/").appending(item)
-                            if completePath.hasSuffix(imageName) {
-                                print("removing \(imageName)")
-                                try? FileManager.default.removeItem(atPath: completePath)
                             }
+                            //Delete the image from the database
+                            let imageName = self.anncData[indexPath.item]["img"] as? String ?? ""
+                            if imageName != "" {
+                                let storageRef = Storage.storage().reference(withPath: "announcements").child(imageName)
+                                storageRef.delete(completion: { err in
+                                    if let err = err {
+                                        print("Error deleteing anncImg \(err.localizedDescription)")
+                                    } else {
+                                        print("Annc Img successfully deleted")
+                                    }
+                                })
+                            }
+                            let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+                            guard let items = try? FileManager.default.contentsOfDirectory(atPath: path) else { return }
+                            
+                            for item in items {
+                                // This can be made better by using pathComponent
+                                let completePath = path.appending("/").appending(item)
+                                if completePath.hasSuffix(imageName) {
+                                    print("removing \(imageName)")
+                                    try? FileManager.default.removeItem(atPath: completePath)
+                                }
+                            }
+                            
                         }
-                        
-                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-                        self.refreshList()
                     }
                     alert.addAction(confirmAction)
                     alert.addAction(cancelAction)

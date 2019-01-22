@@ -16,4 +16,6 @@ class mainClubNewsCell: UICollectionViewCell {
     @IBOutlet weak var contentLabel: UITextView!
     @IBOutlet weak var titleHeight: NSLayoutConstraint!
     @IBOutlet weak var contentHeight: NSLayoutConstraint!
+    @IBOutlet weak var seeImageLabel: UILabel!
+    @IBOutlet weak var seeImageLabelHeight: NSLayoutConstraint!
 }

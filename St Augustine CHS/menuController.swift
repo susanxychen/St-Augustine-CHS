@@ -631,7 +631,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             let titleHeight = estimatedFrame.height + 10
 
             
-            return CGSize(width: view.frame.width, height: contentHeight + titleHeight + 8)
+            return CGSize(width: view.frame.width, height: contentHeight + titleHeight + 28)
         }
     }
     
@@ -685,8 +685,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             
             cell.titleHeight.constant = titleHeight
             
-            //self.anncViewHeight.constant = self.annoucView.contentSize.height + 10
-            
             calendarButton.isHidden = false
             
             return cell
@@ -707,6 +705,13 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             cell.dateLabel.text = DateFormatter.localizedString(from: date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
             cell.titleLabel.text = clubNewsData[indexPath.item]["title"] as? String ?? "error"
             cell.contentLabel.text = clubNewsData[indexPath.item]["content"] as? String ?? "error"
+            
+            if cell.contentLabel.text.hasSuffix(" (This announcement has an image)") {
+                cell.contentLabel.text = String(cell.contentLabel.text.dropLast(33))
+                cell.seeImageLabel.isHidden = false
+            } else {
+                cell.seeImageLabel.isHidden = true
+            }
             
             let theFont = UIFont(name: "Scada-Regular", size: 18)
             let size = CGSize(width: view.frame.width, height: 1000)
