@@ -192,11 +192,16 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     self.promotedAMember!(true)
                     let clubRef = self.db.collection("clubs").document(self.clubID)
                     clubRef.updateData(["admins": FieldValue.arrayRemove([self.adminsList[indexPath.item]])])
-                    let userRef = self.db.collection("users").document(self.adminsList[indexPath.item])
-                    userRef.updateData(["clubs": FieldValue.arrayRemove([self.clubID])])
-                    userRef.updateData(["badges": FieldValue.arrayRemove([self.clubBadge])])
                     
-                    self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [self.adminsMsgList[indexPath.item]], "isSubscribing": false, "clubID": self.clubID]) { (result, error) in
+                    let userRef = self.db.collection("users").document(self.adminsList[indexPath.item])
+                    userRef.updateData([
+                        "clubs": FieldValue.arrayRemove([self.clubID]),
+                        "notifications": FieldValue.arrayRemove([self.clubID]),
+                        "badges": FieldValue.arrayRemove([self.clubBadge])
+                    ])
+                    
+                    let msgToken = self.adminsMsgList[indexPath.item]
+                    self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [msgToken], "isSubscribing": false, "clubID": self.clubID]) { (result, error) in
                         if let error = error as NSError? {
                             if error.domain == FunctionsErrorDomain {
                                 let code = FunctionsErrorCode(rawValue: error.code)
@@ -207,7 +212,6 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                                 print(details as Any)
                             }
                         }
-                        print("Email sent to admins")
                         print("Result is: \(String(describing: result?.data))")
                     }
                     
@@ -259,6 +263,20 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     clubRef.updateData(["members": FieldValue.arrayRemove([self.membersList[indexPath.item]])])
                     clubRef.updateData(["admins": FieldValue.arrayUnion([self.membersList[indexPath.item]])])
                     
+                    let msgToken = self.membersMsgList[indexPath.item]
+                    self.functions.httpsCallable("sendToUser").call(["token": msgToken, "title": "You have been promoted to a club admin!", "body": "Congrats!"]) { (result, error) in
+                        if let error = error as NSError? {
+                            if error.domain == FunctionsErrorDomain {
+                                let code = FunctionsErrorCode(rawValue: error.code)
+                                let message = error.localizedDescription
+                                let details = error.userInfo[FunctionsErrorDetailsKey]
+                                print(code as Any)
+                                print(message)
+                                print(details as Any)
+                            }
+                        }
+                    }
+                    
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
                         self.getClubData()
                     })
@@ -275,9 +293,13 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     self.promotedAMember!(true)
                     let clubRef = self.db.collection("clubs").document(self.clubID)
                     clubRef.updateData(["members": FieldValue.arrayRemove([self.membersList[indexPath.item]])])
+                    
                     let userRef = self.db.collection("users").document(self.membersList[indexPath.item])
-                    userRef.updateData(["clubs": FieldValue.arrayRemove([self.clubID])])
-                    userRef.updateData(["badges": FieldValue.arrayRemove([self.clubBadge])])
+                    userRef.updateData([
+                        "clubs": FieldValue.arrayRemove([self.clubID]),
+                        "notifications": FieldValue.arrayRemove([self.clubID]),
+                        "badges": FieldValue.arrayRemove([self.clubBadge])
+                    ])
                     
                     self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [self.membersMsgList[indexPath.item]], "isSubscribing": false, "clubID": self.clubID]) { (result, error) in
                         if let error = error as NSError? {

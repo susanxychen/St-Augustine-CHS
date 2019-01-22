@@ -15,11 +15,16 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
     var db: Firestore!
     var docRef: DocumentReference!
     
+    //Cloud Functions
+    lazy var functions = Functions.functions()
+    
     var clubID: String!
+    var clubName: String!
     var clubBadge: String!
     var pendingList = [String]()
     var pendingListNames = [String]()
     var pendingListEmails = [String]()
+    var pendingListMsgTokens = [String]()
     var pendingListPics = [UIImage]()
     
     @IBOutlet weak var pendingListCollectionView: UICollectionView!
@@ -64,19 +69,48 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
             actionSheet.addAction(UIAlertAction(title: "Accept", style: .default, handler: { (action:UIAlertAction) in
                 self.changedPendingList!(true)
                 
+                let msgToken = self.pendingListMsgTokens[indexPath.item]
+                self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [msgToken], "isSubscribing": true, "clubID": self.clubID]) { (result, error) in
+                    if let error = error as NSError? {
+                        if error.domain == FunctionsErrorDomain {
+                            let code = FunctionsErrorCode(rawValue: error.code)
+                            let message = error.localizedDescription
+                            let details = error.userInfo[FunctionsErrorDetailsKey]
+                            print(code as Any)
+                            print(message)
+                            print(details as Any)
+                        }
+                    }
+                    print("Result is: \(String(describing: result?.data))")
+                }
+                
+                self.functions.httpsCallable("sendToUser").call(["token": msgToken, "title": "You've been accepted into \(self.clubName ?? "a club")", "body": "Congrats!"]) { (result, error) in
+                    if let error = error as NSError? {
+                        if error.domain == FunctionsErrorDomain {
+                            let code = FunctionsErrorCode(rawValue: error.code)
+                            let message = error.localizedDescription
+                            let details = error.userInfo[FunctionsErrorDetailsKey]
+                            print(code as Any)
+                            print(message)
+                            print(details as Any)
+                        }
+                    }
+                }
+                
                 //Update club data
                 let clubRef = self.db.collection("clubs").document(self.clubID)
                 clubRef.updateData([
-                    "pending": FieldValue.arrayRemove([self.pendingList[indexPath.item]])
-                ])
-                clubRef.updateData([
+                    "pending": FieldValue.arrayRemove([self.pendingList[indexPath.item]]),
                     "members": FieldValue.arrayUnion([self.pendingList[indexPath.item]])
                 ])
                 
                 //update user data
                 let userRef = self.db.collection("users").document(self.pendingList[indexPath.item])
-                userRef.updateData(["clubs": FieldValue.arrayUnion([self.clubID])])
-                userRef.updateData(["badges": FieldValue.arrayUnion([self.clubBadge])])
+                userRef.updateData([
+                    "clubs": FieldValue.arrayUnion([self.clubID]),
+                    "notifications": FieldValue.arrayUnion([self.clubID]),
+                    "badges": FieldValue.arrayUnion([self.clubBadge])
+                ])
                 
                 //give em points
                 self.db.runTransaction({ (transaction, errorPointer) -> Any? in
@@ -132,7 +166,6 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
     
     func getClubData() {
         pendingList.removeAll()
-        pendingListNames.removeAll()
         self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
         db.collection("clubs").document(clubID).getDocument { (snap, err) in
             if let err = err {
@@ -150,10 +183,15 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
     
     func getPendingListNames(){
         pendingListNames.removeAll()
+        pendingListEmails.removeAll()
+        pendingListMsgTokens.removeAll()
+        pendingListPics.removeAll()
+        
         self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
         for _ in pendingList {
             pendingListNames.append("")
             pendingListEmails.append("")
+            pendingListMsgTokens.append("")
             pendingListPics.append(UIImage())
         }
         for user in 0..<pendingList.count {
@@ -166,9 +204,9 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                 }
                 if let snap = snap {
                     let data = snap.data()!
-                    //self.pendingListNames.append(data?["name"] as? String ?? "Error")
                     self.pendingListNames[user] = data["name"] as? String ?? "error"
                     self.pendingListEmails[user] = data["email"] as? String ?? "error"
+                    self.pendingListMsgTokens[user] = data["msgToken"] as? String ?? "error"
                     
                     //Get the image
                     self.getPicture(profPic: data["profilePic"] as! Int, user: user)

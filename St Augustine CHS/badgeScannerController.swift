@@ -17,6 +17,9 @@ class badgeScannerController: UIViewController, AVCaptureVideoDataOutputSampleBu
     var db: Firestore!
     var docRef: DocumentReference!
     
+    //Cloud Functions
+    lazy var functions = Functions.functions()
+    
     var badgeID: String!
     
     @IBOutlet weak var theCameraView: UIView!
@@ -144,7 +147,22 @@ class badgeScannerController: UIViewController, AVCaptureVideoDataOutputSampleBu
                             userRef.updateData([
                                 "badges": FieldValue.arrayUnion([self.badgeID])
                             ])
-
+                            
+                            let msgToken = snap.documents[0].data()["msgToken"] as? String ?? "error"
+                            
+                            self.functions.httpsCallable("sendToUser").call(["token": msgToken, "title": "You got a Badge!", "body": "Congrats!"]) { (result, error) in
+                                if let error = error as NSError? {
+                                    if error.domain == FunctionsErrorDomain {
+                                        let code = FunctionsErrorCode(rawValue: error.code)
+                                        let message = error.localizedDescription
+                                        let details = error.userInfo[FunctionsErrorDetailsKey]
+                                        print(code as Any)
+                                        print(message)
+                                        print(details as Any)
+                                    }
+                                }
+                            }
+                            
                             self.db.runTransaction({ (transaction, errorPointer) -> Any? in
                                 let uDoc: DocumentSnapshot
                                 do {

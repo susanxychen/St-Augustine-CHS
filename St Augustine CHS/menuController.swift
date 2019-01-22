@@ -34,6 +34,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var tapOutOfMenuButton: UIButton!
     @IBOutlet weak var dateToString: UILabel!
     @IBOutlet weak var dayNumber: UILabel!
+    @IBOutlet weak var snowDayLabel: UILabel!
+    @IBOutlet weak var snowDayLabelHeight: NSLayoutConstraint!
     
     //Scroll Height
     @IBOutlet weak var homeScrollViewHeight: NSLayoutConstraint!
@@ -217,21 +219,22 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         overlayView.frame = UIApplication.shared.keyWindow!.frame
         showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: overlayView)
         
+        //In app messaging
         InstanceID.instanceID().getID { (result, error) in
             if let error = error {
                 print("Error fetching remote instange ID: \(error)")
             } else if let result = result {
-                print("Remote instance ID: \(result)") //POWERRRRRRRRRR
+                print("Remote instance ID: \(result)")
             }
         }
         
+        //actual msg token
         InstanceID.instanceID().instanceID { (result, error) in
             if let error = error {
                 print("Error fetching remote instance ID: \(error)")
             } else if let result = result {
                 print("Remote instance ID token: \(result.token)")
                 
-                //self.instanceIDTokenMessage.text  = "Remote InstanceID token: \(result.token)"
             }
         }
         
@@ -336,9 +339,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         } else {
             brightnessBeforeTT = UIScreen.main.brightness
         }
-        
         profilePicture.image = allUserFirebaseData.profilePic
-        self.refreshList()
+        //self.refreshList()
     }
     
     func setupRemoteConfigDefaults() {
@@ -444,7 +446,18 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 print("Error fetching remote instance ID: \(error)")
             } else if let result = result {
                 //print("Remote instance ID token: \(result.token)")
-                self.db.collection("users").document((Auth.auth().currentUser?.uid)!).setData(["msgToken": result.token], merge: true)
+                
+                if result.token != allUserFirebaseData.data["msgToken"] as? String ?? "err"{
+                    self.db.collection("users").document((Auth.auth().currentUser?.uid)!).setData(["msgToken": result.token], merge: true)
+                    
+                    //Resubscribe to everything
+                    for club in allUserFirebaseData.data["notifications"] as? [String] ?? ["general"] {
+                        Messaging.messaging().subscribe(toTopic: club) { error in
+                            print("Subscribed to \(club) topic")
+                        }
+                    }
+                }
+                
             }
         }
     }
@@ -494,7 +507,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 thereWasASwap = false
                 for i in 0...clubNewsData.count-2 {
                     //Check if there is an image. If so also add a note saying there is an image
-                    if clubNewsData[i]["img"] as! String != "" {
+                    if clubNewsData[i]["img"] as! String != "" && !(clubNewsData[i]["content"] as! String).hasSuffix(" (This announcement has an image)") {
                         clubNewsData[i]["content"] = clubNewsData[i]["content"] as! String + " (This announcement has an image)"
                     }
                     
@@ -512,13 +525,13 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                     }
                 }
                 //Check if there is an image. If so also add a note saying there is an image
-                if clubNewsData[clubNewsData.count-1]["img"] as! String != "" {
+                if clubNewsData[clubNewsData.count-1]["img"] as! String != "" && !(clubNewsData[clubNewsData.count-1]["content"] as! String).hasSuffix(" (This announcement has an image)") {
                     clubNewsData[clubNewsData.count-1]["content"] = clubNewsData[clubNewsData.count-1]["content"] as! String + " (This announcement has an image)"
                 }
             }
         } else {
             //Check if there is an image. If so also add a note saying there is an image
-            if clubNewsData[0]["img"] as! String != "" {
+            if (clubNewsData[0]["img"] as! String) != "" && !(clubNewsData[0]["content"] as! String).hasSuffix(" (This announcement has an image)") {
                 clubNewsData[0]["content"] = clubNewsData[0]["content"] as! String + " (This announcement has an image)"
             }
         }
@@ -623,7 +636,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let height = self.annoucView.contentSize.height + self.clubAnncView.contentSize.height + 300
+        let height = self.annoucView.contentSize.height + self.clubAnncView.contentSize.height + 340
         self.anncViewHeight.constant = self.annoucView.contentSize.height + 10
         self.clubAnncHeight.constant = self.clubAnncView.contentSize.height + 10
         
@@ -833,9 +846,17 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 self.dayNumber.text = "Error: \(err.localizedDescription)"
             }
             if let snap = snap {
-                let data = snap.data() ?? ["dayNumber": "0", "haveFun": false]
-                let theDayNumber = data["dayNumber"] as! String
-                let haveFun = data["haveFun"] as! Bool
+                let data = snap.data() ?? ["dayNumber": "0", "haveFun": false, "snowDay": false]
+                let theDayNumber = data["dayNumber"] as? String ?? "0"
+                let haveFun = data["haveFun"] as? Bool ?? false
+                let snowDay = data["snowDay"] as? Bool ?? false
+                
+                if snowDay {
+                    self.snowDayLabel.isHidden = false
+                    self.snowDayLabelHeight.constant = 25
+                } else {
+                    self.snowDayLabelHeight.constant = 0
+                }
                 
                 if theDayNumber == "0" {
                     self.dayNumber.isHidden = true

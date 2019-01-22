@@ -281,8 +281,11 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
             for user in pendingList {
                 //Update the picsOwned array
                 let userRef = self.db.collection("users").document(user)
-                userRef.updateData(["clubs": FieldValue.arrayUnion([clubID])])
-                userRef.updateData(["badges": FieldValue.arrayUnion([clubBadge])])
+                userRef.updateData([
+                    "clubs": FieldValue.arrayUnion([clubID]),
+                    "notifications": FieldValue.arrayUnion([clubID]),
+                    "badges": FieldValue.arrayUnion([clubBadge])
+                ])
                 
                 userRef.getDocument { (snap, err) in
                     if let snap = snap {

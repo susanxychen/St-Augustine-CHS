@@ -22,9 +22,21 @@ class settingsController: UIViewController {
     @IBOutlet weak var subscribedToGeneralSwitch: UISwitch!
     var subscribedToGeneral = false
     
+    //The Database
+    var db: Firestore!
+    var docRef: DocumentReference!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        //Set Up
+        // [START setup]
+        let settings = FirestoreSettings()
+        settings.areTimestampsInSnapshotsEnabled = true
+        Firestore.firestore().settings = settings
+        // [END setup]
+        db = Firestore.firestore()
+        
         if allUserFirebaseData.data["status"] as? Int ?? 0 == 2 {
             clearKeys.isHidden = false
         }
@@ -36,8 +48,8 @@ class settingsController: UIViewController {
         
         cacheSizeLabel.text = sizeOfDocumentDirectory()
         
-        if let x = UserDefaults.standard.object(forKey: "subscribedToGeneral") as? Bool {
-            subscribedToGeneral = x
+        if (allUserFirebaseData.data["notifications"] as? [String] ?? []).contains("general") {
+            subscribedToGeneral = true
         } else {
             subscribedToGeneral = false
         }
@@ -48,8 +60,25 @@ class settingsController: UIViewController {
         if sender.isOn {
             Messaging.messaging().subscribe(toTopic: "general") { error in
                 print("Subscribed to general topic")
-                UserDefaults.standard.set(true, forKey: "subscribedToGeneral")
             }
+            
+            let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+            userRef.updateData(["notifications": FieldValue.arrayUnion(["general"])])
+            
+            let user = Auth.auth().currentUser
+            self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                if let docSnapshot = docSnapshot {
+                    allUserFirebaseData.data = docSnapshot.data()!
+                }
+            }
+            
+            //Show alert for around 2 seconds
+            let alert = UIAlertController(title: "", message: "Subscribed!", preferredStyle: .alert)
+            self.present(alert, animated: true, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5){
+                alert.dismiss(animated: true, completion: nil)
+            }
+            
         } else {
             //Create the alert controller.
             let alert = UIAlertController(title: "Confirmation", message: "Are you sure you don't want to receive general announcements? You may miss out on important information", preferredStyle: .alert)
@@ -59,8 +88,31 @@ class settingsController: UIViewController {
             let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
                 Messaging.messaging().unsubscribe(fromTopic: "general") { error in
                     print("Unsubscribed to general topic")
-                    UserDefaults.standard.set(false, forKey: "subscribedToGeneral")
+                    
+                    if let error = error {
+                        let alert = UIAlertController(title: "Error", message: "Cannot unsubscribe: \(error.localizedDescription)", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                    } else {
+                        let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+                        userRef.updateData(["notifications": FieldValue.arrayRemove(["general"])])
+                        
+                        let user = Auth.auth().currentUser
+                        self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                            if let docSnapshot = docSnapshot {
+                                allUserFirebaseData.data = docSnapshot.data()!
+                            }
+                        }
+                        
+                        //Show alert for around 2 seconds
+                        let alert = UIAlertController(title: "", message: "Unsubscribed", preferredStyle: .alert)
+                        self.present(alert, animated: true, completion: nil)
+                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5){
+                            alert.dismiss(animated: true, completion: nil)
+                        }
+                    }
                 }
+                
             }
             alert.addAction(confirmAction)
             alert.addAction(cancelAction)

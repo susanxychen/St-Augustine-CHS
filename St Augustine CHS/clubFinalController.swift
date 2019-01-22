@@ -153,10 +153,10 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             anncCollectionView.isHidden = true
         }
         
-        if let x = UserDefaults.standard.object(forKey: "subscribe.\(clubID)") as? Bool {
-            isSubscribedToClub = x
-        } else {
+        if (allUserFirebaseData.data["notifications"] as? [String] ?? []).contains(clubID) {
             isSubscribedToClub = true
+        } else {
+            isSubscribedToClub = false
         }
     }
     
@@ -282,8 +282,11 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             clubRef.updateData(["members": FieldValue.arrayUnion([Auth.auth().currentUser?.uid as Any])])
             
             let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
-            userRef.updateData(["clubs": FieldValue.arrayUnion([clubID])])
-            userRef.updateData(["badges": FieldValue.arrayUnion([clubData["clubBadge"] as Any])])
+            userRef.updateData([
+                "clubs": FieldValue.arrayUnion([clubID]),
+                "badges": FieldValue.arrayUnion([clubData["clubBadge"] as Any]),
+                "notifications": FieldValue.arrayUnion([self.clubID])
+            ])
             
 //            var ref = allUserFirebaseData.data["clubs"] as! [String]
 //            allUserFirebaseData.data["clubs"] = ref.append(clubID)
@@ -413,6 +416,16 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                             } else {
                                 print("unsubscribed to topic")
                                 
+                                let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+                                userRef.updateData(["notifications": FieldValue.arrayRemove([self.clubID])])
+                                
+                                let user = Auth.auth().currentUser
+                                self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                                    if let docSnapshot = docSnapshot {
+                                        allUserFirebaseData.data = docSnapshot.data()!
+                                    }
+                                }
+                                
                                 //Show alert for around 2 seconds
                                 let alert = UIAlertController(title: "", message: "Unsubscribed", preferredStyle: .alert)
                                 self.present(alert, animated: true, completion: nil)
@@ -421,7 +434,6 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                                 }
                                 
                                 self.isSubscribedToClub = false
-                                UserDefaults.standard.set(false, forKey: "subscribe.\(self.clubID)")
                             }
                         }
                     }
@@ -447,8 +459,17 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                                 alert.dismiss(animated: true, completion: nil)
                             }
                             
+                            let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+                            userRef.updateData(["notifications": FieldValue.arrayUnion([self.clubID])])
+                            
+                            let user = Auth.auth().currentUser
+                            self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                                if let docSnapshot = docSnapshot {
+                                    allUserFirebaseData.data = docSnapshot.data()!
+                                }
+                            }
+                            
                             self.isSubscribedToClub = true
-                            UserDefaults.standard.set(true, forKey: "subscribe.\(self.clubID)")
                         }
                     }
                 }))
@@ -459,10 +480,6 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         
         if partOfClub {
             actionSheet.addAction(UIAlertAction(title: "Leave Club", style: .default, handler: { (action:UIAlertAction) in
-                Messaging.messaging().unsubscribe(fromTopic: self.clubID) { error in
-                    print("unsubscribed to topic")
-                }
-                
                 //Create the alert controller.
                 let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to leave \(self.clubData["name"] ?? "this club")?", preferredStyle: .alert)
                 let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
@@ -473,8 +490,15 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                         "members": FieldValue.arrayRemove([Auth.auth().currentUser?.uid as Any])
                     ])
                     let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
-                    userRef.updateData(["clubs": FieldValue.arrayRemove([self.clubID])])
-                    userRef.updateData(["badges": FieldValue.arrayRemove([self.clubData["clubBadge"] as Any])])
+                    userRef.updateData([
+                        "clubs": FieldValue.arrayRemove([self.clubID]),
+                        "badges": FieldValue.arrayRemove([self.clubData["clubBadge"] as Any]),
+                        "notifications": FieldValue.arrayRemove([self.clubID])
+                    ])
+                    
+                    Messaging.messaging().unsubscribe(fromTopic: self.clubID) { error in
+                        print("unsubscribed to topic")
+                    }
                     
                     let user = Auth.auth().currentUser
                     self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
@@ -1291,6 +1315,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             let vc = segue.destination as! clubPendingController
             vc.pendingList = clubData["pending"] as? [String] ?? ["Error!"]
             vc.clubID = clubID
+            vc.clubName = clubData["name"] as? String ?? "a club"
             vc.clubBadge = (clubData["clubBadge"] as! String)
             vc.changedPendingList = { result in
                 clubListDidUpdateClubDetails.clubAdminUpdatedData = true

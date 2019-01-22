@@ -64,7 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         application.registerForRemoteNotifications()
         
         //Reseting all notifiactions
-        //application.applicationIconBadgeNumber = 0 // For Clear Badge Counts
+        application.applicationIconBadgeNumber = 0 // For Clear Badge Counts
         let center = UNUserNotificationCenter.current()
         center.removeAllDeliveredNotifications() // To remove all delivered notifications
         center.removeAllPendingNotificationRequests() // To remove all pending notifications which are not delivered yet but scheduled.
@@ -92,7 +92,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
         //Reseting all notifiactions
-        //application.applicationIconBadgeNumber = 0 // For Clear Badge Counts... doesnt work oh well
+        application.applicationIconBadgeNumber = 0 // For Clear Badge Counts
         let center = UNUserNotificationCenter.current()
         center.removeAllDeliveredNotifications() // To remove all delivered notifications
         center.removeAllPendingNotificationRequests() // To remove all pending notifications which are not delivered yet but scheduled.
@@ -132,8 +132,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         // ...
     }
     
+    
+    //https://stackoverflow.com/questions/22085234/didreceiveremotenotification-fetchcompletionhandler-open-from-icon-vs-push-not
+    //Both called when apns payload has key content-availble = 1
     // [START receive_message]
-    //these methods are called twice? one to recieve the push and the second when user interacts??
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         // If you are receiving a notification message while your app is in the background,
         // this callback will not be fired till the user taps on the notification launching the application.
@@ -145,8 +147,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             print("Message ID: \(messageID)")
         }
         
-        //Add Badge Number
-        //application.applicationIconBadgeNumber += 1
+        if application.applicationState != .active {
+            application.applicationIconBadgeNumber += 1
+        }
         
         // Print full message.
         print(userInfo)
@@ -163,8 +166,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             print("Message ID: \(messageID)")
         }
         
-        //Add Badge Number
-        //application.applicationIconBadgeNumber += 1
+        if application.applicationState != .active {
+            application.applicationIconBadgeNumber += 1
+        }
         
         // Print full message.
         print(userInfo)
@@ -206,7 +210,7 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
         print(userInfo)
         
         // Change this to your preferred presentation option
-        completionHandler([])
+        completionHandler([.alert, .sound])
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {

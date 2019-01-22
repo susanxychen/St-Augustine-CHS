@@ -2,7 +2,7 @@ const https = require('follow-redirects').http;
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
-var serviceAccount = require('./serviceAccountKey.json');
+// var serviceAccount = require('./serviceAccountKey.json');
 admin.initializeApp({ 
     credential: admin.credential.applicationDefault()
 });
@@ -13,17 +13,7 @@ const storage = new Storage();
 const settings = {timestampsInSnapshots: true};
 admin.firestore().settings(settings);
 
-// const gmailEmail = functions.config().gmail.email;
-// const gmailPassword = functions.config().gmail.password;
-// const mailTransport = nodemailer.createTransport({
-//   service: 'gmail',
-//   auth: {
-//     user: gmailEmail,
-//     pass: gmailPassword,
-//   },
-// });
-
-exports.sendEmailToAdmins = functions.https.onCall((data, context) => {
+exports.sendEmailToAdmins = functions.https.onCall((data, response) => {
     const adminIDArr = data.adminIDArr;
     const userEmail = data.userEmail;
     const clubName = data.clubName;
@@ -41,6 +31,43 @@ exports.sendEmailToAdmins = functions.https.onCall((data, context) => {
                 let theAdminEmail = '';
                 theAdminEmail = doc.data().email;
                 console.log(theAdminEmail);
+
+                let theAdminToken = '';
+                theAdminToken = doc.data().msgToken;
+
+                var message = {
+                    token: theAdminToken,
+                    notification: {
+                        title: clubName + ' Join Request',
+                        body: userEmail + ' would like to join ' + clubName,
+                    },
+                    android: {
+                        notification: {
+                            color: '#d8af1c',
+                        },
+                    },
+                    apns: {
+                        payload: {
+                        aps: {
+                            "content-available": 1,
+                        },
+                        },
+                    }
+                };
+
+                // eslint-disable-next-line promise/no-nesting
+                admin.messaging().send(message)
+                .then((response2) => {
+                    response.send('nice');
+                    console.log('Successfully sent message:', response2);
+                    return 'sucess';
+                })
+                .catch((error) => {
+                    response.send(error);
+                    console.log('Error sending message:', error);
+                    return 'error';
+                });
+
                 var transporter = nodemailer.createTransport({
                     service: 'gmail',
                     auth: {
@@ -48,7 +75,7 @@ exports.sendEmailToAdmins = functions.https.onCall((data, context) => {
                         pass: 'takecompsciyoun00bs'
                     }
                 });
-                    
+                
                 var mailOptions = {
                     from: '"St. Augustine App" <sachsappteam@gmail.com>',
                     to: theAdminEmail,
@@ -239,10 +266,11 @@ exports.getDayNumber = functions.https.onRequest((request, response) => {
         admin.firestore().doc('info/dayNumber').get()
         .then(snapshot => {
             if (snapshot.exists) {
-                console.log('Do i even get in here ' + dayNum);
+                console.log('Day:' + dayNum);
                 response.send(dayNum);
                 return snapshot.ref.set({
-                    dayNumber: dayNum
+                    dayNumber: dayNum,
+                    snowDay: false
                 }, {merge: true});
             } else {
                 console.log('no day number')
@@ -269,21 +297,37 @@ exports.sendToTopic = functions.https.onCall((data, response) => {
     const clubName = data.clubName;
 
     console.log(clubID);
-
     // See the "Defining the message payload" section below for details
-    var payload = {
-    notification: {
-        title: '(' + clubName + ')' + title,
-        body: body
-    }
+    var message = {
+        topic: clubID,
+        notification: {
+            title: '(' + clubName +') '+ title,
+            body: body,
+        },
+
+        //android not really needed
+        android: {
+            notification: {
+                color: '#d8af1c',
+            },
+        },
+
+        //apple
+        apns: {
+            payload: {
+            aps: {
+                "content-available": 1,
+            },
+            },
+        }
     };
 
     // Send a message to devices subscribed to the provided topic.
-    admin.messaging().sendToTopic(clubID, payload)
-    .then((response) => {
+    admin.messaging().send(message)
+    .then((response2) => {
         // See the MessagingTopicResponse reference documentation for the
         // contents of response.
-        console.log('Successfully sent message:', response);
+        console.log('Successfully sent message:', response2);
         return 'sucess';
     })
     .catch((error) => {
@@ -328,43 +372,162 @@ exports.manageSubscriptions = functions.https.onCall((data, context) => {
     }
 });
 
-// //The Edit Votes Function
-// exports.changeVote = functions.https.onCall((data, context) => {
-//     const id = data.id;
-//     const uservote = data.uservote;
-//     //console.log('Id: ' + id + ' Vote: ' + uservote);
+exports.checkSnowDay = functions.https.onRequest((request, response) => {
+    https.get({
+        host: 'net.schoolbuscity.com',
+    }, (resp) => {
+    let data = '';
+    
+    // A chunk of data has been recieved.
+    resp.on('data', (chunk) => {
+        data += chunk;
+    });
+    
+    // The whole response has been received
+    resp.on('end', () => {
+        //console.log(data);
+        if (data.includes("All school buses, vans and taxis servicing the YORK CATHOLIC and YORK REGION DISTRICT SCHOOL BOARD&nbsp; are cancelled")) {
+            console.log('snow day');
 
-//     admin.firestore().doc('songs/' + id).get()
-//     .then(snapshot => {
-//         if (snapshot.exists) {
-//             const songData = snapshot.data();
+            var payload = {
+            notification: {
+                title: 'Buses are cancelled today',
+                body: 'School bus city states: All school buses, vans and taxis servicing the YORK CATHOLIC and YORK REGION DISTRICT SCHOOL BOARD are cancelled'
+            }
+            };
             
-//             //Attempt to update the database
-//             let votes = songData.upvotes;
-//             if (!votes) {
-//                 votes = 0;
-//             }
-            
-//             //Prevent vote from going below 0
-//             if (votes === 0 && uservote < 0){
-//                 return snapshot.ref.set({
-//                     upvotes: 0
-//                 }, {merge: true});
-//             }
+            // Send a message to devices subscribed to the provided topic.
+            admin.messaging().sendToTopic('alerts', payload)
+            .then((response2) => {
+                // See the MessagingTopicResponse reference documentation for the
+                // contents of response.
+                console.log('Successfully sent message:', response2);
+                response.send('snow day');
+                return 'snow day';
+            })
+            .catch((error) => {
+                console.log('Error sending message:', error);
+                response.send(error);
+                return 'error sending';
+            });
 
-//             return snapshot.ref.set({
-//                 upvotes: votes + uservote
-//             }, {merge: true});
-            
-//         } else {
-//             console.log('id doesnt exist')
-//             response.send('Song Doesnt exist')
-//             throw new Error('Song doesn\'t Exist')
-//         }
-//     })
-//     .catch(error => {
-//         //handle the error
-//         console.log(error);
-//         response.status(500).send(error);
-//     });
-// });
+            admin.firestore().doc('info/dayNumber').get()
+            .then(snapshot => {
+                if (snapshot.exists) {
+                    return snapshot.ref.set({
+                        snowDay: true
+                    }, {merge: true});
+                } else {
+                    console.log('no log snow day')
+                    throw new Error('no write snow day')
+                }
+            })
+            .catch(error => {
+                //handle the error
+                console.log(error);
+                //response.status(error.status >= 100 && error.status < 600 ? error.code : 500).send("Error accessing firestore: " + error.message);
+            });
+
+            return 'done';
+        } else {
+            console.log('not snow day');
+            admin.firestore().doc('info/dayNumber').get()
+            .then(snapshot => {
+                response.send('not a snow day')
+                if (snapshot.exists) {
+                    return snapshot.ref.set({
+                        snowDay: false
+                    }, {merge: true});
+                } else {
+                    console.log('no write snow day')
+                    throw new Error('no write snow day')
+                }
+            })
+            .catch(error => {
+                //handle the error
+                console.log(error);
+                response.status(error.status >= 100 && error.status < 600 ? error.code : 500).send("Error accessing firestore: " + error.message);
+            });
+
+            return 'none';
+        }
+    });
+    }).on("error", (err) => {
+        response.send("Error checking snow day: " + err.message);
+        console.log("Error: " + err.message);
+        return err;
+    });
+});
+
+exports.sendToUser = functions.https.onCall((data, response) => {
+    const token = data.token;
+    const title = data.title;
+    const body = data.body;
+
+    // See the "Defining the message payload" section below for details
+    var message = {
+        token: token,
+        notification: {
+            title: title,
+            body: body,
+        },
+        //android not really needed
+        android: {
+            notification: {
+                color: '#d8af1c',
+            },
+        },
+        //apple
+        apns: {
+            payload: {
+            aps: {
+                "content-available": 1,
+            },
+            },
+        }
+    };
+
+    admin.messaging().send(message)
+    .then((response2) => {
+        console.log('Successfully sent message:', response2);
+        return 'sucess';
+    })
+    .catch((error) => {
+        console.log('Error sending message:', error);
+        return 'error';
+    });
+});
+
+//https://firebase.google.com/docs/cloud-messaging/admin/send-messages#before_you_begin
+exports.testTopic = functions.https.onRequest((request, response) => {
+    var message = {
+        topic: 'alerts',
+        notification: {
+            title: 'customizing notification payloads',
+            body: 'apns and android',
+        },
+        android: {
+            notification: {
+                color: '#d8af1c',
+            },
+        },
+        apns: {
+            payload: {
+            aps: {
+                "content-available": 1,
+            },
+            },
+        }
+    };
+    admin.messaging().send(message)
+    .then((response2) => {
+        response.send('nice');
+        console.log('Successfully sent message:', response2);
+        return 'sucess';
+    })
+    .catch((error) => {
+        response.send(error);
+        console.log('Error sending message:', error);
+        return 'error';
+    });
+});

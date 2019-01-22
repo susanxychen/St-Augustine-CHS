@@ -85,7 +85,6 @@ class SignInPrefController: UIViewController {
         
         Messaging.messaging().subscribe(toTopic: "general") { error in
             print("Subscribed to general topic")
-            UserDefaults.standard.set(true, forKey: "subscribedToGeneral")
         }
         
         Messaging.messaging().subscribe(toTopic: "alerts") { error in
@@ -119,6 +118,7 @@ class SignInPrefController: UIViewController {
             "email": user?.email as Any,
             "gradYear": gradYear!,
             "name": user?.displayName as Any,
+            "notifications": ["general"],
             "picsOwned": [picChosen],
             "points": Defaults.startingPoints,
             "profilePic": picChosen,

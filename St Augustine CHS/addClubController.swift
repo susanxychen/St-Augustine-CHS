@@ -359,7 +359,8 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
         
         let userRef = self.db.collection("users").document(user!.uid)
         userRef.updateData([
-            "clubs": FieldValue.arrayUnion([clubID])
+            "clubs": FieldValue.arrayUnion([clubID]),
+            "notifications": FieldValue.arrayUnion([clubID]),
         ])
         
         db.collection("clubs").document(clubID).setData([
