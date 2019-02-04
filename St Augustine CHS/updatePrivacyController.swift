@@ -18,7 +18,7 @@ class updatePrivacyController: UIViewController {
     //Refresh Vars
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
+    
     
     @IBOutlet weak var showCoursesSwitch: UISwitch!
     @IBOutlet weak var showClubsSwitch: UISwitch!
@@ -92,7 +92,7 @@ class updatePrivacyController: UIViewController {
     }
     
     @IBAction func updatePrivacy(_ sender: Any) {
-        showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+        showActivityIndicatory(container: self.container, actInd: self.actInd)
         
         //Update the picsOwned array
         let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
@@ -106,11 +106,11 @@ class updatePrivacyController: UIViewController {
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             } else {
                 print("Document successfully updated")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     self.dismiss(animated: true, completion: nil)
                 }
             }

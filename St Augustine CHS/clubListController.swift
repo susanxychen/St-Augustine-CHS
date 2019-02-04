@@ -40,7 +40,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
     var refreshControl: UIRefreshControl?
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
+    
     
     //Showing Personal Clubs
     var viewingPersonalClubs: Bool!
@@ -66,7 +66,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                         alert.addAction(okAction)
                         self.present(alert, animated: true, completion: nil)
-                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                         self.clubListView.isHidden = true
                         self.notLoadList.text = "No internet"
                         self.notLoadList.isHidden = false
@@ -97,7 +97,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
         addRefreshControl()
         
         //Set up the activity Indicator
-        showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
+        showActivityIndicatory(container: container, actInd: actInd)
         clubListView.isHidden = true
         
         //Set Up
@@ -114,7 +114,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
     override func viewDidAppear(_ animated: Bool) {
         if clubListDidUpdateClubDetails.clubAdminUpdatedData {
             print("refrshing clubList after editing data somewhere")
-            showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
+            showActivityIndicatory(container: container, actInd: actInd)
             refreshList()
         }
     }
@@ -132,7 +132,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                 self.notLoadList.text = "Error"
                 self.notLoadList.isHidden = false
             }
@@ -159,7 +159,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
             alert.addAction(okAction)
             //self.present(alert, animated: true, completion: nil)
             self.clubListView.isHidden = false
-            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
         } else{
             var counterTemp = 0
             for i in 0...personalClubReferences.count-1 {
@@ -170,7 +170,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                         alert.addAction(okAction)
                         self.present(alert, animated: true, completion: nil)
-                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     }
                     if let document = document, document.exists {
                         self.personaClubsData.append(document.data()!)
@@ -213,7 +213,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             } else {
                 for document in querySnapshot!.documents {
                     //Also keep all the doucment ids
@@ -442,7 +442,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
         if viewingPersonalClubs {
             //Save the data to the phone
             self.clubListView.isHidden = false
-            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             self.clubListView.reloadData()
             self.refreshControl?.endRefreshing()
         } else {
@@ -466,7 +466,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
             
             //Load the data
             self.clubListView.isHidden = false
-            self.hideActivityIndicator(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
+            self.hideActivityIndicator(container: container, actInd: actInd)
             self.clubListView.reloadData()
             self.refreshControl?.endRefreshing()
         }
@@ -558,7 +558,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
         //Invert viewing personal clubs
         clubListView.isHidden = true
         
-        showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+        showActivityIndicatory(container: self.container, actInd: self.actInd)
         
         if viewingPersonalClubs {
             viewingPersonalClubs = !viewingPersonalClubs
@@ -567,13 +567,13 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                 getClubs()
             } else {
                 clubListView.isHidden = false
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                 clubListView.reloadData()
             }
         } else {
             viewingPersonalClubs = !viewingPersonalClubs
             clubListView.isHidden = false
-            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             clubListView.reloadData()
         }
     }
@@ -641,6 +641,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
     @objc func refreshList(){
         print("I refreshed stuff")
         //Remove all club data and refresh it
+        showActivityIndicatory(container: self.container, actInd: self.actInd)
         
         //Check whether checking personal clubs or all possible clubs
         if viewingPersonalClubs {

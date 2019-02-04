@@ -109,6 +109,9 @@ class SignInPrefController: UIViewController {
         if gradYear == nil {
             status = 1
             gradYear = 0
+            Analytics.setUserProperty("teacher", forName: "grade")
+        } else {
+            Analytics.setUserProperty(String(gradYear!), forName: "grade")
         }
         
         db.collection("users").document((user?.uid)!).setData([

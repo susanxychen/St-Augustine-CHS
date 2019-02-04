@@ -21,9 +21,19 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
     @IBOutlet weak var badgeImageView: UIImageView!
     @IBOutlet weak var descriptionTxtFld: UITextField!
     
-    let overlayView = UIView(frame: UIScreen.main.bounds)
-    
     var onDoneBlock : ((Bool) -> Void)?
+    
+    var isUpdatingBadge = false
+    var oldBadgeID: String!
+    var oldBadgeImg: UIImage!
+    var oldBadgeImgId: String!
+    var oldBadgeDesc: String!
+    var didUpdateBadgeImage = false
+    
+    var isClubBadge = false
+    
+    let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
+    let container: UIView = UIView()
     
     //Colours
     @IBOutlet weak var statusBarView: UIView!
@@ -31,6 +41,12 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if isUpdatingBadge {
+            badgeImageView.image = oldBadgeImg
+            descriptionTxtFld.text = oldBadgeDesc
+        }
+        
         //Set Up
         // [START setup]
         let settings = FirestoreSettings()
@@ -112,6 +128,7 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
         cropViewController.dismiss(animated: true, completion: nil)
         print(image)
         badgeImageView.image = image
+        didUpdateBadgeImage = true
     }
     
     @IBAction func cancelButtonPushed(_ sender: Any) {
@@ -139,39 +156,43 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
         
         if valid {
             //Set up an activity indicator
-            self.overlayView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
-            let activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
-            activityIndicator.center = self.overlayView.center
-            self.overlayView.addSubview(activityIndicator)
-            activityIndicator.startAnimating()
-            view.addSubview(self.overlayView)
+            showActivityIndicatory(container: container, actInd: actInd)
             
             var imageName = ""
             
-            //Give the photo a random name
-            imageName = self.randomString(length: 20)
-            
-            //Set up the image data
-            let storageRef = Storage.storage().reference(withPath: "badges").child(imageName)
-            let metaData = StorageMetadata()
-            metaData.contentType = "image/jpeg"
-            
-            //Upload the image to the database
-            if let uploadData = badgeImageView.image?.jpegData(compressionQuality: 1.0){
-                storageRef.putData(uploadData, metadata: metaData) { (metadata, error) in
-                    if let error = error {
-                        let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
-                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                        alert.addAction(okAction)
-                        self.present(alert, animated: true, completion: nil)
-                        print(error as Any)
-                        self.view.willRemoveSubview(self.overlayView)
-                        
-                        return
-                    }
-                    print(metadata as Any)
-                    self.uploadRestAfterImageIsDone(imageName: imageName)
+            if didUpdateBadgeImage {
+                //Give the photo a random name
+                if isUpdatingBadge {
+                    imageName = oldBadgeImgId
+                } else {
+                    imageName = self.randomString(length: 20)
                 }
+                
+                //Set up the image data
+                let storageRef = Storage.storage().reference(withPath: "badges").child(imageName)
+                let metaData = StorageMetadata()
+                metaData.contentType = "image/jpeg"
+                
+                //Upload the image to the database
+                if let uploadData = badgeImageView.image?.jpegData(compressionQuality: 1.0){
+                    storageRef.putData(uploadData, metadata: metaData) { (metadata, error) in
+                        if let error = error {
+                            let alert = UIAlertController(title: "Error in uploading image to database", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
+                            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                            alert.addAction(okAction)
+                            self.present(alert, animated: true, completion: nil)
+                            print(error as Any)
+                            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+                            
+                            return
+                        }
+                        print(metadata as Any)
+                        self.uploadRestAfterImageIsDone(imageName: imageName)
+                    }
+                }
+            } else {
+                //If the image wasnt touched, just go straight to updating description
+                self.uploadRestAfterImageIsDone(imageName: imageName)
             }
         }
     }
@@ -182,24 +203,73 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
         let badgeID = randomString(length: 20)
         let user = Auth.auth().currentUser
         print("Added badge id \(badgeID)")
-        db.collection("badges").document(badgeID).setData([
-            "club": clubID,
-            "desc": desc,
-            "creator": user?.uid as Any,
-            "img": imageName,
-            "type": -1
-        ]) { err in
-            if let err = err {
-                let alert = UIAlertController(title: "Error in adding badge", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-                self.view.willRemoveSubview(self.overlayView)
+        
+        if !isUpdatingBadge {
+            db.collection("clubs").document(clubID).updateData(["clubBadge" : badgeID])
+            db.collection("badges").document(badgeID).setData([
+                "club": clubID,
+                "desc": desc,
+                "creator": user?.uid as Any,
+                "img": imageName,
+                "giveaway": false
+            ]) { err in
+                if let err = err {
+                    let alert = UIAlertController(title: "Error in adding badge", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+                } else {
+                    print("Document successfully written!")
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
+                        self.onDoneBlock!(true)
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                }
+            }
+        } else {
+            let user = Auth.auth().currentUser
+            
+            if imageName == "" {
+                db.collection("badges").document(oldBadgeID).updateData([
+                    "desc": desc,
+                    "creator": user?.uid as Any
+                ]) { (err) in
+                    if let err = err {
+                        let alert = UIAlertController(title: "Error in editing badge", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+                    } else {
+                        print("Document successfully written!")
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
+                            self.onDoneBlock!(true)
+                            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                }
             } else {
-                print("Document successfully written!")
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
-                    self.onDoneBlock!(true)
-                    self.dismiss(animated: true, completion: nil)
+                db.collection("badges").document(oldBadgeID).updateData([
+                    "desc": desc,
+                    "creator": user?.uid as Any,
+                    "img": imageName
+                ]) { (err) in
+                    if let err = err {
+                        let alert = UIAlertController(title: "Error in editing badge", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self.present(alert, animated: true, completion: nil)
+                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+                    } else {
+                        print("Document successfully written!")
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
+                            self.onDoneBlock!(true)
+                            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    }
                 }
             }
         }

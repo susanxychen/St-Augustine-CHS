@@ -21,8 +21,8 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     
     //Club Details
     var clubBannerImage: UIImage!
-    var clubBannerID: String!
     var clubBadge: String!
+    var clubBannerID: String!
     var clubName: String!
     var clubDesc: String!
     var clubJoinSetting: Int!
@@ -43,6 +43,8 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     @IBOutlet weak var statusBarView: UIView!
     @IBOutlet weak var topBarView: UIView!
     
+    let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
+    let container: UIView = UIView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -234,13 +236,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
             let newClubBanner = clubBanner.image
             
             //Set up an activity indicator
-            let overlayView = UIView(frame: UIScreen.main.bounds)
-            overlayView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
-            let activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
-            activityIndicator.center = overlayView.center
-            overlayView.addSubview(activityIndicator)
-            activityIndicator.startAnimating()
-            self.view.addSubview(overlayView)
+            showActivityIndicatory(container: container, actInd: actInd)
             
             //Start to upload image
             //Set up the image data
@@ -281,10 +277,16 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
             for user in pendingList {
                 //Update the picsOwned array
                 let userRef = self.db.collection("users").document(user)
+                
+                if self.clubBadge as String != "" {
+                    userRef.updateData([
+                        "badges": FieldValue.arrayUnion([self.clubBadge])
+                    ])
+                }
+                
                 userRef.updateData([
                     "clubs": FieldValue.arrayUnion([clubID]),
-                    "notifications": FieldValue.arrayUnion([clubID]),
-                    "badges": FieldValue.arrayUnion([clubBadge])
+                    "notifications": FieldValue.arrayUnion([clubID])
                 ])
                 
                 userRef.getDocument { (snap, err) in
@@ -391,7 +393,8 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     
     func doneWithEverything() {
         onDoneBlock!(true)
-        //self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+        //self.hideActivityIndicator(container: self.container, actInd: self.actInd)
         dismiss(animated: true, completion: nil)
+        hideActivityIndicator(container: container, actInd: actInd)
     }
 }

@@ -64,7 +64,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     //Refresh Vars
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
+    
     var forceRefresh = false
     
     //Filler Data
@@ -434,7 +434,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                     }
                                 }
                             }
-                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                             self.clubsCollectionView.reloadData()
                         }
                     }
@@ -442,7 +442,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             }
         } else {
             clubCollectionViewHeight.constant = 0
-            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             clubsCollectionView.reloadData()
         }
     }
@@ -518,7 +518,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
             } else {
-                self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                self.showActivityIndicatory(container: self.container, actInd: self.actInd)
                 //Search the database
                 db.collection("users").whereField("email", isEqualTo: userInput).getDocuments { (querySnapshot, err) in
                     if let err = err {
@@ -527,7 +527,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                         alert.addAction(okAction)
                         self.present(alert, animated: true, completion: nil)
                         print("error in getting doucments: \(err)")
-                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     } else {
                         //Query Snapshot [] is empty if nothing in the database matches what the user typed in
                         if querySnapshot!.documents.count == 0 {
@@ -535,7 +535,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                             alert.addAction(okAction)
                             self.present(alert, animated: true, completion: nil)
-                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                         }
                         for document in querySnapshot!.documents{
                             //Check if there is no possible user
@@ -604,7 +604,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                     self.userClubNames = ["Student has chosen not to share clubs"]
                                     self.clubCollectionViewHeight.constant = 0
                                     self.userClubIDs = ["nice"]
-                                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                                     self.clubsCollectionView.reloadData()
                                 }
                                 
@@ -613,7 +613,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                                 alert.addAction(okAction)
                                 self.present(alert, animated: true, completion: nil)
-                                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                             }
                         }
                     }
@@ -715,7 +715,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         } else {
             print("clubs \(indexPath.item) \(userClubNames[indexPath.item])")
             self.segDest = 1
-            showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
+            showActivityIndicatory(container: container, actInd: actInd)
             
             //Check if the user is part of club
             if (allUserFirebaseData.data["clubs"] as! [String]).contains(userClubIDs[indexPath.item]) {
@@ -748,7 +748,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                             alert.addAction(okAction)
                             self.present(alert, animated: true, completion: nil)
                             print(error)
-                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                         } else {
                             // Metadata now contains the metadata for 'images/forest.jpg'
                             if let metadata = metadata {
@@ -760,7 +760,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                         print("already saved \(imageName)-\(updated)")
                                         self.clubImage = savedImage
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                                             self.performSegue(withIdentifier: "showClub", sender: self.showClubButton)
                                         }
                                     } else {
@@ -773,7 +773,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                                 alert.addAction(okAction)
                                                 self.present(alert, animated: true, completion: nil)
                                                 print(error)
-                                                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                                             } else {
                                                 print("img gonna get new image \(imageName)")
                                                 // Get the download URL
@@ -785,7 +785,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                                     self.clearImageFolder(imageName: "\(imageName)-\(updated)")
                                                     self.saveImageDocumentDirectory(image: image!, imageName: "\(imageName)-\(updated)")
                                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                                                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                                                         self.performSegue(withIdentifier: "showClub", sender: self.showClubButton)
                                                     }
                                                 }
@@ -802,7 +802,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                     alert.addAction(okAction)
                     self.present(alert, animated: true, completion: nil)
-                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                 }
             }
         }

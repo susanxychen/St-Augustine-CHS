@@ -42,6 +42,7 @@
 		B96F9F2621C8770400A841C9 /* Scada-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B96F9F2121C876E700A841C9 /* Scada-Regular.ttf */; };
 		B976A86421DAD65F0004B3E6 /* SRCopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B976A86321DAD65F0004B3E6 /* SRCopyableLabel.swift */; };
 		B97CDA492176DCFE00F7F685 /* newsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97CDA482176DCFE00F7F685 /* newsViewCell.swift */; };
+		B98756572207E5220051413B /* checkRemoteConfigController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98756562207E5220051413B /* checkRemoteConfigController.swift */; };
 		B9876BAE217AC9E800D57C16 /* clubListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9876BAD217AC9E800D57C16 /* clubListController.swift */; };
 		B9876BB2217ACC5300D57C16 /* clubViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9876BB1217ACC5300D57C16 /* clubViewCell.swift */; };
 		B98BB1B121CAF4F000AD6167 /* titanTagController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98BB1B021CAF4F000AD6167 /* titanTagController.swift */; };
@@ -133,6 +134,7 @@
 		B96F9F2221C876E700A841C9 /* Scada-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Scada-Bold.ttf"; sourceTree = "<group>"; };
 		B976A86321DAD65F0004B3E6 /* SRCopyableLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRCopyableLabel.swift; sourceTree = "<group>"; };
 		B97CDA482176DCFE00F7F685 /* newsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = newsViewCell.swift; sourceTree = "<group>"; };
+		B98756562207E5220051413B /* checkRemoteConfigController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checkRemoteConfigController.swift; sourceTree = "<group>"; };
 		B9876BAD217AC9E800D57C16 /* clubListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubListController.swift; sourceTree = "<group>"; };
 		B9876BB1217ACC5300D57C16 /* clubViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubViewCell.swift; sourceTree = "<group>"; };
 		B98BB1B021CAF4F000AD6167 /* titanTagController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = titanTagController.swift; sourceTree = "<group>"; };
@@ -276,6 +278,7 @@
 				B9C6E35A21ACA68500A03650 /* classesDetailsController.swift */,
 				B9B3684A21B9EB060059CF9C /* changeCoursesController.swift */,
 				B943EC6121EAA4F400DEBCC1 /* showImageController.swift */,
+				B98756562207E5220051413B /* checkRemoteConfigController.swift */,
 				B93F209921738E5500279829 /* Info.plist */,
 				B925621021E677D000F5F1D9 /* GoogleService-Info.plist */,
 				B96F9F2821C8772500A841C9 /* Cell */,
@@ -660,6 +663,7 @@
 				B9C6E35D21ACBFE200A03650 /* semester1ViewCell.swift in Sources */,
 				B958A26421C4023A00726345 /* cafeMenuController.swift in Sources */,
 				B9AE584821D5859F0067B904 /* memberCell.swift in Sources */,
+				B98756572207E5220051413B /* checkRemoteConfigController.swift in Sources */,
 				B9876BB2217ACC5300D57C16 /* clubViewCell.swift in Sources */,
 				B961425021B6193F0070F27B /* suggestASongController.swift in Sources */,
 				B93F208E21738E5100279829 /* AppDelegate.swift in Sources */,

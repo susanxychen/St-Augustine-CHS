@@ -41,7 +41,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
     //Refresh Vars
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
+    
     
     var choseNewPic = false
     
@@ -108,7 +108,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
         picsOwnedNums.removeAll()
         picsOwned.removeAll()
         
-        showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: overlayView)
+        showActivityIndicatory(container: container, actInd: actInd)
         db.collection("info").document("profilePics").getDocument { (snapshot, error) in
             if let error = error {
                 print(error)
@@ -116,7 +116,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             }
             if let data = snapshot?.data() {
                 self.picRarities = data["rarities"] as! [Int]
@@ -135,7 +135,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
-            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             return
         }
         
@@ -206,7 +206,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             }
             if let data = snapshot?.data() {
                 allUserFirebaseData.data = data
@@ -240,7 +240,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                 print("done formatting")
                 self.ownedCollectionView.reloadData()
                 self.notOwnedCollectionView.reloadData()
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             }
         }
     }
@@ -261,7 +261,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                 
                 print("wow update: \(self.newPicChosen)")
                 if self.choseNewPic {
-                    self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    self.showActivityIndicatory(container: self.container, actInd: self.actInd)
                     let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
                     userRef.setData([
                         "profilePic" : self.newPicChosen,
@@ -271,7 +271,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                             alert.addAction(okAction)
                             self.present(alert, animated: true, completion: nil)
-                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                         } else {
                             print("Document successfully updated")
                             allUserFirebaseData.profilePic = self.theProfilePic.image!
@@ -279,7 +279,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                             self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
                                 if let docSnapshot = docSnapshot {
                                     allUserFirebaseData.data = docSnapshot.data()!
-                                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                                     self.dismiss(animated: true, completion: nil)
                                 }
                                 if let err = err {
@@ -287,7 +287,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                                     alert.addAction(okAction)
                                     self.present(alert, animated: true, completion: nil)
-                                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                                 }
                             }
                         }
@@ -381,7 +381,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                     self.theProfilePic.image = self.picsNotOwned[indexPath.item]
 
                     //Reload all data
-                    self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    self.showActivityIndicatory(container: self.container, actInd: self.actInd)
 
                     //Update the picsOwned array
                     let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
@@ -398,7 +398,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                             alert.addAction(okAction)
                             self.present(alert, animated: true, completion: nil)
-                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                         } else {
                             print("Document successfully updated")
                             allUserFirebaseData.profilePic = self.theProfilePic.image!

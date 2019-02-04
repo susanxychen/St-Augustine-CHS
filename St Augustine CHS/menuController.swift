@@ -24,6 +24,7 @@ struct allUserFirebaseData {
 class menuController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, GIDSignInDelegate, GIDSignInUIDelegate {
     
     //Sign In Variables
+    var allowAnyGoogleAccount = false
     @IBOutlet weak var failedSignInButton: UIButton!
     @IBOutlet weak var newUserButton: UIButton!
     
@@ -34,6 +35,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var tapOutOfMenuButton: UIButton!
     @IBOutlet weak var dateToString: UILabel!
     @IBOutlet weak var dayNumber: UILabel!
+    @IBOutlet weak var dayNumberHeight: NSLayoutConstraint!
     @IBOutlet weak var snowDayLabel: UILabel!
     @IBOutlet weak var snowDayLabelHeight: NSLayoutConstraint!
     
@@ -65,7 +67,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var homeScrollView: UIScrollView!
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView() //this one you cant do ui application frame
     
     //Database Variables
     var db: Firestore!
@@ -101,6 +102,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         
         dateToString.text = DateFormatter.localizedString(from: Date(), dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
         
+        DispatchQueue.main.async {
+            self.setupRemoteConfigDefaults()
+            self.updateViewWithRCValues()
+            self.fetchRemoteConfig()
+        }
+        
         //Only sign in if you have not come from there
         GIDSignIn.sharedInstance()?.delegate = self
         GIDSignIn.sharedInstance()?.uiDelegate = self
@@ -132,13 +139,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         }
         let checkEmail = user.profile.email
         
-        if (checkEmail?.count ?? 100 < 8) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.viewAboveAllViews.removeFromSuperview()
-                self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
-            }
-        }
-        else if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))! || (checkEmail == "sachstesterforapple@gmail.com")){
+        if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))! || (checkEmail == "sachstesterforapple@gmail.com") || allowAnyGoogleAccount){
             //print("wow nice sign in")
             //************************Firebase Auth************************
             guard let authentication = user.authentication else {
@@ -216,8 +217,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //Add refresh control
         addRefreshControl()
         
-        overlayView.frame = UIApplication.shared.keyWindow!.frame
-        showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: overlayView)
+        showActivityIndicatory(container: container, actInd: actInd)
         
         //In app messaging
         InstanceID.instanceID().getID { (result, error) in
@@ -239,6 +239,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         }
         
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 20)!]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         
         //Following will push a notification when out of the app 5 seconds later
         //Purely for testing
@@ -265,9 +266,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         leadingConstraint.constant = -400
         
         //Change profile picture corners to round
-        profilePicture.layer.borderWidth = 1.0
-        profilePicture.layer.masksToBounds = false
-        profilePicture.layer.borderColor = UIColor.white.cgColor
+        //profilePicture.layer.borderWidth = 1.0
+        //profilePicture.layer.masksToBounds = false
+        //profilePicture.layer.borderColor = UIColor.white.cgColor
         profilePicture.layer.cornerRadius = 75/2
         profilePicture.clipsToBounds = true
         
@@ -295,13 +296,13 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 if let data = docSnapshot.data() {
                     print("i get the data")
                     allUserFirebaseData.data = data
-                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     self.getPicture(i: data["profilePic"] as? Int ?? 0)
                     self.getClubAnncs()
                     self.updateDatabaseWithNewRemoteID()
                 } else {
                     print("wow u dont exist")
-                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    //self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Please enter your details again or contact the app dev team.", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default , handler: { (action) in
                         self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
@@ -311,7 +312,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 }
             } else {
                 print("wow u dont exist")
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                 let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Try again later or contact the app dev team.", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .cancel, handler: { (action) in
                     self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
@@ -319,12 +320,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
             }
-        }
-        
-        DispatchQueue.main.async {
-            self.setupRemoteConfigDefaults()
-            self.updateViewWithRCValues()
-            self.fetchRemoteConfig()
         }
     }
     
@@ -345,6 +340,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     func setupRemoteConfigDefaults() {
         let defaultValues = [
+            "AllowAccounts": 0 as NSObject,
+            "AppOnline": 1 as NSObject,
             "primaryColor": UIColor(hex: "#8D1230") as NSObject,
             "darkerPrimary": UIColor(hex: "#460817") as NSObject,
             "accentColor": UIColor(hex: "#D8AF1C") as NSObject,
@@ -377,6 +374,24 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func updateViewWithRCValues() {
+        //Emergency shutdown
+        let online = RemoteConfig.remoteConfig().configValue(forKey: "AppOnline").stringValue ?? "1"
+        if online == "0" {
+            //Disable
+            self.view.isHidden = true
+            
+            let ac = UIAlertController(title: "The app is currently offline", message: "Sorry. Try another time.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(ac, animated: true)
+        }
+        
+        let allowAny = RemoteConfig.remoteConfig().configValue(forKey: "AppOnline").stringValue ?? "0"
+        if allowAny == "1" {
+            allowAnyGoogleAccount = true
+        } else {
+            allowAnyGoogleAccount = false
+        }
+        
         //apply the remote config values here
         let primary = RemoteConfig.remoteConfig().configValue(forKey: "primaryColor").stringValue ?? "#8D1230"
         let darker = RemoteConfig.remoteConfig().configValue(forKey: "darkerPrimary").stringValue ?? "#460817"
@@ -779,13 +794,13 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                     if let data = docSnapshot.data() {
                         print("i get the data")
                         allUserFirebaseData.data = data
-                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                         self.getPicture(i: data["profilePic"] as? Int ?? 0)
                         self.getClubAnncs()
                         self.updateDatabaseWithNewRemoteID()
                     } else {
                         print("wow 100% dont exist")
-                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                         let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Please enter your details again or contact the app dev team.", preferredStyle: .alert)
                         let okAction = UIAlertAction(title: "OK", style: .default , handler: { (action) in
                             self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
@@ -865,7 +880,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 
                 if theDayNumber == "0" {
                     self.dayNumber.isHidden = true
+                    self.dayNumberHeight.constant = 5
                 } else if (theDayNumber == "1" || theDayNumber == "2") {
+                    self.dayNumberHeight.constant = 25
                     let theDay = DateFormatter.localizedString(from: self.theDate, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
                     //If its a weekend set up the "monday will be message"
                     if (theDay.range(of:"Sunday") != nil) || (theDay.range(of:"Saturday") != nil){
@@ -883,10 +900,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 } else {
                     if haveFun {
                         //directly show the text entered in db
+                        self.dayNumberHeight.constant = 25
                         self.dayNumber.text = theDayNumber
                     } else {
                         //Any other values like "O" or anything just dont show the label
                         self.dayNumber.isHidden = true
+                        self.dayNumberHeight.constant = 5
                     }
                 }
 

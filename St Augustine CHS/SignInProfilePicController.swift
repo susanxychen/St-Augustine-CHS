@@ -17,7 +17,6 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
     //Loading Vars
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
     
     //Database Variables
     var db: Firestore!
@@ -51,7 +50,7 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
         statusBarView.backgroundColor = Defaults.darkerPrimary
         topBarView.backgroundColor = Defaults.primaryColor
         
-        showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
+        showActivityIndicatory(container: container, actInd: actInd)
         
         //Get the profile pictures
         db.collection("info").document("profilePics").getDocument { (snapshot, error) in
@@ -127,7 +126,7 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     print("hey i am done getting imgs")
                     self.theProfilePicture.image = self.allProfileImages[0]
-                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     self.profilePicsCollectionView.reloadData()
                     
                     //Back up because images dont all load sometimes

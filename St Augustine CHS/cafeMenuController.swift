@@ -16,6 +16,7 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
     var docRef: DocumentReference!
     
     @IBOutlet weak var daymenuLabel: UILabel!
+    @IBOutlet weak var daymenuLabelHeight: NSLayoutConstraint!
     @IBOutlet weak var menuCollectionView: UICollectionView!
     
     var theActualMenu = [[Any]]()
@@ -60,6 +61,7 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
         //If its a weekend set up the "monday will be message"
         if (theDay.range(of:"Sunday") != nil) || (theDay.range(of:"Saturday") != nil){
             daymenuLabel.isHidden = true
+            daymenuLabelHeight.constant = 0
         }
         
         getCafeMenu()

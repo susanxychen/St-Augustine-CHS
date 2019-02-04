@@ -33,7 +33,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
     var refreshControl: UIRefreshControl?
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
+    
     
     //Returning to club controller
     var changedPendingList : ((Bool) -> Void)?
@@ -106,10 +106,16 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                 
                 //update user data
                 let userRef = self.db.collection("users").document(self.pendingList[indexPath.item])
+                
+                if self.clubBadge as String != "" {
+                    userRef.updateData([
+                        "badges": FieldValue.arrayUnion([self.clubBadge])
+                    ])
+                }
+                
                 userRef.updateData([
                     "clubs": FieldValue.arrayUnion([self.clubID]),
                     "notifications": FieldValue.arrayUnion([self.clubID]),
-                    "badges": FieldValue.arrayUnion([self.clubBadge])
                 ])
                 
                 //give em points
@@ -166,7 +172,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
     
     func getClubData() {
         pendingList.removeAll()
-        self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+        self.showActivityIndicatory(container: self.container, actInd: self.actInd)
         db.collection("clubs").document(clubID).getDocument { (snap, err) in
             if let err = err {
                 let alert = UIAlertController(title: "Error in updating Club", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
@@ -187,7 +193,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
         pendingListMsgTokens.removeAll()
         pendingListPics.removeAll()
         
-        self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+        self.showActivityIndicatory(container: self.container, actInd: self.actInd)
         for _ in pendingList {
             pendingListNames.append("")
             pendingListEmails.append("")
@@ -214,7 +220,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
             }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             self.pendingListCollectionView.reloadData()
         }
     }

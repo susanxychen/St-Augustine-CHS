@@ -9,16 +9,18 @@
 import UIKit
 import Firebase
 import GoogleSignIn
+import MessageUI
 
-class settingsController: UIViewController {
+class settingsController: UIViewController, MFMailComposeViewControllerDelegate {
 
+    @IBOutlet weak var sendFeedbackButton: UIButton!
     @IBOutlet weak var cacheSizeLabel: UILabel!
-    @IBOutlet weak var clearKeys: UIButton!
-    
+    @IBOutlet weak var clearKeysButton: UIButton!
+    @IBOutlet weak var subscribeDebugButton: UIButton!
+    @IBOutlet weak var checkRemoteConfigButton: UIButton!
     @IBOutlet weak var changePrivacySettingsButton: UIButton!
     @IBOutlet weak var clearCacheButton: UIButton!
     @IBOutlet weak var LogOutButton: UIButton!
-    @IBOutlet weak var clearKeysButton: UIButton!
     @IBOutlet weak var subscribedToGeneralSwitch: UISwitch!
     var subscribedToGeneral = false
     
@@ -37,17 +39,26 @@ class settingsController: UIViewController {
         // [END setup]
         db = Firestore.firestore()
         
+        //If status 2, show debug
         if allUserFirebaseData.data["status"] as? Int ?? 0 == 2 {
-            clearKeys.isHidden = false
+            clearKeysButton.isHidden = false
+            subscribeDebugButton.isHidden = false
+            checkRemoteConfigButton.isHidden = false
         }
         
+        //Colours
         changePrivacySettingsButton.setTitleColor(Defaults.primaryColor, for: .normal)
         clearCacheButton.setTitleColor(Defaults.primaryColor, for: .normal)
         LogOutButton.setTitleColor(Defaults.primaryColor, for: .normal)
-        clearKeys.setTitleColor(Defaults.primaryColor, for: .normal)
+        sendFeedbackButton.setTitleColor(Defaults.primaryColor, for: .normal)
+        
+        clearKeysButton.setTitleColor(Defaults.primaryColor, for: .normal)
+        subscribeDebugButton.setTitleColor(Defaults.primaryColor, for: .normal)
+        checkRemoteConfigButton.setTitleColor(Defaults.primaryColor, for: .normal)
         
         cacheSizeLabel.text = sizeOfDocumentDirectory()
         
+        //Toggle the switch state depending on whether user has subscribed to general
         if (allUserFirebaseData.data["notifications"] as? [String] ?? []).contains("general") {
             subscribedToGeneral = true
         } else {
@@ -56,6 +67,27 @@ class settingsController: UIViewController {
         subscribedToGeneralSwitch.setOn(subscribedToGeneral, animated: true)
     }
     
+    //****************************FEEDBACK AND MAIL****************************
+    @IBAction func sendFeedbackPressed(_ sender: Any) {
+        if MFMailComposeViewController.canSendMail() {
+            let mail = MFMailComposeViewController()
+            mail.mailComposeDelegate = self
+            mail.setToRecipients(["sachsappteam@gmail.com"])
+            mail.setSubject("[FEEDBACK]")
+            
+            self.present(mail, animated: true)
+        } else {
+            let ac = UIAlertController(title: "Cannot open mail app", message: "Note: MFMailComposeVC requires at least one email address to be signed into the mail app", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(ac, animated: true)
+        }
+    }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
+    }
+    
+    //****************************DEBUGGING****************************
     @IBAction func subscribedToGeneralPressed(_ sender: UISwitch) {
         if sender.isOn {
             Messaging.messaging().subscribe(toTopic: "general") { error in
@@ -120,31 +152,85 @@ class settingsController: UIViewController {
         }
     }
     
-    @IBAction func pressedLogOut(_ sender: Any) {
-        //Log out Google
-        GIDSignIn.sharedInstance()?.signOut()
-        //Log out Firebase
-        let firebaseAuth = Auth.auth()
-        do {
-            try firebaseAuth.signOut()
-        } catch let signOutError as NSError {
-            print ("Error signing out: %@", signOutError)
+    //Alert to subscribe/unsubscribe to a topic
+    @IBAction func pressedSubscribeTopic(_ sender: Any) {
+        let confirm = UIAlertController(title: "Subscription to a Topic", message: nil, preferredStyle: .alert)
+        confirm.addTextField { (tf) in
+            tf.placeholder = "Topic"
         }
+        confirm.addAction(UIAlertAction(title: "Unsubscribe", style: UIAlertAction.Style.default) { (action:UIAlertAction) in
+            let tf = confirm.textFields?[0]
+            let topic = tf?.text ?? "error"
+            Messaging.messaging().unsubscribe(fromTopic: topic) { error in
+                if let error = error {
+                    let alert = UIAlertController(title: "Error", message: "Cannot unsubscribe: \(error.localizedDescription)", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                } else {
+                    let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+                    userRef.updateData(["notifications": FieldValue.arrayRemove([topic])])
+                    let user = Auth.auth().currentUser
+                    self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                        if let docSnapshot = docSnapshot {
+                            allUserFirebaseData.data = docSnapshot.data()!
+                        }
+                    }
+                    let alert = UIAlertController(title: "", message: "Unsubscribed from \(topic)", preferredStyle: .alert)
+                    self.present(alert, animated: true, completion: nil)
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5){
+                        alert.dismiss(animated: true, completion: nil)
+                    }
+                }
+            }
+        })
+        confirm.addAction(UIAlertAction(title: "Subscribe", style: UIAlertAction.Style.default) { (action:UIAlertAction) in
+            let tf = confirm.textFields?[0]
+            let topic = tf?.text ?? "error"
+            Messaging.messaging().subscribe(toTopic: topic) { error in
+                if let error = error {
+                    let alert = UIAlertController(title: "Error", message: "Cannot subscribe: \(error.localizedDescription)", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                } else {
+                    let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+                    userRef.updateData(["notifications": FieldValue.arrayUnion([topic])])
+                    let user = Auth.auth().currentUser
+                    self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                        if let docSnapshot = docSnapshot {
+                            allUserFirebaseData.data = docSnapshot.data()!
+                        }
+                    }
+                    let alert = UIAlertController(title: "", message: "Subscribed to \(topic)", preferredStyle: .alert)
+                    self.present(alert, animated: true, completion: nil)
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5){
+                        alert.dismiss(animated: true, completion: nil)
+                    }
+                }
+            }
+        })
+        confirm.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
+        self.present(confirm, animated: true, completion: nil)
     }
     
-    //For debugging
+    //Remove all keys (.plists). For resetting votes on songs, any user defaults
     @IBAction func clearKeys(_ sender: Any) {
-        print("Before: \(Array(UserDefaults.standard.dictionaryRepresentation().keys).count) keys")
-        let domain = Bundle.main.bundleIdentifier!
-        UserDefaults.standard.removePersistentDomain(forName: domain)
-        UserDefaults.standard.synchronize()
-        print("After: \(Array(UserDefaults.standard.dictionaryRepresentation().keys).count) keys")
-        
-        let alert = UIAlertController(title: "", message: "Cleared", preferredStyle: .alert)
-        self.present(alert, animated: true, completion: nil)
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1){
-            alert.dismiss(animated: true, completion: nil)
-        }
+        let confirm = UIAlertController(title: "Clear Keys?", message: nil, preferredStyle: .alert)
+        confirm.addAction(UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default) { (action:UIAlertAction) in
+            print("Before: \(Array(UserDefaults.standard.dictionaryRepresentation().keys).count) keys")
+            let domain = Bundle.main.bundleIdentifier!
+            UserDefaults.standard.removePersistentDomain(forName: domain)
+            UserDefaults.standard.synchronize()
+            print("After: \(Array(UserDefaults.standard.dictionaryRepresentation().keys).count) keys")
+            
+            let alert = UIAlertController(title: "", message: "Cleared", preferredStyle: .alert)
+            self.present(alert, animated: true, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1){
+                alert.dismiss(animated: true, completion: nil)
+            }
+            
+        })
+        confirm.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
+        self.present(confirm, animated: true, completion: nil)
     }
     
     //********************************CACHE********************************
@@ -177,7 +263,20 @@ class settingsController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    //********************************DOC DIRECT********************************
+    //****************************LOGGING OUT****************************
+    @IBAction func pressedLogOut(_ sender: Any) {
+        //Log out Google
+        GIDSignIn.sharedInstance()?.signOut()
+        //Log out Firebase
+        let firebaseAuth = Auth.auth()
+        do {
+            try firebaseAuth.signOut()
+        } catch let signOutError as NSError {
+            print ("Error signing out: %@", signOutError)
+        }
+    }
+    
+    //********************************DOCUMENT DIRECTORY********************************
     func sizeOfDocumentDirectory() -> String {
         let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         guard let items = try? FileManager.default.contentsOfDirectory(atPath: path) else { return "Error in getting Size" }

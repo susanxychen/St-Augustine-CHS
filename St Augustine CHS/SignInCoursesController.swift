@@ -47,7 +47,6 @@ class SignInCoursesController: UIViewController {
     //Loading Vars
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,7 +60,7 @@ class SignInCoursesController: UIViewController {
         // [END setup]
         db = Firestore.firestore()
         
-        showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
+        showActivityIndicatory(container: container, actInd: actInd)
         
         db.collection("info").document("courses").getDocument { (snap, err) in
             if let error = err {
@@ -74,7 +73,7 @@ class SignInCoursesController: UIViewController {
             if let snap = snap {
                 let data = snap.data()!
                 self.coursesToCheck = data["courses"] as! [String]
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             }
         }
         

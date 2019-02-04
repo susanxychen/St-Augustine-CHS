@@ -40,8 +40,8 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
     @IBOutlet weak var createNewAnncInstruction: UILabel!
     @IBOutlet weak var postButton: UIButton!
     
-    let overlayView = UIView(frame: UIScreen.main.bounds)
-    @IBOutlet var entireView: UIView!
+    let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
+    let container: UIView = UIView()
     
     @IBOutlet weak var statusBarView: UIView!
     @IBOutlet weak var topBarView: UIView!
@@ -228,12 +228,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
             }
             
             //Set up an activity indicator
-            self.overlayView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
-            let activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
-            activityIndicator.center = self.overlayView.center
-            self.overlayView.addSubview(activityIndicator)
-            activityIndicator.startAnimating()
-            self.entireView.addSubview(self.overlayView)
+            showActivityIndicatory(container: container, actInd: actInd)
             
             var imageName = ""
             //Check the img field
@@ -259,7 +254,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
                             alert.addAction(okAction)
                             self.present(alert, animated: true, completion: nil)
                             print(error as Any)
-                            self.entireView.willRemoveSubview(self.overlayView)
+                            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                             
                             return
                         }
@@ -322,7 +317,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                     alert.addAction(okAction)
                     self.present(alert, animated: true, completion: nil)
-                    self.entireView.willRemoveSubview(self.overlayView)
+                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     
                     print("Error writing document: \(err)")
                 } else {
@@ -349,8 +344,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                     alert.addAction(okAction)
                     self.present(alert, animated: true, completion: nil)
-                    
-                    self.entireView.willRemoveSubview(self.overlayView)
+                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     print("Error updating document: \(err)")
                 } else {
                     print("Document successfully updated")
@@ -416,11 +410,13 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
             presenter.anncRef.append(currentAnncID) //this line should be roughly useless as i refresh the entire page when returning
         }
         onDoneBlock!(true)
+        hideActivityIndicator(container: container, actInd: actInd)
         dismiss(animated: true, completion: nil)
     }
     
     func doneWithAnncUpdate() {
         onDoneBlock!(true)
+        hideActivityIndicator(container: container, actInd: actInd)
         dismiss(animated: true, completion: nil)
     }
     

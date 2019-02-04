@@ -12,7 +12,7 @@ import Floaty
 
 class clubFinalController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     //Filler
-    var snooImgFiller = UIImage()
+    var imgFiller = UIImage()
     
     //Cloud Functions
     lazy var functions = Functions.functions()
@@ -28,6 +28,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     var banImage: UIImage?
     var anncRef = [String]()
     var anncData = [[String:Any]]()
+    var anncImgs = [UIImage]()
+    var anncImgHeights = [CGFloat]()
     var clubID = String()
     
     @IBOutlet weak var bannerImageView: UIImageView!
@@ -35,7 +37,6 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     @IBOutlet weak var clubDescTextView: UITextView!
     @IBOutlet weak var anncCollectionViewHieght: NSLayoutConstraint!
     @IBOutlet weak var clubViewHeight: NSLayoutConstraint!
-    var anncImgs = [UIImage]()
     @IBOutlet weak var anncCollectionView: UICollectionView!
     @IBOutlet weak var addAnncButton: UIButton!
     
@@ -52,7 +53,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     var refreshControl: UIRefreshControl?
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
+    
     
     //Part of Club or not Variables
     var partOfClub = true
@@ -70,6 +71,12 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     var allImageIDs = [String]()
     
     //Badges
+    var clubBadgeIndex = -1
+    var clubBadgeImage: UIImage!
+    var clubBadgeDesc: String!
+    var clubBadgeImgID: String!
+    var isEditingBadge = false
+    var goingToCreateClubBadge = false
     @IBOutlet weak var badgeCollectionView: UICollectionView!
     var badgeData = [[String:Any]]()
     var badgeIDs = [String]()
@@ -194,7 +201,31 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             joinClubButton.isEnabled = false
         }
         
-        if isClubAdmin && !addedFloatyAlready {
+        if isClubAdmin {
+            if !addedFloatyAlready {
+                //Add floaty
+                let floaty = Floaty()
+                floaty.buttonColor = Defaults.accentColor
+                floaty.plusColor = UIColor.white
+                floaty.overlayColor = UIColor.clear
+                floaty.addItem("", icon: UIImage(named: "megaphone")!, handler: { item in
+                    print("nice")
+                    print("add")
+                    self.isEditingAnnc = false
+                    self.segueNum = 1
+                    self.performSegue(withIdentifier: "addAnnc", sender: self.addAnncButton)
+                    floaty.close()
+                })
+//                floaty.items.forEach {
+//                    $0.titleLabel.font = UIFont(name: "Scada-Regular", size: 17)
+//                    $0.titleLabel.textColor = Defaults.primaryColor
+//                }
+                floaty.openAnimationType = .slideLeft
+                floaty.sticky = true
+                self.view.addSubview(floaty)
+                addedFloatyAlready = true
+            }
+            
             //Long Press Gesture Recognizer
             let lpgr: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(clubFinalController.handleLongPress(gestureRecognizer:)))
             lpgr.minimumPressDuration = 0.5
@@ -202,27 +233,11 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             lpgr.delaysTouchesBegan = true
             self.anncCollectionView.addGestureRecognizer(lpgr)
             
-            //Add floaty
-            let floaty = Floaty()
-            floaty.buttonColor = Defaults.accentColor
-            floaty.plusColor = UIColor.white
-            floaty.overlayColor = UIColor.clear
-            floaty.addItem("", icon: UIImage(named: "megaphone")!, handler: { item in
-                print("nice")
-                print("add")
-                self.isEditingAnnc = false
-                self.segueNum = 1
-                self.performSegue(withIdentifier: "addAnnc", sender: self.addAnncButton)
-                floaty.close()
-            })
-            floaty.items.forEach {
-                $0.titleLabel.font = UIFont(name: "Scada-Regular", size: 17)
-                $0.titleLabel.textColor = Defaults.primaryColor
-            }
-            floaty.openAnimationType = .slideLeft
-            floaty.sticky = true
-            clubScrollView.addSubview(floaty)
-            addedFloatyAlready = true
+        }
+        
+        if ((allUserFirebaseData.data["status"] as? Int ?? 0) == 2) {
+            createBadgeButton.isHidden = false
+            constraintBetweenBadgeViewAndAnnouncements.constant = 59
         } else {
             createBadgeButton.isHidden = true
             constraintBetweenBadgeViewAndAnnouncements.constant = 12
@@ -250,7 +265,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         clubListDidUpdateClubDetails.clubAdminUpdatedData = true
         
         if joinStatus == 1 {
-            self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+            self.showActivityIndicatory(container: self.container, actInd: self.actInd)
             let user = Auth.auth().currentUser!
             functions.httpsCallable("sendEmailToAdmins").call(["adminIDArr": clubData["admins"], "userEmail": user.email, "clubName": clubData["name"]]) { (result, error) in
                 if let error = error as NSError? {
@@ -282,9 +297,15 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             clubRef.updateData(["members": FieldValue.arrayUnion([Auth.auth().currentUser?.uid as Any])])
             
             let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+            
+            if clubData["clubBadge"] as! String != "" {
+                userRef.updateData([
+                    "badges": FieldValue.arrayUnion([self.clubData["clubBadge"] as Any]),
+                ])
+            }
+            
             userRef.updateData([
                 "clubs": FieldValue.arrayUnion([clubID]),
-                "badges": FieldValue.arrayUnion([clubData["clubBadge"] as Any]),
                 "notifications": FieldValue.arrayUnion([self.clubID])
             ])
             
@@ -359,11 +380,38 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         }
     }
     
-    //**********************CREATING BADGES ***********************
+    //**********************CREATING BADGES***********************
     @IBAction func createBadgeButtonTapped(_ sender: Any) {
         print("Nice create badge")
-        segueNum = 5
-        performSegue(withIdentifier: "createBadge", sender: createBadgeSegueButton)
+        let actionSheet = UIAlertController(title: "Choose an Option", message: nil, preferredStyle: .actionSheet)
+        
+        var msg = ""
+        if clubData["clubBadge"] as! String == "" {
+            msg = "Create Club Badge"
+        } else {
+            msg = "Edit Club Badge"
+        }
+        
+        actionSheet.addAction(UIAlertAction(title: msg, style: .default, handler: { (action:UIAlertAction) in
+            self.goingToCreateClubBadge = true
+            self.segueNum = 5
+            
+            if msg == "Create Club Badge" {
+                self.isEditingBadge = false
+            } else {
+                self.isEditingBadge = true
+            }
+            
+            self.performSegue(withIdentifier: "createBadge", sender: self.createBadgeSegueButton)
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Create Badge", style: .default, handler: { (action:UIAlertAction) in
+            self.goingToCreateClubBadge = false
+            self.segueNum = 5
+            self.performSegue(withIdentifier: "createBadge", sender: self.createBadgeSegueButton)
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(actionSheet, animated: true, completion: nil)
     }
     
     //********************************GENERAL*********************************
@@ -373,7 +421,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         
         //************CLUB ADMIN PRIVLAGES************
         if isClubAdmin {
-            actionSheet.addAction(UIAlertAction(title: "Edit Club Details", style: .default, handler: { (action:UIAlertAction) in
+            actionSheet.addAction(UIAlertAction(title: "Edit Club", style: .default, handler: { (action:UIAlertAction) in
                 print("edit")
                 self.segueNum = 0
                 self.performSegue(withIdentifier: "editClubDetails", sender: self.editClubDetailsButton)
@@ -386,7 +434,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
 //            }))
             
             if (clubData["joinPref"] as? Int ?? 0) == 1 {
-                actionSheet.addAction(UIAlertAction(title: "View Pending List", style: .default, handler: { (action:UIAlertAction) in
+                actionSheet.addAction(UIAlertAction(title: "Pending List", style: .default, handler: { (action:UIAlertAction) in
                     print("pending")
                     self.segueNum = 2
                     self.performSegue(withIdentifier: "viewPending", sender: self.pendingButton)
@@ -396,14 +444,14 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         
         //************ALL MEMBERS PRIVLAGES************
         if partOfClub || (allUserFirebaseData.data["status"] as! Int == 2) {
-            actionSheet.addAction(UIAlertAction(title: "View Members and Admins", style: .default, handler: { (action:UIAlertAction) in
+            actionSheet.addAction(UIAlertAction(title: "Member List", style: .default, handler: { (action:UIAlertAction) in
                 print("list")
                 self.segueNum = 3
                 self.performSegue(withIdentifier: "viewMembers", sender: self.memberList)
             }))
             
             if isSubscribedToClub {
-                actionSheet.addAction(UIAlertAction(title: "Unsubscribe to Club Annnouncements", style: .default, handler: { (action:UIAlertAction) in
+                actionSheet.addAction(UIAlertAction(title: "Disable Notifications", style: .default, handler: { (action:UIAlertAction) in
                     
                     let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to unsubscribe? You won't recieve any more notifications from this club.", preferredStyle: .alert)
                     let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
@@ -443,7 +491,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     
                 }))
             } else {
-                actionSheet.addAction(UIAlertAction(title: "Subscribe to Club Annnouncements", style: .default, handler: { (action:UIAlertAction) in
+                actionSheet.addAction(UIAlertAction(title: "Enable Notifications", style: .default, handler: { (action:UIAlertAction) in
                     Messaging.messaging().subscribe(toTopic: self.clubID) { error in
                         print("subscribed to topic")
                         
@@ -490,6 +538,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                         "members": FieldValue.arrayRemove([Auth.auth().currentUser?.uid as Any])
                     ])
                     let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+                    
                     userRef.updateData([
                         "clubs": FieldValue.arrayRemove([self.clubID]),
                         "badges": FieldValue.arrayRemove([self.clubData["clubBadge"] as Any]),
@@ -600,6 +649,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     func getBadgeDocs(){
         badgeData.removeAll()
         badgeIDs.removeAll()
+        clubBadgeIndex = -1
         db.collection("badges").whereField("club", isEqualTo: clubID).getDocuments { (snap, err) in
             if let err = err {
                 let alert = UIAlertController(title: "Error in retrieveing some club images", message: "Please try again later. \(err.localizedDescription)", preferredStyle: .alert)
@@ -615,6 +665,14 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     }
                     for x in 0...snap!.documents.count - 1 {
                         let data = snap?.documents[x].data()
+                        
+                        let id = snap?.documents[x].documentID
+                        if self.clubData["clubBadge"] as? String ?? "err" == id {
+                            self.clubBadgeIndex = x
+                            self.clubBadgeDesc = data?["desc"] as? String ?? "error"
+                            self.clubBadgeImgID = data?["img"] as? String
+                        }
+                        
                         self.badgeData[x] = data!
                         self.badgeIDs[x] = snap?.documents[x].documentID ?? "Error"
                         if x == snap!.documents.count - 1 {
@@ -668,6 +726,10 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                             if let savedImage = self.getSavedImage(named: "\(name)-\(updated)"){
                                 print("already saved \(name)-\(updated)")
                                 self.badgeImgs[i] = savedImage
+                                
+                                if i == self.clubBadgeIndex {
+                                    self.clubBadgeImage = savedImage
+                                }
                             } else {
                                 // Create a reference to the file you want to download
                                 imgRef.downloadURL { url, error in
@@ -681,6 +743,11 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                                         if let imageData = data {
                                             image = UIImage(data: imageData)!
                                             self.badgeImgs[i] = image!
+                                            
+                                            if i == self.clubBadgeIndex {
+                                                self.clubBadgeImage = image
+                                            }
+                                            
                                             self.clearImageFolder(imageName: "\(name)-\(updated)")
                                             self.saveImageDocumentDirectory(image: image!, imageName: "\(name)-\(updated)")
                                         }
@@ -735,7 +802,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
                     let confirmAction = UIAlertAction(title: "Delete", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
                         print("Deleted the annc");
-                        self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                        self.showActivityIndicatory(container: self.container, actInd: self.actInd)
                         let theDeleteAnncID = self.anncRef[indexPath.item]
                         
                         DispatchQueue.main.async {
@@ -748,7 +815,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                                     alert.addAction(okAction)
                                     self.present(alert, animated: true, completion: nil)
                                 } else {
-                                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                                     self.refreshList()
                                 }
                             }
@@ -794,7 +861,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     
     //***********************************GET CLUB ANNOUNCEMENTS*************************************
     func getClubAnnc() {
-        showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+        showActivityIndicatory(container: self.container, actInd: self.actInd)
         //***************INTERNET CONNECTION**************
         var iAmConneted = false
         let connectedRef = Database.database().reference(withPath: ".info/connected")
@@ -811,7 +878,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                         alert.addAction(okAction)
                         self.present(alert, animated: true, completion: nil)
-                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     }
                 }
             }
@@ -820,6 +887,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         anncData.removeAll()
         anncRef.removeAll()
         anncImgs.removeAll()
+        anncImgHeights.removeAll()
+        allImageIDs.removeAll()
         
         db.collection("announcements").whereField("club", isEqualTo: clubID).getDocuments { (snap, err) in
             if let error = err {
@@ -833,7 +902,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     print("there is no announcements")
                     self.anncData = [["content": "", "date": Timestamp.init(), "img": "","title": "There are no announcements"]]
                     self.noAnnouncments = true
-                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     self.anncCollectionView.reloadData()
                     self.refreshControl?.endRefreshing()
                 } else {
@@ -857,7 +926,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     
     func sortAnncByDate () {
         for _ in anncRef {
-            anncImgs.append(snooImgFiller)
+            anncImgs.append(imgFiller)
+            anncImgHeights.append(0)
         }
         //print(anncData)
         if anncData.count > 2 {
@@ -909,17 +979,15 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     func getImages() {
         //print(anncData)
         if anncData.count <= 0 {
-            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             self.anncCollectionView.reloadData()
             self.refreshControl?.endRefreshing()
         }
         
-        var hasImageSomewhere = false
         for i in 0...anncData.count-1{
             if anncData[i]["img"] as? String != nil && anncData[i]["img"] as? String != "" {
                 allImageIDs.append(anncData[i]["img"] as! String)
                 
-                hasImageSomewhere = true
                 let storage = Storage.storage()
                 let storageRef = storage.reference()
                 //Set up the image
@@ -931,7 +999,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     if let error = error {
                         // Uh-oh, an error occurred!
                         self.anncData[i]["img"] = ""
-                        self.anncImgs[i] = self.snooImgFiller
+                        self.anncImgs[i] = self.imgFiller
+                        self.anncImgHeights[i] = 0
                         print(error)
                     } else {
                         // Metadata now contains the metadata for 'images/forest.jpg'
@@ -943,6 +1012,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                                 if let savedImage = self.getSavedImage(named: "\(imageName)-\(updated)"){
                                     print("already saved \(imageName)-\(updated)")
                                     self.anncImgs[i] = savedImage
+                                    self.anncImgHeights[i] = savedImage.size.height / savedImage.size.width * self.view.frame.width
                                 } else {
                                     // Create a reference to the file you want to download
                                     imgRef.downloadURL { url, error in
@@ -950,7 +1020,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                                             //print(error)
                                             print("cant find image \(imageName) + \(self.anncData[i])")
                                             self.anncData[i]["img"] = ""
-                                            self.anncImgs[i] = self.snooImgFiller
+                                            self.anncImgs[i] = self.imgFiller
+                                            self.anncImgHeights[i] = 0
                                         } else {
                                             // Get the download URL
                                             var image: UIImage?
@@ -958,6 +1029,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                                             if let imageData = data {
                                                 image = UIImage(data: imageData)!
                                                 self.anncImgs[i] = image!
+                                                self.anncImgHeights[i] = image!.size.height / image!.size.width * self.view.frame.width
                                                 self.clearImageFolder(imageName: "\(imageName)-\(updated)")
                                                 self.saveImageDocumentDirectory(image: image!, imageName: "\(imageName)-\(updated)")
                                             }
@@ -970,7 +1042,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     }
                 }
             } else {
-                self.anncImgs[i] = self.snooImgFiller
+                self.anncImgs[i] = self.imgFiller
             }
         }
         
@@ -1039,7 +1111,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                 }
             }
             
-            //Now finally actually add these new ids to voteData *cant do it within the loop cause itll break the count
+            //Now finally actually add these new ids
             for id in idsToAdd {
                 x.append(id)
             }
@@ -1052,20 +1124,11 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         
         
         //Reload announcements
-        if hasImageSomewhere {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                print("i reload data")
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-                self.anncCollectionView.reloadData()
-                self.refreshControl?.endRefreshing()
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                print("i reload data")
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
-                self.anncCollectionView.reloadData()
-                self.refreshControl?.endRefreshing()
-            }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            print("i reload data")
+            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+            self.anncCollectionView.reloadData()
+            self.refreshControl?.endRefreshing()
         }
     }
     
@@ -1086,23 +1149,24 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             
             //Get an approximation of the title size
             let attributesTitle = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
-            let estimatedFrameTitle = NSString(string: anncData[indexPath.row]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
+            let estimatedFrameTitle = NSString(string: anncData[indexPath.item]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
+            let titleHeight = estimatedFrameTitle.height
             
             //Get an approximation of the content size
             let attributesContent = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
-            let estimatedFrameContent = NSString(string: anncData[indexPath.row]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
+            let estimatedFrameContent = NSString(string: anncData[indexPath.item]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
             
             var imgHeight:CGFloat = 0
-            if anncData[indexPath.row]["img"] as? String != "" {
-                imgHeight = 260
+            if anncData[indexPath.item]["img"] as? String != "" {
+                imgHeight = anncImgHeights[indexPath.item]
             }
             
             var contentHeight:CGFloat = 0
-            if anncData[indexPath.row]["content"] as? String != "" {
+            if anncData[indexPath.item]["content"] as? String != "" {
                 contentHeight = estimatedFrameContent.height + 10
             }
             
-            let finalHeight = estimatedFrameTitle.height + contentHeight + imgHeight + 75
+            let finalHeight = titleHeight + contentHeight + imgHeight + 75
             
             return CGSize(width: view.frame.width, height: finalHeight)
         } else if collectionView == badgeCollectionView {
@@ -1133,26 +1197,26 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
 //                //Set the title's height
                 let size = CGSize(width: view.frame.width, height: 1000)
                 let attributesTitle = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
-                let estimatedFrameTitle = NSString(string: anncData[indexPath.row]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
+                let estimatedFrameTitle = NSString(string: anncData[indexPath.item]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
                 cell.anncTitleHeight.constant = estimatedFrameTitle.height + 20
 
                 //Set the content's height
                 let attributesContent = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
-                let estimatedFrameContent = NSString(string: anncData[indexPath.row]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
-                if anncData[indexPath.row]["content"] as? String == "" {
+                let estimatedFrameContent = NSString(string: anncData[indexPath.item]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
+                if anncData[indexPath.item]["content"] as? String == "" {
                     cell.anncTextHeight.constant = 1
                 } else {
                     cell.anncTextHeight.constant = estimatedFrameContent.height + 30
                 }
                 
                 //Get the date the announcement was made
-                let timestamp: Timestamp = anncData[indexPath.row]["date"] as! Timestamp
+                let timestamp: Timestamp = anncData[indexPath.item]["date"] as! Timestamp
                 let date: Date = timestamp.dateValue()
                 
                 //Set up title and content
                 cell.anncDate.text = DateFormatter.localizedString(from: date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
-                cell.anncTitle.text = anncData[indexPath.row]["title"] as? String
-                cell.anncText.text = anncData[indexPath.row]["content"] as? String
+                cell.anncTitle.text = anncData[indexPath.item]["title"] as? String
+                cell.anncText.text = anncData[indexPath.item]["content"] as? String
                 
                 var fixedWidth = cell.anncTitle.frame.size.width
                 var newSize = cell.anncTitle.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
@@ -1169,17 +1233,11 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                 cell.anncDate.backgroundColor = Defaults.primaryColor
                 cell.anncTitle.textColor = Defaults.primaryColor
                 
-                //Set up images
-                //Use already downloaded images
-                //Note. The Collection View Cells become deallocated as it goes off the screen. Redownloading the same images over and over is inefficent.
-                //Instead. I have saved the images and load images from the memory
-                //print("index is \(indexPath.row) and anncImgs.count is \(anncImgs.count)")
-                if indexPath.row < anncImgs.count {
-                    if anncImgs[indexPath.row] != snooImgFiller {
-                        //print("\(indexPath.row) Has images")
-                        cell.anncImg.isHidden = false
-                        cell.anncImg.image = anncImgs[indexPath.row]
-                    }
+                //Add the image to the cell and change the height
+                if anncImgs.count != 0 && anncImgs[indexPath.item] != imgFiller {
+                    cell.anncImg.isHidden = false
+                    cell.anncImg.image = anncImgs[indexPath.item]
+                    cell.anncImgHeight.constant = anncImgHeights[indexPath.item]
                 }
             }
             return cell
@@ -1212,7 +1270,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             imageVC.rightButtonText = "OK"
             imageVC.leftButtonText = "Give Away!"
             
-            if isClubAdmin {
+            //only be able to give badges away if its allowed
+            if isClubAdmin && (badgeData[indexPath.item]["giveaway"] as? Bool ?? false) {
                 imageVC.showLeftButton = true
             }
             
@@ -1230,18 +1289,18 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     
     @objc func refreshList(){
         print("I refreshed stuff")
-        self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+        
         //Wipe all data
         clubData.removeAll()
         //Get Club Data
         let docRef = db.collection("clubs").document(clubID)
         docRef.getDocument { (document, error) in
             if let error = error {
-                let alert = UIAlertController(title: "Error in retrieveing Clubs", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Error in retrieveing clubs data", message: "Please Try Again later. Error: \(error.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                //self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             }
             if let document = document, document.exists {
                 self.clubData = document.data()!
@@ -1254,7 +1313,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     self.getClubAnnc()
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                    self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    //self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     self.anncCollectionView.reloadData()
                     self.refreshControl?.endRefreshing()
                 })
@@ -1279,7 +1338,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             vc.clubBannerID = clubData["img"] as? String
             vc.clubID = clubID
             vc.pendingList = clubData["pending"] as! [String]
-            vc.clubBadge = clubData["badge"] as? String
+            vc.clubBadge = clubData["clubBadge"] as? String
             
             //Refresh the club details to get new banners and other stuff!!!
             vc.onDoneBlock = { result in
@@ -1339,6 +1398,17 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         case 5:
             let vc = segue.destination as! createBadgeController
             vc.clubID = clubID
+            vc.isClubBadge = goingToCreateClubBadge
+            vc.isUpdatingBadge = isEditingBadge
+            
+            //when events are done, turn this into general form
+            if goingToCreateClubBadge && isEditingBadge {
+                vc.oldBadgeID = clubData["clubBadge"] as? String
+                vc.oldBadgeImg = clubBadgeImage
+                vc.oldBadgeDesc = clubBadgeDesc
+                vc.oldBadgeImgId = clubBadgeImgID
+            }
+            
             vc.onDoneBlock = { result in
                 clubListDidUpdateClubDetails.clubAdminUpdatedData = true
                 self.refreshList()

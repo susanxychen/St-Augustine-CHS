@@ -2,6 +2,8 @@ const https = require('follow-redirects').http;
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
+const cors = require('cors')();
+
 // var serviceAccount = require('./serviceAccountKey.json');
 admin.initializeApp({ 
     credential: admin.credential.applicationDefault()
@@ -12,6 +14,29 @@ const storage = new Storage();
 
 const settings = {timestampsInSnapshots: true};
 admin.firestore().settings(settings);
+
+// const validateFirebaseIdToken = (req, res, next) => {
+//     cors(req, res, () => {
+//       const idToken = String(req.headers.authorization).split('Bearer ')[1];
+//       admin.auth().verifyIdToken(idToken).then(decodedIdToken => {
+//         console.log('ID Token correctly decoded', decodedIdToken);
+//         req.user = decodedIdToken;
+//         next();
+//         return '';
+//       }).catch(error => {
+//         console.error('Error while verifying Firebase ID token:', error);
+//         res.status(403).send('Unauthorized');
+//       });
+//     });
+// };
+  
+
+// exports.testauth = functions.https.onRequest((req, res) => {
+//     validateFirebaseIdToken(req, res, () => {
+//         //now you know they're authorized and `req.user` has info about them
+//         res.send('auth passed');
+//     });
+// });
 
 exports.sendEmailToAdmins = functions.https.onCall((data, response) => {
     const adminIDArr = data.adminIDArr;
@@ -98,81 +123,83 @@ exports.sendEmailToAdmins = functions.https.onCall((data, response) => {
 });
 
 exports.deleteTopSongs = functions.https.onRequest((request, response) => {
-    var songsRef = admin.firestore().collection('songs');
-    var allSongs = songsRef.get()
-    .then(snapshot => {
-        var votes = []
-        var ids = []
-        var dates = []
-        snapshot.forEach(doc => {
-            console.log(doc.id, ' => ', doc.data())
-            const songData = doc.data();
-            let upvotes = songData.upvotes;
-            if(!upvotes){
-                upvotes = 0;
-            }
-            votes.push(upvotes);
-            ids.push(doc.id);
+    //validateFirebaseIdToken(request, response, () => {
+        var songsRef = admin.firestore().collection('songs');
+        var allSongs = songsRef.get()
+        .then(snapshot => {
+            var votes = []
+            var ids = []
+            var dates = []
+            snapshot.forEach(doc => {
+                console.log(doc.id, ' => ', doc.data())
+                const songData = doc.data();
+                let upvotes = songData.upvotes;
+                if(!upvotes){
+                    upvotes = 0;
+                }
+                votes.push(upvotes);
+                ids.push(doc.id);
 
-            let timestamp = songData.date;
-            const date = timestamp.toDate();
-            dates.push(date);
-        });
+                let timestamp = songData.date;
+                const date = timestamp.toDate();
+                dates.push(date);
+            });
 
-        if (ids.length >= 3) {
-            var max = [0,0,0];
-            var maxIDs = ['error','error','error'];
+            if (ids.length >= 3) {
+                var max = [0,0,0];
+                var maxIDs = ['error','error','error'];
 
-            //Loop through the max array
-            for (let j = 0; j < max.length; j++){
-                //Go through all the songs
-                for (let i = 0; i < votes.length; i++){
-                    //Get new max check if we already did that max
-                    if (max[j] <= votes[i] && !maxIDs.includes(ids[i])) {
-                        max[j] = votes[i];
-                        maxIDs[j] = ids[i];
+                //Loop through the max array
+                for (let j = 0; j < max.length; j++){
+                    //Go through all the songs
+                    for (let i = 0; i < votes.length; i++){
+                        //Get new max check if we already did that max
+                        if (max[j] <= votes[i] && !maxIDs.includes(ids[i])) {
+                            max[j] = votes[i];
+                            maxIDs[j] = ids[i];
+                        }
                     }
                 }
-            }
 
-            //Delete the top songs
-            for (let i = 0; i < maxIDs.length; i++){
-                admin.firestore().collection('songs').doc(maxIDs[i]).delete();
-            }
-
-            //Delete songs older than 2 days
-            var daysAgo = new Date().getTime() - (2*24*60*60*1000)
-            var oldSongIds = []
-
-            for (let i = 0; i < ids.length; i++){
-                if (dates[i] < daysAgo /*&& votes[i] < 100*/){
-                    oldSongIds.push(ids[i]);
+                //Delete the top songs
+                for (let i = 0; i < maxIDs.length; i++){
+                    admin.firestore().collection('songs').doc(maxIDs[i]).delete();
                 }
-            }
 
-            //Delete the old songs
-            for (let i = 0; i < oldSongIds.length; i++){
-                admin.firestore().collection('songs').doc(oldSongIds[i]).delete();
-            }
+                //Delete songs older than 2 days
+                var daysAgo = new Date().getTime() - (2*24*60*60*1000)
+                var oldSongIds = []
 
-            response.send(oldSongIds + ' ' + maxIDs);
-            return oldSongIds;
-        } else if (ids.length > 0) {
-            //Just delete everything
-            for (let i = 0; i < ids.length; i++){
-                admin.firestore().collection('songs').doc(ids[i]).delete();
+                for (let i = 0; i < ids.length; i++){
+                    if (dates[i] < daysAgo /*&& votes[i] < 100*/){
+                        oldSongIds.push(ids[i]);
+                    }
+                }
+
+                //Delete the old songs
+                for (let i = 0; i < oldSongIds.length; i++){
+                    admin.firestore().collection('songs').doc(oldSongIds[i]).delete();
+                }
+
+                response.send(oldSongIds + ' ' + maxIDs);
+                return oldSongIds;
+            } else if (ids.length > 0) {
+                //Just delete everything
+                for (let i = 0; i < ids.length; i++){
+                    admin.firestore().collection('songs').doc(ids[i]).delete();
+                }
+                response.send('deleted last songs');
+                return 'deleted last songs';
+            } else {
+                response.send('no songs at all');
+                return 'no songs at all';
             }
-            response.send('deleted last songs');
-            return 'deleted last songs';
-        } else {
-            response.send('no songs at all');
-            return 'no songs at all';
-        }
-    })
-    .catch(error => {
-        console.log(error);
-        response.status(500).send(error);
-    })
+        })
+        .catch(error => {
+            console.log(error);
+            response.status(500).send(error);
+        })
+    //});
 });
 
 exports.deleteOldAnnouncements = functions.https.onRequest((request, response) => {

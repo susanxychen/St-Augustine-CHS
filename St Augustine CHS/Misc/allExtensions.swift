@@ -215,18 +215,15 @@ fileprivate extension URL {
 }
 
 extension UIViewController {
-    //let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
-    //let container: UIView = UIView()
-    func showActivityIndicatory(uiView: UIView, container: UIView, actInd: UIActivityIndicatorView, overlayView: UIView) {
-     overlayView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
-        
-        container.frame = uiView.frame
+    func showActivityIndicatory(container: UIView, actInd: UIActivityIndicatorView) {
+        let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
+        container.frame = overlayView.frame
         container.center = overlayView.center
-        container.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
+        container.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.0)
         
         let loadingView: UIView = UIView()
         loadingView.frame = CGRect(x: 0, y: 0, width: 80, height: 80)
-        loadingView.center = uiView.center
+        loadingView.center = overlayView.center
         loadingView.backgroundColor = UIColor(red: 68/255, green: 68/255, blue: 68/255, alpha: 0.7)
         loadingView.clipsToBounds = true
         loadingView.layer.cornerRadius = 10
@@ -237,24 +234,11 @@ extension UIViewController {
         
         loadingView.addSubview(actInd)
         container.addSubview(loadingView)
-        //overlayView.addSubview(container)
-        //uiView.addSubview(overlayView)
-        //uiView.addSubview(container)
         UIApplication.shared.keyWindow!.addSubview(container)
-        //uiView.bringSubviewToFront(overlayView)
         actInd.startAnimating()
-        
-        /*
-         //Set up an activity indicator
-         self.overlayView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
-         let activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
-         activityIndicator.center = self.overlayView.center
-         self.overlayView.addSubview(activityIndicator)
-         activityIndicator.startAnimating()
-         self.entireView.addSubview(self.overlayView)*/
     }
     
-    func hideActivityIndicator(uiView: UIView, container: UIView, actInd: UIActivityIndicatorView, overlayView: UIView) {
+    func hideActivityIndicator(container: UIView, actInd: UIActivityIndicatorView) {
         actInd.stopAnimating()
         container.removeFromSuperview()
     }

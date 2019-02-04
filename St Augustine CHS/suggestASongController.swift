@@ -20,7 +20,6 @@ class suggestASongController: UIViewController {
     
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIScreen.main.bounds)
     
     //Allows refreshing the song req controller when done adding song
     var onDoneBlock : ((Bool) -> Void)?
@@ -33,7 +32,6 @@ class suggestASongController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        overlayView.frame = UIApplication.shared.keyWindow!.frame
         var iAmConneted = false
         let connectedRef = Database.database().reference(withPath: ".info/connected")
         connectedRef.observe(.value, with: { snapshot in
@@ -110,7 +108,7 @@ class suggestASongController: UIViewController {
                 }
                 
                 if valid {
-                    self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                    self.showActivityIndicatory(container: self.container, actInd: self.actInd)
                     
                     let user = Auth.auth().currentUser
                     
@@ -124,7 +122,7 @@ class suggestASongController: UIViewController {
                             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                             alert.addAction(okAction)
                             self.present(alert, animated: true, completion: nil)
-                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                         }
                         
                         self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
@@ -134,7 +132,7 @@ class suggestASongController: UIViewController {
                                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                                 alert.addAction(okAction)
                                 self.present(alert, animated: true, completion: nil)
-                                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                             }
                             
                             if let docSnapshot = docSnapshot {
@@ -154,11 +152,11 @@ class suggestASongController: UIViewController {
                                         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                                         alert.addAction(okAction)
                                         self.present(alert, animated: true, completion: nil)
-                                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                                     } else {
                                         print("Document successfully written!")
                                         self.onDoneBlock!(true)
-                                        self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                                         self.dismiss(animated: true, completion: nil)
                                     }
                                 }

@@ -43,7 +43,7 @@ class changeCoursesController: UIViewController {
     //Refresh Vars
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
+    
     
     //Colors
     @IBOutlet weak var statusBarView: UIView!
@@ -83,7 +83,7 @@ class changeCoursesController: UIViewController {
         
         hideKeyboardWhenTappedAround()
         
-        showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: self.overlayView)
+        showActivityIndicatory(container: container, actInd: actInd)
         db.collection("info").document("courses").getDocument { (snap, err) in
             if let error = err {
                 let alert = UIAlertController(title: "Error in getting course codes", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
@@ -95,7 +95,7 @@ class changeCoursesController: UIViewController {
             if let snap = snap {
                 let data = snap.data()!
                 self.coursesToCheck = data["courses"] as! [String]
-                self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             }
         }
         
@@ -144,7 +144,7 @@ class changeCoursesController: UIViewController {
         }
         
         if validCourses {
-            showActivityIndicatory(uiView: self.view, container: container, actInd: actInd, overlayView: overlayView)
+            showActivityIndicatory(container: container, actInd: actInd)
             //Set the final courses
             for i in 0..<8{
                 coursesTypedIn.append(allTextFields[i].text ?? "Error Code")
@@ -165,7 +165,7 @@ class changeCoursesController: UIViewController {
                         if let docSnapshot = docSnapshot {
                             allUserFirebaseData.data = docSnapshot.data()!
                             self.onDoneBlock!(true)
-                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                             self.dismiss(animated: true, completion: nil)
                         }
                         if let err = err {
@@ -173,7 +173,7 @@ class changeCoursesController: UIViewController {
                             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                             alert.addAction(okAction)
                             self.present(alert, animated: true, completion: nil)
-                            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+                            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                         }
                     }
                 }

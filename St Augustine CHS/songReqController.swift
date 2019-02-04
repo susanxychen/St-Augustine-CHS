@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import Floaty
 
 struct voteData {
     //Voted, Name, Artist, Votes, ID
@@ -15,20 +16,22 @@ struct voteData {
 }
 
 class songReqController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-
+    //button used for segue
     @IBOutlet weak var suggestASong: UIButton!
+    
+    let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
+    let container: UIView = UIView()
     
     //The Database
     var db: Firestore!
     var docRef: DocumentReference!
     
-    var activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView()
     @IBOutlet weak var songView: UICollectionView!
+    
+    var isOverMaxSongs = false
     
     //Refresh Controls
     var refreshControl: UIRefreshControl?
-    
-    var songReqButton: UIBarButtonItem!
     
     //Super vote stuff
     @IBOutlet weak var supervoteView: UIView!
@@ -50,16 +53,32 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         lpgr.delaysTouchesBegan = true
         self.songView.addGestureRecognizer(lpgr)
         
-        //create a new button
-        let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "addSong"), for: .normal)
-        //add function for button
-        button.addTarget(self, action: #selector(suggestSongButtonPressed), for: .touchUpInside)
-        button.frame = CGRect(x: 0, y: 0, width: 48, height: 48)
         
-        songReqButton = UIBarButtonItem(customView: button)
-        //assign button to navigationbar
-        self.navigationItem.rightBarButtonItem = songReqButton
+        let floaty = Floaty()
+        floaty.buttonColor = Defaults.accentColor
+        floaty.plusColor = UIColor.white
+        floaty.overlayColor = UIColor.clear
+        
+        let item = FloatyItem()
+        item.buttonColor = Defaults.accentColor
+        item.icon = UIImage(named: "addSong")!
+        item.handler = { item in
+            if self.isOverMaxSongs {
+                let alert = UIAlertController(title: "", message: "There are too many songs requested today. Try again tomorrow!", preferredStyle: .alert)
+                self.present(alert, animated: true, completion: nil)
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5){
+                    alert.dismiss(animated: true, completion: nil)
+                }
+            } else {
+                self.performSegue(withIdentifier: "suggestSong", sender: self.suggestASong)
+            }
+            
+            floaty.close()
+        }
+        floaty.addItem(item: item)
+        floaty.openAnimationType = .slideLeft
+        floaty.sticky = true
+        self.view.addSubview(floaty)
         
         //Add refresh control
         addRefreshControl()
@@ -68,11 +87,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         songView.alwaysBounceVertical = true
         
         //Set up the activity indicator
-        activityIndicator.center = self.view.center
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.style = UIActivityIndicatorView.Style.gray
-        view.addSubview(activityIndicator)
-        activityIndicator.startAnimating()
+        showActivityIndicatory(container: container, actInd: actInd)
         
         //Set Up
         // [START setup]
@@ -90,18 +105,12 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         supervoteSlider.minimumValue = Float(Defaults.supervoteMin)
         supervoteSlider.maximumValue = Float(allUserFirebaseData.data["points"] as! Int)
         
-        songView.isHidden = true
+        //Get the data of whether you voted or not
         if let x = UserDefaults.standard.object(forKey: "songsVoted") as? [[Any]]{
-            //print("Found Default Values: \(x)")
             voteData.songsVoted = x
         }
         
         getSongData()
-    }
-    
-    @objc func suggestSongButtonPressed() {
-        print("u want to suggest song")
-        performSegue(withIdentifier: "suggestSong", sender: suggestASong)
     }
     
     var selectedSuperSongID: String!
@@ -151,67 +160,69 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     //Cloud Functions
     lazy var functions = Functions.functions()
     @IBAction func spendPointsSuper(_ sender: Any) {
-        UIView.animate(withDuration: 0.1, animations: {
-            self.supervoteView.alpha = 0
-        }) { _ in
-            self.supervoteSlider.setValue(0, animated: false)
-            self.supervoteView.isHidden = true
-            self.view.sendSubviewToBack(self.supervoteView)
-        }
-        
-        //Subtact the points
-        allUserFirebaseData.data["points"] = allUserFirebaseData.data["points"] as! Int - self.supervoteCost
-        supervoteSlider.maximumValue = Float(allUserFirebaseData.data["points"] as! Int)
-        
-        let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
-        userRef.setData([
-            "points" : allUserFirebaseData.data["points"] as! Int
-        ], mergeFields: ["points"]) { (err) in
-            if let err = err {
-                let alert = UIAlertController(title: "Error in supervoting", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                alert.addAction(okAction)
-                self.present(alert, animated: true, completion: nil)
-            } else {
-                print("Document successfully updated")
-                
-                let songRef = self.db.collection("songs").document(self.selectedSuperSongID)
-                self.db.runTransaction({ (transaction, errorPointer) -> Any? in
-                    let uDoc: DocumentSnapshot
-                    do {
-                        try uDoc = transaction.getDocument(songRef)
-                    } catch let fetchError as NSError {
-                        errorPointer?.pointee = fetchError
-                        return nil
-                    }
-                    
-                    guard let oldPoints = uDoc.data()?["upvotes"] as? Int else {
-                        let error = NSError(
-                            domain: "AppErrorDomain",
-                            code: -1,
-                            userInfo: [
-                                NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
-                            ]
-                        )
-                        errorPointer?.pointee = error
-                        return nil
-                    }
-                    transaction.updateData(["upvotes": oldPoints + self.supervoteAmount], forDocument: songRef)
-                    return nil
-                }, completion: { (object, err) in
-                    if let error = err {
-                        print("Transaction failed: \(error)")
-                    } else {
-                        print("Transaction successfully committed!")
-                        print("successfuly upvoted")
-                        voteData.songsVoted[self.supervotedIndex][0] = 2
-                        voteData.songsVoted[self.supervotedIndex][3] = self.supervoteAmount + (voteData.songsVoted[self.supervotedIndex][3] as! Int)
-                        UserDefaults.standard.set(voteData.songsVoted, forKey: "songsVoted")
-                        self.refreshList()
-                    }
-                })
+        if supervoteAmount != 0 {
+            UIView.animate(withDuration: 0.1, animations: {
+                self.supervoteView.alpha = 0
+            }) { _ in
+                self.supervoteSlider.setValue(0, animated: false)
+                self.supervoteView.isHidden = true
+                self.view.sendSubviewToBack(self.supervoteView)
             }
-        }
+            
+            //Subtact the points
+            allUserFirebaseData.data["points"] = allUserFirebaseData.data["points"] as! Int - self.supervoteCost
+            supervoteSlider.maximumValue = Float(allUserFirebaseData.data["points"] as! Int)
+            
+            let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+            userRef.setData([
+                "points" : allUserFirebaseData.data["points"] as! Int
+            ], mergeFields: ["points"]) { (err) in
+                if let err = err {
+                    let alert = UIAlertController(title: "Error in supervoting", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                    alert.addAction(okAction)
+                    self.present(alert, animated: true, completion: nil)
+                } else {
+                    print("Document successfully updated")
+                    
+                    let songRef = self.db.collection("songs").document(self.selectedSuperSongID)
+                    self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                        let uDoc: DocumentSnapshot
+                        do {
+                            try uDoc = transaction.getDocument(songRef)
+                        } catch let fetchError as NSError {
+                            errorPointer?.pointee = fetchError
+                            return nil
+                        }
+                        
+                        guard let oldPoints = uDoc.data()?["upvotes"] as? Int else {
+                            let error = NSError(
+                                domain: "AppErrorDomain",
+                                code: -1,
+                                userInfo: [
+                                    NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+                                ]
+                            )
+                            errorPointer?.pointee = error
+                            return nil
+                        }
+                        transaction.updateData(["upvotes": oldPoints + self.supervoteAmount], forDocument: songRef)
+                        return nil
+                    }, completion: { (object, err) in
+                        if let error = err {
+                            print("Transaction failed: \(error)")
+                        } else {
+                            print("Transaction successfully committed!")
+                            print("successfuly upvoted")
+                            voteData.songsVoted[self.supervotedIndex][0] = 2
+                            voteData.songsVoted[self.supervotedIndex][3] = self.supervoteAmount + (voteData.songsVoted[self.supervotedIndex][3] as! Int)
+                            UserDefaults.standard.set(voteData.songsVoted, forKey: "songsVoted")
+                            self.refreshList()
+                        }
+                    })
+                }
+            }
+        }    
     }
     
     //***************************************GET SONG DATA*************************************
@@ -232,7 +243,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                         alert.addAction(okAction)
                         self.present(alert, animated: true, completion: nil)
-                        self.songReqButton.isEnabled = false
+                        self.isOverMaxSongs = true
                     }
                 }
             }
@@ -244,16 +255,16 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
-                self.activityIndicator.stopAnimating()
+                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                 self.refreshControl?.endRefreshing()
                 print("Error getting documents: \(err)")
             } else {
                 var latestSongs = [[Any]]()
-                print("\(Defaults.maxSongs) max and \(querySnapshot!.documents.count)")
+                
                 //Disable the add song button if there are over max songs
                 if querySnapshot!.documents.count >= Defaults.maxSongs {
-                    if allUserFirebaseData.data["status"] as? Int ?? 0 < 1 {
-                        self.songReqButton.isEnabled = false
+                    if allUserFirebaseData.data["status"] as? Int ?? 0 == 2 {
+                        self.isOverMaxSongs = true
                     }
                 }
                 
@@ -270,7 +281,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                         alert.addAction(okAction)
                         self.present(alert, animated: true, completion: nil)
-                        self.activityIndicator.stopAnimating()
+                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                         self.refreshControl?.endRefreshing()
                         return
                     }
@@ -359,8 +370,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
             }
         }
         print(voteData.songsVoted)
-        self.songView.isHidden = false
-        self.activityIndicator.stopAnimating()
+        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
         self.refreshControl?.endRefreshing()
         self.songView.reloadData()
     }
@@ -412,6 +422,11 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     }
     
     @objc func refreshList(){
+        supervoteCost = 0
+        supervoteAmount = 0
+        supervoteVotes.text = "Votes: "
+        supervotePoints.text = "Points: "
+        
         //Dont need to remove all as the getSongData checks if there is a new song and will get it
         //However. To delete songs, thats another issue
         getSongData()

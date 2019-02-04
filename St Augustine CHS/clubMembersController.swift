@@ -48,7 +48,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
     var refreshControl: UIRefreshControl?
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    let overlayView = UIView(frame: UIApplication.shared.keyWindow!.frame)
+    
     
     //Returning to club controller
     var promotedAMember : ((Bool) -> Void)?
@@ -91,7 +91,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
     func getClubData(){
         adminsList.removeAll()
         membersList.removeAll()
-        self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+        self.showActivityIndicatory(container: self.container, actInd: self.actInd)
         db.collection("clubs").document(clubID).getDocument { (snap, err) in
             if let err = err {
                 let alert = UIAlertController(title: "Error in updating Club", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
@@ -108,7 +108,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func getNames() {
-        self.showActivityIndicatory(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+        self.showActivityIndicatory(container: self.container, actInd: self.actInd)
         adminsNamesList.removeAll()
         membersNamesList.removeAll()
         adminsEmailsList.removeAll()
@@ -171,7 +171,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.hideActivityIndicator(uiView: self.view, container: self.container, actInd: self.actInd, overlayView: self.overlayView)
+            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             self.adminsCollectionView.reloadData()
             self.membersCollectionView.reloadData()
         }
