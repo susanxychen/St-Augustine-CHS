@@ -799,10 +799,14 @@
                         <outlet property="cafeViewHeight" destination="Is2-nz-q6c" id="uSM-F3-Egf"/>
                         <outlet property="daymenuLabel" destination="fWi-Vc-ekO" id="tQx-Tz-MUd"/>
                         <outlet property="daymenuLabelHeight" destination="EKi-sq-boI" id="mZ6-bQ-kIg"/>
+                        <outlet property="lineBetweenMenuHeights" destination="BLL-XA-qR7" id="JdZ-Iz-s7k"/>
                         <outlet property="menuCollectionView" destination="t3e-gL-BPd" id="hmp-oA-s6u"/>
                         <outlet property="menuCollectionViewHeight" destination="VRN-x1-tSq" id="klc-OF-gYm"/>
                         <outlet property="regularMenuCollectionView" destination="GXz-0n-mgV" id="kfl-8Y-d95"/>
                         <outlet property="regularMenuCollectionViewHeight" destination="eJD-jn-ZKd" id="P4k-8m-DOJ"/>
+                        <outlet property="topofdayHeight" destination="DKX-m2-dPD" id="LVB-dh-Idb"/>
+                        <outlet property="topoflineHeight" destination="eEz-nL-62x" id="VP7-yl-jEM"/>
+                        <outlet property="topofmenuHeight" destination="xv1-9w-40q" id="6zd-fN-XbS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hkX-Cn-A5m" userLabel="First Responder" sceneMemberID="firstResponder"/>

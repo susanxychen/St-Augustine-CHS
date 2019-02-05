@@ -22,9 +22,18 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
     @IBOutlet weak var menuCollectionViewHeight: NSLayoutConstraint!
     @IBOutlet weak var regularMenuCollectionViewHeight: NSLayoutConstraint!
     @IBOutlet weak var cafeViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var lineBetweenMenuHeights: NSLayoutConstraint!
+    
+    //Weekend Constraints
+    @IBOutlet weak var topofdayHeight: NSLayoutConstraint!
+    @IBOutlet weak var topofmenuHeight: NSLayoutConstraint!
+    @IBOutlet weak var topoflineHeight: NSLayoutConstraint!
+    
     
     var theActualMenu = [[Any]]()
     var theActualRegularMenu = [[Any]]()
+    
+    var isWeekend = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,8 +74,15 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
         let theDay = DateFormatter.localizedString(from: Date(), dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
         //If its a weekend set up the "monday will be message"
         if (theDay.range(of:"Sunday") != nil) || (theDay.range(of:"Saturday") != nil){
+            isWeekend = true
             daymenuLabel.isHidden = true
             daymenuLabelHeight.constant = 0
+            menuCollectionView.isHidden = true
+            menuCollectionViewHeight.constant = 0
+            lineBetweenMenuHeights.constant = 0
+            topofdayHeight.constant = 0
+            topoflineHeight.constant = 0
+            topofmenuHeight.constant = 0
         }
         
         getCafeMenu()
@@ -215,7 +231,11 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let height = self.menuCollectionView.contentSize.height + self.regularMenuCollectionView.contentSize.height + 100
-        self.menuCollectionViewHeight.constant = self.menuCollectionView.contentSize.height + 10
+        
+        if !isWeekend {
+            self.menuCollectionViewHeight.constant = self.menuCollectionView.contentSize.height + 10
+        }
+        
         self.regularMenuCollectionViewHeight.constant = self.regularMenuCollectionView.contentSize.height + 10
         
         //If the screen is too small to fit all announcements, just change the height to whatever it is
