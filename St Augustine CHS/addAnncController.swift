@@ -196,9 +196,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
             }
         })
         
-        var valid = true
         if self.titleTxtFld.text == "" {
-            valid = false
             //Tell the user that information needs to be filled in
             let alert = UIAlertController(title: "Error", message: "All announcements require a title", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -206,23 +204,21 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
             self.present(alert, animated: true, completion: nil)
         }
         
-        if (self.titleTxtFld.text?.count)! > 50 {
+        else if (self.titleTxtFld.text?.count)! > 50 {
             let alert = UIAlertController(title: "Error", message: "Title is too long", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
-            valid = false
         }
         
-        if (self.contentTxtFld.text?.count)! > 300 {
+        else if (self.contentTxtFld.text?.count)! > 300 {
             let alert = UIAlertController(title: "Error", message: "Content is too long", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
-            valid = false
         }
         
-        if valid {
+        else {
             getTimeFromServer { (serverDate) in
                 self.theDate = serverDate
             }

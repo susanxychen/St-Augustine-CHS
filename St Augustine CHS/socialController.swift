@@ -220,7 +220,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                     self.present(alert, animated: true, completion: nil)
                 }
                 if let snap = snap {
-                    self.badgeData[x] = snap.data()!
+                    self.badgeData[x] = snap.data() ?? ["img":"", "club":"error", "desc":"error", "giveaway":false]
                 }
                 
                 if x == (theData["badges"] as! [String]).count - 1 {

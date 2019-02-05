@@ -18,8 +18,13 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
     @IBOutlet weak var daymenuLabel: UILabel!
     @IBOutlet weak var daymenuLabelHeight: NSLayoutConstraint!
     @IBOutlet weak var menuCollectionView: UICollectionView!
+    @IBOutlet weak var regularMenuCollectionView: UICollectionView!
+    @IBOutlet weak var menuCollectionViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var regularMenuCollectionViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var cafeViewHeight: NSLayoutConstraint!
     
     var theActualMenu = [[Any]]()
+    var theActualRegularMenu = [[Any]]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,12 +70,13 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
         }
         
         getCafeMenu()
+        getRegularMenu()
     }
     
     func getCafeMenu(){
         db.collection("info").document("cafMenu").getDocument { (snap, err) in
             if let err = err {
-                let alert = UIAlertController(title: "Error in updating profile picture", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Error in getting cafe menu", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
@@ -80,6 +86,23 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
                     self.theActualMenu.append([food,cost])
                 }
                 self.sortAlphaOrder()
+            }
+        }
+    }
+    
+    func getRegularMenu(){
+        db.collection("info").document("cafMenuRegular").getDocument { (snap, err) in
+            if let err = err {
+                let alert = UIAlertController(title: "Error in getting cafe menu", message: "Error: \(err.localizedDescription)", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+            }
+            if let snap = snap {
+                for (food,cost) in snap.data()! {
+                    self.theActualRegularMenu.append([food,cost])
+                }
+                self.sortRegularAlphaOrder()
             }
         }
     }
@@ -131,25 +154,98 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
         }
     }
     
+    func sortRegularAlphaOrder(){
+        print("Sort regular")
+        if self.theActualRegularMenu.count > 1 {
+            var thereWasASwap = true
+            while thereWasASwap {
+                thereWasASwap = false
+                for i in 0...self.theActualRegularMenu.count-2 {
+                    let name1: String = self.theActualRegularMenu[i][0] as! String
+                    let name2: String = self.theActualRegularMenu[i+1][0] as! String
+                    
+                    let shortestLength: Int
+                    if name1.count < name2.count {
+                        //print("\(name1) is shorter")
+                        shortestLength = name1.count
+                    } else {
+                        //print("\(name2) is shorter")
+                        shortestLength = name2.count
+                    }
+                    
+                    for j in 0...shortestLength-1 {
+                        //Compare Alphabetically
+                        let index1 = name1.index(name1.startIndex, offsetBy: j)
+                        let index2 = name2.index(name2.startIndex, offsetBy: j)
+                        let character1 = Character((String(name1[index1]).lowercased()))
+                        let character2 = Character((String(name2[index2]).lowercased()))
+                        
+                        if character2 < character1 {
+                            //print("done swap")
+                            thereWasASwap = true
+                            let temp = self.theActualRegularMenu[i]
+                            self.theActualRegularMenu[i] = self.theActualRegularMenu[i+1]
+                            self.theActualRegularMenu[i+1] = temp
+                            break
+                        } else if character1 == character2 {
+                            //print("equal so they need to go one higher")
+                        } else {
+                            //print("not equal")
+                            break
+                        }
+                    }
+                }
+            }
+            self.regularMenuCollectionView.reloadData()
+        } else {
+            self.regularMenuCollectionView.reloadData()
+        }
+    }
+    
     //****************************FORMATTING THE COLLECTION VIEWS****************************
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return theActualMenu.count
+        if collectionView == menuCollectionView {
+            return theActualMenu.count
+        } else {
+            print("regular")
+            return theActualRegularMenu.count
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let height = self.menuCollectionView.contentSize.height + self.regularMenuCollectionView.contentSize.height + 100
+        self.menuCollectionViewHeight.constant = self.menuCollectionView.contentSize.height + 10
+        self.regularMenuCollectionViewHeight.constant = self.regularMenuCollectionView.contentSize.height + 10
+        
+        //If the screen is too small to fit all announcements, just change the height to whatever it is
+        if height > UIScreen.main.bounds.height {
+            self.cafeViewHeight.constant = height
+        } else {
+            self.cafeViewHeight.constant = UIScreen.main.bounds.height
+        }
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "food", for: indexPath) as! cafemenuCell
         
         let formatter = NumberFormatter()
         formatter.minimumFractionDigits = 2
         formatter.maximumFractionDigits = 2
         
-        let price = theActualMenu[indexPath.item][1] as? Double ?? -1
-        let priceNSNumber = NSNumber(value: price)
+        if collectionView == menuCollectionView {
+            let price = theActualMenu[indexPath.item][1] as? Double ?? -1
+            let priceNSNumber = NSNumber(value: price)
+            
+            cell.foodLabel.text = theActualMenu[indexPath.item][0] as? String ?? "Error"
+            cell.priceLabel.text = ("$" + (formatter.string(from: priceNSNumber) ?? "Error"))
+        } else {
+            let price = theActualRegularMenu[indexPath.item][1] as? Double ?? -1
+            let priceNSNumber = NSNumber(value: price)
+            
+            cell.foodLabel.text = theActualRegularMenu[indexPath.item][0] as? String ?? "Error"
+            cell.priceLabel.text = ("$" + (formatter.string(from: priceNSNumber) ?? "Error"))
+        }
         
-        cell.foodLabel.text = theActualMenu[indexPath.item][0] as? String ?? "Error"
-        cell.priceLabel.text = ("$" + (formatter.string(from: priceNSNumber) ?? "Error"))
         cell.priceLabel.textColor = Defaults.primaryColor
-        
         return cell
     }
     

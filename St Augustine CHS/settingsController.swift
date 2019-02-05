@@ -13,12 +13,17 @@ import MessageUI
 
 class settingsController: UIViewController, MFMailComposeViewControllerDelegate {
 
+    @IBOutlet weak var classesSwitch: UISwitch!
+    @IBOutlet weak var clubsSwitch: UISwitch!
+    @IBOutlet weak var classesPrivateLabel: UILabel!
+    @IBOutlet weak var clubsPrivateLabel: UILabel!
+    @IBOutlet weak var signUpFlowButton: UIButton!
+    @IBOutlet weak var generalAnnouncementNotificationLabel: UILabel!
     @IBOutlet weak var sendFeedbackButton: UIButton!
     @IBOutlet weak var cacheSizeLabel: UILabel!
     @IBOutlet weak var clearKeysButton: UIButton!
     @IBOutlet weak var subscribeDebugButton: UIButton!
     @IBOutlet weak var checkRemoteConfigButton: UIButton!
-    @IBOutlet weak var changePrivacySettingsButton: UIButton!
     @IBOutlet weak var clearCacheButton: UIButton!
     @IBOutlet weak var LogOutButton: UIButton!
     @IBOutlet weak var subscribedToGeneralSwitch: UISwitch!
@@ -44,13 +49,14 @@ class settingsController: UIViewController, MFMailComposeViewControllerDelegate 
             clearKeysButton.isHidden = false
             subscribeDebugButton.isHidden = false
             checkRemoteConfigButton.isHidden = false
+            signUpFlowButton.isHidden = false
         }
         
         //Colours
-        changePrivacySettingsButton.setTitleColor(Defaults.primaryColor, for: .normal)
         clearCacheButton.setTitleColor(Defaults.primaryColor, for: .normal)
         LogOutButton.setTitleColor(Defaults.primaryColor, for: .normal)
         sendFeedbackButton.setTitleColor(Defaults.primaryColor, for: .normal)
+        generalAnnouncementNotificationLabel.textColor = Defaults.primaryColor
         
         clearKeysButton.setTitleColor(Defaults.primaryColor, for: .normal)
         subscribeDebugButton.setTitleColor(Defaults.primaryColor, for: .normal)
@@ -65,6 +71,65 @@ class settingsController: UIViewController, MFMailComposeViewControllerDelegate 
             subscribedToGeneral = false
         }
         subscribedToGeneralSwitch.setOn(subscribedToGeneral, animated: true)
+        
+        classesSwitch.setOn(allUserFirebaseData.data["showClasses"] as? Bool ?? false, animated: true)
+        clubsSwitch.setOn(allUserFirebaseData.data["showClubs"] as? Bool ?? false, animated: true)
+    }
+    
+    @IBAction func privacySwitchPressed(_ sender: UISwitch) {
+        //Disable the switch until update to prevent spam
+        let uid = Auth.auth().currentUser?.uid
+        if sender == classesSwitch {
+            classesSwitch.isUserInteractionEnabled = false
+            if sender.isOn {
+                db.collection("users").document(uid ?? "error").setData(["showClasses":false], merge: true) { (error) in
+                    if let error = error {
+                        let ac = UIAlertController(title: "Cannot update preference", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+                        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self.present(ac, animated: true)
+                    } else {
+                        allUserFirebaseData.data["showClasses"] = false
+                        self.classesSwitch.isUserInteractionEnabled = true
+                    }
+                }
+            } else {
+                db.collection("users").document(uid ?? "error").setData(["showClasses":true], merge: true) { (error) in
+                    if let error = error {
+                        let ac = UIAlertController(title: "Cannot update preference", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+                        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self.present(ac, animated: true)
+                    } else {
+                        allUserFirebaseData.data["showClasses"] = true
+                        self.classesSwitch.isUserInteractionEnabled = true
+                    }
+                }
+            }
+        } else {
+            clubsSwitch.isUserInteractionEnabled = false
+            if sender.isOn {
+                db.collection("users").document(uid ?? "error").setData(["showClubs":false], merge: true) { (error) in
+                    if let error = error {
+                        let ac = UIAlertController(title: "Cannot update preference", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+                        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self.present(ac, animated: true)
+                    } else {
+                        allUserFirebaseData.data["showClasses"] = false
+                        self.clubsSwitch.isUserInteractionEnabled = true
+                    }
+                }
+            } else {
+                db.collection("users").document(uid ?? "error").setData(["showClubs":true], merge: true) { (error) in
+                    if let error = error {
+                        let ac = UIAlertController(title: "Cannot update preference", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+                        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self.present(ac, animated: true)
+                    } else {
+                        allUserFirebaseData.data["showClubs"] = true
+                        self.clubsSwitch.isUserInteractionEnabled = true
+                    }
+                }
+            }
+        }
     }
     
     //****************************FEEDBACK AND MAIL****************************

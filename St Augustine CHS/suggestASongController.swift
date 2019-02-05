@@ -96,18 +96,13 @@ class suggestASongController: UIViewController {
                 let song = self.songName.text
                 let id = self.randomString(length: 20)
                 
-                var valid = true
-                
                 //Disallow empty strings
                 if artist == "" || song == "" {
-                    valid = false
                     let alert = UIAlertController(title: "Error", message: "Fill in both artist name and song name", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                     alert.addAction(okAction)
                     self.present(alert, animated: true, completion: nil)
-                }
-                
-                if valid {
+                } else {
                     self.showActivityIndicatory(container: self.container, actInd: self.actInd)
                     
                     let user = Auth.auth().currentUser

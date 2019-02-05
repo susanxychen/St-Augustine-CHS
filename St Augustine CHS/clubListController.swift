@@ -541,9 +541,9 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
             view.showOtherClubsButton.addTarget(self, action: #selector(self.showOtherClubsButtonTapped), for: .touchUpInside)
             
             if viewingPersonalClubs {
-                view.showOtherClubsButton.setTitle("Show All Clubs", for: .normal)
+                view.showOtherClubsButton.setTitle("JOIN OTHER CLUBS!", for: .normal)
             } else {
-                view.showOtherClubsButton.setTitle("Show My Clubs", for: .normal)
+                view.showOtherClubsButton.setTitle("BACK TO MY CLUBS", for: .normal)
             }
             
             return view

@@ -287,7 +287,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //Name
         displayName.text = user?.displayName
         //Email
-        displayEmail.text = user?.email
+        //displayEmail.text = String(user?.email?.split(separator: "@")[0] ?? "Error")
+        displayEmail.text = "john.smith19"
         
         db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
             print("do i even reach in here to get the data")
@@ -880,9 +881,11 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 
                 if theDayNumber == "0" {
                     self.dayNumber.isHidden = true
-                    self.dayNumberHeight.constant = 5
+                    self.dayNumberHeight.constant = 0
                 } else if (theDayNumber == "1" || theDayNumber == "2") {
                     self.dayNumberHeight.constant = 25
+                    self.dayNumber.isHidden = false
+                    
                     let theDay = DateFormatter.localizedString(from: self.theDate, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
                     //If its a weekend set up the "monday will be message"
                     if (theDay.range(of:"Sunday") != nil) || (theDay.range(of:"Saturday") != nil){
@@ -902,10 +905,11 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                         //directly show the text entered in db
                         self.dayNumberHeight.constant = 25
                         self.dayNumber.text = theDayNumber
+                        self.dayNumber.isHidden = false
                     } else {
                         //Any other values like "O" or anything just dont show the label
                         self.dayNumber.isHidden = true
-                        self.dayNumberHeight.constant = 5
+                        self.dayNumberHeight.constant = 0
                     }
                 }
 

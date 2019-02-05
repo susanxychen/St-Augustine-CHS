@@ -188,10 +188,8 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     
     //***************************UPDATE THE CLUB DETAILS***************************
     @IBAction func updateClubDetails(_ sender: Any) {
-        var valid = true
         
         if clubNameTxtView.text == "" || clubDescTxtView.text == "" {
-            valid = false
             //Tell the user that information needs to be filled in
             let alert = UIAlertController(title: "Error", message: "No field can be left blank", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -199,40 +197,28 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
             self.present(alert, animated: true, completion: nil)
         }
         
-        if clubNameTxtView.text.contains("\n") {
-            valid = false
+        else if clubNameTxtView.text.contains("\n") {
             let alert = UIAlertController(title: "Error", message: "Club Name must not contain a return key", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
         }
         
-//        if clubDescTxtView.text.contains("\n") {
-//            valid = false
-//            //Tell the user that information needs to be filled in
-//            let alert = UIAlertController(title: "Error", message: "Club Description must not contain a return key", preferredStyle: .alert)
-//            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-//            alert.addAction(okAction)
-//            self.present(alert, animated: true, completion: nil)
-//        }
-        
-        if (self.clubNameTxtView.text?.count)! > 50 {
+        else if (self.clubNameTxtView.text?.count)! > 50 {
             let alert = UIAlertController(title: "Error", message: "Title is too long", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
-            valid = false
         }
         
-        if (self.clubDescTxtView.text?.count)! > 300 {
+        else if (self.clubDescTxtView.text?.count)! > 300 {
             let alert = UIAlertController(title: "Error", message: "Description is too long", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
-            valid = false
         }
         
-        if valid {
+        else {
             let newClubBanner = clubBanner.image
             
             //Set up an activity indicator

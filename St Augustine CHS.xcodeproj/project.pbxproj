@@ -47,7 +47,6 @@
 		B9876BB2217ACC5300D57C16 /* clubViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9876BB1217ACC5300D57C16 /* clubViewCell.swift */; };
 		B98BB1B121CAF4F000AD6167 /* titanTagController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98BB1B021CAF4F000AD6167 /* titanTagController.swift */; };
 		B98BB1B321CB061000AD6167 /* mainClubNewsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98BB1B221CB061000AD6167 /* mainClubNewsCell.swift */; };
-		B98F3C6A21C990A9000D8F07 /* updatePrivacyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98F3C6921C990A9000D8F07 /* updatePrivacyController.swift */; };
 		B995CFF4218F8600004970E0 /* editClubDetailsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B995CFF3218F8600004970E0 /* editClubDetailsController.swift */; };
 		B9AC701321C1A19E00FEF5EF /* clubBadgeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AC701221C1A19D00FEF5EF /* clubBadgeCell.swift */; };
 		B9ACA1EA2175499100302C4B /* signInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACA1E92175499100302C4B /* signInController.swift */; };
@@ -139,7 +138,6 @@
 		B9876BB1217ACC5300D57C16 /* clubViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubViewCell.swift; sourceTree = "<group>"; };
 		B98BB1B021CAF4F000AD6167 /* titanTagController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = titanTagController.swift; sourceTree = "<group>"; };
 		B98BB1B221CB061000AD6167 /* mainClubNewsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mainClubNewsCell.swift; sourceTree = "<group>"; };
-		B98F3C6921C990A9000D8F07 /* updatePrivacyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = updatePrivacyController.swift; sourceTree = "<group>"; };
 		B995CFF3218F8600004970E0 /* editClubDetailsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = editClubDetailsController.swift; sourceTree = "<group>"; };
 		B9AC701221C1A19D00FEF5EF /* clubBadgeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clubBadgeCell.swift; sourceTree = "<group>"; };
 		B9ACA1E92175499100302C4B /* signInController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = signInController.swift; sourceTree = "<group>"; };
@@ -272,7 +270,6 @@
 				B9E67F8721B86B7300836A65 /* spiritMeterController.swift */,
 				B98BB1B021CAF4F000AD6167 /* titanTagController.swift */,
 				B9ACA1EB21755BBD00302C4B /* settingsController.swift */,
-				B98F3C6921C990A9000D8F07 /* updatePrivacyController.swift */,
 				B9FECBFE219131E30006CCE3 /* socialController.swift */,
 				B918546B21B4B26500DA14F5 /* profilePicController.swift */,
 				B9C6E35A21ACA68500A03650 /* classesDetailsController.swift */,
@@ -657,7 +654,6 @@
 				B976A86421DAD65F0004B3E6 /* SRCopyableLabel.swift in Sources */,
 				B98BB1B321CB061000AD6167 /* mainClubNewsCell.swift in Sources */,
 				B9FECC012191337F0006CCE3 /* badgesViewCell.swift in Sources */,
-				B98F3C6A21C990A9000D8F07 /* updatePrivacyController.swift in Sources */,
 				B9EAF7B321A0D3D40062736B /* signInProfilePicViewCell.swift in Sources */,
 				B9C6E35B21ACA68500A03650 /* classesDetailsController.swift in Sources */,
 				B9C6E35D21ACBFE200A03650 /* semester1ViewCell.swift in Sources */,

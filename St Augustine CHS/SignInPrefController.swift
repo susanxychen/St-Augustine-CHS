@@ -55,19 +55,15 @@ class SignInPrefController: UIViewController {
     @IBAction func switchTapped(_ sender: UISwitch) {
         if sender == showCoursesSwitch {
             if sender.isOn {
-                print("yeah wanna show courses")
-                showCourses = true
-            } else {
-                print("no dont wanna show courses")
                 showCourses = false
+            } else {
+                showCourses = true
             }
         } else {
             if sender.isOn {
-                print("yeah wanna show clubs")
-                showClubs = true
-            } else {
-                print("no dont wanna show club")
                 showClubs = false
+            } else {
+                showClubs = true
             }
         }
     }

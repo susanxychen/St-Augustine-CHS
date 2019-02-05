@@ -136,25 +136,21 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     @IBAction func createPressed(_ sender: Any) {
-        var valid = true
-        
         if badgeImageView.image == UIImage(named: "blankUser") {
-            valid = false
             print("Choose an image")
             let ac = UIAlertController(title: "Error", message: "Badges Require Images", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
             present(ac, animated: true)
         }
         
-        if descriptionTxtFld.text == "" {
-            valid = false
+        else if descriptionTxtFld.text == "" {
             print("no text")
             let ac = UIAlertController(title: "Error", message: "Badges Require a Description", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
             present(ac, animated: true)
         }
-        
-        if valid {
+        //add a max of 100 characters
+        else {
             //Set up an activity indicator
             showActivityIndicatory(container: container, actInd: actInd)
             

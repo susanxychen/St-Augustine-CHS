@@ -155,7 +155,7 @@
                                             <constraint firstAttribute="height" constant="40" id="zkA-Qy-DLx"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="20"/>
-                                        <state key="normal" title="Spirit Points">
+                                        <state key="normal" title="Spirit Meters">
                                             <color key="titleColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
@@ -480,11 +480,12 @@
                                             </collectionView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9bF-9O-Uz2">
                                                 <rect key="frame" x="8" y="701" width="359" height="35"/>
-                                                <color key="backgroundColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="backgroundColor" red="0.81859855845494922" green="0.81464397604695438" blue="0.82255314086294418" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="35" id="UBW-WP-bQW"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                                <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <state key="normal" title="View Calendar"/>
                                                 <connections>
                                                     <action selector="calendarButtonPushed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="YIe-Ha-VeQ"/>
@@ -614,96 +615,199 @@
             <objects>
                 <viewController title="Cafe Menu" id="94Y-iz-zHC" customClass="cafeMenuController" customModule="St_Augustine_CHS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="N62-MS-3t3">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="t3e-gL-BPd">
-                                <rect key="frame" x="0.0" y="35" width="375" height="568"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Svy-xv-7wP">
-                                    <size key="itemSize" width="375" height="45"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="food" id="ILW-S6-Ujv" customClass="cafemenuCell" customModule="St_Augustine_CHS" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="45"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="45"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Food" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="bxg-od-4td">
-                                                    <rect key="frame" x="30" y="0.0" width="195" height="45"/>
-                                                    <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="20"/>
-                                                    <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$0.00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="zt3-VC-JjL">
-                                                    <rect key="frame" x="235" y="0.0" width="110" height="45"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="110" id="gnN-zG-CoO"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" name="Scada-Bold" family="Scada" pointSize="20"/>
-                                                    <color key="textColor" red="0.55294117649999996" green="0.070588235289999995" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </view>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xtF-4r-LM2">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="736"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d55-09-6hc">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="800"/>
+                                        <subviews>
+                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="t3e-gL-BPd">
+                                                <rect key="frame" x="0.0" y="46" width="375" height="250"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="250" id="VRN-x1-tSq"/>
+                                                </constraints>
+                                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Svy-xv-7wP">
+                                                    <size key="itemSize" width="375" height="45"/>
+                                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                </collectionViewFlowLayout>
+                                                <cells>
+                                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="food" id="ILW-S6-Ujv" customClass="cafemenuCell" customModule="St_Augustine_CHS" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="0.0" width="375" height="45"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="45"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Food" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="bxg-od-4td">
+                                                                    <rect key="frame" x="30" y="0.0" width="195" height="45"/>
+                                                                    <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="20"/>
+                                                                    <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$0.00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="zt3-VC-JjL">
+                                                                    <rect key="frame" x="235" y="0.0" width="110" height="45"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="110" id="gnN-zG-CoO"/>
+                                                                    </constraints>
+                                                                    <fontDescription key="fontDescription" name="Scada-Bold" family="Scada" pointSize="20"/>
+                                                                    <color key="textColor" red="0.55294117649999996" green="0.070588235289999995" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                            </subviews>
+                                                        </view>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <constraints>
+                                                            <constraint firstItem="zt3-VC-JjL" firstAttribute="leading" secondItem="bxg-od-4td" secondAttribute="trailing" constant="10" id="2gF-PG-f3z"/>
+                                                            <constraint firstAttribute="trailing" secondItem="zt3-VC-JjL" secondAttribute="trailing" constant="30" id="2ij-tg-whe"/>
+                                                            <constraint firstAttribute="bottom" secondItem="bxg-od-4td" secondAttribute="bottom" id="XOA-D5-sKv"/>
+                                                            <constraint firstItem="zt3-VC-JjL" firstAttribute="top" secondItem="ILW-S6-Ujv" secondAttribute="top" id="c8L-Nx-ifa"/>
+                                                            <constraint firstItem="bxg-od-4td" firstAttribute="leading" secondItem="ILW-S6-Ujv" secondAttribute="leading" constant="30" id="v9y-s1-kiq"/>
+                                                            <constraint firstItem="bxg-od-4td" firstAttribute="top" secondItem="ILW-S6-Ujv" secondAttribute="top" id="vr0-1j-ir1"/>
+                                                            <constraint firstAttribute="bottom" secondItem="zt3-VC-JjL" secondAttribute="bottom" id="wiw-jF-bwT"/>
+                                                        </constraints>
+                                                        <connections>
+                                                            <outlet property="foodLabel" destination="bxg-od-4td" id="5ar-pe-JFB"/>
+                                                            <outlet property="priceLabel" destination="zt3-VC-JjL" id="Qwm-lb-cSe"/>
+                                                        </connections>
+                                                    </collectionViewCell>
+                                                </cells>
+                                                <connections>
+                                                    <outlet property="dataSource" destination="94Y-iz-zHC" id="nDr-OK-9IH"/>
+                                                    <outlet property="delegate" destination="94Y-iz-zHC" id="qAd-q7-Egj"/>
+                                                </connections>
+                                            </collectionView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Zeeday Menu" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fWi-Vc-ekO">
+                                                <rect key="frame" x="8" y="8" width="359" height="30"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="EKi-sq-boI"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="22"/>
+                                                <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="efT-T0-lQD">
+                                                <rect key="frame" x="8" y="304" width="359" height="4"/>
+                                                <color key="backgroundColor" red="0.55313020940000002" green="0.068723984060000007" blue="0.18646338579999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="4" id="BLL-XA-qR7"/>
+                                                </constraints>
+                                            </view>
+                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="GXz-0n-mgV">
+                                                <rect key="frame" x="0.0" y="316" width="375" height="250"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="250" id="eJD-jn-ZKd"/>
+                                                </constraints>
+                                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="0gv-H2-r3Z">
+                                                    <size key="itemSize" width="375" height="45"/>
+                                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                </collectionViewFlowLayout>
+                                                <cells>
+                                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="food" id="khh-7v-2nK" customClass="cafemenuCell" customModule="St_Augustine_CHS" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="0.0" width="375" height="45"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="45"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Food" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="bSJ-TJ-oSq">
+                                                                    <rect key="frame" x="30" y="0.0" width="195" height="45"/>
+                                                                    <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="20"/>
+                                                                    <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$0.00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="MSA-IF-adE">
+                                                                    <rect key="frame" x="235" y="0.0" width="110" height="45"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="110" id="PNQ-Tc-vDl"/>
+                                                                    </constraints>
+                                                                    <fontDescription key="fontDescription" name="Scada-Bold" family="Scada" pointSize="20"/>
+                                                                    <color key="textColor" red="0.55294117649999996" green="0.070588235289999995" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                            </subviews>
+                                                        </view>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <constraints>
+                                                            <constraint firstItem="bSJ-TJ-oSq" firstAttribute="leading" secondItem="khh-7v-2nK" secondAttribute="leading" constant="30" id="6BI-NN-LH3"/>
+                                                            <constraint firstAttribute="trailing" secondItem="MSA-IF-adE" secondAttribute="trailing" constant="30" id="83t-Du-6m9"/>
+                                                            <constraint firstItem="MSA-IF-adE" firstAttribute="top" secondItem="khh-7v-2nK" secondAttribute="top" id="APm-LB-EKF"/>
+                                                            <constraint firstAttribute="bottom" secondItem="MSA-IF-adE" secondAttribute="bottom" id="Ldi-iZ-LDn"/>
+                                                            <constraint firstItem="bSJ-TJ-oSq" firstAttribute="top" secondItem="khh-7v-2nK" secondAttribute="top" id="aYT-nW-lu8"/>
+                                                            <constraint firstItem="MSA-IF-adE" firstAttribute="leading" secondItem="bSJ-TJ-oSq" secondAttribute="trailing" constant="10" id="qSB-et-4AP"/>
+                                                            <constraint firstAttribute="bottom" secondItem="bSJ-TJ-oSq" secondAttribute="bottom" id="wop-Xu-pJq"/>
+                                                        </constraints>
+                                                        <connections>
+                                                            <outlet property="foodLabel" destination="bSJ-TJ-oSq" id="ZAC-xC-y5U"/>
+                                                            <outlet property="priceLabel" destination="MSA-IF-adE" id="HgQ-Ze-JBg"/>
+                                                        </connections>
+                                                    </collectionViewCell>
+                                                </cells>
+                                                <connections>
+                                                    <outlet property="dataSource" destination="94Y-iz-zHC" id="2Ee-i6-OxM"/>
+                                                    <outlet property="delegate" destination="94Y-iz-zHC" id="Tta-6C-es3"/>
+                                                </connections>
+                                            </collectionView>
+                                        </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstItem="zt3-VC-JjL" firstAttribute="leading" secondItem="bxg-od-4td" secondAttribute="trailing" constant="10" id="2gF-PG-f3z"/>
-                                            <constraint firstAttribute="trailing" secondItem="zt3-VC-JjL" secondAttribute="trailing" constant="30" id="2ij-tg-whe"/>
-                                            <constraint firstAttribute="bottom" secondItem="bxg-od-4td" secondAttribute="bottom" id="XOA-D5-sKv"/>
-                                            <constraint firstItem="zt3-VC-JjL" firstAttribute="top" secondItem="ILW-S6-Ujv" secondAttribute="top" id="c8L-Nx-ifa"/>
-                                            <constraint firstItem="bxg-od-4td" firstAttribute="leading" secondItem="ILW-S6-Ujv" secondAttribute="leading" constant="30" id="v9y-s1-kiq"/>
-                                            <constraint firstItem="bxg-od-4td" firstAttribute="top" secondItem="ILW-S6-Ujv" secondAttribute="top" id="vr0-1j-ir1"/>
-                                            <constraint firstAttribute="bottom" secondItem="zt3-VC-JjL" secondAttribute="bottom" id="wiw-jF-bwT"/>
+                                            <constraint firstAttribute="trailing" secondItem="fWi-Vc-ekO" secondAttribute="trailing" constant="8" id="6Rr-Dz-WI3"/>
+                                            <constraint firstItem="fWi-Vc-ekO" firstAttribute="leading" secondItem="d55-09-6hc" secondAttribute="leading" constant="8" id="AfB-TA-xl7"/>
+                                            <constraint firstAttribute="trailing" secondItem="efT-T0-lQD" secondAttribute="trailing" constant="8" id="Ca1-pb-Chq"/>
+                                            <constraint firstAttribute="trailing" secondItem="t3e-gL-BPd" secondAttribute="trailing" id="DHN-O3-h2p"/>
+                                            <constraint firstItem="fWi-Vc-ekO" firstAttribute="top" secondItem="d55-09-6hc" secondAttribute="top" constant="8" id="DKX-m2-dPD"/>
+                                            <constraint firstAttribute="height" constant="800" id="Is2-nz-q6c"/>
+                                            <constraint firstItem="GXz-0n-mgV" firstAttribute="top" secondItem="efT-T0-lQD" secondAttribute="bottom" constant="8" id="Qlr-Fj-Qpu"/>
+                                            <constraint firstItem="t3e-gL-BPd" firstAttribute="leading" secondItem="d55-09-6hc" secondAttribute="leading" id="X2q-Vj-hUg"/>
+                                            <constraint firstItem="efT-T0-lQD" firstAttribute="top" secondItem="t3e-gL-BPd" secondAttribute="bottom" constant="8" id="eEz-nL-62x"/>
+                                            <constraint firstItem="efT-T0-lQD" firstAttribute="leading" secondItem="d55-09-6hc" secondAttribute="leading" constant="8" id="gyw-Sz-LGs"/>
+                                            <constraint firstItem="GXz-0n-mgV" firstAttribute="leading" secondItem="d55-09-6hc" secondAttribute="leading" id="h2u-uP-LuY"/>
+                                            <constraint firstAttribute="trailing" secondItem="GXz-0n-mgV" secondAttribute="trailing" id="rVh-vq-aM7"/>
+                                            <constraint firstItem="t3e-gL-BPd" firstAttribute="top" secondItem="fWi-Vc-ekO" secondAttribute="bottom" constant="8" id="xv1-9w-40q"/>
                                         </constraints>
-                                        <connections>
-                                            <outlet property="foodLabel" destination="bxg-od-4td" id="5ar-pe-JFB"/>
-                                            <outlet property="priceLabel" destination="zt3-VC-JjL" id="Qwm-lb-cSe"/>
-                                        </connections>
-                                    </collectionViewCell>
-                                </cells>
-                                <connections>
-                                    <outlet property="dataSource" destination="94Y-iz-zHC" id="nDr-OK-9IH"/>
-                                    <outlet property="delegate" destination="94Y-iz-zHC" id="qAd-q7-Egj"/>
-                                </connections>
-                            </collectionView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Zeeday Menu" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fWi-Vc-ekO">
-                                <rect key="frame" x="16" y="0.0" width="343" height="35"/>
+                                    </view>
+                                </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="wLj-2Z-86C"/>
+                                    <constraint firstItem="d55-09-6hc" firstAttribute="leading" secondItem="xtF-4r-LM2" secondAttribute="leading" id="6Qm-Hd-sxb"/>
+                                    <constraint firstAttribute="bottom" secondItem="d55-09-6hc" secondAttribute="bottom" id="WSC-6N-0Hr"/>
+                                    <constraint firstAttribute="trailing" secondItem="d55-09-6hc" secondAttribute="trailing" id="tQO-yf-cs3"/>
+                                    <constraint firstItem="d55-09-6hc" firstAttribute="top" secondItem="xtF-4r-LM2" secondAttribute="top" id="yiF-CM-QVL"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="22"/>
-                                <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="t3e-gL-BPd" firstAttribute="leading" secondItem="0Na-BV-hoj" secondAttribute="leading" id="Bxt-Bt-Ioq"/>
-                            <constraint firstItem="t3e-gL-BPd" firstAttribute="top" secondItem="fWi-Vc-ekO" secondAttribute="bottom" id="ItY-yv-glk"/>
-                            <constraint firstItem="fWi-Vc-ekO" firstAttribute="leading" secondItem="0Na-BV-hoj" secondAttribute="leading" constant="16" id="Jh2-86-IHi"/>
-                            <constraint firstItem="t3e-gL-BPd" firstAttribute="trailing" secondItem="0Na-BV-hoj" secondAttribute="trailing" id="P0r-Z4-bkk"/>
-                            <constraint firstItem="fWi-Vc-ekO" firstAttribute="top" secondItem="0Na-BV-hoj" secondAttribute="top" id="TcL-hw-YpU"/>
-                            <constraint firstItem="0Na-BV-hoj" firstAttribute="trailing" secondItem="fWi-Vc-ekO" secondAttribute="trailing" constant="16" id="YRY-sA-xAW"/>
-                            <constraint firstItem="t3e-gL-BPd" firstAttribute="bottom" secondItem="0Na-BV-hoj" secondAttribute="bottom" id="p0C-O5-ESJ"/>
+                            <constraint firstItem="xtF-4r-LM2" firstAttribute="bottom" secondItem="0Na-BV-hoj" secondAttribute="bottom" id="2E8-Fw-9XU"/>
+                            <constraint firstItem="d55-09-6hc" firstAttribute="width" secondItem="N62-MS-3t3" secondAttribute="width" id="40a-Jm-9X7"/>
+                            <constraint firstItem="xtF-4r-LM2" firstAttribute="top" secondItem="0Na-BV-hoj" secondAttribute="top" id="DLX-YW-gLa"/>
+                            <constraint firstItem="xtF-4r-LM2" firstAttribute="leading" secondItem="0Na-BV-hoj" secondAttribute="leading" id="XmK-n3-wJC"/>
+                            <constraint firstItem="xtF-4r-LM2" firstAttribute="trailing" secondItem="0Na-BV-hoj" secondAttribute="trailing" id="bFT-IT-SYt"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="0Na-BV-hoj"/>
                     </view>
+                    <size key="freeformSize" width="375" height="800"/>
                     <connections>
+                        <outlet property="cafeViewHeight" destination="Is2-nz-q6c" id="uSM-F3-Egf"/>
                         <outlet property="daymenuLabel" destination="fWi-Vc-ekO" id="tQx-Tz-MUd"/>
-                        <outlet property="daymenuLabelHeight" destination="wLj-2Z-86C" id="xvO-nH-bjc"/>
+                        <outlet property="daymenuLabelHeight" destination="EKi-sq-boI" id="mZ6-bQ-kIg"/>
                         <outlet property="menuCollectionView" destination="t3e-gL-BPd" id="hmp-oA-s6u"/>
+                        <outlet property="menuCollectionViewHeight" destination="VRN-x1-tSq" id="klc-OF-gYm"/>
+                        <outlet property="regularMenuCollectionView" destination="GXz-0n-mgV" id="kfl-8Y-d95"/>
+                        <outlet property="regularMenuCollectionViewHeight" destination="eJD-jn-ZKd" id="P4k-8m-DOJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hkX-Cn-A5m" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1796" y="-565.36731634182911"/>
+            <point key="canvasLocation" x="1796" y="-565.81709145427294"/>
         </scene>
         <!--Show Image Controller-->
         <scene sceneID="KTW-yH-NRy">
@@ -991,10 +1095,10 @@
             </objects>
             <point key="canvasLocation" x="1852" y="2328"/>
         </scene>
-        <!--Social-->
+        <!--Profile-->
         <scene sceneID="hHH-bv-BiN">
             <objects>
-                <viewController title="Social" id="NTI-m3-zZT" customClass="socialController" customModule="St_Augustine_CHS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Profile" id="NTI-m3-zZT" customClass="socialController" customModule="St_Augustine_CHS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1aL-Na-NjG">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="936"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1078,7 +1182,7 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2eo-yI-zNL">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="40"/>
                                                 <subviews>
-                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Search For A Student" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="s21-6L-Ers">
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="YCDSBK12 Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="s21-6L-Ers">
                                                         <rect key="frame" x="8" y="5" width="321" height="30"/>
                                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                         <nil key="textColor"/>
@@ -1825,9 +1929,10 @@
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xfA-Pm-DUM">
                                             <rect key="frame" x="82" y="18" width="211" height="39"/>
-                                            <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="backgroundColor" red="0.81859855849999996" green="0.81464397600000005" blue="0.82255314089999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                             <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                            <state key="normal" title="Show All Clubs"/>
+                                            <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <state key="normal" title="JOIN OTHER CLUBS!"/>
                                         </button>
                                     </subviews>
                                     <constraints>
@@ -1881,7 +1986,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zu1-3g-biB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1796" y="152.47376311844079"/>
+            <point key="canvasLocation" x="1796" y="203"/>
         </scene>
         <!--Pending List-->
         <scene sceneID="7JI-sv-yyR">
@@ -2821,12 +2926,11 @@
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vv4-J3-syd">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please type in your course codes (Ex. ENG4U1a or SPARE) or just leave the fields blank and edit them later" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vv4-J3-syd">
                                                 <rect key="frame" x="16" y="106" width="343" height="65"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="65" id="u6a-fn-ZNr"/>
                                                 </constraints>
-                                                <string key="text">Ex. SCH4U1b, ICS3UEa, ENG2DEc, Spare. (Spare will be automatically filled in if field is left empty) (You can edit these courses later)</string>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="16"/>
                                                 <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -3023,7 +3127,7 @@
                                     <constraint firstAttribute="height" constant="45" id="yrc-GB-baj"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <state key="normal" title="Sign Up"/>
+                                <state key="normal" title="LET'S GO!"/>
                                 <connections>
                                     <action selector="nextButtonPressed:" destination="HyD-QJ-rCQ" eventType="touchUpInside" id="X2H-Rq-D2v"/>
                                     <action selector="pressedFinishedButton:" destination="OlW-1E-B2r" eventType="touchUpInside" id="8ez-Ed-Qh3"/>
@@ -3038,7 +3142,7 @@
                                 <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show courses to other people?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DFP-vs-1bO">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Keep classes private" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DFP-vs-1bO">
                                 <rect key="frame" x="16" y="116" width="288" height="38"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="288" id="XXa-Jj-aDH"/>
@@ -3048,13 +3152,13 @@
                                 <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="YWg-NF-kyI">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YWg-NF-kyI">
                                 <rect key="frame" x="310" y="119.5" width="51" height="31"/>
                                 <connections>
                                     <action selector="switchTapped:" destination="OlW-1E-B2r" eventType="valueChanged" id="uxM-9r-RJB"/>
                                 </connections>
                             </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show clubs to other people?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BXu-f3-AXD">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Keep clubs private" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BXu-f3-AXD">
                                 <rect key="frame" x="16" y="162" width="288" height="38"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="288" id="Jx5-bZ-Ahf"/>
@@ -3064,7 +3168,7 @@
                                 <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="uLc-ee-AQJ">
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uLc-ee-AQJ">
                                 <rect key="frame" x="310" y="165.5" width="51" height="31"/>
                                 <connections>
                                     <action selector="switchTapped:" destination="OlW-1E-B2r" eventType="valueChanged" id="AQo-rM-XRk"/>
@@ -3081,9 +3185,9 @@
                                 </constraints>
                                 <state key="normal">
                                     <attributedString key="attributedTitle">
-                                        <fragment content="By clicking 'Sign Up' I agree to the app's Privacy Policy">
+                                        <fragment content="By clicking 'LET'S GO!' I agree to this app's Privacy Policy">
                                             <attributes>
-                                                <color key="NSColor" red="0.0" green="0.4566611071051625" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                <color key="NSColor" red="0.016804177310000001" green="0.19835099580000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <font key="NSFont" size="15" name=".AppleSystemUIFont"/>
                                                 <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                             </attributes>
@@ -3148,7 +3252,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Logging in to App" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ILc-F1-M8q">
-                                <rect key="frame" x="120" y="371" width="135.5" height="20"/>
+                                <rect key="frame" x="122.5" y="371" width="130" height="21.5"/>
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                 <color key="textColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -3181,7 +3285,7 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XEe-Yh-U7Y" customClass="GIDSignInButton">
-                                <rect key="frame" x="112" y="434" width="151" height="50"/>
+                                <rect key="frame" x="112" y="435.5" width="151" height="48.5"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XRy-Bd-M4U">
@@ -3296,21 +3400,8 @@
                                     <action selector="clearKeys:" destination="c74-yS-abQ" eventType="touchUpInside" id="waT-BX-eEi"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q0S-ui-FJB">
-                                <rect key="frame" x="16" y="5" width="343" height="35"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="rVu-E9-3FY"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <state key="normal" title="Change Privacy Settings">
-                                    <color key="titleColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                                <connections>
-                                    <segue destination="LdE-fB-gw1" kind="presentation" id="yC0-Vs-a8O"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W1Q-Yl-7bm">
-                                <rect key="frame" x="16" y="48" width="343" height="38"/>
+                                <rect key="frame" x="16" y="100" width="343" height="38"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="38" id="shl-Gx-Z3Z"/>
                                 </constraints>
@@ -3323,7 +3414,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0 MB" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vyS-cg-YIC">
-                                <rect key="frame" x="320" y="48" width="39" height="38"/>
+                                <rect key="frame" x="320" y="96.5" width="39" height="38"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="38" id="pTv-AP-FPR"/>
                                 </constraints>
@@ -3332,7 +3423,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Maximum of around 200 MB." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ejb-Q1-QI6">
-                                <rect key="frame" x="16" y="94" width="343" height="30"/>
+                                <rect key="frame" x="16" y="146" width="343" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="e1Y-kY-rKW"/>
                                 </constraints>
@@ -3340,8 +3431,8 @@
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="General Announcement Notifications" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2ar-ow-Ggw">
-                                <rect key="frame" x="16" y="132" width="288" height="38"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enable General Notifications" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2ar-ow-Ggw">
+                                <rect key="frame" x="16" y="184" width="288" height="38"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="288" id="OIb-MB-7CQ"/>
                                     <constraint firstAttribute="height" constant="38" id="Q6S-sX-cwp"/>
@@ -3351,7 +3442,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ihO-el-g7p">
-                                <rect key="frame" x="310" y="135.5" width="51" height="31"/>
+                                <rect key="frame" x="310" y="187.5" width="51" height="31"/>
                                 <connections>
                                     <action selector="subscribedToGeneralPressed:" destination="c74-yS-abQ" eventType="valueChanged" id="zUc-3h-xsI"/>
                                 </connections>
@@ -3395,38 +3486,91 @@
                                     <segue destination="HWe-5Q-9LF" kind="show" id="Kvg-gq-JTb"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8LQ-F4-lPc">
+                                <rect key="frame" x="16" y="358" width="343" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="32s-6q-9P2"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                <state key="normal" title="Sign Up Flow">
+                                    <color key="titleColor" red="0.5" green="0.0767248403" blue="0.1712033674" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <segue destination="HyD-QJ-rCQ" kind="presentation" id="d7u-dt-h7O"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Keep classes private" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3X8-BH-fz7">
+                                <rect key="frame" x="16" y="8" width="288" height="38"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="38" id="Wjw-4l-vp0"/>
+                                    <constraint firstAttribute="width" constant="288" id="nWh-fN-Qef"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                <color key="textColor" red="0.5" green="0.0767248403" blue="0.1712033674" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HJ8-qB-cuV">
+                                <rect key="frame" x="310" y="11.5" width="51" height="31"/>
+                                <connections>
+                                    <action selector="privacySwitchPressed:" destination="c74-yS-abQ" eventType="valueChanged" id="Re1-gO-rvm"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Keep clubs private" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sBm-FF-m1W">
+                                <rect key="frame" x="16" y="54" width="288" height="38"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="38" id="kfw-wf-g87"/>
+                                    <constraint firstAttribute="width" constant="288" id="w2v-Dq-fTL"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                <color key="textColor" red="0.5" green="0.0767248403" blue="0.1712033674" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ri2-Dj-les">
+                                <rect key="frame" x="310" y="57.5" width="51" height="31"/>
+                                <connections>
+                                    <action selector="privacySwitchPressed:" destination="c74-yS-abQ" eventType="valueChanged" id="mi3-FN-3sd"/>
+                                </connections>
+                            </switch>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="a89-mN-5ju" firstAttribute="top" secondItem="8LQ-F4-lPc" secondAttribute="bottom" constant="8" id="2jb-8S-Nm0"/>
                             <constraint firstItem="cMS-II-GjS" firstAttribute="top" secondItem="A6j-iU-e8i" secondAttribute="bottom" constant="8" id="3nz-As-I5c"/>
                             <constraint firstItem="iKn-Qx-xRw" firstAttribute="trailing" secondItem="cMS-II-GjS" secondAttribute="trailing" constant="16" id="3s0-mx-hmE"/>
                             <constraint firstItem="Zw3-qE-1lN" firstAttribute="leading" secondItem="iKn-Qx-xRw" secondAttribute="leading" constant="16" id="3tZ-St-1DO"/>
+                            <constraint firstItem="3X8-BH-fz7" firstAttribute="leading" secondItem="iKn-Qx-xRw" secondAttribute="leading" constant="16" id="44M-Mg-B5p"/>
                             <constraint firstItem="cMS-II-GjS" firstAttribute="leading" secondItem="iKn-Qx-xRw" secondAttribute="leading" constant="16" id="4jN-YO-fNG"/>
+                            <constraint firstItem="3X8-BH-fz7" firstAttribute="centerY" secondItem="HJ8-qB-cuV" secondAttribute="centerY" id="5UX-wj-GhH"/>
                             <constraint firstItem="A6j-iU-e8i" firstAttribute="leading" secondItem="iKn-Qx-xRw" secondAttribute="leading" constant="16" id="5ZA-eF-YB5"/>
+                            <constraint firstItem="W1Q-Yl-7bm" firstAttribute="top" secondItem="sBm-FF-m1W" secondAttribute="bottom" constant="8" id="6EZ-bA-e4G"/>
                             <constraint firstItem="iKn-Qx-xRw" firstAttribute="trailing" secondItem="ejb-Q1-QI6" secondAttribute="trailing" constant="16" id="78j-ak-7Ln"/>
                             <constraint firstItem="a89-mN-5ju" firstAttribute="leading" secondItem="iKn-Qx-xRw" secondAttribute="leading" constant="16" id="7Np-eJ-3s4"/>
                             <constraint firstItem="A6j-iU-e8i" firstAttribute="top" secondItem="a89-mN-5ju" secondAttribute="bottom" constant="8" id="8i2-fL-4Pi"/>
+                            <constraint firstItem="iKn-Qx-xRw" firstAttribute="trailing" secondItem="ri2-Dj-les" secondAttribute="trailing" constant="16" id="8zy-92-NTs"/>
+                            <constraint firstItem="8LQ-F4-lPc" firstAttribute="leading" secondItem="iKn-Qx-xRw" secondAttribute="leading" constant="16" id="91t-h4-LdA"/>
                             <constraint firstItem="iKn-Qx-xRw" firstAttribute="trailing" secondItem="Zw3-qE-1lN" secondAttribute="trailing" constant="16" id="9GO-td-ZYj"/>
-                            <constraint firstItem="vyS-cg-YIC" firstAttribute="top" secondItem="Q0S-ui-FJB" secondAttribute="bottom" constant="8" id="Eg9-RU-G9c"/>
+                            <constraint firstItem="iKn-Qx-xRw" firstAttribute="trailing" secondItem="8LQ-F4-lPc" secondAttribute="trailing" constant="16" id="HHe-K3-Etf"/>
                             <constraint firstItem="iKn-Qx-xRw" firstAttribute="trailing" secondItem="A6j-iU-e8i" secondAttribute="trailing" constant="16" id="HOh-wy-jio"/>
                             <constraint firstItem="iKn-Qx-xRw" firstAttribute="trailing" secondItem="ihO-el-g7p" secondAttribute="trailing" constant="16" id="Jxl-zN-iUj"/>
                             <constraint firstItem="iKn-Qx-xRw" firstAttribute="trailing" secondItem="g0B-fD-ev4" secondAttribute="trailing" constant="16" id="LaD-tr-92u"/>
-                            <constraint firstItem="Q0S-ui-FJB" firstAttribute="leading" secondItem="iKn-Qx-xRw" secondAttribute="leading" constant="16" id="Rvf-OZ-kVO"/>
+                            <constraint firstItem="sBm-FF-m1W" firstAttribute="leading" secondItem="iKn-Qx-xRw" secondAttribute="leading" constant="16" id="MBU-O4-iwr"/>
+                            <constraint firstItem="sBm-FF-m1W" firstAttribute="centerY" secondItem="ri2-Dj-les" secondAttribute="centerY" id="PdI-XY-JOy"/>
+                            <constraint firstItem="sBm-FF-m1W" firstAttribute="top" secondItem="3X8-BH-fz7" secondAttribute="bottom" constant="8" id="RFK-oG-xcP"/>
                             <constraint firstItem="2ar-ow-Ggw" firstAttribute="centerY" secondItem="ihO-el-g7p" secondAttribute="centerY" id="Sw8-dU-ay9"/>
+                            <constraint firstItem="vyS-cg-YIC" firstAttribute="top" secondItem="ri2-Dj-les" secondAttribute="bottom" constant="8" id="Uoi-GZ-cPl"/>
                             <constraint firstItem="g0B-fD-ev4" firstAttribute="top" secondItem="cMS-II-GjS" secondAttribute="bottom" constant="8" id="XXC-WW-Bqr"/>
                             <constraint firstItem="iKn-Qx-xRw" firstAttribute="trailing" secondItem="a89-mN-5ju" secondAttribute="trailing" constant="16" id="ZdH-Zg-izP"/>
-                            <constraint firstItem="W1Q-Yl-7bm" firstAttribute="top" secondItem="Q0S-ui-FJB" secondAttribute="bottom" constant="8" id="acr-GC-4V3"/>
+                            <constraint firstItem="3X8-BH-fz7" firstAttribute="top" secondItem="iKn-Qx-xRw" secondAttribute="top" constant="8" id="bIX-4a-Ixv"/>
                             <constraint firstItem="2ar-ow-Ggw" firstAttribute="top" secondItem="ejb-Q1-QI6" secondAttribute="bottom" constant="8" id="clM-IG-ZIl"/>
                             <constraint firstItem="Zw3-qE-1lN" firstAttribute="top" secondItem="g0B-fD-ev4" secondAttribute="bottom" constant="8" id="ea0-wY-ppT"/>
                             <constraint firstItem="iKn-Qx-xRw" firstAttribute="bottom" secondItem="Zw3-qE-1lN" secondAttribute="bottom" constant="20" id="gDg-P4-R68"/>
                             <constraint firstItem="g0B-fD-ev4" firstAttribute="leading" secondItem="iKn-Qx-xRw" secondAttribute="leading" constant="16" id="gJh-ef-sxX"/>
-                            <constraint firstItem="iKn-Qx-xRw" firstAttribute="trailing" secondItem="Q0S-ui-FJB" secondAttribute="trailing" constant="16" id="ggn-gP-ouw"/>
                             <constraint firstItem="2ar-ow-Ggw" firstAttribute="leading" secondItem="iKn-Qx-xRw" secondAttribute="leading" constant="16" id="h1c-UG-KwX"/>
                             <constraint firstItem="ejb-Q1-QI6" firstAttribute="top" secondItem="W1Q-Yl-7bm" secondAttribute="bottom" constant="8" id="h25-11-UVR"/>
-                            <constraint firstItem="Q0S-ui-FJB" firstAttribute="top" secondItem="iKn-Qx-xRw" secondAttribute="top" constant="5" id="hEB-oN-WyN"/>
                             <constraint firstItem="iKn-Qx-xRw" firstAttribute="trailing" secondItem="W1Q-Yl-7bm" secondAttribute="trailing" constant="16" id="ho3-5z-XHH"/>
                             <constraint firstItem="ejb-Q1-QI6" firstAttribute="leading" secondItem="iKn-Qx-xRw" secondAttribute="leading" constant="16" id="liU-Gv-GYF"/>
                             <constraint firstItem="W1Q-Yl-7bm" firstAttribute="leading" secondItem="iKn-Qx-xRw" secondAttribute="leading" constant="16" id="lyz-xW-F6Y"/>
+                            <constraint firstItem="iKn-Qx-xRw" firstAttribute="trailing" secondItem="HJ8-qB-cuV" secondAttribute="trailing" constant="16" id="pMk-uI-WgL"/>
                             <constraint firstItem="iKn-Qx-xRw" firstAttribute="trailing" secondItem="vyS-cg-YIC" secondAttribute="trailing" constant="16" id="zZt-Bq-c7k"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="iKn-Qx-xRw"/>
@@ -3434,11 +3578,16 @@
                     <connections>
                         <outlet property="LogOutButton" destination="Zw3-qE-1lN" id="Qau-WM-4Th"/>
                         <outlet property="cacheSizeLabel" destination="vyS-cg-YIC" id="laF-Xt-ObK"/>
-                        <outlet property="changePrivacySettingsButton" destination="Q0S-ui-FJB" id="EDa-OX-kjj"/>
                         <outlet property="checkRemoteConfigButton" destination="a89-mN-5ju" id="d86-t9-jpH"/>
+                        <outlet property="classesPrivateLabel" destination="3X8-BH-fz7" id="rm2-eV-F7V"/>
+                        <outlet property="classesSwitch" destination="HJ8-qB-cuV" id="vwh-4j-Oe4"/>
                         <outlet property="clearCacheButton" destination="W1Q-Yl-7bm" id="ACx-FF-uZz"/>
                         <outlet property="clearKeysButton" destination="cMS-II-GjS" id="had-an-ObG"/>
+                        <outlet property="clubsPrivateLabel" destination="sBm-FF-m1W" id="dd4-wT-yLy"/>
+                        <outlet property="clubsSwitch" destination="ri2-Dj-les" id="78a-oG-SgV"/>
+                        <outlet property="generalAnnouncementNotificationLabel" destination="2ar-ow-Ggw" id="C35-3S-umg"/>
                         <outlet property="sendFeedbackButton" destination="g0B-fD-ev4" id="PhK-dh-lRN"/>
+                        <outlet property="signUpFlowButton" destination="8LQ-F4-lPc" id="2dM-6c-5YU"/>
                         <outlet property="subscribeDebugButton" destination="A6j-iU-e8i" id="TvI-jx-fhO"/>
                         <outlet property="subscribedToGeneralSwitch" destination="ihO-el-g7p" id="Rt6-5T-i1R"/>
                     </connections>
@@ -3624,9 +3773,9 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FAy-L9-6X1">
-                                                <rect key="frame" x="258" y="258" width="45" height="34"/>
+                                                <rect key="frame" x="235" y="258" width="68" height="34"/>
                                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                                <state key="normal" title="Spend">
+                                                <state key="normal" title="Purchase">
                                                     <color key="titleColor" red="0.70672154389999997" green="0.54701480290000004" blue="0.091173238470000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
                                                 <connections>
@@ -3746,15 +3895,15 @@
             </objects>
             <point key="canvasLocation" x="3517.5999999999999" y="-564.46776611694156"/>
         </scene>
-        <!--Spirit Meter-->
+        <!--Spirit Meters-->
         <scene sceneID="tMJ-3b-vxq">
             <objects>
-                <viewController title="Spirit Meter" id="F3v-Zq-2AX" customClass="spiritMeterController" customModule="St_Augustine_CHS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Spirit Meters" id="F3v-Zq-2AX" customClass="spiritMeterController" customModule="St_Augustine_CHS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="AN9-Ok-L2w">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nine:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wom-jb-LVN">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Grade 9 -" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wom-jb-LVN">
                                 <rect key="frame" x="16" y="0.0" width="343" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="BQW-Vx-gJc"/>
@@ -3763,7 +3912,7 @@
                                 <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ten:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sr3-aX-KAY">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Grade 10 -" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sr3-aX-KAY">
                                 <rect key="frame" x="16" y="58" width="343" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="tvR-wc-djo"/>
@@ -3772,7 +3921,7 @@
                                 <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Twelve:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bzt-8C-9Dg">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Grade 12 -" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bzt-8C-9Dg">
                                 <rect key="frame" x="16" y="174" width="343" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="TRK-0R-exz"/>
@@ -3786,7 +3935,7 @@
                                 <color key="backgroundColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="tintColor" red="0.84705882349999995" green="0.68627450980000004" blue="0.10980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </progressView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Eleven: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hsj-8L-RX0">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Grade 11 -" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hsj-8L-RX0">
                                 <rect key="frame" x="16" y="116" width="343" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="b6w-GS-yUm"/>
@@ -3855,10 +4004,10 @@
             </objects>
             <point key="canvasLocation" x="4384.8000000000002" y="-564.46776611694156"/>
         </scene>
-        <!--Titan Tag Controller-->
+        <!--Titan Tag-->
         <scene sceneID="7CR-hy-RbQ">
             <objects>
-                <viewController id="z5e-e4-CUe" customClass="titanTagController" customModule="St_Augustine_CHS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Titan Tag" id="z5e-e4-CUe" customClass="titanTagController" customModule="St_Augustine_CHS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="weU-Yh-LYT">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3962,7 +4111,7 @@
                                     <constraint firstAttribute="bottom" secondItem="jNg-VD-YYj" secondAttribute="bottom" id="zlI-DB-y5H"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hgb-IS-2a9">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hgb-IS-2a9">
                                 <rect key="frame" x="16" y="63" width="343" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="LOB-KQ-qLD"/>
@@ -3971,7 +4120,7 @@
                                 <color key="textColor" red="0.5" green="0.0767248403" blue="0.1712033674" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Song Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mKa-mC-Cd6">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Song" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mKa-mC-Cd6">
                                 <rect key="frame" x="16" y="106" width="343" height="30"/>
                                 <color key="tintColor" red="0.84705882352941175" green="0.68627450980392157" blue="0.10980392156862745" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
@@ -3981,7 +4130,7 @@
                                 <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UMc-xz-yU5">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UMc-xz-yU5">
                                 <rect key="frame" x="16" y="152" width="343" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="Pni-j4-3S1"/>
@@ -3990,7 +4139,7 @@
                                 <color key="textColor" red="0.5" green="0.0767248403" blue="0.1712033674" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Artist Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wiS-nO-rUG">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Artist" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wiS-nO-rUG">
                                 <rect key="frame" x="16" y="195" width="343" height="30"/>
                                 <color key="tintColor" red="0.84705882352941175" green="0.68627450980392157" blue="0.10980392156862745" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
@@ -4268,132 +4417,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ONH-dL-N2U" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3517.5999999999999" y="-1500.4497751124438"/>
-        </scene>
-        <!--SignInPrefVC-->
-        <scene sceneID="Uut-ow-UrM">
-            <objects>
-                <viewController title="SignInPrefVC" id="LdE-fB-gw1" customClass="updatePrivacyController" customModule="St_Augustine_CHS" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Mbe-iJ-SLf">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TW7-po-yld">
-                                <rect key="frame" x="0.0" y="20" width="375" height="40"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hrU-o0-qJg">
-                                        <rect key="frame" x="8" y="10.5" width="359" height="21.5"/>
-                                        <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nch-PH-Wv9">
-                                        <rect key="frame" x="7" y="6" width="48" height="34"/>
-                                        <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                        <state key="normal" title="Cancel"/>
-                                        <connections>
-                                            <action selector="cancelPrivacy:" destination="LdE-fB-gw1" eventType="touchUpInside" id="WMa-Xd-3af"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fGM-hv-98p">
-                                        <rect key="frame" x="314" y="6" width="53" height="34"/>
-                                        <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                        <state key="normal" title="Update"/>
-                                        <connections>
-                                            <action selector="updatePrivacy:" destination="LdE-fB-gw1" eventType="touchUpInside" id="RLf-4X-rMr"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" red="0.5" green="0.0767248403" blue="0.1712033674" alpha="0.94804152399999997" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstItem="nch-PH-Wv9" firstAttribute="leading" secondItem="TW7-po-yld" secondAttribute="leading" constant="7" id="1U6-ub-BVk"/>
-                                    <constraint firstAttribute="bottom" secondItem="nch-PH-Wv9" secondAttribute="bottom" id="2wF-9s-NeC"/>
-                                    <constraint firstAttribute="trailing" secondItem="fGM-hv-98p" secondAttribute="trailing" constant="8" id="AV0-LT-w24"/>
-                                    <constraint firstAttribute="bottom" secondItem="hrU-o0-qJg" secondAttribute="bottom" constant="8" id="Nfn-02-p3s"/>
-                                    <constraint firstAttribute="height" constant="40" id="ZXA-2a-41x"/>
-                                    <constraint firstItem="hrU-o0-qJg" firstAttribute="leading" secondItem="TW7-po-yld" secondAttribute="leading" constant="8" id="blv-rc-6pC"/>
-                                    <constraint firstAttribute="bottom" secondItem="fGM-hv-98p" secondAttribute="bottom" id="nxa-8C-nfG"/>
-                                    <constraint firstAttribute="trailing" secondItem="hrU-o0-qJg" secondAttribute="trailing" constant="8" id="yDU-0G-hlj"/>
-                                </constraints>
-                            </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Additional Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IVv-zK-kfb">
-                                <rect key="frame" x="16" y="68" width="343" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="4aN-UX-XdR"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show courses to other people?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OCJ-ij-nM0">
-                                <rect key="frame" x="16" y="116" width="288" height="38"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="38" id="ROH-zS-T39"/>
-                                    <constraint firstAttribute="width" constant="288" id="qTf-s2-Xyb"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="KJ0-aP-f6P">
-                                <rect key="frame" x="310" y="119.5" width="51" height="31"/>
-                                <connections>
-                                    <action selector="switchTapped:" destination="LdE-fB-gw1" eventType="valueChanged" id="HqQ-r4-lob"/>
-                                </connections>
-                            </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show clubs to other people?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CXu-GA-TlU">
-                                <rect key="frame" x="16" y="162" width="288" height="38"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="288" id="Isv-h6-oc1"/>
-                                    <constraint firstAttribute="height" constant="38" id="q5w-FK-9hB"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <color key="textColor" red="0.50196078430000002" green="0.50196078430000002" blue="0.50196078430000002" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="cEk-k5-Emy">
-                                <rect key="frame" x="310" y="165.5" width="51" height="31"/>
-                                <connections>
-                                    <action selector="switchTapped:" destination="LdE-fB-gw1" eventType="valueChanged" id="AbU-kX-05y"/>
-                                </connections>
-                            </switch>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CKG-dv-yvA">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="20"/>
-                                <color key="backgroundColor" red="0.27450980390000002" green="0.031372549020000001" blue="0.090196078430000007" alpha="0.94804152399999997" colorSpace="custom" customColorSpace="sRGB"/>
-                            </view>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstAttribute="trailing" secondItem="CKG-dv-yvA" secondAttribute="trailing" id="24D-L1-tKz"/>
-                            <constraint firstItem="CXu-GA-TlU" firstAttribute="centerY" secondItem="cEk-k5-Emy" secondAttribute="centerY" id="82U-v5-nZ1"/>
-                            <constraint firstItem="FDd-tj-7rR" firstAttribute="trailing" secondItem="cEk-k5-Emy" secondAttribute="trailing" constant="16" id="G3q-7S-plA"/>
-                            <constraint firstItem="FDd-tj-7rR" firstAttribute="trailing" secondItem="KJ0-aP-f6P" secondAttribute="trailing" constant="16" id="Gub-nZ-abz"/>
-                            <constraint firstItem="CXu-GA-TlU" firstAttribute="leading" secondItem="FDd-tj-7rR" secondAttribute="leading" constant="16" id="Gw2-ol-qU6"/>
-                            <constraint firstItem="OCJ-ij-nM0" firstAttribute="leading" secondItem="IVv-zK-kfb" secondAttribute="leading" id="J2J-H3-92a"/>
-                            <constraint firstItem="OCJ-ij-nM0" firstAttribute="centerY" secondItem="KJ0-aP-f6P" secondAttribute="centerY" id="MZ6-cR-0Ew"/>
-                            <constraint firstItem="FDd-tj-7rR" firstAttribute="trailing" secondItem="IVv-zK-kfb" secondAttribute="trailing" constant="16" id="R5L-XH-QEn"/>
-                            <constraint firstItem="TW7-po-yld" firstAttribute="top" secondItem="CKG-dv-yvA" secondAttribute="bottom" id="UvZ-Es-Y5z"/>
-                            <constraint firstItem="OCJ-ij-nM0" firstAttribute="top" secondItem="IVv-zK-kfb" secondAttribute="bottom" constant="8" symbolic="YES" id="Wzr-nL-KRk"/>
-                            <constraint firstItem="CKG-dv-yvA" firstAttribute="top" secondItem="Mbe-iJ-SLf" secondAttribute="top" id="XL4-jC-LsS"/>
-                            <constraint firstItem="IVv-zK-kfb" firstAttribute="top" secondItem="TW7-po-yld" secondAttribute="bottom" constant="8" id="bdX-xA-Umh"/>
-                            <constraint firstItem="CXu-GA-TlU" firstAttribute="top" secondItem="OCJ-ij-nM0" secondAttribute="bottom" constant="8" id="gDW-R0-pod"/>
-                            <constraint firstItem="TW7-po-yld" firstAttribute="top" secondItem="FDd-tj-7rR" secondAttribute="top" id="mpV-Rl-TJc"/>
-                            <constraint firstItem="TW7-po-yld" firstAttribute="trailing" secondItem="FDd-tj-7rR" secondAttribute="trailing" id="prU-H4-JA6"/>
-                            <constraint firstItem="CKG-dv-yvA" firstAttribute="leading" secondItem="Mbe-iJ-SLf" secondAttribute="leading" id="rAB-S0-6WH"/>
-                            <constraint firstItem="IVv-zK-kfb" firstAttribute="leading" secondItem="FDd-tj-7rR" secondAttribute="leading" constant="16" id="rh2-KZ-3k5"/>
-                            <constraint firstItem="TW7-po-yld" firstAttribute="leading" secondItem="FDd-tj-7rR" secondAttribute="leading" id="rko-93-cyB"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="FDd-tj-7rR"/>
-                    </view>
-                    <connections>
-                        <outlet property="showClubsSwitch" destination="cEk-k5-Emy" id="hUY-v5-0p6"/>
-                        <outlet property="showCoursesSwitch" destination="KJ0-aP-f6P" id="c50-cg-F98"/>
-                        <outlet property="statusBarView" destination="CKG-dv-yvA" id="cFt-CD-p33"/>
-                        <outlet property="topBarView" destination="TW7-po-yld" id="xbG-sN-3u5"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="00h-JA-jvc" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="6329" y="-1306"/>
         </scene>
         <!--Club Final Controller-->
         <scene sceneID="Trz-Ma-OQb">
@@ -4921,8 +4944,8 @@
         <image name="voteArrowEmpty" width="48" height="48"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="lvC-dZ-PRI"/>
-        <segue reference="u7i-IT-8gd"/>
+        <segue reference="qH1-Mf-jC9"/>
+        <segue reference="ZBK-Jk-E3t"/>
         <segue reference="Bcw-dD-CBe"/>
         <segue reference="dOO-6f-ACp"/>
         <segue reference="ZPw-sW-YUi"/>
