@@ -285,6 +285,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             let clubRef = self.db.collection("clubs").document(clubID)
             clubRef.updateData(["pending": FieldValue.arrayUnion([Auth.auth().currentUser?.uid as Any])])
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                 self.refreshList()
             }
         } else if joinStatus == 2 {

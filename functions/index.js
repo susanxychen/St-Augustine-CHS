@@ -407,72 +407,92 @@ exports.checkSnowDay = functions.https.onRequest((request, response) => {
     
     // The whole response has been received
     resp.on('end', () => {
-        //console.log(data);
-        if (data.includes("All school buses, vans and taxis servicing the YORK CATHOLIC and YORK REGION DISTRICT SCHOOL BOARD&nbsp; are cancelled")) {
-            console.log('snow day');
+        data = data.replace('&nbsp;','');
+        data = data.toLowerCase();
 
-            var payload = {
-            notification: {
-                title: 'Buses are cancelled today',
-                body: 'School bus city states: All school buses, vans and taxis servicing the YORK CATHOLIC and YORK REGION DISTRICT SCHOOL BOARD are cancelled'
-            }
-            };
+        admin.firestore().doc('info/dayNumber').get()
+            .then(snapshot => {
+                var isSnowDay = snapshot.data().snowDay
+                if (!isSnowDay) {
+                    console.log('not a snow day yet');
+                    if (data.includes("all school buses, vans and taxis servicing the york catholic and york region district school boards are cancelled for today")) {
+                        console.log('snow day');
             
-            // Send a message to devices subscribed to the provided topic.
-            admin.messaging().sendToTopic('alerts', payload)
-            .then((response2) => {
-                // See the MessagingTopicResponse reference documentation for the
-                // contents of response.
-                console.log('Successfully sent message:', response2);
-                response.send('snow day');
-                return 'snow day';
-            })
-            .catch((error) => {
-                console.log('Error sending message:', error);
-                response.send(error);
-                return 'error sending';
-            });
-
-            admin.firestore().doc('info/dayNumber').get()
-            .then(snapshot => {
-                if (snapshot.exists) {
-                    return snapshot.ref.set({
-                        snowDay: true
-                    }, {merge: true});
+                        var payload = {
+                        notification: {
+                            title: 'Buses are cancelled today',
+                            body: 'School bus city states: All school buses, vans and taxis servicing the YORK CATHOLIC and YORK REGION DISTRICT SCHOOL BOARD are cancelled for today'
+                        }
+                        };
+                        
+                        // Send a message to devices subscribed to the provided topic.
+                        // eslint-disable-next-line promise/no-nesting
+                        admin.messaging().sendToTopic('alerts', payload)
+                        .then((response2) => {
+                            // See the MessagingTopicResponse reference documentation for the
+                            // contents of response.
+                            console.log('Successfully sent message:', response2);
+                            response.send('snow day');
+                            return 'snow day';
+                        })
+                        .catch((error) => {
+                            console.log('Error sending message:', error);
+                            response.send(error);
+                            return 'error sending';
+                        });
+            
+                        // eslint-disable-next-line promise/no-nesting
+                        admin.firestore().doc('info/dayNumber').get()
+                        .then(snapshot => {
+                            if (snapshot.exists) {
+                                return snapshot.ref.set({
+                                    snowDay: true
+                                }, {merge: true});
+                            } else {
+                                console.log('no log snow day')
+                                throw new Error('no write snow day')
+                            }
+                        })
+                        .catch(error => {
+                            //handle the error
+                            console.log(error);
+                            //response.status(error.status >= 100 && error.status < 600 ? error.code : 500).send("Error accessing firestore: " + error.message);
+                        });
+            
+                        return 'done';
+                    } else {
+                        console.log('not snow day');
+                        // eslint-disable-next-line promise/no-nesting
+                        admin.firestore().doc('info/dayNumber').get()
+                        .then(snapshot => {
+                            response.send('not a snow day')
+                            if (snapshot.exists) {
+                                return snapshot.ref.set({
+                                    snowDay: false
+                                }, {merge: true});
+                            } else {
+                                console.log('no write snow day')
+                                throw new Error('no write snow day')
+                            }
+                        })
+                        .catch(error => {
+                            //handle the error
+                            console.log(error);
+                            response.status(error.status >= 100 && error.status < 600 ? error.code : 500).send("Error accessing firestore: " + error.message);
+                        });
+                    }
                 } else {
-                    console.log('no log snow day')
-                    throw new Error('no write snow day')
+                    console.log('first check');
+                    response.send('checked and already good');
                 }
-            })
-            .catch(error => {
-                //handle the error
-                console.log(error);
-                //response.status(error.status >= 100 && error.status < 600 ? error.code : 500).send("Error accessing firestore: " + error.message);
-            });
-
-            return 'done';
-        } else {
-            console.log('not snow day');
-            admin.firestore().doc('info/dayNumber').get()
-            .then(snapshot => {
-                response.send('not a snow day')
-                if (snapshot.exists) {
-                    return snapshot.ref.set({
-                        snowDay: false
-                    }, {merge: true});
-                } else {
-                    console.log('no write snow day')
-                    throw new Error('no write snow day')
-                }
+                return 'done';
             })
             .catch(error => {
                 //handle the error
                 console.log(error);
                 response.status(error.status >= 100 && error.status < 600 ? error.code : 500).send("Error accessing firestore: " + error.message);
             });
-
-            return 'none';
-        }
+        return 'none';
     });
     }).on("error", (err) => {
         response.send("Error checking snow day: " + err.message);

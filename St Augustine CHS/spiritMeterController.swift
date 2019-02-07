@@ -84,13 +84,14 @@ class spiritMeterController: UIViewController {
                 self.present(alert, animated: true, completion: nil)
             }
             if let snapshot = snapshot {
-                let data = snapshot.data()!
+                let data = snapshot.data() ?? ["years":["1","2","3","4"], "1": 100, "2": 100, "3": 100, "4": 100]
                 
                 //Set the values
-                let nine = data["nine"] as! Double
-                let ten = data["ten"] as! Double
-                let eleven = data["eleven"] as! Double
-                let twelve = data["twelve"] as! Double
+                let years = data["years"] as! [String]
+                let nine = data[years[0]] as! Double
+                let ten = data[years[1]] as! Double
+                let eleven = data[years[2]] as! Double
+                let twelve = data[years[3]] as! Double
                 
                 let points = [nine,ten,eleven,twelve]
                 
@@ -102,10 +103,10 @@ class spiritMeterController: UIViewController {
                 self.twelveBar.progress = Float(twelve/max)
                 
                 //Update the labels
-                self.nineLabel.text = "Grade 9 - \(data["nine"] ?? "error") Points"
-                self.tenLabel.text = "Grade 10 - \(data["ten"] ?? "error") Points"
-                self.elevenLabel.text = "Grade 11 - \(data["eleven"] ?? "error") Points"
-                self.twelveLabel.text = "Grade 12 - \(data["twelve"] ?? "error") Points"
+                self.nineLabel.text = "Grade 9 - \(Int(nine)) Points"
+                self.tenLabel.text = "Grade 10 - \(Int(ten)) Points"
+                self.elevenLabel.text = "Grade 11 - \(Int(eleven)) Points"
+                self.twelveLabel.text = "Grade 12 - \(Int(twelve)) Points"
             }
         }
     }

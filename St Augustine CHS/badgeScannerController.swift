@@ -135,9 +135,10 @@ class badgeScannerController: UIViewController, AVCaptureVideoDataOutputSampleBu
                 self.session.startRunning()
             }))
             alert.addAction(UIAlertAction(title: "Give Badge", style: .default, handler: { (alert) in
+                //Get the student's info to give points
                 self.db.collection("users").whereField("email", isEqualTo: email).getDocuments(completion: { (snap, err) in
                     if let error = err {
-                        let alert = UIAlertController(title: "Error in retrieveing Club Data", message: "Error \(error.localizedDescription)", preferredStyle: .alert)
+                        let alert = UIAlertController(title: "Error in retrieveing user data", message: "Error \(error.localizedDescription)", preferredStyle: .alert)
                         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                         self.present(alert, animated: true, completion: nil)
                     }
@@ -163,6 +164,7 @@ class badgeScannerController: UIViewController, AVCaptureVideoDataOutputSampleBu
                                 }
                             }
                             
+                            //Give user points
                             self.db.runTransaction({ (transaction, errorPointer) -> Any? in
                                 let uDoc: DocumentSnapshot
                                 do {
@@ -183,7 +185,7 @@ class badgeScannerController: UIViewController, AVCaptureVideoDataOutputSampleBu
                                     errorPointer?.pointee = error
                                     return nil
                                 }
-                                transaction.updateData(["points": oldPoints + 10], forDocument: userRef)
+                                transaction.updateData(["points": oldPoints + Defaults.attendingEvent], forDocument: userRef)
                                 return nil
                             }, completion: { (object, err) in
                                 if let error = err {
@@ -191,9 +193,43 @@ class badgeScannerController: UIViewController, AVCaptureVideoDataOutputSampleBu
                                 } else {
                                     print("Transaction successfully committed!")
                                     print("successfuly gave badge")
-                                    self.dismiss(animated: true, completion: nil)
+                                    
+                                    //Give the grade points
+                                    let gradYear = Int(email.suffix(14).prefix(2)) ?? 0
+                                    let pointRef = self.db.collection("info").document("spiritPoints")
+                                    self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                                        let pDoc: DocumentSnapshot
+                                        do {
+                                            try pDoc = transaction.getDocument(pointRef)
+                                        } catch let fetchError as NSError {
+                                            errorPointer?.pointee = fetchError
+                                            return nil
+                                        }
+                                        guard let oldPoints = pDoc.data()?[String(gradYear)] as? Int else {
+                                            let error = NSError(
+                                                domain: "AppErrorDomain",
+                                                code: -1,
+                                                userInfo: [
+                                                    NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(pDoc)"
+                                                ]
+                                            )
+                                            errorPointer?.pointee = error
+                                            return nil
+                                        }
+                                        transaction.updateData([String(gradYear): oldPoints + Defaults.attendingEvent], forDocument: pointRef)
+                                        return nil
+                                    }, completion: { (object, err) in
+                                        if let error = err {
+                                            print("Transaction failed: \(error)")
+                                        } else {
+                                            print("Transaction successfully committed!")
+                                            print("successfuly gave badge")
+                                            self.dismiss(animated: true, completion: nil)
+                                        }
+                                    })
                                 }
                             })
+                            
                         } else {
                             let alert = UIAlertController(title: "Error in giving badges", message: "No user found with \(email)", preferredStyle: .alert)
                             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))

@@ -12,8 +12,10 @@ resp.on('data', (chunk) => {
 
 // The whole response has been received
 resp.on('end', () => {
-    //console.log(data);
-    if (data.includes("All school buses, vans and taxis servicing the YORK CATHOLIC and YORK REGION DISTRICT SCHOOL BOARD&nbsp; are cancelled")) {
+    data = data.replace('&nbsp;','');
+    data = data.toLowerCase();
+    console.log(data);
+    if (data.includes("all school buses, vans and taxis servicing the york catholic and york region district school boards are cancelled for today")) {
         console.log('snow day');
         
     } else {

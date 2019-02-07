@@ -139,7 +139,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     self.present(alert, animated: true, completion: nil)
                 }
                 if let snap = snap {
-                    let data = snap.data()!
+                    let data = snap.data() ?? ["name":"error", "email":"error@error.ca", "profilePic":0, "msgToken":"error"]
                     self.adminsNamesList[user] = data["name"] as? String ?? "error"
                     self.adminsEmailsList[user] = data["email"] as? String ?? "error"
                     self.adminsMsgList[user] = data["msgToken"] as? String ?? "error"
@@ -159,7 +159,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     self.present(alert, animated: true, completion: nil)
                 }
                 if let snap = snap {
-                    let data = snap.data()!
+                    let data = snap.data() ?? ["name":"error", "email":"error@error.ca", "profilePic":0, "msgToken":"error"]
                     self.membersNamesList[user] = data["name"] as? String ?? "error"
                     self.membersEmailsList[user] = data["email"] as? String ?? "error"
                     self.membersMsgList[user] = data["msgToken"] as? String ?? "error"

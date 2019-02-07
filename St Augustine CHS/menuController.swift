@@ -88,7 +88,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var dateAndDayView: UIView!
     @IBOutlet weak var gradientSocialView: UIView!
     
-    var signedInAndIsDone = false
     var cameFromTT = false
     //***********************************SETTING UP EVERYTHING****************************************
     override func viewDidLoad() {
@@ -101,12 +100,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         definesPresentationContext = true
         
         dateToString.text = DateFormatter.localizedString(from: Date(), dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
-        
-        DispatchQueue.main.async {
-            self.setupRemoteConfigDefaults()
-            self.updateViewWithRCValues()
-            self.fetchRemoteConfig()
-        }
         
         //Only sign in if you have not come from there
         GIDSignIn.sharedInstance()?.delegate = self
@@ -139,7 +132,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         }
         let checkEmail = user.profile.email
         
-        if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))! || (checkEmail == "sachstesterforapple@gmail.com") || allowAnyGoogleAccount){
+        if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))! || /*(checkEmail == "sachstesterforapple@gmail.com") ||*/ allowAnyGoogleAccount){
             //print("wow nice sign in")
             //************************Firebase Auth************************
             guard let authentication = user.authentication else {
@@ -159,33 +152,42 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 }
                 //If Valid k12 account auto segue to main screen
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    let lastSignIn = Auth.auth().currentUser?.metadata.lastSignInDate
-                    let creation = Auth.auth().currentUser?.metadata.creationDate
-                    
-                    //if the user didnt come from the failed login as a new user
-                    if (lastSignIn == creation) {
-                        var didSignInBefore: Bool
-                        
-                        if let x = UserDefaults.standard.object(forKey: "didSignInBefore") as? Bool {
-                            didSignInBefore = x
-                        } else {
-                            didSignInBefore = false
-                        }
-                        
-                        if !didSignInBefore {
-                            print("new user! take em through the sign in flow")
-                            self.viewAboveAllViews.removeFromSuperview()
-                            self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
-                        } else {
-                            print("already signed up")
-                            self.signedInAndIsDone = true
-                            self.getAllStartingInfoAfterSignIn()
-                        }
-                    } else {
-                        print("not new")
-                        self.signedInAndIsDone = true
+//                    let lastSignIn = (Auth.auth().currentUser?.metadata.lastSignInDate)!
+//                    let creation = (Auth.auth().currentUser?.metadata.creationDate)!
+//
+//                    print(lastSignIn) //Apparently 2019-02-06 22:40:19 +0000 does not equal 2019-02-06 22:40:19 +0000
+//                    print(creation) //so thanks ill use doubles
+//
+//                    let trueSignIn = round(lastSignIn.timeIntervalSince1970)
+//                    let trueCreation = round(creation.timeIntervalSince1970)
+//
+//                    print(trueSignIn)
+//                    print(trueCreation)
+//
+//                    //if the user didnt come from the failed login as a new user
+//                    if (trueSignIn == trueCreation) {
+//                        print("new user")
+//                        var didSignInBefore: Bool
+//
+//                        if let x = UserDefaults.standard.object(forKey: "didSignInBefore") as? Bool {
+//                            didSignInBefore = x
+//                        } else {
+//                            didSignInBefore = false
+//                        }
+//
+//                        if !didSignInBefore {
+//                            print("new user! take em through the sign in flow")
+//                            self.viewAboveAllViews.removeFromSuperview()
+//                            self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
+//                        } else {
+//                            print("already signed up")
+//                            self.getAllStartingInfoAfterSignIn()
+//                        }
+//                    } else {
+//                        print("not new")
+//                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                         self.getAllStartingInfoAfterSignIn()
-                    }
+//                    }
                 }
             }
         } else{
@@ -205,7 +207,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         getTimeFromServer { (serverDate) in
             self.theDate = serverDate
         }
-        
+ 
         //Set Up
         // [START setup]
         let settings = FirestoreSettings()
@@ -213,6 +215,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         Firestore.firestore().settings = settings
         // [END setup]
         db = Firestore.firestore()
+        
+        DispatchQueue.main.async {
+            self.setupRemoteConfigDefaults()
+            self.updateViewWithRCValues()
+            self.fetchRemoteConfig()
+        }
         
         //Add refresh control
         addRefreshControl()
@@ -287,8 +295,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //Name
         displayName.text = user?.displayName
         //Email
-        //displayEmail.text = String(user?.email?.split(separator: "@")[0] ?? "Error")
-        displayEmail.text = "john.smith19"
+        displayEmail.text = String(user?.email?.split(separator: "@")[0] ?? "Error")
         
         db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
             print("do i even reach in here to get the data")
@@ -302,14 +309,17 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                     self.getClubAnncs()
                     self.updateDatabaseWithNewRemoteID()
                 } else {
-                    print("wow u dont exist")
-                    //self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-                    let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Please enter your details again or contact the app dev team.", preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "OK", style: .default , handler: { (action) in
-                        self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
-                    })
-                    alert.addAction(okAction)
-                    self.present(alert, animated: true, completion: nil)
+                    print("its a new user")
+                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+                    self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
+//                    print("wow u dont exist")
+//                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+//                    let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Please enter your details again or contact the app dev team.", preferredStyle: .alert)
+//                    let okAction = UIAlertAction(title: "OK", style: .default , handler: { (action) in
+//                        self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
+//                    })
+//                    alert.addAction(okAction)
+//                    self.present(alert, animated: true, completion: nil)
                 }
             } else {
                 print("wow u dont exist")
@@ -778,49 +788,47 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     @objc func refreshList(){
-        if signedInAndIsDone {
-            //Colours
-            setupRemoteConfigDefaults()
-            updateViewWithRCValues()
-            fetchRemoteConfig()
-            
-            print("I refreshed stuff indian tech tutorial style")
-            getDayNumber()
-            newsTask()
-            //snowTask()
-            let user = Auth.auth().currentUser
-            db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
-                if let docSnapshot = docSnapshot {
-                    //Check if the user even exists
-                    if let data = docSnapshot.data() {
-                        print("i get the data")
-                        allUserFirebaseData.data = data
-                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-                        self.getPicture(i: data["profilePic"] as? Int ?? 0)
-                        self.getClubAnncs()
-                        self.updateDatabaseWithNewRemoteID()
-                    } else {
-                        print("wow 100% dont exist")
-                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-                        let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Please enter your details again or contact the app dev team.", preferredStyle: .alert)
-                        let okAction = UIAlertAction(title: "OK", style: .default , handler: { (action) in
-                            self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
-                        })
-                        alert.addAction(okAction)
-                        self.present(alert, animated: true, completion: nil)
-                    }
+        //Colours
+        setupRemoteConfigDefaults()
+        updateViewWithRCValues()
+        fetchRemoteConfig()
+        
+        print("I refreshed stuff indian tech tutorial style")
+        getDayNumber()
+        newsTask()
+        //snowTask()
+        let user = Auth.auth().currentUser
+        db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+            if let docSnapshot = docSnapshot {
+                //Check if the user even exists
+                if let data = docSnapshot.data() {
+                    print("i get the data")
+                    allUserFirebaseData.data = data
+                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+                    self.getPicture(i: data["profilePic"] as? Int ?? 0)
+                    self.getClubAnncs()
+                    self.updateDatabaseWithNewRemoteID()
                 } else {
-                    print("wow u dont exist")
-                    let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Try again later or contact the app dev team.", preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "OK", style: .cancel, handler: { (action) in
-                        self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
+                    print("wow 100% dont exist")
+                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+                    let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Please enter your details again or contact the app dev team.", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default , handler: { (action) in
+                        self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
                     })
                     alert.addAction(okAction)
+                    self.present(alert, animated: true, completion: nil)
                 }
+            } else {
+                print("wow u dont exist")
+                let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Try again later or contact the app dev team.", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .cancel, handler: { (action) in
+                    self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
+                })
+                alert.addAction(okAction)
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self.refreshControl?.endRefreshing()
-            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.refreshControl?.endRefreshing()
         }
     }
     
@@ -875,6 +883,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 if snowDay {
                     self.snowDayLabel.isHidden = false
                     self.snowDayLabelHeight.constant = 25
+                    self.snowDayLabel.textColor = Defaults.darkerPrimary
                 } else {
                     self.snowDayLabelHeight.constant = 0
                 }

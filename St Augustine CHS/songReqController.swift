@@ -34,6 +34,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     var refreshControl: UIRefreshControl?
     
     //Super vote stuff
+    @IBOutlet weak var noSongLabel: UILabel!
     @IBOutlet weak var supervoteView: UIView!
     @IBOutlet weak var supervoteSongName: UILabel!
     @IBOutlet weak var supervotePoints: UILabel!
@@ -260,6 +261,13 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                 print("Error getting documents: \(err)")
             } else {
                 var latestSongs = [[Any]]()
+                
+                if querySnapshot?.count == 0 {
+                    print("no songs at all")
+                    self.noSongLabel.isHidden = false
+                } else {
+                    self.noSongLabel.isHidden = true
+                }
                 
                 //Disable the add song button if there are over max songs
                 if querySnapshot!.documents.count >= Defaults.maxSongs {

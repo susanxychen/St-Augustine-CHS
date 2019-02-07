@@ -275,7 +275,7 @@
                                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="It's a Snow Day" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Py-Ha-p8F">
+                                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="All buses have been canceled today!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Py-Ha-p8F">
                                                         <rect key="frame" x="8" y="34" width="359" height="0.0"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" id="rlI-Fu-JqG"/>
@@ -3760,8 +3760,8 @@
                                     <segue destination="ou6-IM-86u" kind="presentation" identifier="suggestSong" id="krz-mI-ogL"/>
                                 </connections>
                             </button>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="64E-BA-oGS">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
+                            <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="64E-BA-oGS">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="604"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zyA-lx-qzB">
                                         <rect key="frame" x="32" y="151.5" width="311" height="300"/>
@@ -3866,12 +3866,23 @@
                                     <constraint firstItem="zyA-lx-qzB" firstAttribute="centerY" secondItem="64E-BA-oGS" secondAttribute="centerY" id="oaG-Sh-2Ib"/>
                                 </constraints>
                             </view>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="There are no songs right now. How about requesting one?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lCf-JI-l5y">
+                                <rect key="frame" x="16" y="40" width="343" height="64"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="64" id="Gru-9A-wqf"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="nkA-Xt-AkT" firstAttribute="top" secondItem="Bvf-ub-6X2" secondAttribute="bottom" constant="8" symbolic="YES" id="6dJ-1T-sSs"/>
+                            <constraint firstItem="lCf-JI-l5y" firstAttribute="leading" secondItem="nkA-Xt-AkT" secondAttribute="leading" constant="16" id="81d-V9-4cA"/>
                             <constraint firstItem="64E-BA-oGS" firstAttribute="trailing" secondItem="nkA-Xt-AkT" secondAttribute="trailing" id="BfF-hw-DLg"/>
                             <constraint firstAttribute="bottom" secondItem="64E-BA-oGS" secondAttribute="bottom" id="Fyr-wP-nPw"/>
+                            <constraint firstItem="nkA-Xt-AkT" firstAttribute="trailing" secondItem="lCf-JI-l5y" secondAttribute="trailing" constant="16" id="Xgi-ed-H97"/>
                             <constraint firstItem="64E-BA-oGS" firstAttribute="top" secondItem="nkA-Xt-AkT" secondAttribute="top" id="cuB-M4-rL4"/>
                             <constraint firstItem="5cq-7X-y0B" firstAttribute="leading" secondItem="nkA-Xt-AkT" secondAttribute="leading" id="d9l-SX-xJX"/>
                             <constraint firstItem="5cq-7X-y0B" firstAttribute="trailing" secondItem="nkA-Xt-AkT" secondAttribute="trailing" id="hds-0K-BOW"/>
@@ -3879,11 +3890,13 @@
                             <constraint firstItem="Bvf-ub-6X2" firstAttribute="trailing" secondItem="x5m-9h-RKP" secondAttribute="trailingMargin" id="ri2-B3-EJJ"/>
                             <constraint firstItem="5cq-7X-y0B" firstAttribute="bottom" secondItem="nkA-Xt-AkT" secondAttribute="bottom" id="sar-Ou-cAL"/>
                             <constraint firstItem="64E-BA-oGS" firstAttribute="leading" secondItem="nkA-Xt-AkT" secondAttribute="leading" id="sbJ-7T-vc2"/>
+                            <constraint firstItem="lCf-JI-l5y" firstAttribute="top" secondItem="nkA-Xt-AkT" secondAttribute="top" constant="40" id="wgp-Ht-KdQ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="nkA-Xt-AkT"/>
                     </view>
                     <connections>
                         <outlet property="cancelButton" destination="xKk-tf-ocT" id="wp2-3N-MzP"/>
+                        <outlet property="noSongLabel" destination="lCf-JI-l5y" id="so5-6F-mju"/>
                         <outlet property="songView" destination="5cq-7X-y0B" id="grd-5l-tOy"/>
                         <outlet property="spendButton" destination="FAy-L9-6X1" id="ONI-xo-2Wt"/>
                         <outlet property="suggestASong" destination="Bvf-ub-6X2" id="QvU-O0-CTZ"/>
@@ -4089,7 +4102,7 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="35"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jNg-VD-YYj">
-                                        <rect key="frame" x="8" y="4" width="42" height="31"/>
+                                        <rect key="frame" x="8" y="5" width="47" height="30"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="15"/>
                                         <state key="normal" title="Cancel"/>
                                         <connections>
@@ -4097,7 +4110,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="91W-SK-EUe">
-                                        <rect key="frame" x="314" y="4" width="53" height="31"/>
+                                        <rect key="frame" x="311" y="5" width="56" height="30"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="15"/>
                                         <state key="normal" title="Request"/>

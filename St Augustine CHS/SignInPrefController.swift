@@ -104,7 +104,7 @@ class SignInPrefController: UIViewController {
         //If u cant cast to int then it means ur a teacher
         if gradYear == nil {
             status = 1
-            gradYear = 0
+            gradYear = -1
             Analytics.setUserProperty("teacher", forName: "grade")
         } else {
             Analytics.setUserProperty(String(gradYear!), forName: "grade")

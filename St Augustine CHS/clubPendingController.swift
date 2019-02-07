@@ -146,11 +146,44 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                         print("Transaction failed: \(error)")
                     } else {
                         print("Transaction successfully committed!")
+                        
+                        //Give the grade points
+                        let gradYear = Int(self.pendingListEmails[indexPath.item].suffix(14).prefix(2)) ?? 0
+                        let pointRef = self.db.collection("info").document("spiritPoints")
+                        self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                            let pDoc: DocumentSnapshot
+                            do {
+                                try pDoc = transaction.getDocument(pointRef)
+                            } catch let fetchError as NSError {
+                                errorPointer?.pointee = fetchError
+                                return nil
+                            }
+                            guard let oldPoints = pDoc.data()?[String(gradYear)] as? Int else {
+                                let error = NSError(
+                                    domain: "AppErrorDomain",
+                                    code: -1,
+                                    userInfo: [
+                                        NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(pDoc)"
+                                    ]
+                                )
+                                errorPointer?.pointee = error
+                                return nil
+                            }
+                            transaction.updateData([String(gradYear): oldPoints + Defaults.joiningClub], forDocument: pointRef)
+                            return nil
+                        }, completion: { (object, err) in
+                            if let error = err {
+                                print("Transaction failed: \(error)")
+                            } else {
+                                print("Transaction successfully committed!")
+                                print("successfuly gave badge")
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                                    self.getClubData()
+                                })
+                            }
+                        })
                     }
-                })
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                    self.getClubData()
                 })
             }))
             actionSheet.addAction(UIAlertAction(title: "Reject", style: .default, handler: { (action:UIAlertAction) in
@@ -209,7 +242,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                     self.present(alert, animated: true, completion: nil)
                 }
                 if let snap = snap {
-                    let data = snap.data()!
+                    let data = snap.data() ?? ["name":"error", "email":"error@error.ca", "profilePic":0, "msgToken":"error"]
                     self.pendingListNames[user] = data["name"] as? String ?? "error"
                     self.pendingListEmails[user] = data["email"] as? String ?? "error"
                     self.pendingListMsgTokens[user] = data["msgToken"] as? String ?? "error"
