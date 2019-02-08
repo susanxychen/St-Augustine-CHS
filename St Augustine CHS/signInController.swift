@@ -73,7 +73,7 @@ class signInController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate
         //Could see if u can force the auth to be sync instead of async
         
         //let studentEmail = Auth.auth().currentUser?.email
-        if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))! /*|| (checkEmail == "sachstesterforapple@gmail.com")*/){
+        if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))! || (checkEmail == "sachstesterforapple@gmail.com")){
             //print("wow nice sign in")
             //************************Firebase Auth************************ 
             guard let authentication = user.authentication else {

@@ -563,16 +563,16 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                 self.getBadgeDocs(theData: requestedStudentData)
                                 
                                 //Classes
-                                if requestedStudentData["showClasses"] as! Bool {
+                                if requestedStudentData["showClasses"] as? Bool ?? false {
                                     self.chosenToShareClasses = true
                                     
                                     //Classes in common
-                                    self.theOtherPersonsClasses = requestedStudentData["classes"] as! [String]
+                                    self.theOtherPersonsClasses = requestedStudentData["classes"] as? [String] ?? ["SPARE","SPARE","SPARE","SPARE","SPARE","SPARE","SPARE","SPARE"]
 
                                     //Fail safe just incase the courses aren't 8
-                                    if self.theOtherPersonsClasses.count != 8{
+                                    if self.theOtherPersonsClasses.count != 8 {
                                         print("oh shit we have to fix")
-                                        self.theOtherPersonsClasses = ["hey","something","went","wrong","here","courses","got","error"]
+                                        self.theOtherPersonsClasses = ["SPARE","SPARE","SPARE","SPARE","SPARE","SPARE","SPARE","SPARE"]
                                     }
                                     
                                     //Day 1 Only uploaded
@@ -592,7 +592,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                 }
                                 
                                 //Clubs
-                                if requestedStudentData["showClubs"] as! Bool {
+                                if requestedStudentData["showClubs"] as? Bool ?? false {
                                     self.chosenToShareClubs = true
                                     let clubIDRefs = requestedStudentData["clubs"] as! [String]
                                     self.clubsCollectionView.isUserInteractionEnabled = true

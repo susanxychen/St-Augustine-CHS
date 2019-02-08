@@ -18,8 +18,7 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
     
     var clubID: String!
     var clubBannerID: String!
-    var clubBadgeID: String!
-    var clubJoinSetting: Int!
+    var clubJoinSetting = 0
     
     //Club IB Outlets
     @IBOutlet weak var clubBanner: UIImageView!
@@ -254,20 +253,28 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
         //Send the data to firebase
         // Add a new document in collection "announcements"
         
+        clubID = randomString(length: 20)
+        
         let user = Auth.auth().currentUser
         print("Added club id \(String(describing: clubID))")
         
-        Messaging.messaging().subscribe(toTopic: clubID)
+        Messaging.messaging().subscribe(toTopic: clubID) { (error) in
+            if let error = error {
+                print("oh damn \(error)")
+            } else {
+                let userRef = self.db.collection("users").document(user!.uid)
+                userRef.updateData(["notifications": FieldValue.arrayUnion([self.clubID])])
+            }
+        }
         
         let userRef = self.db.collection("users").document(user!.uid)
         userRef.updateData([
-            "clubs": FieldValue.arrayUnion([clubID]),
-            "notifications": FieldValue.arrayUnion([clubID]),
+            "clubs": FieldValue.arrayUnion([clubID])
         ])
         
         db.collection("clubs").document(clubID).setData([
             "admins": [user?.uid],
-            "clubBadge": clubBadgeID,
+            "clubBadge": "",
             "desc": clubDescTxtView.text,
             "img": clubBannerID,
             "joinPref": clubJoinSetting,

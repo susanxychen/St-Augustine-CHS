@@ -95,6 +95,7 @@ class SignInCoursesController: UIViewController {
     @IBAction func pressedNextButton(_ sender: Any) {
         print("wow i am going next")
         var validCourses = true
+        var brokenCourse = ""
         
         //Checking for invalid courses
         for course in allTextFields {
@@ -116,6 +117,7 @@ class SignInCoursesController: UIViewController {
                 if !(coursesToCheck.contains(theCourse)) {
                     print("invalid course: " + theCourse)
                     validCourses = false
+                    brokenCourse = theCourse
                     break
                 }
             }
@@ -130,7 +132,7 @@ class SignInCoursesController: UIViewController {
             
             self.performSegue(withIdentifier: "PrivSeg", sender: self.nextButton)
         } else {
-            let alert = UIAlertController(title: "There is an invalid course code", message: nil, preferredStyle: .alert)
+            let alert = UIAlertController(title: "There is an invalid course code: \(brokenCourse)", message: nil, preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)

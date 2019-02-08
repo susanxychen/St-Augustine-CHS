@@ -121,6 +121,7 @@ class changeCoursesController: UIViewController {
     @IBAction func updateButton(_ sender: Any) {
         print("wow i am going next")
         var validCourses = true
+        var brokenCourse = "error"
         
         //Checking for invalid courses
         for course in allTextFields {
@@ -138,6 +139,7 @@ class changeCoursesController: UIViewController {
                 if !(coursesToCheck.contains(theCourse)) {
                     print("invalid course: " + theCourse)
                     validCourses = false
+                    brokenCourse = theCourse
                     break
                 }
             }
@@ -180,7 +182,7 @@ class changeCoursesController: UIViewController {
             }
             
         } else {
-            let alert = UIAlertController(title: "There is an invalid course code", message: nil, preferredStyle: .alert)
+            let alert = UIAlertController(title: "There is an invalid course code: \(brokenCourse)", message: nil, preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)

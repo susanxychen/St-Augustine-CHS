@@ -20,8 +20,8 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
     var clubID = String()
     
     //Announcement Vars
-    @IBOutlet weak var titleTxtFld: UITextField!
-    @IBOutlet weak var contentTxtFld: UITextField!
+    @IBOutlet weak var titleTxtArea: UITextView!
+    @IBOutlet weak var contentTxtArea: UITextView!
     @IBOutlet weak var anncImg: UIImageView!
     @IBOutlet weak var removeImage: UIButton!
     var currentAnncID = String()
@@ -87,19 +87,17 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
         statusBarView.backgroundColor = Defaults.darkerPrimary
         topBarView.backgroundColor = Defaults.primaryColor
         createNewAnncInstruction.textColor = Defaults.primaryColor
-        titleTxtFld.tintColor = Defaults.accentColor
-        contentTxtFld.tintColor = Defaults.accentColor
+        titleTxtArea.tintColor = Defaults.accentColor
+        contentTxtArea.tintColor = Defaults.accentColor
         removeImage.setTitleColor(Defaults.primaryColor, for: .normal)
-        
-        
         
         //If in edit mode, set it to edit mode
         if editMode {
             print(currentAnncID)
             createNewAnncInstruction.text = "Update the Announcement"
             postButton.setTitle("Update", for: .normal)
-            titleTxtFld.text = editTitle
-            contentTxtFld.text = editDesc
+            titleTxtArea.text = editTitle
+            contentTxtArea.text = editDesc
             
             if editImageName != "" {
                 anncImg.image = editImage
@@ -196,7 +194,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
             }
         })
         
-        if self.titleTxtFld.text == "" {
+        if self.titleTxtArea.text == "" || self.titleTxtArea.text == "title" {
             //Tell the user that information needs to be filled in
             let alert = UIAlertController(title: "Error", message: "All announcements require a title", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -204,14 +202,14 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
             self.present(alert, animated: true, completion: nil)
         }
         
-        else if (self.titleTxtFld.text?.count)! > 50 {
+        else if (self.titleTxtArea.text?.count)! > 50 && (allUserFirebaseData.data["status"] as? Int ?? 0 != 2) {
             let alert = UIAlertController(title: "Error", message: "Title is too long", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
             self.present(alert, animated: true, completion: nil)
         }
         
-        else if (self.contentTxtFld.text?.count)! > 300 {
+        else if (self.contentTxtArea.text?.count)! > 300 && (allUserFirebaseData.data["status"] as? Int ?? 0 != 2) {
             let alert = UIAlertController(title: "Error", message: "Content is too long", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)
@@ -279,12 +277,12 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
     var theDesc = ""
     var theTitle = ""
     func uploadRestAfterImageIsDone(imageName: String){
-        let anncTitle = titleTxtFld.text!
+        let anncTitle = titleTxtArea.text!
         var anncDesc = ""
         
         //Check for content text field
-        if contentTxtFld.text != "" {
-            anncDesc = contentTxtFld.text!
+        if contentTxtArea.text != "" && contentTxtArea.text != "content" {
+            anncDesc = contentTxtArea.text!
         } else{
             print("There was no description")
         }

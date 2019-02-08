@@ -143,7 +143,7 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
         //allProfileImages = [UIImage(named: "cafe"), UIImage(named: "gear"), UIImage(named: "space"), UIImage(named: "snoo"), UIImage(named: "stalogo"), UIImage(named: "home")] as! [UIImage]
         
         //Format the profile pic
-        theProfilePicture.layer.cornerRadius = 200/2
+        theProfilePicture.layer.cornerRadius = 170/2
         theProfilePicture.clipsToBounds = true
     }
     

@@ -87,11 +87,11 @@ class spiritMeterController: UIViewController {
                 let data = snapshot.data() ?? ["years":["1","2","3","4"], "1": 100, "2": 100, "3": 100, "4": 100]
                 
                 //Set the values
-                let years = data["years"] as! [String]
-                let nine = data[years[0]] as! Double
-                let ten = data[years[1]] as! Double
-                let eleven = data[years[2]] as! Double
-                let twelve = data[years[3]] as! Double
+                let years = data["years"] as? [String] ?? ["1","2","3","4"]
+                let nine = data[years[0]] as? Double ?? 100
+                let ten = data[years[1]] as? Double ?? 100
+                let eleven = data[years[2]] as? Double ?? 100
+                let twelve = data[years[3]] as? Double ?? 100
                 
                 let points = [nine,ten,eleven,twelve]
                 

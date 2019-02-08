@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 
 class clubMembersController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-
+    
     //The Database
     var db: Firestore!
     var docRef: DocumentReference!
@@ -139,13 +139,13 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     self.present(alert, animated: true, completion: nil)
                 }
                 if let snap = snap {
-                    let data = snap.data() ?? ["name":"error", "email":"error@error.ca", "profilePic":0, "msgToken":"error"]
+                    let data = snap.data() ?? ["name":"error", "email":"error", "profilePic": -1, "msgToken":"error"]
                     self.adminsNamesList[user] = data["name"] as? String ?? "error"
                     self.adminsEmailsList[user] = data["email"] as? String ?? "error"
                     self.adminsMsgList[user] = data["msgToken"] as? String ?? "error"
                     
                     //Get the image
-                    self.getPicture(profPic: data["profilePic"] as! Int, user: user, isAdmin: true)
+                    self.getPicture(profPic: data["profilePic"] as? Int ?? -1, user: user, isAdmin: true)
                 }
             }
         }
@@ -159,18 +159,52 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     self.present(alert, animated: true, completion: nil)
                 }
                 if let snap = snap {
-                    let data = snap.data() ?? ["name":"error", "email":"error@error.ca", "profilePic":0, "msgToken":"error"]
+                    let data = snap.data() ?? ["name":"error", "email":"error", "profilePic": -1, "msgToken":"error"]
                     self.membersNamesList[user] = data["name"] as? String ?? "error"
                     self.membersEmailsList[user] = data["email"] as? String ?? "error"
                     self.membersMsgList[user] = data["msgToken"] as? String ?? "error"
                     
                     //Get the image
-                    self.getPicture(profPic: data["profilePic"] as! Int, user: user, isAdmin: false)
+                    self.getPicture(profPic: data["profilePic"] as? Int ?? -1, user: user, isAdmin: false)
                 }
             }
         }
-        
+        removeBrokenUsers()
+    }
+    
+    func removeBrokenUsers(){
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            //Filter out all the broken users
+            var foundAnErrorUser = true
+            while foundAnErrorUser {
+                if let index = self.membersNamesList.index(of: "error") {
+                    foundAnErrorUser = true
+                    self.membersNamesList.remove(at: index)
+                    self.membersEmailsList.remove(at: index)
+                    self.membersMsgList.remove(at: index)
+                    self.membersPics.remove(at: index)
+                    self.membersList.remove(at: index)
+                } else {
+                    // not found
+                    foundAnErrorUser = false
+                }
+            }
+            
+            foundAnErrorUser = true
+            while foundAnErrorUser {
+                if let index = self.adminsNamesList.index(of: "error") {
+                    foundAnErrorUser = true
+                    self.adminsNamesList.remove(at: index)
+                    self.adminsEmailsList.remove(at: index)
+                    self.adminsMsgList.remove(at: index)
+                    self.adminsPics.remove(at: index)
+                    self.adminsList.remove(at: index)
+                } else {
+                    // not found
+                    foundAnErrorUser = false
+                }
+            }
+            
             self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             self.adminsCollectionView.reloadData()
             self.membersCollectionView.reloadData()
@@ -255,7 +289,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
             let actionSheet = UIAlertController(title: "Choose an Option for \(membersNamesList[indexPath.item])", message: nil, preferredStyle: .actionSheet)
             actionSheet.addAction(UIAlertAction(title: "Promote to Admin", style: .default, handler: { (action:UIAlertAction) in
                 //Create the alert controller.
-                let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to promote \(self.membersNamesList[indexPath.item])?", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to promote \(self.membersNamesList[indexPath.item])? (They will have as much power as you do right now!)", preferredStyle: .alert)
                 let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
                 let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default) { (action:UIAlertAction) in
                     self.promotedAMember!(true)
@@ -330,6 +364,8 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print(adminsNamesList)
+        print(membersNamesList)
         if collectionView == adminsCollectionView {
             return adminsNamesList.count
         } else {
@@ -338,7 +374,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let height = self.adminsCollectionView.contentSize.height + self.membersCollectionView.contentSize.height + 50
+        let height = self.adminsCollectionView.contentSize.height + self.membersCollectionView.contentSize.height + 150
         self.adminsCollectionViewHeight.constant = self.adminsCollectionView.contentSize.height + 10
         self.membersCollectionViewHeight.constant = self.membersCollectionView.contentSize.height + 10
         
@@ -380,6 +416,16 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func getPicture(profPic: Int, user: Int, isAdmin: Bool) {
+        //If entered pic is not a real one... dont bother
+        if profPic < 0 {
+            if isAdmin {
+                self.adminsPics[user] = UIImage()
+            } else {
+                self.membersPics[user] = UIImage()
+            }
+            return
+        }
+        
         //Image
         let storage = Storage.storage()
         let storageRef = storage.reference()

@@ -1456,7 +1456,7 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="33"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="osE-mk-C1f">
-                                        <rect key="frame" x="317" y="1" width="50" height="32"/>
+                                        <rect key="frame" x="314" y="2" width="53" height="31"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="16"/>
                                         <state key="normal" title="Update">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1467,7 +1467,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A0K-R2-BNc">
-                                        <rect key="frame" x="8" y="-1" width="48" height="34"/>
+                                        <rect key="frame" x="8" y="1" width="53" height="32"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
                                         <state key="normal" title="Cancel">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -2083,7 +2083,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Aie-JI-0kl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2648.8000000000002" y="1607.9460269865069"/>
+            <point key="canvasLocation" x="2670" y="1840"/>
         </scene>
         <!--Club Members List-->
         <scene sceneID="c7U-Kp-jvb">
@@ -2482,90 +2482,9 @@
             <objects>
                 <viewController id="vSU-ir-zA1" customClass="addAnncController" customModule="St_Augustine_CHS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="vya-L2-R71">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="950"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create New Announcement" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wvv-hB-Zh0">
-                                <rect key="frame" x="16" y="68" width="343" height="42"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="42" id="0KJ-tb-4sY"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="20"/>
-                                <color key="textColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5ab-WG-FeZ">
-                                <rect key="frame" x="16" y="118" width="35.5" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="Erd-wW-5xw"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Content (Optional):" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="prx-4w-Jef">
-                                <rect key="frame" x="16" y="185" width="138" height="20"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="20" id="Rfd-6a-I4P"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Image (Optional):" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LRz-up-DzA">
-                                <rect key="frame" x="16" y="251" width="124.5" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="dbM-C6-vPD"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Max 50 Characters" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4LO-Ke-OKm">
-                                <rect key="frame" x="16" y="147" width="343" height="30"/>
-                                <color key="tintColor" red="0.84705882352941175" green="0.68627450980392157" blue="0.10980392156862745" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="J7u-0N-GxW"/>
-                                </constraints>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Max 300 Characters" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Eh0-IP-wpU">
-                                <rect key="frame" x="16" y="213" width="343" height="30"/>
-                                <color key="tintColor" red="0.84705882352941175" green="0.68627450980392157" blue="0.10980392156862745" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="WAe-yp-Hsd"/>
-                                </constraints>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YQT-Cg-gBJ">
-                                <rect key="frame" x="16" y="280" width="343" height="37"/>
-                                <color key="backgroundColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="37" id="r3O-bS-RYH"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <state key="normal" title="Choose Image"/>
-                                <connections>
-                                    <action selector="chooseImage:" destination="vSU-ir-zA1" eventType="touchUpInside" id="CUs-1J-rVa"/>
-                                </connections>
-                            </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="opJ-l4-9w9">
-                                <rect key="frame" x="0.0" y="325" width="375" height="342"/>
-                            </imageView>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lIc-Gg-pnF">
-                                <rect key="frame" x="251" y="247" width="108" height="28.5"/>
-                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
-                                <state key="normal" title="Remove Image">
-                                    <color key="titleColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="removeImage:" destination="vSU-ir-zA1" eventType="touchUpInside" id="gNC-Qu-9vG"/>
-                                </connections>
-                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UkG-8B-fFj">
                                 <rect key="frame" x="0.0" y="20" width="375" height="40"/>
                                 <subviews>
@@ -2603,59 +2522,177 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="20"/>
                                 <color key="backgroundColor" red="0.27450980392156865" green="0.031372549019607843" blue="0.090196078431372548" alpha="0.94804152399999997" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D7J-Mz-pYF">
+                                <rect key="frame" x="0.0" y="60" width="375" height="890"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qwS-ou-6Jz">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="950"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create New Announcement" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wvv-hB-Zh0">
+                                                <rect key="frame" x="16" y="8" width="343" height="40"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="40" id="n6K-av-3r4"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="20"/>
+                                                <color key="textColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5ab-WG-FeZ">
+                                                <rect key="frame" x="16" y="56" width="343" height="30"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="fpf-qe-xoG"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Content (Optional):" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="prx-4w-Jef">
+                                                <rect key="frame" x="16" y="192" width="343" height="30"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="DMA-ZQ-ben"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Image (Optional):" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LRz-up-DzA">
+                                                <rect key="frame" x="16" y="388" width="223" height="30"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="nwn-XM-RKX"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="opJ-l4-9w9">
+                                                <rect key="frame" x="0.0" y="469" width="375" height="300"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="300" id="oQE-7u-Etx"/>
+                                                </constraints>
+                                            </imageView>
+                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lIc-Gg-pnF">
+                                                <rect key="frame" x="247" y="388" width="120" height="30"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="OsZ-hI-JlM"/>
+                                                    <constraint firstAttribute="width" constant="120" id="tP5-Yi-Sfe"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                                <state key="normal" title="Remove Image">
+                                                    <color key="titleColor" red="0.3579582254" green="0.0530083888" blue="0.12030329519999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="removeImage:" destination="vSU-ir-zA1" eventType="touchUpInside" id="gNC-Qu-9vG"/>
+                                                </connections>
+                                            </button>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="title" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Xhe-5P-44d">
+                                                <rect key="frame" x="16" y="94" width="343" height="90"/>
+                                                <color key="backgroundColor" red="0.93126059516432325" green="0.93126059516432325" blue="0.93126059516432325" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="90" id="b9J-6g-3Qf"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="16"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                <connections>
+                                                    <outlet property="delegate" destination="vSU-ir-zA1" id="QmB-Mo-Jmf"/>
+                                                </connections>
+                                            </textView>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="content" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Ki1-cs-iOk">
+                                                <rect key="frame" x="16" y="230" width="343" height="150"/>
+                                                <color key="backgroundColor" red="0.93126059520000004" green="0.93126059520000004" blue="0.93126059520000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="150" id="HQA-nB-nZg"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="16"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                <connections>
+                                                    <outlet property="delegate" destination="vSU-ir-zA1" id="0sn-v4-7hK"/>
+                                                </connections>
+                                            </textView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YQT-Cg-gBJ">
+                                                <rect key="frame" x="16" y="426" width="343" height="35"/>
+                                                <color key="backgroundColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="35" id="R6A-WB-7IR"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="17"/>
+                                                <state key="normal" title="Choose Image"/>
+                                                <connections>
+                                                    <action selector="chooseImage:" destination="vSU-ir-zA1" eventType="touchUpInside" id="CUs-1J-rVa"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="lIc-Gg-pnF" firstAttribute="top" secondItem="Ki1-cs-iOk" secondAttribute="bottom" constant="8" id="1Nd-xu-GDJ"/>
+                                            <constraint firstAttribute="trailing" secondItem="Ki1-cs-iOk" secondAttribute="trailing" constant="16" id="6GL-E1-efa"/>
+                                            <constraint firstItem="prx-4w-Jef" firstAttribute="top" secondItem="Xhe-5P-44d" secondAttribute="bottom" constant="8" id="CaU-9C-135"/>
+                                            <constraint firstAttribute="trailing" secondItem="Wvv-hB-Zh0" secondAttribute="trailing" constant="16" id="EQW-QX-W3y"/>
+                                            <constraint firstItem="lIc-Gg-pnF" firstAttribute="leading" secondItem="LRz-up-DzA" secondAttribute="trailing" constant="8" id="G8R-lO-PXc"/>
+                                            <constraint firstAttribute="trailing" secondItem="prx-4w-Jef" secondAttribute="trailing" constant="16" id="GDf-DX-jgf"/>
+                                            <constraint firstAttribute="trailing" secondItem="YQT-Cg-gBJ" secondAttribute="trailing" constant="16" id="Ibp-kp-V3b"/>
+                                            <constraint firstItem="YQT-Cg-gBJ" firstAttribute="top" secondItem="LRz-up-DzA" secondAttribute="bottom" constant="8" id="LpL-sd-TZK"/>
+                                            <constraint firstAttribute="trailing" secondItem="Xhe-5P-44d" secondAttribute="trailing" constant="16" id="Lv0-Yf-D01"/>
+                                            <constraint firstItem="opJ-l4-9w9" firstAttribute="leading" secondItem="qwS-ou-6Jz" secondAttribute="leading" id="Pdx-Hk-klq"/>
+                                            <constraint firstItem="YQT-Cg-gBJ" firstAttribute="leading" secondItem="qwS-ou-6Jz" secondAttribute="leading" constant="16" id="QmJ-cA-zq8"/>
+                                            <constraint firstItem="prx-4w-Jef" firstAttribute="leading" secondItem="qwS-ou-6Jz" secondAttribute="leading" constant="16" id="Sh2-ca-mBW"/>
+                                            <constraint firstAttribute="trailing" secondItem="opJ-l4-9w9" secondAttribute="trailing" id="Tbx-ff-8f3"/>
+                                            <constraint firstAttribute="trailing" secondItem="5ab-WG-FeZ" secondAttribute="trailing" constant="16" id="Vka-rF-AS8"/>
+                                            <constraint firstItem="Wvv-hB-Zh0" firstAttribute="top" secondItem="qwS-ou-6Jz" secondAttribute="top" constant="8" id="Xw0-47-U1a"/>
+                                            <constraint firstItem="LRz-up-DzA" firstAttribute="leading" secondItem="qwS-ou-6Jz" secondAttribute="leading" constant="16" id="aCU-kb-37i"/>
+                                            <constraint firstAttribute="height" constant="950" id="awP-kp-sCE"/>
+                                            <constraint firstItem="5ab-WG-FeZ" firstAttribute="leading" secondItem="qwS-ou-6Jz" secondAttribute="leading" constant="16" id="bKO-TQ-moK"/>
+                                            <constraint firstItem="Wvv-hB-Zh0" firstAttribute="leading" secondItem="qwS-ou-6Jz" secondAttribute="leading" constant="16" id="eM4-ne-ije"/>
+                                            <constraint firstItem="LRz-up-DzA" firstAttribute="top" secondItem="Ki1-cs-iOk" secondAttribute="bottom" constant="8" id="erE-7v-Puf"/>
+                                            <constraint firstItem="opJ-l4-9w9" firstAttribute="top" secondItem="YQT-Cg-gBJ" secondAttribute="bottom" constant="8" id="jGr-gp-pBH"/>
+                                            <constraint firstItem="Ki1-cs-iOk" firstAttribute="leading" secondItem="qwS-ou-6Jz" secondAttribute="leading" constant="16" id="krF-xk-8Nq"/>
+                                            <constraint firstItem="Ki1-cs-iOk" firstAttribute="top" secondItem="prx-4w-Jef" secondAttribute="bottom" constant="8" id="qNk-Ah-e3v"/>
+                                            <constraint firstAttribute="trailing" secondItem="lIc-Gg-pnF" secondAttribute="trailing" constant="8" id="tZH-a7-Dqc"/>
+                                            <constraint firstItem="5ab-WG-FeZ" firstAttribute="top" secondItem="Wvv-hB-Zh0" secondAttribute="bottom" constant="8" id="un4-aA-11l"/>
+                                            <constraint firstItem="Xhe-5P-44d" firstAttribute="leading" secondItem="qwS-ou-6Jz" secondAttribute="leading" constant="16" id="wMf-r1-aOR"/>
+                                            <constraint firstItem="Xhe-5P-44d" firstAttribute="top" secondItem="5ab-WG-FeZ" secondAttribute="bottom" constant="8" id="xee-3o-7x8"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="qwS-ou-6Jz" firstAttribute="leading" secondItem="D7J-Mz-pYF" secondAttribute="leading" id="3yX-sv-Lld"/>
+                                    <constraint firstItem="qwS-ou-6Jz" firstAttribute="top" secondItem="D7J-Mz-pYF" secondAttribute="top" id="ixx-Wr-bCM"/>
+                                    <constraint firstAttribute="trailing" secondItem="qwS-ou-6Jz" secondAttribute="trailing" id="vIz-yZ-fPS"/>
+                                    <constraint firstAttribute="bottom" secondItem="qwS-ou-6Jz" secondAttribute="bottom" id="wEP-d7-9yy"/>
+                                </constraints>
+                            </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="LRz-up-DzA" firstAttribute="baseline" secondItem="lIc-Gg-pnF" secondAttribute="baseline" id="1Lm-No-7gw"/>
-                            <constraint firstItem="Eh0-IP-wpU" firstAttribute="leading" secondItem="LRz-up-DzA" secondAttribute="leading" id="20e-ER-Djm"/>
+                            <constraint firstItem="D7J-Mz-pYF" firstAttribute="bottom" secondItem="GDe-Vm-nvN" secondAttribute="bottom" id="2GI-Bi-1vh"/>
                             <constraint firstItem="UkG-8B-fFj" firstAttribute="leading" secondItem="vya-L2-R71" secondAttribute="leading" id="4pl-EV-fjV"/>
-                            <constraint firstItem="4LO-Ke-OKm" firstAttribute="leading" secondItem="prx-4w-Jef" secondAttribute="leading" id="84x-cY-0Ld"/>
+                            <constraint firstItem="D7J-Mz-pYF" firstAttribute="trailing" secondItem="GDe-Vm-nvN" secondAttribute="trailing" id="5I8-FC-pMy"/>
                             <constraint firstItem="UkG-8B-fFj" firstAttribute="top" secondItem="GDe-Vm-nvN" secondAttribute="top" id="9Dd-1o-BeS"/>
-                            <constraint firstItem="5ab-WG-FeZ" firstAttribute="top" secondItem="Wvv-hB-Zh0" secondAttribute="bottom" constant="8" symbolic="YES" id="9Ol-CW-VrN"/>
-                            <constraint firstItem="LRz-up-DzA" firstAttribute="leading" secondItem="YQT-Cg-gBJ" secondAttribute="leading" id="BNY-Uy-44l"/>
                             <constraint firstAttribute="trailing" secondItem="7qW-1G-u5w" secondAttribute="trailing" id="DJB-dm-uB0"/>
-                            <constraint firstItem="Wvv-hB-Zh0" firstAttribute="leading" secondItem="5ab-WG-FeZ" secondAttribute="leading" id="DU5-oy-P7n"/>
-                            <constraint firstItem="4LO-Ke-OKm" firstAttribute="trailing" secondItem="Eh0-IP-wpU" secondAttribute="trailing" id="EvK-G8-t3N"/>
-                            <constraint firstItem="Eh0-IP-wpU" firstAttribute="top" secondItem="prx-4w-Jef" secondAttribute="bottom" constant="8" symbolic="YES" id="F76-5m-DtU"/>
-                            <constraint firstItem="prx-4w-Jef" firstAttribute="leading" secondItem="Eh0-IP-wpU" secondAttribute="leading" id="GQc-KP-z26"/>
-                            <constraint firstItem="UkG-8B-fFj" firstAttribute="trailing" secondItem="opJ-l4-9w9" secondAttribute="trailing" id="Ii2-Yu-8HP"/>
-                            <constraint firstItem="LRz-up-DzA" firstAttribute="top" secondItem="Eh0-IP-wpU" secondAttribute="bottom" constant="8" symbolic="YES" id="JKZ-8W-y8f"/>
-                            <constraint firstItem="prx-4w-Jef" firstAttribute="top" secondItem="4LO-Ke-OKm" secondAttribute="bottom" constant="8" symbolic="YES" id="KVi-sD-dLQ"/>
-                            <constraint firstItem="Wvv-hB-Zh0" firstAttribute="trailing" secondItem="4LO-Ke-OKm" secondAttribute="trailing" id="ShB-qB-aRe"/>
                             <constraint firstItem="UkG-8B-fFj" firstAttribute="top" secondItem="7qW-1G-u5w" secondAttribute="bottom" id="TRV-GP-u1v"/>
-                            <constraint firstItem="Eh0-IP-wpU" firstAttribute="trailing" secondItem="lIc-Gg-pnF" secondAttribute="trailing" id="Tpu-an-Xaw"/>
-                            <constraint firstItem="Wvv-hB-Zh0" firstAttribute="top" secondItem="UkG-8B-fFj" secondAttribute="bottom" constant="8" symbolic="YES" id="WtN-KF-DuV"/>
-                            <constraint firstItem="UkG-8B-fFj" firstAttribute="centerX" secondItem="Wvv-hB-Zh0" secondAttribute="centerX" id="XSj-1g-yjh"/>
-                            <constraint firstItem="opJ-l4-9w9" firstAttribute="top" secondItem="YQT-Cg-gBJ" secondAttribute="bottom" constant="8" symbolic="YES" id="Xaa-PY-2gy"/>
-                            <constraint firstItem="4LO-Ke-OKm" firstAttribute="top" secondItem="5ab-WG-FeZ" secondAttribute="bottom" constant="8" symbolic="YES" id="Y4w-4O-RHR"/>
-                            <constraint firstItem="lIc-Gg-pnF" firstAttribute="trailing" secondItem="YQT-Cg-gBJ" secondAttribute="trailing" id="YCf-vo-dte"/>
-                            <constraint firstItem="lIc-Gg-pnF" firstAttribute="top" secondItem="Eh0-IP-wpU" secondAttribute="bottom" constant="4" id="ZQn-uo-q7d"/>
-                            <constraint firstItem="5ab-WG-FeZ" firstAttribute="leading" secondItem="4LO-Ke-OKm" secondAttribute="leading" id="bfa-l2-ATr"/>
                             <constraint firstAttribute="trailing" secondItem="UkG-8B-fFj" secondAttribute="trailing" id="bgR-Tx-YSQ"/>
-                            <constraint firstItem="Wvv-hB-Zh0" firstAttribute="leading" secondItem="vya-L2-R71" secondAttribute="leadingMargin" id="eHK-6x-TzH"/>
                             <constraint firstItem="7qW-1G-u5w" firstAttribute="leading" secondItem="vya-L2-R71" secondAttribute="leading" id="grf-JE-wua"/>
-                            <constraint firstItem="YQT-Cg-gBJ" firstAttribute="top" secondItem="LRz-up-DzA" secondAttribute="bottom" constant="8" symbolic="YES" id="hz3-6p-LjD"/>
-                            <constraint firstItem="UkG-8B-fFj" firstAttribute="leading" secondItem="opJ-l4-9w9" secondAttribute="leading" id="i14-Kr-I7d"/>
-                            <constraint firstItem="LRz-up-DzA" firstAttribute="baseline" secondItem="lIc-Gg-pnF" secondAttribute="firstBaseline" id="jHi-3x-A02"/>
-                            <constraint firstItem="opJ-l4-9w9" firstAttribute="bottom" secondItem="GDe-Vm-nvN" secondAttribute="bottom" id="uUK-mB-fuI"/>
+                            <constraint firstItem="D7J-Mz-pYF" firstAttribute="top" secondItem="UkG-8B-fFj" secondAttribute="bottom" id="l8E-0o-vE6"/>
+                            <constraint firstItem="D7J-Mz-pYF" firstAttribute="leading" secondItem="GDe-Vm-nvN" secondAttribute="leading" id="q1A-yj-l5m"/>
+                            <constraint firstItem="qwS-ou-6Jz" firstAttribute="width" secondItem="vya-L2-R71" secondAttribute="width" id="t8d-Vw-Wwb"/>
                             <constraint firstItem="7qW-1G-u5w" firstAttribute="top" secondItem="vya-L2-R71" secondAttribute="top" id="zFO-mo-mev"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="GDe-Vm-nvN"/>
                     </view>
+                    <size key="freeformSize" width="375" height="950"/>
                     <connections>
                         <outlet property="anncImg" destination="opJ-l4-9w9" id="ZFV-t5-PTg"/>
-                        <outlet property="contentTxtFld" destination="Eh0-IP-wpU" id="1iQ-wp-eh4"/>
+                        <outlet property="contentTxtArea" destination="Ki1-cs-iOk" id="JnK-Ve-SqO"/>
                         <outlet property="createNewAnncInstruction" destination="Wvv-hB-Zh0" id="3FD-ta-S2Q"/>
                         <outlet property="postButton" destination="1or-9d-NL1" id="eNh-CX-mtV"/>
                         <outlet property="removeImage" destination="lIc-Gg-pnF" id="zG2-tt-yTg"/>
                         <outlet property="statusBarView" destination="7qW-1G-u5w" id="3U9-9s-oBw"/>
-                        <outlet property="titleTxtFld" destination="4LO-Ke-OKm" id="naD-ga-olZ"/>
+                        <outlet property="titleTxtArea" destination="Xhe-5P-44d" id="gpm-AI-MSI"/>
                         <outlet property="topBarView" destination="UkG-8B-fFj" id="Mju-bz-eJD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2uh-c4-Ala" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2648.8000000000002" y="933.28335832083962"/>
+            <point key="canvasLocation" x="2670" y="1060"/>
         </scene>
         <!--Failed Login Controller-->
         <scene sceneID="b2H-DZ-UhP">
@@ -2740,14 +2777,14 @@
                                 </constraints>
                             </view>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="blankUser" translatesAutoresizingMaskIntoConstraints="NO" id="vdW-9e-rYx">
-                                <rect key="frame" x="87.5" y="97" width="200" height="200"/>
+                                <rect key="frame" x="102.5" y="80" width="170" height="170"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="200" id="4jp-wp-ADK"/>
-                                    <constraint firstAttribute="width" constant="200" id="HcJ-Z1-tHv"/>
+                                    <constraint firstAttribute="height" constant="170" id="4jp-wp-ADK"/>
+                                    <constraint firstAttribute="width" constant="170" id="HcJ-Z1-tHv"/>
                                 </constraints>
                             </imageView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="GJq-8o-7dQ">
-                                <rect key="frame" x="0.0" y="418" width="375" height="100"/>
+                                <rect key="frame" x="0.0" y="371" width="375" height="100"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="ZGz-IW-M6x"/>
@@ -2789,7 +2826,7 @@
                                 </connections>
                             </collectionView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose a Profile Picture (You can change this later in settings)" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rbc-1S-gn2">
-                                <rect key="frame" x="16" y="305" width="343" height="105"/>
+                                <rect key="frame" x="16" y="258" width="343" height="105"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="105" id="d8C-KN-IKh"/>
                                 </constraints>
@@ -2828,7 +2865,7 @@
                             <constraint firstItem="b8i-ti-Vxh" firstAttribute="leading" secondItem="aip-dK-Wyg" secondAttribute="leading" id="Lnu-lZ-vaS"/>
                             <constraint firstItem="nH0-8k-BP5" firstAttribute="top" secondItem="b8i-ti-Vxh" secondAttribute="bottom" id="QRS-J4-WCA"/>
                             <constraint firstItem="GJq-8o-7dQ" firstAttribute="leading" secondItem="cWS-Rm-mUV" secondAttribute="leading" id="Sdn-TN-XMN"/>
-                            <constraint firstItem="vdW-9e-rYx" firstAttribute="top" secondItem="nH0-8k-BP5" secondAttribute="bottom" constant="37" id="Tpb-5z-pGq"/>
+                            <constraint firstItem="vdW-9e-rYx" firstAttribute="top" secondItem="nH0-8k-BP5" secondAttribute="bottom" constant="20" id="Tpb-5z-pGq"/>
                             <constraint firstItem="GJq-8o-7dQ" firstAttribute="trailing" secondItem="cWS-Rm-mUV" secondAttribute="trailing" id="W0a-wQ-Pmr"/>
                             <constraint firstItem="Rbc-1S-gn2" firstAttribute="top" secondItem="vdW-9e-rYx" secondAttribute="bottom" constant="8" symbolic="YES" id="hGZ-Va-oTY"/>
                             <constraint firstItem="cWS-Rm-mUV" firstAttribute="trailing" secondItem="coA-CE-OVr" secondAttribute="trailing" constant="16" id="kgp-Ko-7dq"/>
@@ -3658,16 +3695,16 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MB8-sn-jCm">
-                                                    <rect key="frame" x="0.0" y="0.0" width="66" height="108"/>
+                                                    <rect key="frame" x="12" y="0.0" width="54" height="108"/>
                                                     <subviews>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" image="voteArrowEmpty" translatesAutoresizingMaskIntoConstraints="NO" id="5ws-CP-IMG">
-                                                            <rect key="frame" x="8" y="29" width="58" height="24"/>
+                                                            <rect key="frame" x="8" y="29" width="34" height="24"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="24" id="SSU-pH-Fvb"/>
                                                             </constraints>
                                                         </imageView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="4DY-HW-FoH">
-                                                            <rect key="frame" x="8" y="61" width="58" height="20"/>
+                                                            <rect key="frame" x="8" y="61" width="34" height="20"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="20" id="K7E-eR-eUg"/>
                                                             </constraints>
@@ -3678,7 +3715,7 @@
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="trailing" secondItem="4DY-HW-FoH" secondAttribute="trailing" id="5tq-JB-eCR"/>
+                                                        <constraint firstAttribute="trailing" secondItem="4DY-HW-FoH" secondAttribute="trailing" constant="12" id="5tq-JB-eCR"/>
                                                         <constraint firstItem="4DY-HW-FoH" firstAttribute="leading" secondItem="MB8-sn-jCm" secondAttribute="leadingMargin" id="C2D-eg-DzY"/>
                                                         <constraint firstAttribute="bottom" secondItem="4DY-HW-FoH" secondAttribute="bottom" constant="27" id="CzC-Or-yjY"/>
                                                         <constraint firstItem="4DY-HW-FoH" firstAttribute="trailing" secondItem="5ws-CP-IMG" secondAttribute="trailing" id="bvJ-Sz-1fI"/>
@@ -3726,7 +3763,7 @@
                                         <constraints>
                                             <constraint firstItem="tyl-3N-KM8" firstAttribute="leading" secondItem="PjA-fh-xTd" secondAttribute="leading" id="14d-qA-Rkb"/>
                                             <constraint firstAttribute="bottom" secondItem="MB8-sn-jCm" secondAttribute="bottom" id="5DB-7M-wEU"/>
-                                            <constraint firstItem="MB8-sn-jCm" firstAttribute="leading" secondItem="PjA-fh-xTd" secondAttribute="leading" id="DKm-s6-hP1"/>
+                                            <constraint firstItem="MB8-sn-jCm" firstAttribute="leading" secondItem="PjA-fh-xTd" secondAttribute="leading" constant="12" id="DKm-s6-hP1"/>
                                             <constraint firstItem="oEV-SK-Erq" firstAttribute="leading" secondItem="MB8-sn-jCm" secondAttribute="trailing" constant="8" id="MD6-wg-idh"/>
                                             <constraint firstItem="oEV-SK-Erq" firstAttribute="leading" secondItem="tyl-3N-KM8" secondAttribute="trailing" constant="8" id="MXC-hr-Nj0"/>
                                             <constraint firstItem="MB8-sn-jCm" firstAttribute="top" secondItem="PjA-fh-xTd" secondAttribute="top" id="QJ2-gF-6cs"/>
@@ -4102,7 +4139,7 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="35"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jNg-VD-YYj">
-                                        <rect key="frame" x="8" y="5" width="47" height="30"/>
+                                        <rect key="frame" x="8" y="4" width="42" height="31"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="15"/>
                                         <state key="normal" title="Cancel"/>
                                         <connections>
@@ -4110,7 +4147,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="91W-SK-EUe">
-                                        <rect key="frame" x="311" y="5" width="56" height="30"/>
+                                        <rect key="frame" x="314" y="4" width="53" height="31"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" name="Scada-Regular" family="Scada" pointSize="15"/>
                                         <state key="normal" title="Request"/>

@@ -122,6 +122,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         }
         let p = gestureRecognizer.location(in: self.songView)
         if let indexPath : NSIndexPath = (self.songView.indexPathForItem(at: p) as NSIndexPath?){
+            //Disable super vote if user has already voted
             if voteData.songsVoted[indexPath.item][0] as! Int == 0 {
                 print("Long Pressed on: \(indexPath.item)")
                 supervotedIndex = indexPath.item

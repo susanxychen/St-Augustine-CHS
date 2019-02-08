@@ -101,7 +101,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                 let clubRef = self.db.collection("clubs").document(self.clubID)
                 clubRef.updateData([
                     "pending": FieldValue.arrayRemove([self.pendingList[indexPath.item]]),
-                    "members": FieldValue.arrayUnion([self.pendingList[indexPath.item]])
+                    "pending": FieldValue.arrayUnion([self.pendingList[indexPath.item]])
                 ])
                 
                 //update user data
@@ -242,23 +242,25 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                     self.present(alert, animated: true, completion: nil)
                 }
                 if let snap = snap {
-                    let data = snap.data() ?? ["name":"error", "email":"error@error.ca", "profilePic":0, "msgToken":"error"]
+                    let data = snap.data() ?? ["name":"error", "email":"error", "profilePic": -1, "msgToken":"error"]
                     self.pendingListNames[user] = data["name"] as? String ?? "error"
                     self.pendingListEmails[user] = data["email"] as? String ?? "error"
                     self.pendingListMsgTokens[user] = data["msgToken"] as? String ?? "error"
                     
                     //Get the image
-                    self.getPicture(profPic: data["profilePic"] as! Int, user: user)
+                    self.getPicture(profPic: data["profilePic"] as? Int ?? -1, user: user)
                 }
             }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-            self.pendingListCollectionView.reloadData()
-        }
+        removeBrokenUsers()
     }
     
     func getPicture(profPic: Int, user: Int) {
+        if profPic < 0 {
+            pendingListPics[user] = UIImage()
+            return
+        }
+        
         //Image
         let storage = Storage.storage()
         let storageRef = storage.reference()
@@ -303,6 +305,29 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                     }
                 }
             }
+        }
+    }
+    
+    func removeBrokenUsers(){
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            //Filter out all the broken users
+            var foundAnErrorUser = true
+            while foundAnErrorUser {
+                if let index = self.pendingListNames.index(of: "error") {
+                    foundAnErrorUser = true
+                    self.pendingListNames.remove(at: index)
+                    self.pendingListEmails.remove(at: index)
+                    self.pendingListMsgTokens.remove(at: index)
+                    self.pendingListPics.remove(at: index)
+                    self.pendingList.remove(at: index)
+                } else {
+                    // not found
+                    foundAnErrorUser = false
+                }
+            }
+            
+            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+            self.pendingListCollectionView.reloadData()
         }
     }
     

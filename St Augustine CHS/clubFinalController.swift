@@ -173,25 +173,25 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         
         let user = Auth.auth().currentUser!
         //********CHECK IF USER IS ADMIN*******
-        if ((clubData["admins"] as! [String]).contains(user.uid) || allUserFirebaseData.data["status"] as! Int == 2){
+        if ((clubData["admins"] as? [String] ?? []).contains(user.uid) || allUserFirebaseData.data["status"] as! Int == 2){
             isClubAdmin = true
         } else {
             isClubAdmin = false
         }
         
         //Check join status
-        if clubData["joinPref"] as! Int == 0 {
+        if clubData["joinPref"] as? Int ?? 0 == 0 {
             acceptingJoinRequests = false
         } else {
             acceptingJoinRequests = true
         }
         //Stop user from spamming the request button
-        if (clubData["pending"] as! [String]).contains(user.uid) {
+        if (clubData["pending"] as? [String] ?? []).contains(user.uid) {
             acceptingJoinRequests = false
             didSubmitApplication = true
         }
         //But also make it back open again if its just purely open
-        if clubData["joinPref"] as! Int == 2 {
+        if clubData["joinPref"] as? Int ?? 0 == 2 {
             acceptingJoinRequests = true
         }
         

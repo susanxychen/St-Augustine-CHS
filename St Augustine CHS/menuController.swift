@@ -101,6 +101,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         
         dateToString.text = DateFormatter.localizedString(from: Date(), dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
         
+        DispatchQueue.main.async {
+            self.setupRemoteConfigDefaults()
+            self.updateViewWithRCValues()
+            self.fetchRemoteConfig()
+        }
+        
         //Only sign in if you have not come from there
         GIDSignIn.sharedInstance()?.delegate = self
         GIDSignIn.sharedInstance()?.uiDelegate = self
@@ -132,7 +138,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         }
         let checkEmail = user.profile.email
         
-        if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))! || /*(checkEmail == "sachstesterforapple@gmail.com") ||*/ allowAnyGoogleAccount){
+        if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))! || (checkEmail == "sachstesterforapple@gmail.com") || allowAnyGoogleAccount){
             //print("wow nice sign in")
             //************************Firebase Auth************************
             guard let authentication = user.authentication else {
@@ -207,7 +213,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         getTimeFromServer { (serverDate) in
             self.theDate = serverDate
         }
- 
+
         //Set Up
         // [START setup]
         let settings = FirestoreSettings()
@@ -215,12 +221,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         Firestore.firestore().settings = settings
         // [END setup]
         db = Firestore.firestore()
-        
-        DispatchQueue.main.async {
-            self.setupRemoteConfigDefaults()
-            self.updateViewWithRCValues()
-            self.fetchRemoteConfig()
-        }
         
         //Add refresh control
         addRefreshControl()
@@ -296,6 +296,10 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         displayName.text = user?.displayName
         //Email
         displayEmail.text = String(user?.email?.split(separator: "@")[0] ?? "Error")
+        
+        Crashlytics.sharedInstance().setUserIdentifier(user?.uid)
+        Crashlytics.sharedInstance().setUserName(user?.displayName)
+        Crashlytics.sharedInstance().setUserEmail(user?.email)
         
         db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
             print("do i even reach in here to get the data")
@@ -899,9 +903,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                     //If its a weekend set up the "monday will be message"
                     if (theDay.range(of:"Sunday") != nil) || (theDay.range(of:"Saturday") != nil){
                         if theDayNumber == "1" {
-                            self.dayNumber.text = "Monday will be Day 2"
+                            self.dayNumber.text = "Monday will be a Day 2"
                         } else if theDayNumber == "2" {
-                            self.dayNumber.text = "Monday will be Day 1"
+                            self.dayNumber.text = "Monday will be a Day 1"
                         }
                     }
                     

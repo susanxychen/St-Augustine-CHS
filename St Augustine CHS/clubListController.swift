@@ -370,6 +370,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
             bannerRef.getMetadata { (metadata, error) in
                 if let error = error {
                     // Uh-oh, an error occurred!
+                    self.banners[clubNum] = UIImage(named: "space")!
                     print(error)
                 } else {
                     // Metadata now contains the metadata for 'images/forest.jpg'

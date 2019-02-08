@@ -22,6 +22,7 @@ pod 'CropViewController'
 pod "Floaty", "~> 4.1.0"
 pod 'Firebase/MLVision'
 pod 'Firebase/MLVisionBarcodeModel'
+# pod 'FHMultilineTextField'
 # pod 'Firebase/MLVisionTextModel'
 
   target 'St Augustine CHSTests' do
