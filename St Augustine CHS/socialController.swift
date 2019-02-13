@@ -197,6 +197,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         }
     }
     
+    //Get all the data required for user badges
     func getBadgeDocs(theData: [String:Any]){
         badgeData.removeAll()
         badgeImgs.removeAll()
@@ -232,6 +233,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         }
     }
     
+    //Get the images associated with the badges
     func getBadgesImages() {
         for _ in badgeData {
             badgeImgs.append(UIImage())
@@ -290,6 +292,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         }
     }
     
+    //Get the profile picture
     func getPicture(i: Int) {
         //Image
         let storage = Storage.storage()
@@ -384,11 +387,12 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                             print(self.userClubIDs)
                             
+                            //Sort the Clubs alpha
                             if self.userClubNames.count > 1 {
                                 var thereWasASwap = true
                                 while thereWasASwap {
                                     thereWasASwap = false
-                                    for i in 0...self.userClubNames.count-2 {
+                                    for i in 0..<self.userClubNames.count - 1 {
                                         let name1: String = self.userClubNames[i]
                                         let name2: String = self.userClubNames[i+1]
                                         
@@ -441,9 +445,10 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                 }
             }
         } else {
+            //If there is no club, then dont show the collection view. just make the height 0
             clubCollectionViewHeight.constant = 0
-            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             clubsCollectionView.reloadData()
+            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
         }
     }
     
@@ -456,27 +461,6 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     }
     
     func searchForUser(){
-        //***************INTERNET CONNECTION**************
-        var iAmConneted = false
-        let connectedRef = Database.database().reference(withPath: ".info/connected")
-        connectedRef.observe(.value, with: { snapshot in
-            if let connected = snapshot.value as? Bool, connected {
-                print("Connected")
-                iAmConneted = true
-            } else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
-                    print(iAmConneted)
-                    if !iAmConneted{
-                        print("Not connected")
-                        let alert = UIAlertController(title: "Error", message: "You are not connected to the internet", preferredStyle: .alert)
-                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                        alert.addAction(okAction)
-                        self.present(alert, animated: true, completion: nil)
-                    }
-                }
-            }
-        })
-        
         //***************SEARCH FOR USER**************
         if var userInput = searchBar.text{
             self.view.endEditing(true)

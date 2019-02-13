@@ -109,6 +109,10 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //For some odd reason the club description keeps turning to bold
+        //This line should fix that
+        clubDescTextView.font = UIFont(name: "Scada-Regular", size: 17)
+        
         //Temporary just to let all things load and prevent them from stopping due to "not enough space"
         clubViewHeight.constant = UIScreen.main.bounds.height + 100
         anncCollectionViewHieght.constant = 1000
@@ -264,9 +268,12 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         print("wow u want to join the best club. Join status \(joinStatus)")
         clubListDidUpdateClubDetails.clubAdminUpdatedData = true
         
+        //PRIVATE CLUBS
         if joinStatus == 1 {
-            self.showActivityIndicatory(container: self.container, actInd: self.actInd)
+            
             let user = Auth.auth().currentUser!
+            
+            //Send notification to admins
             functions.httpsCallable("sendEmailToAdmins").call(["adminIDArr": clubData["admins"], "userEmail": user.email, "clubName": clubData["name"]]) { (result, error) in
                 if let error = error as NSError? {
                     if error.domain == FunctionsErrorDomain {
@@ -281,14 +288,22 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                 print("Email sent to admins")
                 print("Result is: \(String(describing: result?.data))")
             }
+            
             //Update the club members array
             let clubRef = self.db.collection("clubs").document(clubID)
             clubRef.updateData(["pending": FieldValue.arrayUnion([Auth.auth().currentUser?.uid as Any])])
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+            
+            let ac = UIAlertController(title: "Note", message: "New members require admin approval to join this club. You'll receive a notification once you have been accepted.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: { (alert) in
                 self.refreshList()
-            }
-        } else if joinStatus == 2 {
+            }))
+            self.present(ac, animated: true)
+            
+            
+        }
+        
+        //OPEN CLUBS
+        else if joinStatus == 2 {
             Messaging.messaging().subscribe(toTopic: clubID) { error in
                 print("Subscribed to topic")
             }
@@ -1313,8 +1328,9 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                 if self.partOfClub || allUserFirebaseData.data["status"] as! Int == 2 {
                     self.getClubAnnc()
                 }
+                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                    //self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     self.anncCollectionView.reloadData()
                     self.refreshControl?.endRefreshing()
                 })
@@ -1402,13 +1418,15 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             vc.isClubBadge = goingToCreateClubBadge
             vc.isUpdatingBadge = isEditingBadge
             
-            //when events are done, turn this into general form
+            //Editing the club badge
             if goingToCreateClubBadge && isEditingBadge {
                 vc.oldBadgeID = clubData["clubBadge"] as? String
                 vc.oldBadgeImg = clubBadgeImage
                 vc.oldBadgeDesc = clubBadgeDesc
                 vc.oldBadgeImgId = clubBadgeImgID
             }
+            
+            vc.clubMembers = (clubData["members"] as? [String] ?? ["Error!"]) + (clubData["admins"] as? [String] ?? ["Error!"])
             
             vc.onDoneBlock = { result in
                 clubListDidUpdateClubDetails.clubAdminUpdatedData = true

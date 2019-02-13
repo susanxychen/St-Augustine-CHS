@@ -204,11 +204,137 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     foundAnErrorUser = false
                 }
             }
-            
-            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-            self.adminsCollectionView.reloadData()
-            self.membersCollectionView.reloadData()
+            self.sortAlpha()
         }
+    }
+    
+    func sortAlpha(){
+        //Bubble Sort (easy to write)
+        if membersList.count != 0 {
+            var thereWasASwap = true
+            while thereWasASwap {
+                thereWasASwap = false
+                for i in 0..<membersList.count-1 {
+                    let name1: String = membersNamesList[i]
+                    let name2: String = membersNamesList[i+1]
+                    
+                    let shortestLength: Int
+                    if name1.count < name2.count {
+                        //print("\(name1) is shorter")
+                        shortestLength = name1.count
+                    } else {
+                        //print("\(name2) is shorter")
+                        shortestLength = name2.count
+                    }
+                    
+                    //Because there is no easy string comparison (that i havent found)
+                    //Compare letter by letter against both strings
+                    for j in 0...shortestLength-1 {
+                        //Compare Alphabetically by character (without caring about case)
+                        let index1 = name1.index(name1.startIndex, offsetBy: j)
+                        let index2 = name2.index(name2.startIndex, offsetBy: j)
+                        let character1 = Character((String(name1[index1]).lowercased()))
+                        let character2 = Character((String(name2[index2]).lowercased()))
+                        
+                        if character2 < character1 {
+                            //Swap all related things
+                            thereWasASwap = true
+                            let temp = membersNamesList[i]
+                            membersNamesList[i] = membersNamesList[i+1]
+                            membersNamesList[i+1] = temp
+                            
+                            let temp2 = membersList[i]
+                            membersList[i] = membersList[i+1]
+                            membersList[i+1] = temp2
+                            
+                            let temp3 = membersPics[i]
+                            membersPics[i] = membersPics[i+1]
+                            membersPics[i+1] = temp3
+                            
+                            let temp4 = membersEmailsList[i]
+                            membersEmailsList[i] = membersEmailsList[i+1]
+                            membersEmailsList[i+1] = temp4
+                            
+                            let temp5 = membersMsgList[i]
+                            membersMsgList[i] = membersMsgList[i+1]
+                            membersMsgList[i+1] = temp5
+                            
+                            break
+                        } else if character1 == character2 {
+                            //If the letters are equal, check the next letter
+                        } else {
+                            //Not equal so we can just end the loop here
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        
+        if adminsList.count != 0 {
+            var thereWasASwap = true
+            while thereWasASwap {
+                thereWasASwap = false
+                for i in 0..<adminsList.count-1 {
+                    let name1: String = adminsNamesList[i]
+                    let name2: String = adminsNamesList[i+1]
+                    
+                    let shortestLength: Int
+                    if name1.count < name2.count {
+                        //print("\(name1) is shorter")
+                        shortestLength = name1.count
+                    } else {
+                        //print("\(name2) is shorter")
+                        shortestLength = name2.count
+                    }
+                    
+                    //Because there is no easy string comparison (that i havent found)
+                    //Compare letter by letter against both strings
+                    for j in 0...shortestLength-1 {
+                        //Compare Alphabetically by character (without caring about case)
+                        let index1 = name1.index(name1.startIndex, offsetBy: j)
+                        let index2 = name2.index(name2.startIndex, offsetBy: j)
+                        let character1 = Character((String(name1[index1]).lowercased()))
+                        let character2 = Character((String(name2[index2]).lowercased()))
+                        
+                        if character2 < character1 {
+                            //Swap all related things
+                            thereWasASwap = true
+                            let temp = adminsNamesList[i]
+                            adminsNamesList[i] = adminsNamesList[i+1]
+                            adminsNamesList[i+1] = temp
+                            
+                            let temp2 = adminsList[i]
+                            adminsList[i] = adminsList[i+1]
+                            adminsList[i+1] = temp2
+                            
+                            let temp3 = adminsPics[i]
+                            adminsPics[i] = adminsPics[i+1]
+                            adminsPics[i+1] = temp3
+                            
+                            let temp4 = adminsEmailsList[i]
+                            adminsEmailsList[i] = adminsEmailsList[i+1]
+                            adminsEmailsList[i+1] = temp4
+                            
+                            let temp5 = adminsMsgList[i]
+                            adminsMsgList[i] = adminsMsgList[i+1]
+                            adminsMsgList[i+1] = temp5
+                            
+                            break
+                        } else if character1 == character2 {
+                            //If the letters are equal, check the next letter
+                        } else {
+                            //Not equal so we can just end the loop here
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        
+        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+        self.adminsCollectionView.reloadData()
+        self.membersCollectionView.reloadData()
     }
     
     @objc func handleLongPressAdmin(gestureRecognizer : UILongPressGestureRecognizer){

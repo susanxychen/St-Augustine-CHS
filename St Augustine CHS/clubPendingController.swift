@@ -22,10 +22,10 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
     var clubName: String!
     var clubBadge: String!
     var pendingList = [String]()
-    var pendingListNames = [String]()
-    var pendingListEmails = [String]()
-    var pendingListMsgTokens = [String]()
-    var pendingListPics = [UIImage]()
+    var pendingNamesList = [String]()
+    var pendingEmailsList = [String]()
+    var pendingMsgList = [String]()
+    var pendingPics = [UIImage]()
     
     @IBOutlet weak var pendingListCollectionView: UICollectionView!
     
@@ -56,7 +56,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
         lpgr.delaysTouchesBegan = true
         self.pendingListCollectionView.addGestureRecognizer(lpgr)
         
-        getPendingListNames()
+        getpendingNamesList()
     }
     
     @objc func handleLongPress(gestureRecognizer : UILongPressGestureRecognizer){
@@ -65,11 +65,11 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
         }
         let p = gestureRecognizer.location(in: self.pendingListCollectionView)
         if let indexPath : NSIndexPath = (self.pendingListCollectionView.indexPathForItem(at: p) as NSIndexPath?){
-            let actionSheet = UIAlertController(title: "Choose an Option for \(pendingListNames[indexPath.item])", message: nil, preferredStyle: .actionSheet)
+            let actionSheet = UIAlertController(title: "Choose an Option for \(pendingNamesList[indexPath.item])", message: nil, preferredStyle: .actionSheet)
             actionSheet.addAction(UIAlertAction(title: "Accept", style: .default, handler: { (action:UIAlertAction) in
                 self.changedPendingList!(true)
                 
-                let msgToken = self.pendingListMsgTokens[indexPath.item]
+                let msgToken = self.pendingMsgList[indexPath.item]
                 self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [msgToken], "isSubscribing": true, "clubID": self.clubID]) { (result, error) in
                     if let error = error as NSError? {
                         if error.domain == FunctionsErrorDomain {
@@ -101,12 +101,13 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                 let clubRef = self.db.collection("clubs").document(self.clubID)
                 clubRef.updateData([
                     "pending": FieldValue.arrayRemove([self.pendingList[indexPath.item]]),
-                    "pending": FieldValue.arrayUnion([self.pendingList[indexPath.item]])
+                    "members": FieldValue.arrayUnion([self.pendingList[indexPath.item]])
                 ])
                 
                 //update user data
                 let userRef = self.db.collection("users").document(self.pendingList[indexPath.item])
                 
+                //Give club badge if there is one
                 if self.clubBadge as String != "" {
                     userRef.updateData([
                         "badges": FieldValue.arrayUnion([self.clubBadge])
@@ -148,7 +149,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                         print("Transaction successfully committed!")
                         
                         //Give the grade points
-                        let gradYear = Int(self.pendingListEmails[indexPath.item].suffix(14).prefix(2)) ?? 0
+                        let gradYear = Int(self.pendingEmailsList[indexPath.item].suffix(14).prefix(2)) ?? 0
                         let pointRef = self.db.collection("info").document("spiritPoints")
                         self.db.runTransaction({ (transaction, errorPointer) -> Any? in
                             let pDoc: DocumentSnapshot
@@ -174,14 +175,16 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                         }, completion: { (object, err) in
                             if let error = err {
                                 print("Transaction failed: \(error)")
+                                let ac = UIAlertController(title: "Transaction Error: Grad - \(gradYear)", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+                                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                                self.present(ac, animated: true)
                             } else {
                                 print("Transaction successfully committed!")
                                 print("successfuly gave badge")
-                                
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                                    self.getClubData()
-                                })
                             }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                                self.getClubData()
+                            })
                         })
                     }
                 })
@@ -215,23 +218,23 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
             }
             if let snap = snap {
                 self.pendingList = snap.data()!["pending"] as! [String]
-                self.getPendingListNames()
+                self.getpendingNamesList()
             }
         }
     }
     
-    func getPendingListNames(){
-        pendingListNames.removeAll()
-        pendingListEmails.removeAll()
-        pendingListMsgTokens.removeAll()
-        pendingListPics.removeAll()
+    func getpendingNamesList(){
+        pendingNamesList.removeAll()
+        pendingEmailsList.removeAll()
+        pendingMsgList.removeAll()
+        pendingPics.removeAll()
         
         self.showActivityIndicatory(container: self.container, actInd: self.actInd)
         for _ in pendingList {
-            pendingListNames.append("")
-            pendingListEmails.append("")
-            pendingListMsgTokens.append("")
-            pendingListPics.append(UIImage())
+            pendingNamesList.append("")
+            pendingEmailsList.append("")
+            pendingMsgList.append("")
+            pendingPics.append(UIImage())
         }
         for user in 0..<pendingList.count {
             db.collection("users").document(pendingList[user]).getDocument { (snap, err) in
@@ -243,9 +246,9 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                 }
                 if let snap = snap {
                     let data = snap.data() ?? ["name":"error", "email":"error", "profilePic": -1, "msgToken":"error"]
-                    self.pendingListNames[user] = data["name"] as? String ?? "error"
-                    self.pendingListEmails[user] = data["email"] as? String ?? "error"
-                    self.pendingListMsgTokens[user] = data["msgToken"] as? String ?? "error"
+                    self.pendingNamesList[user] = data["name"] as? String ?? "error"
+                    self.pendingEmailsList[user] = data["email"] as? String ?? "error"
+                    self.pendingMsgList[user] = data["msgToken"] as? String ?? "error"
                     
                     //Get the image
                     self.getPicture(profPic: data["profilePic"] as? Int ?? -1, user: user)
@@ -257,7 +260,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
     
     func getPicture(profPic: Int, user: Int) {
         if profPic < 0 {
-            pendingListPics[user] = UIImage()
+            pendingPics[user] = UIImage()
             return
         }
         
@@ -282,7 +285,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                     if let updated = updated {
                         if let savedImage = self.getSavedImage(named: "\(profPic)-\(updated)"){
                             print("already saved \(profPic)-\(updated)")
-                                self.pendingListPics[user] = savedImage
+                                self.pendingPics[user] = savedImage
                         } else {
                             // Create a reference to the file you want to download
                             imgRef.downloadURL { url, error in
@@ -294,7 +297,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                                     let data = try? Data(contentsOf: url!)
                                     if let imageData = data {
                                         image = UIImage(data: imageData)!
-                                        self.pendingListPics[user] = image!
+                                        self.pendingPics[user] = image!
                                         self.clearImageFolder(imageName: "\(profPic)-\(updated)")
                                         self.saveImageDocumentDirectory(image: image!, imageName: "\(profPic)-\(updated)")
                                     }
@@ -313,33 +316,96 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
             //Filter out all the broken users
             var foundAnErrorUser = true
             while foundAnErrorUser {
-                if let index = self.pendingListNames.index(of: "error") {
+                if let index = self.pendingNamesList.index(of: "error") {
                     foundAnErrorUser = true
-                    self.pendingListNames.remove(at: index)
-                    self.pendingListEmails.remove(at: index)
-                    self.pendingListMsgTokens.remove(at: index)
-                    self.pendingListPics.remove(at: index)
+                    self.pendingNamesList.remove(at: index)
+                    self.pendingEmailsList.remove(at: index)
+                    self.pendingMsgList.remove(at: index)
+                    self.pendingPics.remove(at: index)
                     self.pendingList.remove(at: index)
                 } else {
                     // not found
                     foundAnErrorUser = false
                 }
             }
-            
-            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-            self.pendingListCollectionView.reloadData()
+            self.sortAlpha()
         }
     }
     
+    func sortAlpha(){
+        if pendingList.count != 0 {
+            var thereWasASwap = true
+            while thereWasASwap {
+                thereWasASwap = false
+                for i in 0..<pendingList.count-1 {
+                    let name1: String = pendingNamesList[i]
+                    let name2: String = pendingNamesList[i+1]
+                    
+                    let shortestLength: Int
+                    if name1.count < name2.count {
+                        //print("\(name1) is shorter")
+                        shortestLength = name1.count
+                    } else {
+                        //print("\(name2) is shorter")
+                        shortestLength = name2.count
+                    }
+                    
+                    //Because there is no easy string comparison (that i havent found)
+                    //Compare letter by letter against both strings
+                    for j in 0...shortestLength-1 {
+                        //Compare Alphabetically by character (without caring about case)
+                        let index1 = name1.index(name1.startIndex, offsetBy: j)
+                        let index2 = name2.index(name2.startIndex, offsetBy: j)
+                        let character1 = Character((String(name1[index1]).lowercased()))
+                        let character2 = Character((String(name2[index2]).lowercased()))
+                        
+                        if character2 < character1 {
+                            //Swap all related things
+                            thereWasASwap = true
+                            let temp = pendingNamesList[i]
+                            pendingNamesList[i] = pendingNamesList[i+1]
+                            pendingNamesList[i+1] = temp
+                            
+                            let temp2 = pendingList[i]
+                            pendingList[i] = pendingList[i+1]
+                            pendingList[i+1] = temp2
+                            
+                            let temp3 = pendingPics[i]
+                            pendingPics[i] = pendingPics[i+1]
+                            pendingPics[i+1] = temp3
+                            
+                            let temp4 = pendingEmailsList[i]
+                            pendingEmailsList[i] = pendingEmailsList[i+1]
+                            pendingEmailsList[i+1] = temp4
+                            
+                            let temp5 = pendingMsgList[i]
+                            pendingMsgList[i] = pendingMsgList[i+1]
+                            pendingMsgList[i+1] = temp5
+                            
+                            break
+                        } else if character1 == character2 {
+                            //If the letters are equal, check the next letter
+                        } else {
+                            //Not equal so we can just end the loop here
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+        self.pendingListCollectionView.reloadData()
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return pendingListNames.count
+        return pendingNamesList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "name", for: indexPath) as! pendingListCell
-        cell.nameLabel.text = pendingListNames[indexPath.item]
-        cell.emailLabel.text = pendingListEmails[indexPath.item]
-        cell.profilePic.image = pendingListPics[indexPath.item]
+        cell.nameLabel.text = pendingNamesList[indexPath.item]
+        cell.emailLabel.text = pendingEmailsList[indexPath.item]
+        cell.profilePic.image = pendingPics[indexPath.item]
         cell.profilePic.clipsToBounds = true
         cell.profilePic.layer.cornerRadius = 64/2
         return cell

@@ -13,6 +13,7 @@ import CropViewController
 class createBadgeController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CropViewControllerDelegate {
 
     var clubID: String!
+    var clubMembers = [String]()
     
     //The Database
     var db: Firestore!
@@ -156,6 +157,7 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
             
             var imageName = ""
             
+            //This check is just to quickly prevent needing to upload to storage if image has not changed
             if didUpdateBadgeImage {
                 //Give the photo a random name
                 if isUpdatingBadge {
@@ -200,6 +202,7 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
         let user = Auth.auth().currentUser
         print("Added badge id \(badgeID)")
         
+        //If you are adding a club badge (as there are no regular ones)
         if !isUpdatingBadge {
             db.collection("clubs").document(clubID).updateData(["clubBadge" : badgeID])
             db.collection("badges").document(badgeID).setData([
@@ -216,11 +219,7 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
                     self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                 } else {
                     print("Document successfully written!")
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
-                        self.onDoneBlock!(true)
-                        self.dismiss(animated: true, completion: nil)
-                    }
+                    self.giveClubBadgeToMembers(id: badgeID)
                 }
             }
         } else {
@@ -268,6 +267,20 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
                     }
                 }
             }
+        }
+    }
+    
+    func giveClubBadgeToMembers(id: String){
+        for user in clubMembers {
+            //Give the badge to each member
+            let userRef = self.db.collection("users").document(user)
+            userRef.updateData([
+                "badges": FieldValue.arrayUnion([id])
+            ])
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
+            self.onDoneBlock!(true)
+            self.dismiss(animated: true, completion: nil)
         }
     }
     

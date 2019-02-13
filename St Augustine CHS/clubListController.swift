@@ -244,11 +244,13 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
         print("sort alpha")
         //Only sort when have more than 1 club
         if (personaClubsData.count > 1) || (allClubsData.count > 1){
+            
+            //Sort your clubs
             if viewingPersonalClubs {
                 var thereWasASwap = true
                 while thereWasASwap {
                     thereWasASwap = false
-                    for i in 0...personaClubsData.count-2 {
+                    for i in 0..<personaClubsData.count - 1 {
                         let name1: String = personaClubsData[i]["name"] as! String
                         let name2: String = personaClubsData[i+1]["name"] as! String
                         
@@ -295,11 +297,14 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                         }
                     }
                 }
-            } else {
+            }
+            
+            //Sort all other clubs
+            else {
                 var thereWasASwap = true
                 while thereWasASwap {
                     thereWasASwap = false
-                    for i in 0...allClubsData.count-2 {
+                    for i in 0..<allClubsData.count - 1 {
                         let name1: String = allClubsData[i]["name"] as! String
                         let name2: String = allClubsData[i+1]["name"] as! String
                         

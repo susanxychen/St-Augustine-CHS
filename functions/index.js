@@ -1,8 +1,8 @@
 const https = require('follow-redirects').http;
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const nodemailer = require('nodemailer');
-const cors = require('cors')();
+// const nodemailer = require('nodemailer');
+// const cors = require('cors')();
 
 // var serviceAccount = require('./serviceAccountKey.json');
 admin.initializeApp({ 
@@ -90,28 +90,28 @@ exports.sendEmailToAdmins = functions.https.onCall((data, response) => {
                     return 'error';
                 });
 
-                var transporter = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: 'sachsappteam@gmail.com',
-                        pass: 'takecompsciyoun00bs'
-                    }
-                });
+                // var transporter = nodemailer.createTransport({
+                //     service: 'gmail',
+                //     auth: {
+                //         user: 'sachsappteam@gmail.com',
+                //         pass: 'takecompsciyoun00bs'
+                //     }
+                // });
                 
-                var mailOptions = {
-                    from: '"St. Augustine App" <sachsappteam@gmail.com>',
-                    to: theAdminEmail,
-                    subject: clubName + ' Join Request',
-                    text: userEmail + ' would like to join ' + clubName
-                };
+                // var mailOptions = {
+                //     from: '"St. Augustine App" <sachsappteam@gmail.com>',
+                //     to: theAdminEmail,
+                //     subject: clubName + ' Join Request',
+                //     text: userEmail + ' would like to join ' + clubName
+                // };
                     
-                transporter.sendMail(mailOptions, (error, info) =>{
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        console.log('Email sent: ' + info.response);
-                    }
-                });
+                // transporter.sendMail(mailOptions, (error, info) =>{
+                //     if (error) {
+                //         console.log(error);
+                //     } else {
+                //         console.log('Email sent: ' + info.response);
+                //     }
+                // });
                 return theAdminEmail;
             }
         })
@@ -415,7 +415,7 @@ exports.checkSnowDay = functions.https.onRequest((request, response) => {
                 var isSnowDay = snapshot.data().snowDay
                 if (!isSnowDay) {
                     console.log('not a snow day yet');
-                    if (data.includes("all school buses, vans and taxis servicing the york catholic and york region district school boards are cancelled for today")) {
+                    if (data.includes("all school buses, vans and taxis") && data.includes("are cancelled for today")) {
                         console.log('snow day');
             
                         var payload = {

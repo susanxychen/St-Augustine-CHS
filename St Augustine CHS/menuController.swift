@@ -892,10 +892,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                     self.snowDayLabelHeight.constant = 0
                 }
                 
-                if theDayNumber == "0" {
-                    self.dayNumber.isHidden = true
-                    self.dayNumberHeight.constant = 0
-                } else if (theDayNumber == "1" || theDayNumber == "2") {
+                //Only display the day number if the day is 1 or 2
+                if (theDayNumber == "1" || theDayNumber == "2") {
                     self.dayNumberHeight.constant = 25
                     self.dayNumber.isHidden = false
                     
@@ -1039,8 +1037,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         return UIStatusBarStyle.lightContent;
     }
     
+    //Get live data from apple's servers
     var theDate: Date! = Date()
-    func getTimeFromServer(completionHandler:@escaping (_ getResDate: Date?) -> Void){
+    func getTimeFromServer(completionHandler: @escaping (_ getResDate: Date?) -> Void){
         let url = URL(string: "https://www.apple.com")
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
             let httpResponse = response as? HTTPURLResponse
