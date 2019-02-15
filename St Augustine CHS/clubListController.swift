@@ -384,8 +384,8 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                         let updated = theMetaData["updated"]
                         
                         if let updated = updated {
-                            if let savedImage = self.getSavedImage(named: "\(imageName)-\(updated)"){
-                                print("already saved \(imageName)-\(updated)")
+                            if let savedImage = self.getSavedImage(named: "\(imageName)=\(updated)"){
+                                print("already saved \(imageName)=\(updated)")
                                 if self.viewingPersonalClubs{
                                     //print(self.personalClubBanners)
                                     self.personalClubBanners[clubNum] = savedImage
@@ -425,8 +425,8 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                                             } else {
                                                 self.banners[clubNum] = image!
                                             }
-                                            self.clearImageFolder(imageName: "\(imageName)-\(updated)")
-                                            self.saveImageDocumentDirectory(image: image!, imageName: "\(imageName)-\(updated)")
+                                            self.clearImageFolder(imageName: "\(imageName)=\(updated)")
+                                            self.saveImageDocumentDirectory(image: image!, imageName: "\(imageName)=\(updated)")
 
                                             if (clubNum == theData.count-1) {
                                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {

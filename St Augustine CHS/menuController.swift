@@ -588,8 +588,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                     let updated = theMetaData["updated"]
                     
                     if let updated = updated {
-                        if let savedImage = self.getSavedImage(named: "\(i)-\(updated)"){
-                            print("already saved \(i)-\(updated)")
+                        if let savedImage = self.getSavedImage(named: "\(i)=\(updated)"){
+                            print("already saved \(i)=\(updated)")
                             self.profilePicture.image = savedImage
                             allUserFirebaseData.profilePic = savedImage
                         } else {
@@ -607,8 +607,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                                         image = UIImage(data: imageData)!
                                         self.profilePicture.image = image!
                                         allUserFirebaseData.profilePic = image!
-                                        self.clearImageFolder(imageName: "\(i)-\(updated)")
-                                        self.saveImageDocumentDirectory(image: image!, imageName: "\(i)-\(updated)")
+                                        self.clearImageFolder(imageName: "\(i)=\(updated)")
+                                        self.saveImageDocumentDirectory(image: image!, imageName: "\(i)=\(updated)")
                                     }
                                     print("i success now")
                                 }
@@ -653,15 +653,15 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             var attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
             var estimatedFrame = NSString(string: newsData[indexPath.row][1]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             
-            let contentHeight =  estimatedFrame.height + 10
+            let contentHeight =  estimatedFrame.height + 8
             size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
             attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
             estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             
-            let titleHeight = estimatedFrame.height + 10
+            let titleHeight = estimatedFrame.height + 8
 
             
-            return CGSize(width: view.frame.width, height: contentHeight + titleHeight + 28)
+            return CGSize(width: view.frame.width, height: contentHeight + titleHeight)
         }
     }
     
@@ -704,16 +704,16 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             var attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
             var estimatedFrame = NSString(string: newsData[indexPath.row][1]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             
-            let contentHeight =  estimatedFrame.height + 10
-            cell.contentHeight.constant = contentHeight
+            let contentHeight =  estimatedFrame.height
+            cell.contentHeight.constant = contentHeight + 8
             
             size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
             attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
             estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             
-            let titleHeight = estimatedFrame.height + 10
+            let titleHeight = estimatedFrame.height
             
-            cell.titleHeight.constant = titleHeight
+            cell.titleHeight.constant = titleHeight + 8
             
             calendarButton.isHidden = false
             

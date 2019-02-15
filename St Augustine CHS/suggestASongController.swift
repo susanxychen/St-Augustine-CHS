@@ -120,43 +120,32 @@ class suggestASongController: UIViewController {
                             self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                         }
                         
-                        self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                        //Take away points locally
+                        allUserFirebaseData.data["points"] = allUserFirebaseData.data["points"] as! Int - Defaults.requestSong
+                    
+                        //Add the song to the db
+                        self.db.collection("songs").document(id).setData([
+                            "artist": artist as Any,
+                            "date": self.theDate,
+                            "name": song as Any,
+                            "suggestor": Auth.auth().currentUser?.uid as Any,
+                            "upvotes": 0
+                        ]) { (err) in
                             if let err = err {
                                 print("Error writing document: \(err)")
-                                let alert = UIAlertController(title: "Error in retrieveing users", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                                let alert = UIAlertController(title: "Error in retrieveing songs", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
                                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                                 alert.addAction(okAction)
                                 self.present(alert, animated: true, completion: nil)
                                 self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-                            }
-                            
-                            if let docSnapshot = docSnapshot {
-                                allUserFirebaseData.data = docSnapshot.data()!
-                                
-                                //Add the song
-                                self.db.collection("songs").document(id).setData([
-                                    "artist": artist as Any,
-                                    "date": self.theDate,
-                                    "name": song as Any,
-                                    "suggestor": Auth.auth().currentUser?.uid as Any,
-                                    "upvotes": 0
-                                ]) { (err) in
-                                    if let err = err {
-                                        print("Error writing document: \(err)")
-                                        let alert = UIAlertController(title: "Error in retrieveing songs", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
-                                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                                        alert.addAction(okAction)
-                                        self.present(alert, animated: true, completion: nil)
-                                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-                                    } else {
-                                        print("Document successfully written!")
-                                        self.onDoneBlock!(true)
-                                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-                                        self.dismiss(animated: true, completion: nil)
-                                    }
-                                }
+                            } else {
+                                print("Document successfully written!")
+                                self.onDoneBlock!(true)
+                                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+                                self.dismiss(animated: true, completion: nil)
                             }
                         }
+                    
                     }
                 }
             } else {

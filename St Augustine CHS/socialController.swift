@@ -259,8 +259,8 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                         let updated = theMetaData["updated"]
                         
                         if let updated = updated {
-                            if let savedImage = self.getSavedImage(named: "\(name)-\(updated)"){
-                                print("already saved \(name)-\(updated)")
+                            if let savedImage = self.getSavedImage(named: "\(name)=\(updated)"){
+                                print("already saved \(name)=\(updated)")
                                 self.badgeImgs[i] = savedImage
                             } else {
                                 // Create a reference to the file you want to download
@@ -275,8 +275,8 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                         if let imageData = data {
                                             image = UIImage(data: imageData)!
                                             self.badgeImgs[i] = image!
-                                            self.clearImageFolder(imageName: "\(name)-\(updated)")
-                                            self.saveImageDocumentDirectory(image: image!, imageName: "\(name)-\(updated)")
+                                            self.clearImageFolder(imageName: "\(name)=\(updated)")
+                                            self.saveImageDocumentDirectory(image: image!, imageName: "\(name)=\(updated)")
                                         }
                                         print("i success now")
                                     }
@@ -313,8 +313,8 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                     let updated = theMetaData["updated"]
                     
                     if let updated = updated {
-                        if let savedImage = self.getSavedImage(named: "\(i)-\(updated)"){
-                            print("already saved \(i)-\(updated)")
+                        if let savedImage = self.getSavedImage(named: "\(i)=\(updated)"){
+                            print("already saved \(i)=\(updated)")
                             self.profilePicture.image = savedImage
                         } else {
                             // Create a reference to the file you want to download
@@ -330,8 +330,8 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                     if let imageData = data {
                                         image = UIImage(data: imageData)!
                                         self.profilePicture.image = image!
-                                        self.clearImageFolder(imageName: "\(i)-\(updated)")
-                                        self.saveImageDocumentDirectory(image: image!, imageName: "\(i)-\(updated)")
+                                        self.clearImageFolder(imageName: "\(i)=\(updated)")
+                                        self.saveImageDocumentDirectory(image: image!, imageName: "\(i)=\(updated)")
                                     }
                                     print("i success now")
                                 }
@@ -740,8 +740,8 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                 let updated = theMetaData["updated"]
                                 
                                 if let updated = updated {
-                                    if let savedImage = self.getSavedImage(named: "\(imageName)-\(updated)"){
-                                        print("already saved \(imageName)-\(updated)")
+                                    if let savedImage = self.getSavedImage(named: "\(imageName)=\(updated)"){
+                                        print("already saved \(imageName)=\(updated)")
                                         self.clubImage = savedImage
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                                             self.hideActivityIndicator(container: self.container, actInd: self.actInd)
@@ -766,8 +766,8 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                                 if let imageData = data {
                                                     image = UIImage(data: imageData)!
                                                     self.clubImage = image
-                                                    self.clearImageFolder(imageName: "\(imageName)-\(updated)")
-                                                    self.saveImageDocumentDirectory(image: image!, imageName: "\(imageName)-\(updated)")
+                                                    self.clearImageFolder(imageName: "\(imageName)=\(updated)")
+                                                    self.saveImageDocumentDirectory(image: image!, imageName: "\(imageName)=\(updated)")
                                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                                                         self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                                                         self.performSegue(withIdentifier: "showClub", sender: self.showClubButton)

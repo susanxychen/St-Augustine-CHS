@@ -151,7 +151,7 @@ class badgeScannerController: UIViewController, AVCaptureVideoDataOutputSampleBu
                             
                             let msgToken = snap.documents[0].data()["msgToken"] as? String ?? "error"
                             
-                            self.functions.httpsCallable("sendToUser").call(["token": msgToken, "title": "You got a Badge!", "body": "Congrats!"]) { (result, error) in
+                            self.functions.httpsCallable("sendToUser").call(["token": msgToken, "title": "", "body": "You Have Received A New Badge!"]) { (result, error) in
                                 if let error = error as NSError? {
                                     if error.domain == FunctionsErrorDomain {
                                         let code = FunctionsErrorCode(rawValue: error.code)
@@ -224,8 +224,8 @@ class badgeScannerController: UIViewController, AVCaptureVideoDataOutputSampleBu
                                         } else {
                                             print("Transaction successfully committed!")
                                             print("successfuly gave badge")
-                                            self.dismiss(animated: true, completion: nil)
                                         }
+                                        self.dismiss(animated: true, completion: nil)
                                     })
                                 }
                             })

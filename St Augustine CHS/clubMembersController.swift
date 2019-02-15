@@ -18,6 +18,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
     //Cloud Functions
     lazy var functions = Functions.functions()
     
+    var clubName = "a club"
     var clubID: String!
     var clubBadge: String!
     var isClubAdmin: Bool!
@@ -139,13 +140,13 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     self.present(alert, animated: true, completion: nil)
                 }
                 if let snap = snap {
-                    let data = snap.data() ?? ["name":"error", "email":"error", "profilePic": -1, "msgToken":"error"]
+                    let data = snap.data() ?? ["name":"error", "email":"error", "profilePic": 0, "msgToken":"error"]
                     self.adminsNamesList[user] = data["name"] as? String ?? "error"
                     self.adminsEmailsList[user] = data["email"] as? String ?? "error"
                     self.adminsMsgList[user] = data["msgToken"] as? String ?? "error"
                     
                     //Get the image
-                    self.getPicture(profPic: data["profilePic"] as? Int ?? -1, user: user, isAdmin: true)
+                    self.getPicture(profPic: data["profilePic"] as? Int ?? 0, user: user, isAdmin: true)
                 }
             }
         }
@@ -159,13 +160,13 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     self.present(alert, animated: true, completion: nil)
                 }
                 if let snap = snap {
-                    let data = snap.data() ?? ["name":"error", "email":"error", "profilePic": -1, "msgToken":"error"]
+                    let data = snap.data() ?? ["name":"error", "email":"error", "profilePic": 0, "msgToken":"error"]
                     self.membersNamesList[user] = data["name"] as? String ?? "error"
                     self.membersEmailsList[user] = data["email"] as? String ?? "error"
                     self.membersMsgList[user] = data["msgToken"] as? String ?? "error"
                     
                     //Get the image
-                    self.getPicture(profPic: data["profilePic"] as? Int ?? -1, user: user, isAdmin: false)
+                    self.getPicture(profPic: data["profilePic"] as? Int ?? 0, user: user, isAdmin: false)
                 }
             }
         }
@@ -337,6 +338,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
         self.membersCollectionView.reloadData()
     }
     
+    //***********************THE ADMIN LIST*********************
     @objc func handleLongPressAdmin(gestureRecognizer : UILongPressGestureRecognizer){
         if (gestureRecognizer.state != UIGestureRecognizer.State.began){
             return
@@ -353,6 +355,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     let clubRef = self.db.collection("clubs").document(self.clubID)
                     clubRef.updateData(["admins": FieldValue.arrayRemove([self.adminsList[indexPath.item]])])
                     
+                    //Update user stuff
                     let userRef = self.db.collection("users").document(self.adminsList[indexPath.item])
                     userRef.updateData([
                         "clubs": FieldValue.arrayRemove([self.clubID]),
@@ -406,6 +409,8 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
         }
     }
     
+    
+    //**********************THE MEMBER LIST*********************
     @objc func handleLongPress(gestureRecognizer : UILongPressGestureRecognizer){
         if (gestureRecognizer.state != UIGestureRecognizer.State.began){
             return
@@ -424,7 +429,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     clubRef.updateData(["admins": FieldValue.arrayUnion([self.membersList[indexPath.item]])])
                     
                     let msgToken = self.membersMsgList[indexPath.item]
-                    self.functions.httpsCallable("sendToUser").call(["token": msgToken, "title": "You have been promoted to a club admin!", "body": "Congrats!"]) { (result, error) in
+                    self.functions.httpsCallable("sendToUser").call(["token": msgToken, "title": "You're Now An Admin!", "body": "Congratulations, you're now an Admin of \(self.clubName)!"]) { (result, error) in
                         if let error = error as NSError? {
                             if error.domain == FunctionsErrorDomain {
                                 let code = FunctionsErrorCode(rawValue: error.code)
@@ -454,6 +459,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     let clubRef = self.db.collection("clubs").document(self.clubID)
                     clubRef.updateData(["members": FieldValue.arrayRemove([self.membersList[indexPath.item]])])
                     
+                    //update the user
                     let userRef = self.db.collection("users").document(self.membersList[indexPath.item])
                     userRef.updateData([
                         "clubs": FieldValue.arrayRemove([self.clubID]),
@@ -475,6 +481,82 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                         print("Email sent to admins")
                         print("Result is: \(String(describing: result?.data))")
                     }
+                    
+                    //take them points
+//                    self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+//                        let uDoc: DocumentSnapshot
+//                        do {
+//                            try uDoc = transaction.getDocument(userRef)
+//                        } catch let fetchError as NSError {
+//                            errorPointer?.pointee = fetchError
+//                            return nil
+//                        }
+//
+//                        guard let oldPoints = uDoc.data()?["points"] as? Int else {
+//                            let error = NSError(
+//                                domain: "AppErrorDomain",
+//                                code: -1,
+//                                userInfo: [
+//                                    NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+//                                ]
+//                            )
+//                            errorPointer?.pointee = error
+//                            return nil
+//                        }
+//                        transaction.updateData(["points": oldPoints - Defaults.joiningClub], forDocument: userRef)
+//                        return nil
+//                    }, completion: { (object, err) in
+//                        if let error = err {
+//                            print("Transaction failed: \(error)")
+//                            let ac = UIAlertController(title: "Could not give points to user", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+//                            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+//                            self.present(ac, animated: true)
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+//                                self.getClubData()
+//                            })
+//                        } else {
+//                            print("Transaction successfully committed!")
+//
+//                            //Take the grade points
+//                            let gradYear = Int(self.membersEmailsList[indexPath.item].suffix(14).prefix(2)) ?? 0
+//                            let pointRef = self.db.collection("info").document("spiritPoints")
+//                            self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+//                                let pDoc: DocumentSnapshot
+//                                do {
+//                                    try pDoc = transaction.getDocument(pointRef)
+//                                } catch let fetchError as NSError {
+//                                    errorPointer?.pointee = fetchError
+//                                    return nil
+//                                }
+//                                guard let oldPoints = pDoc.data()?[String(gradYear)] as? Int else {
+//                                    let error = NSError(
+//                                        domain: "AppErrorDomain",
+//                                        code: -1,
+//                                        userInfo: [
+//                                            NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(pDoc)"
+//                                        ]
+//                                    )
+//                                    errorPointer?.pointee = error
+//                                    return nil
+//                                }
+//                                transaction.updateData([String(gradYear): oldPoints - Defaults.joiningClub], forDocument: pointRef)
+//                                return nil
+//                            }, completion: { (object, err) in
+//                                if let error = err {
+//                                    print("Transaction failed: \(error)")
+//                                    let ac = UIAlertController(title: "Transaction Error: Grad - \(gradYear)", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+//                                    ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+//                                    self.present(ac, animated: true)
+//                                } else {
+//                                    print("Transaction successfully committed!")
+//                                    print("successfuly gave badge")
+//                                }
+//                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+//                                    self.getClubData()
+//                                })
+//                            })
+//                        }
+//                    })
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
                         self.getClubData()
@@ -542,16 +624,6 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func getPicture(profPic: Int, user: Int, isAdmin: Bool) {
-        //If entered pic is not a real one... dont bother
-        if profPic < 0 {
-            if isAdmin {
-                self.adminsPics[user] = UIImage()
-            } else {
-                self.membersPics[user] = UIImage()
-            }
-            return
-        }
-        
         //Image
         let storage = Storage.storage()
         let storageRef = storage.reference()
@@ -571,8 +643,8 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     let updated = theMetaData["updated"]
                     
                     if let updated = updated {
-                        if let savedImage = self.getSavedImage(named: "\(profPic)-\(updated)"){
-                            print("already saved \(profPic)-\(updated)")
+                        if let savedImage = self.getSavedImage(named: "\(profPic)=\(updated)"){
+                            print("already saved \(profPic)=\(updated)")
                             if isAdmin {
                                 self.adminsPics[user] = savedImage
                             } else {
@@ -594,8 +666,8 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                                         } else {
                                             self.membersPics[user] = image!
                                         }
-                                        self.clearImageFolder(imageName: "\(profPic)-\(updated)")
-                                        self.saveImageDocumentDirectory(image: image!, imageName: "\(profPic)-\(updated)")
+                                        self.clearImageFolder(imageName: "\(profPic)=\(updated)")
+                                        self.saveImageDocumentDirectory(image: image!, imageName: "\(profPic)=\(updated)")
                                     }
                                     print("i success now")
                                 }

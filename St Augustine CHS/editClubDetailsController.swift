@@ -255,7 +255,20 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
         //Update data in the firebase
         let clubRef = db.collection("clubs").document(clubID)
         
-        if clubJoinSetting == 2 {
+        //PRIVATE CLUB
+        if clubJoinSetting == 0 {
+            let clubRef = self.db.collection("clubs").document(clubID)
+            clubRef.setData([
+                "pending": []
+            ], merge: true) { (err) in
+                if let err = err {
+                    print("error in updating club \(err)")
+                }
+            }
+        }
+        
+        //OPEN CLUB
+        else if clubJoinSetting == 2 {
             //Update the club members array
             let clubRef = self.db.collection("clubs").document(clubID)
             clubRef.updateData(["members": FieldValue.arrayUnion(pendingList)])
@@ -310,48 +323,12 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
                         print(err)
                     }
                 }
-                
-//                //Also give them points
-//                self.db.runTransaction({ (transaction, errorPointer) -> Any? in
-//                    let uDoc: DocumentSnapshot
-//                    do {
-//                        try uDoc = transaction.getDocument(userRef)
-//                    } catch let fetchError as NSError {
-//                        errorPointer?.pointee = fetchError
-//                        return nil
-//                    }
-//
-//                    guard let oldPoints = uDoc.data()?["points"] as? Int else {
-//                        let error = NSError(
-//                            domain: "AppErrorDomain",
-//                            code: -1,
-//                            userInfo: [
-//                                NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
-//                            ]
-//                        )
-//                        errorPointer?.pointee = error
-//                        return nil
-//                    }
-//                    transaction.updateData(["points": oldPoints + Defaults.joiningClub], forDocument: userRef)
-//                    return nil
-//                }, completion: { (object, err) in
-//                    if let error = err {
-//                        print("Transaction failed: \(error)")
-//                    } else {
-//                        print("Transaction successfully committed!")
-//                        print("successfuly gave badge")
-//                    }
-//                })
             }
             
             clubRef.setData([
                 "pending": []
             ], merge: true) { (err) in
                 if let err = err {
-                    let alert = UIAlertController(title: "Error in updating Club", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                    alert.addAction(okAction)
-                    self.present(alert, animated: true, completion: nil)
                     print("error in updating club \(err)")
                 }
             }

@@ -245,7 +245,7 @@ extension UIViewController {
     
     //********************************************MISC FUNCTIONS********************************************
     func saveImageDocumentDirectory(image: UIImage, imageName: String) {
-        let imgFolderArr = imageName.split(separator: "-")
+        let imgFolderArr = imageName.split(separator: "=")
         let fileManager = FileManager.default
         let path = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString).appendingPathComponent(String(imgFolderArr[0]))
         if !fileManager.fileExists(atPath: path) {
@@ -260,7 +260,7 @@ extension UIViewController {
     }
     
     func getSavedImage(named: String) -> UIImage? {
-        let imgFolderArr = named.split(separator: "-")
+        let imgFolderArr = named.split(separator: "=")
         if let dir = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
             return UIImage(contentsOfFile: URL(fileURLWithPath: dir.absoluteString).appendingPathComponent(String(imgFolderArr[0])).appendingPathComponent(named).path)
         }
@@ -268,7 +268,7 @@ extension UIViewController {
     }
     
     func clearImageFolder(imageName: String) {
-        let imgFolderArr = imageName.split(separator: "-")
+        let imgFolderArr = imageName.split(separator: "=")
         let fileManager = FileManager.default
         let myDocuments = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
         let diskCacheStorageBaseUrl = myDocuments.appendingPathComponent(String(imgFolderArr[0]))

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,7 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>St Augustine CHS App</title>
+    <link rel="shortcut icon" href="https://app.staugustinechs.ca/images/favicon.png" type="image/x-icon">
     <link href="../css/styles.css" rel="stylesheet">
+      
+    <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-firestore.js"></script>
   </head>
 	
   <body class="bg-color-baige">
@@ -16,20 +20,17 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home<span class="sr-only">(current)</span></a>
+          <li class="nav-item">
+            <a class="nav-link" href="https://app.staugustinechs.ca">Home<span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Tutorials</a>
+            <a class="nav-link" href="https://app.staugustinechs.ca/tutorials/index.html">Tutorials</a>
           </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <a class="nav-link" style="color: white" href="#">Login</a>
-        </form>
       </div>
     </nav>
 	  
-    <div class="container mt-2">
+    <div id="loginDiv" class="container mt-2">
       <div class="row">
         <div class="col-12">
           <div class="jumbotron bg-color-primary" style="border-radius: 2rem">
@@ -39,13 +40,13 @@
 			  <br>
             <h2 class="text-center" style="color: white">Log in</h2>
 			  <br>
-			  <div align="center">
+			  <div align="center" style="color: white">
 				<form action="">
-				  Username:<br>
-				  <input type="text" name="firstname"><br>
+				  Email:<br>
+				  <input type="text" id="emailField"><br>
 				  Password:<br>
-				  <input type="password" name="lastname"><br><br>
-				  <input type="submit" value="Submit">
+				  <input type="password" id="passField"><br><br>
+				  <input type="button" value="Log In" id="loginBtn">
 				</form>
 			  </div>
 		  </div>
@@ -53,50 +54,46 @@
 	  </div>
 	</div>
 
-	<div class="container mt-3">
+	<div id="cafMenuDiv" class="container mt-3" style="display: none">
       <div class="row">
         <div class="col-12">
           <div class="jumbotron bg-color-primary" style="border-radius: 2rem">
-            <h2 class="text-left" style="color: white">Cafe Menu</h2>
-			  <br>
+            <h1 class="text-left" style="color: white">Cafe Menu</h1>
+              <h3 class="text-left" style="color: white">Daily Menu</h3>
+              <br>
 			  <div align="center">
-				<ol style="color: white">
-					<li>
+                <ol style="color: white" id="cafItems">
+					<li id="cafItem">
 						<form>
 						  Item:
-						  <input type="text" name="item1" value="Cookies">
+						  <input type="text" style="margin-right: 50px; margin-left: 10px">
 						  Price:
-						  <input type="text" name="price1" value="1.50">
-						</form>
-					</li>
-					<li>
-						<form>
-						  Item:
-						  <input type="text" name="item1" value="Pasta">
-						  Price:
-						  <input type="text" name="price1" value="2.50">
-						</form>
-					</li>
-					<li>
-						<form>
-						  Item:
-						  <input type="text" name="item1" value="Pop">
-						  Price:
-						  <input type="text" name="price1" value="1.50">
-						</form>
-					</li>
-					<li>
-						<form>
-						  Item:
-						  <input type="text" name="item1" value="Water">
-						  Price:
-						  <input type="text" name="price1" value="10.50">
+						  <input type="text" style="margin-right: 50px; margin-left: 10px">
+                            <input type="button" value="Remove">
 						</form>
 					</li>
 				</ol>
+                  <input type="button" value="Add Item!" id="addCafItem">
 				<br>
+                  <br>
+                  <h3 class="text-left" style="color: white">Regular Menu</h3>
+              <br>
+				<ol style="color: white" id="cafItemsRegular">
+					<li id="cafItemRegular">
+						<form>
+						  Item:
+						  <input type="text" style="margin-right: 50px; margin-left: 10px">
+						  Price:
+						  <input type="text" style="margin-right: 50px; margin-left: 10px">
+                            <input type="button" value="Remove">
+						</form>
+					</li>
+				</ol>
+                  <input type="button" value="Add Item!" id="addCafItemRegular">
+				<br>
+                  <br>
 				<form action="">
-					<input type="submit" value="Update">
+					<input type="button" value="Update" id="cafUpdateBtn">
 				</form>
 			  </div>
 		  </div>
@@ -104,7 +101,7 @@
 	  </div>
 	</div>
 	  
-	<div class="container mt-4">
+	<!--<div class="container mt-4">
       <div class="row">
         <div class="col-12">
           <div class="jumbotron bg-color-primary" style="border-radius: 2rem">
@@ -146,7 +143,7 @@
 		  </div>
 		</div>
 	  </div>
-	</div>
+	</div>-->
 	
     <footer class="text-center">
       <div class="container">
@@ -157,6 +154,8 @@
         </div>
       </div>
     </footer>
+    
+    <script src="login.js"></script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="js/jquery-3.2.1.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->

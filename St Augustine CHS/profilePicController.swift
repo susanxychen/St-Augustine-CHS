@@ -160,8 +160,8 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                         let updated = theMetaData["updated"]
                         
                         if let updated = updated {
-                            if let savedImage = self.getSavedImage(named: "\(i)-\(updated)"){
-                                print("already saved \(i)-\(updated)")
+                            if let savedImage = self.getSavedImage(named: "\(i)=\(updated)"){
+                                print("already saved \(i)=\(updated)")
                                 self.picsNotOwned[i] = savedImage
                                 //print(self.picsNotOwned)
                             } else {
@@ -178,8 +178,8 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                                         if let imageData = data {
                                             image = UIImage(data: imageData)!
                                             self.picsNotOwned[i] = image!
-                                            self.clearImageFolder(imageName: "\(i)-\(updated)")
-                                            self.saveImageDocumentDirectory(image: image!, imageName: "\(i)-\(updated)")
+                                            self.clearImageFolder(imageName: "\(i)=\(updated)")
+                                            self.saveImageDocumentDirectory(image: image!, imageName: "\(i)=\(updated)")
                                         }
                                         print("i success now")
                                     }

@@ -114,6 +114,11 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         getSongData()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        //Reset the slider max to new amount of votes
+        supervoteSlider.maximumValue = Float(allUserFirebaseData.data["points"] as! Int)
+    }
+    
     var selectedSuperSongID: String!
     var supervotedIndex = 0
     @objc func handleLongPress(gestureRecognizer : UILongPressGestureRecognizer){

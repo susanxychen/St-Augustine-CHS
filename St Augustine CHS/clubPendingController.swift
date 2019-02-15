@@ -84,7 +84,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                     print("Result is: \(String(describing: result?.data))")
                 }
                 
-                self.functions.httpsCallable("sendToUser").call(["token": msgToken, "title": "You've been accepted into \(self.clubName ?? "a club")", "body": "Congrats!"]) { (result, error) in
+                self.functions.httpsCallable("sendToUser").call(["token": msgToken, "title": "Welcome To The Club!", "body": "You've been accepted into \(self.clubName ?? "a club")! Yay!"]) { (result, error) in
                     if let error = error as NSError? {
                         if error.domain == FunctionsErrorDomain {
                             let code = FunctionsErrorCode(rawValue: error.code)
@@ -145,6 +145,12 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                 }, completion: { (object, err) in
                     if let error = err {
                         print("Transaction failed: \(error)")
+                        let ac = UIAlertController(title: "Could not give points to user", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+                        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self.present(ac, animated: true)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                            self.getClubData()
+                        })
                     } else {
                         print("Transaction successfully committed!")
                         
@@ -245,25 +251,20 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                     self.present(alert, animated: true, completion: nil)
                 }
                 if let snap = snap {
-                    let data = snap.data() ?? ["name":"error", "email":"error", "profilePic": -1, "msgToken":"error"]
+                    let data = snap.data() ?? ["name":"error", "email":"error", "profilePic": 0, "msgToken":"error"]
                     self.pendingNamesList[user] = data["name"] as? String ?? "error"
                     self.pendingEmailsList[user] = data["email"] as? String ?? "error"
                     self.pendingMsgList[user] = data["msgToken"] as? String ?? "error"
                     
                     //Get the image
-                    self.getPicture(profPic: data["profilePic"] as? Int ?? -1, user: user)
+                    self.getPicture(profPic: data["profilePic"] as? Int ?? 0, user: user)
                 }
             }
         }
         removeBrokenUsers()
     }
     
-    func getPicture(profPic: Int, user: Int) {
-        if profPic < 0 {
-            pendingPics[user] = UIImage()
-            return
-        }
-        
+    func getPicture(profPic: Int, user: Int) {        
         //Image
         let storage = Storage.storage()
         let storageRef = storage.reference()
@@ -283,8 +284,8 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                     let updated = theMetaData["updated"]
                     
                     if let updated = updated {
-                        if let savedImage = self.getSavedImage(named: "\(profPic)-\(updated)"){
-                            print("already saved \(profPic)-\(updated)")
+                        if let savedImage = self.getSavedImage(named: "\(profPic)=\(updated)"){
+                            print("already saved \(profPic)=\(updated)")
                                 self.pendingPics[user] = savedImage
                         } else {
                             // Create a reference to the file you want to download
@@ -298,8 +299,8 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                                     if let imageData = data {
                                         image = UIImage(data: imageData)!
                                         self.pendingPics[user] = image!
-                                        self.clearImageFolder(imageName: "\(profPic)-\(updated)")
-                                        self.saveImageDocumentDirectory(image: image!, imageName: "\(profPic)-\(updated)")
+                                        self.clearImageFolder(imageName: "\(profPic)=\(updated)")
+                                        self.saveImageDocumentDirectory(image: image!, imageName: "\(profPic)=\(updated)")
                                     }
                                     print("i success now")
                                 }

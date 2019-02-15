@@ -565,18 +565,85 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                         print("unsubscribed to topic")
                     }
                     
-                    let user = Auth.auth().currentUser
-                    self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
-                        if let docSnapshot = docSnapshot {
-                            allUserFirebaseData.data = docSnapshot.data()!
-                            self.joinedANewClubBlock?(true)
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                                self.navigationController?.popViewController(animated: true)
-                            })
-                        } else {
-                            print("wow u dont exist")
-                        }
-                    }
+                    //Remove points
+//                    self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+//                        let uDoc: DocumentSnapshot
+//                        do {
+//                            try uDoc = transaction.getDocument(userRef)
+//                        } catch let fetchError as NSError {
+//                            errorPointer?.pointee = fetchError
+//                            return nil
+//                        }
+//
+//                        guard let oldPoints = uDoc.data()?["points"] as? Int else {
+//                            let error = NSError(
+//                                domain: "AppErrorDomain",
+//                                code: -1,
+//                                userInfo: [
+//                                    NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+//                                ]
+//                            )
+//                            errorPointer?.pointee = error
+//                            return nil
+//                        }
+//                        transaction.updateData(["points": oldPoints - Defaults.joiningClub], forDocument: userRef)
+//                        return nil
+//                    }, completion: { (object, err) in
+//                        if let error = err {
+//                            print("Transaction failed: \(error)")
+//                        } else {
+//                            print("Transaction successfully committed!")
+//
+//                            //Take the grade points
+//                            let gradYear = allUserFirebaseData.data["gradYear"] as? Int ?? 0
+//                            let pointRef = self.db.collection("info").document("spiritPoints")
+//                            self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+//                                let pDoc: DocumentSnapshot
+//                                do {
+//                                    try pDoc = transaction.getDocument(pointRef)
+//                                } catch let fetchError as NSError {
+//                                    errorPointer?.pointee = fetchError
+//                                    return nil
+//                                }
+//                                guard let oldPoints = pDoc.data()?[String(gradYear)] as? Int else {
+//                                    let error = NSError(
+//                                        domain: "AppErrorDomain",
+//                                        code: -1,
+//                                        userInfo: [
+//                                            NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(pDoc)"
+//                                        ]
+//                                    )
+//                                    errorPointer?.pointee = error
+//                                    return nil
+//                                }
+//                                transaction.updateData([String(gradYear): oldPoints - Defaults.joiningClub], forDocument: pointRef)
+//                                return nil
+//                            }, completion: { (object, err) in
+//                                if let error = err {
+//                                    print("Transaction failed: \(error)")
+//                                    let ac = UIAlertController(title: "Transaction Error: Grad - \(gradYear)", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+//                                    ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+//                                    self.present(ac, animated: true)
+//                                } else {
+//                                    print("Transaction successfully committed!")
+//                                    print("successfuly gave badge")
+//                                }
+//
+//                                let user = Auth.auth().currentUser
+//                                self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+//                                    if let docSnapshot = docSnapshot {
+//                                        allUserFirebaseData.data = docSnapshot.data()!
+//                                        self.joinedANewClubBlock?(true)
+//                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+//                                            self.navigationController?.popViewController(animated: true)
+//                                        })
+//                                    } else {
+//                                        print("wow u dont exist")
+//                                    }
+//                                }
+//                            })
+//                        }
+//                    })
                 }
                 alert.addAction(confirmAction)
                 alert.addAction(cancelAction)
@@ -627,8 +694,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     let updated = theMetaData["updated"]
                     
                     if let updated = updated {
-                        if let savedImage = self.getSavedImage(named: "\(self.clubData["img"]!)-\(updated)"){
-                            print("already saved \(self.clubData["img"]!)-\(updated)")
+                        if let savedImage = self.getSavedImage(named: "\(self.clubData["img"]!)=\(updated)"){
+                            print("already saved \(self.clubData["img"]!)=\(updated)")
                             self.banImage = savedImage
                             print("i got saved club banner")
                         } else {
@@ -648,8 +715,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                                     if let imageData = data {
                                         image = UIImage(data: imageData)!
                                         self.banImage = image!
-                                        self.clearImageFolder(imageName: "\(self.clubData["img"]!)-\(updated)")
-                                        self.saveImageDocumentDirectory(image: image!, imageName: "\(self.clubData["img"]!)-\(updated)")
+                                        self.clearImageFolder(imageName: "\(self.clubData["img"]!)=\(updated)")
+                                        self.saveImageDocumentDirectory(image: image!, imageName: "\(self.clubData["img"]!)=\(updated)")
                                         print("i got club banner")
                                     }
                                 }
@@ -739,8 +806,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                         let updated = theMetaData["updated"]
                         
                         if let updated = updated {
-                            if let savedImage = self.getSavedImage(named: "\(name)-\(updated)"){
-                                print("already saved \(name)-\(updated)")
+                            if let savedImage = self.getSavedImage(named: "\(name)=\(updated)"){
+                                print("already saved \(name)=\(updated)")
                                 self.badgeImgs[i] = savedImage
                                 
                                 if i == self.clubBadgeIndex {
@@ -764,8 +831,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                                                 self.clubBadgeImage = image
                                             }
                                             
-                                            self.clearImageFolder(imageName: "\(name)-\(updated)")
-                                            self.saveImageDocumentDirectory(image: image!, imageName: "\(name)-\(updated)")
+                                            self.clearImageFolder(imageName: "\(name)=\(updated)")
+                                            self.saveImageDocumentDirectory(image: image!, imageName: "\(name)=\(updated)")
                                         }
                                         print("i success now")
                                     }
@@ -1025,8 +1092,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                             let updated = theMetaData["updated"]
                             
                             if let updated = updated {
-                                if let savedImage = self.getSavedImage(named: "\(imageName)-\(updated)"){
-                                    print("already saved \(imageName)-\(updated)")
+                                if let savedImage = self.getSavedImage(named: "\(imageName)=\(updated)"){
+                                    print("already saved \(imageName)=\(updated)")
                                     self.anncImgs[i] = savedImage
                                     self.anncImgHeights[i] = savedImage.size.height / savedImage.size.width * self.view.frame.width
                                 } else {
@@ -1046,8 +1113,8 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                                                 image = UIImage(data: imageData)!
                                                 self.anncImgs[i] = image!
                                                 self.anncImgHeights[i] = image!.size.height / image!.size.width * self.view.frame.width
-                                                self.clearImageFolder(imageName: "\(imageName)-\(updated)")
-                                                self.saveImageDocumentDirectory(image: image!, imageName: "\(imageName)-\(updated)")
+                                                self.clearImageFolder(imageName: "\(imageName)=\(updated)")
+                                                self.saveImageDocumentDirectory(image: image!, imageName: "\(imageName)=\(updated)")
                                             }
                                             print("i success now")
                                         }
@@ -1399,10 +1466,11 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             break
         case 3:
             let vc = segue.destination as! clubMembersController
+            vc.clubName = clubData["name"] as? String ?? "a club"
             vc.adminsList = clubData["admins"] as? [String] ?? ["Error!"]
             vc.membersList = clubData["members"] as? [String] ?? ["Error!"]
             vc.clubID = clubID
-            vc.clubBadge = (clubData["clubBadge"] as! String)
+            vc.clubBadge = clubData["clubBadge"] as? String ?? ""
             vc.isClubAdmin = isClubAdmin
             vc.promotedAMember = { result in
                 clubListDidUpdateClubDetails.clubAdminUpdatedData = true

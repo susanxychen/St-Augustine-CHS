@@ -53,6 +53,8 @@ class settingsController: UIViewController, MFMailComposeViewControllerDelegate 
         }
         
         //Colours
+        classesPrivateLabel.textColor = Defaults.primaryColor
+        clubsPrivateLabel.textColor = Defaults.primaryColor
         clearCacheButton.setTitleColor(Defaults.primaryColor, for: .normal)
         LogOutButton.setTitleColor(Defaults.primaryColor, for: .normal)
         sendFeedbackButton.setTitleColor(Defaults.primaryColor, for: .normal)
@@ -301,7 +303,7 @@ class settingsController: UIViewController, MFMailComposeViewControllerDelegate 
     //********************************CACHE********************************
     @IBAction func removeCache(_ sender: Any) {
         //Create the alert controller.
-        let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to clear cache? You will need to redownload all pictures again.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Clearing cache frees up space on your device's storage", message: "However, you will need to redownload all pictures again. Are you sure you want to clear cache?", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel) { (action:UIAlertAction) in
             print("You've pressed cancel");

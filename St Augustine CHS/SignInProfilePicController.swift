@@ -93,8 +93,8 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
                                 let updated = theMetaData["updated"]
                                 
                                 if let updated = updated {
-                                    if let savedImage = self.getSavedImage(named: "\(freePics[imgNum])-\(updated)"){
-                                        print("already saved \(freePics[imgNum])-\(updated)")
+                                    if let savedImage = self.getSavedImage(named: "\(freePics[imgNum])=\(updated)"){
+                                        print("already saved \(freePics[imgNum])=\(updated)")
                                         self.allProfileImages[imgNum] = savedImage
                                     } else {
                                         // Create a reference to the file you want to download
@@ -110,8 +110,8 @@ class SignInProfilePicController: UIViewController, UICollectionViewDataSource, 
                                                 if let imageData = data {
                                                     image = UIImage(data: imageData)!
                                                     self.allProfileImages[imgNum] = image!
-                                                    self.clearImageFolder(imageName: "\(freePics[imgNum])-\(updated)")
-                                                    self.saveImageDocumentDirectory(image: image!, imageName: "\(freePics[imgNum])-\(updated)")
+                                                    self.clearImageFolder(imageName: "\(freePics[imgNum])=\(updated)")
+                                                    self.saveImageDocumentDirectory(image: image!, imageName: "\(freePics[imgNum])=\(updated)")
                                                 }
                                                 print("i success now")
                                             }
