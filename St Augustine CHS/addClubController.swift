@@ -21,6 +21,7 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
     var clubJoinSetting = 0
     
     //Club IB Outlets
+    @IBOutlet weak var bannerHeight: NSLayoutConstraint!
     @IBOutlet weak var clubBanner: UIImageView!
     @IBOutlet weak var clubNameTxtView: UITextView!
     @IBOutlet weak var clubDescTxtView: UITextView!
@@ -79,6 +80,10 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
         
         //Hide keyboard when tapped out
         self.hideKeyboardWhenTappedAround()
+        
+        //Fix the banner to be 1280x720 ratio
+        let imgWidth = clubBanner.frame.width
+        bannerHeight.constant = imgWidth * (720/1280)
         
         //Colours
         statusBarView.backgroundColor = Defaults.darkerPrimary

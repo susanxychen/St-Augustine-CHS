@@ -346,6 +346,52 @@ exports.sendToTopic = functions.https.onCall((data, response) => {
     });
 });
 
+exports.sendToTopicHTTP = functions.https.onRequest((data, response) => {
+    const body = data.body;
+    const department = data.department;
+    const topic = data.topic;
+
+    console.log("HTTP version: " + topic);
+
+    // See the "Defining the message payload" section below for details
+    var message = {
+        topic: topic,
+        notification: {
+            title: 'New Announcement from ' + department,
+            body: body,
+        },
+
+        //android not really needed
+        android: {
+            notification: {
+                color: '#d8af1c',
+            },
+        },
+
+        //apple
+        apns: {
+            payload: {
+            aps: {
+                "content-available": 1,
+            },
+            },
+        }
+    };
+
+    // Send a message to devices subscribed to the provided topic.
+    admin.messaging().send(message)
+    .then((response2) => {
+        // See the MessagingTopicResponse reference documentation for the
+        // contents of response.
+        console.log('Successfully sent message:', response2);
+        return 'sucess';
+    })
+    .catch((error) => {
+        console.log('Error sending message:', error);
+        return 'error';
+    });
+});
+
 exports.manageSubscriptions = functions.https.onCall((data, context) => {
     const registrationTokens = data.registrationTokens;
     const isSubscribing = data.isSubscribing;

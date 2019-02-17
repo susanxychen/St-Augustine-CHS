@@ -219,6 +219,15 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     //****************************FORMATTING THE COLLECTION VIEWS****************************
+    //For some odd reason iPhone SE requires this
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if collectionView == menuCollectionView {
+            return CGSize(width: (self.menuCollectionView.frame.width), height: 45)
+        } else {
+            return CGSize(width: (self.regularMenuCollectionView.frame.width), height: 45)
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == menuCollectionView {
             return theActualMenu.count

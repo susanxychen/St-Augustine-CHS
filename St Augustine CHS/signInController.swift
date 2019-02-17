@@ -59,10 +59,15 @@ class signInController: UIViewController, GIDSignInDelegate, GIDSignInUIDelegate
             //Successfuly Signed In to Google
         } else {
             print("ERROR ::\(error.localizedDescription)")
-            let alert = UIAlertController(title: "Error in signing in to Google", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-            alert.addAction(okAction)
-            self.present(alert, animated: true, completion: nil)
+            
+            //Dont show the error if the user decides to cancel sign in flow
+            if error.localizedDescription != "The user canceled the sign-in flow." {
+                let alert = UIAlertController(title: "Error in signing in to Google", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+            }
+            
             return
         }
         

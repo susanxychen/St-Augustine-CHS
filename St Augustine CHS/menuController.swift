@@ -156,44 +156,10 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                     self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
                     return
                 }
+                
                 //If Valid k12 account auto segue to main screen
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//                    let lastSignIn = (Auth.auth().currentUser?.metadata.lastSignInDate)!
-//                    let creation = (Auth.auth().currentUser?.metadata.creationDate)!
-//
-//                    print(lastSignIn) //Apparently 2019-02-06 22:40:19 +0000 does not equal 2019-02-06 22:40:19 +0000
-//                    print(creation) //so thanks ill use doubles
-//
-//                    let trueSignIn = round(lastSignIn.timeIntervalSince1970)
-//                    let trueCreation = round(creation.timeIntervalSince1970)
-//
-//                    print(trueSignIn)
-//                    print(trueCreation)
-//
-//                    //if the user didnt come from the failed login as a new user
-//                    if (trueSignIn == trueCreation) {
-//                        print("new user")
-//                        var didSignInBefore: Bool
-//
-//                        if let x = UserDefaults.standard.object(forKey: "didSignInBefore") as? Bool {
-//                            didSignInBefore = x
-//                        } else {
-//                            didSignInBefore = false
-//                        }
-//
-//                        if !didSignInBefore {
-//                            print("new user! take em through the sign in flow")
-//                            self.viewAboveAllViews.removeFromSuperview()
-//                            self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
-//                        } else {
-//                            print("already signed up")
-//                            self.getAllStartingInfoAfterSignIn()
-//                        }
-//                    } else {
-//                        print("not new")
-//                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-                        self.getAllStartingInfoAfterSignIn()
-//                    }
+                    self.getAllStartingInfoAfterSignIn()
                 }
             }
         } else{
@@ -297,10 +263,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //Email
         displayEmail.text = String(user?.email?.split(separator: "@")[0] ?? "Error")
         
+        //Set crash details for firebase
         Crashlytics.sharedInstance().setUserIdentifier(user?.uid)
         Crashlytics.sharedInstance().setUserName(user?.displayName)
         Crashlytics.sharedInstance().setUserEmail(user?.email)
         
+        //Attempt to get user info
         db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
             print("do i even reach in here to get the data")
             if let docSnapshot = docSnapshot {
@@ -313,17 +281,10 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                     self.getClubAnncs()
                     self.updateDatabaseWithNewRemoteID()
                 } else {
+                    //If the user is new, then take em through the new sign in flow
                     print("its a new user")
                     self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
-//                    print("wow u dont exist")
-//                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-//                    let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Please enter your details again or contact the app dev team.", preferredStyle: .alert)
-//                    let okAction = UIAlertAction(title: "OK", style: .default , handler: { (action) in
-//                        self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
-//                    })
-//                    alert.addAction(okAction)
-//                    self.present(alert, animated: true, completion: nil)
                 }
             } else {
                 print("wow u dont exist")
@@ -338,7 +299,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         }
     }
     
+    //Every time the home screen apperars
     override func viewDidAppear(_ animated: Bool) {
+        //See if you have entered the titan tag screen, if so then auto adjust brightness
         if let x = UserDefaults.standard.object(forKey: "didEnterTT") as? Bool {
             if x {
                 UIScreen.animateBrightness(to: brightnessBeforeTT)
@@ -349,12 +312,14 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         } else {
             brightnessBeforeTT = UIScreen.main.brightness
         }
+        
+        //Also update the image to the latest one the user has chosen
         profilePicture.image = allUserFirebaseData.profilePic
-        //self.refreshList()
     }
     
     func setupRemoteConfigDefaults() {
         let defaultValues = [
+            "songRequestTheme": "" as NSObject,
             "AllowAccounts": 0 as NSObject,
             "AppOnline": 1 as NSObject,
             "primaryColor": UIColor(hex: "#8D1230") as NSObject,
@@ -435,15 +400,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         Defaults.attendingEvent = Int(RemoteConfig.remoteConfig().configValue(forKey: "attendingEvent").stringValue ?? "100") ?? 100
         Defaults.startingPoints = Int(RemoteConfig.remoteConfig().configValue(forKey: "startingPoints").stringValue ?? "100") ?? 100
         
-//        print("\(RemoteConfig.remoteConfig().configValue(forKey: "joiningClub").stringValue) is remote config?")
-//        print(Defaults.joiningClub)
-//        
-//        print("\(RemoteConfig.remoteConfig().configValue(forKey: "attendingEvent").stringValue) is remote config?")
-//        print(Defaults.attendingEvent)
-//        
-//        print("\(RemoteConfig.remoteConfig().configValue(forKey: "startingPoints").stringValue) is remote config?")
-//        print(Defaults.startingPoints)
-        
         //Pic costs
         Defaults.picCosts[0] = Int(RemoteConfig.remoteConfig().configValue(forKey: "basicPic").stringValue ?? "30") ?? 30
         Defaults.picCosts[1] = Int(RemoteConfig.remoteConfig().configValue(forKey: "commonPic").stringValue ?? "50") ?? 50
@@ -458,6 +414,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         
         Defaults.supervoteRatio = CGFloat(((RemoteConfig.remoteConfig().configValue(forKey: "supervoteRatio").stringValue ?? "1.0") as NSString).floatValue)
         
+        Defaults.songRequestTheme = RemoteConfig.remoteConfig().configValue(forKey: "songRequestTheme").stringValue ?? ""
+        
+        //Now actually change the colours
         changeMenuControllerColours()
     }
     
@@ -536,11 +495,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             while thereWasASwap {
                 thereWasASwap = false
                 for i in 0...clubNewsData.count-2 {
-                    //Check if there is an image. If so also add a note saying there is an image
-                    if clubNewsData[i]["img"] as! String != "" && !(clubNewsData[i]["content"] as! String).hasSuffix(" (This announcement has an image)") {
-                        clubNewsData[i]["content"] = clubNewsData[i]["content"] as! String + " (This announcement has an image)"
-                    }
-                    
                     let timestamp1: Timestamp = clubNewsData[i]["date"] as! Timestamp
                     let date1: Date = timestamp1.dateValue()
                     let timestamp2: Timestamp = clubNewsData[i + 1]["date"] as! Timestamp
@@ -554,15 +508,6 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                         clubNewsData[i+1] = temp
                     }
                 }
-                //Check if there is an image. If so also add a note saying there is an image
-                if clubNewsData[clubNewsData.count-1]["img"] as! String != "" && !(clubNewsData[clubNewsData.count-1]["content"] as! String).hasSuffix(" (This announcement has an image)") {
-                    clubNewsData[clubNewsData.count-1]["content"] = clubNewsData[clubNewsData.count-1]["content"] as! String + " (This announcement has an image)"
-                }
-            }
-        } else {
-            //Check if there is an image. If so also add a note saying there is an image
-            if (clubNewsData[0]["img"] as! String) != "" && !(clubNewsData[0]["content"] as! String).hasSuffix(" (This announcement has an image)") {
-                clubNewsData[0]["content"] = clubNewsData[0]["content"] as! String + " (This announcement has an image)"
             }
         }
         self.clubAnncView.reloadData()
@@ -631,6 +576,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        //Club
         if collectionView == clubAnncView {
             let theFont = UIFont(name: "Scada-Regular", size: 18)!
             //Dynamically change the cell size depending on the announcement length
@@ -644,9 +590,18 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             let estimatedFrameContent = NSString(string: clubNewsData[indexPath.item]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
             let theHeight = estimatedFrameContent.height + estimatedFrameTitle.height + 125
             
+            var imgLabelHeight: CGFloat = 0
+            //If there is an image attached, just tell them to go to the club page
+            if clubNewsData[indexPath.item]["img"] as? String ?? "" != "" {
+                imgLabelHeight = 20
+            }
+            
             //Also add the height of the picture and the announcements and the space inbetween
-            return CGSize(width: view.frame.width, height: theHeight)
-        } else {
+            return CGSize(width: view.frame.width, height: theHeight + imgLabelHeight)
+        }
+        
+        //General
+        else {
             //Dynamically change the cell size depending on the announcement length
             let approxWidthOfAnnouncementTextView = view.frame.width - 8
             var size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
@@ -655,17 +610,20 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             
             let contentHeight =  estimatedFrame.height + 8
             size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
-            attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
+            attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 19)!]
             estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             
             let titleHeight = estimatedFrame.height + 8
-
             
-            return CGSize(width: view.frame.width, height: contentHeight + titleHeight)
+            return CGSize(width: view.frame.width, height: contentHeight + titleHeight + 8)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        //Dynamically adjust home screen
+        //There is really no reason this should be here, i just need it to run at leats once. maybe it could be put in sizeForItemAt or even numberOfItemsInSection
+        //As long as this auto adjusts to the length of the height
+        calendarButton.isHidden = false
         let height = self.annoucView.contentSize.height + self.clubAnncView.contentSize.height + 340
         self.anncViewHeight.constant = self.annoucView.contentSize.height + 10
         self.clubAnncHeight.constant = self.clubAnncView.contentSize.height + 10
@@ -699,23 +657,24 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             cell.anncDep.centerVertically()
             cell.anncText.centerVertically()
             
+            //Dynamically adjust title height
             let approxWidthOfAnnouncementTextView = cell.anncText.frame.width
-            var size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
-            var attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
-            var estimatedFrame = NSString(string: newsData[indexPath.row][1]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
-            
-            let contentHeight =  estimatedFrame.height
-            cell.contentHeight.constant = contentHeight + 8
-            
-            size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
-            attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
-            estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+            let size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
+            let attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
+            let estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
             
             let titleHeight = estimatedFrame.height
-            
             cell.titleHeight.constant = titleHeight + 8
             
-            calendarButton.isHidden = false
+            //No need to do this as the cell size is already the perfect size.
+            //and since the bottom constraint of the anncText view is tied to the bottom of the cell we are all good
+            //Dyanmically adjust content height
+//            size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
+//            attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 19)!]
+//            estimatedFrame = NSString(string: newsData[indexPath.row][1]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+//
+//            let contentHeight = estimatedFrame.height
+//            cell.contentHeight.constant = contentHeight + 8
             
             return cell
         } else {
@@ -736,10 +695,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             cell.titleLabel.text = clubNewsData[indexPath.item]["title"] as? String ?? "error"
             cell.contentLabel.text = clubNewsData[indexPath.item]["content"] as? String ?? "error"
             
-            if cell.contentLabel.text.hasSuffix(" (This announcement has an image)") {
-                cell.contentLabel.text = String(cell.contentLabel.text.dropLast(33))
+            //If there is an image attached, just tell them to go to the club page
+            if clubNewsData[indexPath.item]["img"] as? String ?? "" != "" {
+                cell.seeImageLabelHeight.constant = 20
                 cell.seeImageLabel.isHidden = false
             } else {
+                cell.seeImageLabelHeight.constant = 0
                 cell.seeImageLabel.isHidden = true
             }
             
@@ -797,10 +758,9 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         updateViewWithRCValues()
         fetchRemoteConfig()
         
-        print("I refreshed stuff indian tech tutorial style")
         getDayNumber()
         newsTask()
-        //snowTask()
+        
         let user = Auth.auth().currentUser
         db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
             if let docSnapshot = docSnapshot {
@@ -815,7 +775,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 } else {
                     print("wow 100% dont exist")
                     self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-                    let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Please enter your details again or contact the app dev team.", preferredStyle: .alert)
+                    let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Please enter your details again.", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default , handler: { (action) in
                         self.performSegue(withIdentifier: "signInFlow", sender: self.newUserButton)
                     })
@@ -824,13 +784,14 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
                 }
             } else {
                 print("wow u dont exist")
-                let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Try again later or contact the app dev team.", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Error", message: "You could not be located in the database. Try again later.", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .cancel, handler: { (action) in
                     self.performSegue(withIdentifier: "failedLogin", sender: self.failedSignInButton)
                 })
                 alert.addAction(okAction)
             }
         }
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.refreshControl?.endRefreshing()
         }
@@ -926,55 +887,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
 
             }
         }
-//        var dayTemp = "Error Occured"
-//        let task = URLSession.shared.dataTask(with: dayURL!) { (data, response, error) in
-//            if error != nil {
-//                DispatchQueue.main.async {
-//                    self.dayNumber.text = "Cannot find day website URL"
-//                }
-//            } else{
-//                let htmlContent = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!
-//                dayTemp = self.updateDay(content: htmlContent as String)
-//
-//                //Need this because UILabel cannot be called out of main thread
-//                DispatchQueue.main.async {
-//                    self.dayNumber.text = dayTemp
-//                }
-//            }
-//        }
-//        task.resume()
     }
-    
-//    func updateDay(content: String) -> String{
-//        let theDay = DateFormatter.localizedString(from: NSDate() as Date, dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
-//        if (theDay.range(of:"Sunday") != nil) || (theDay.range(of:"Saturday") != nil){
-//            db.collection("info").document("dayNumber").getDocument { (snap, err) in
-//                if let err = err {
-//                    self.dayNumber.text = "Error: \(err.localizedDescription)"
-//                }
-//                if let snap = snap {
-//                    let data = snap.data()!
-//                    let fridayDayNumber = data["dayNumber"] as! String
-//
-//                    if fridayDayNumber == "1" {
-//                        self.dayNumber.text = "Monday will be Day 2"
-//                    } else if fridayDayNumber == "2" {
-//                        self.dayNumber.text = "Monday will be Day 1"
-//                    } else {
-//                        self.dayNumber.text = "Could not get day number"
-//                    }
-//
-//                }
-//            }
-//            return "Day "
-//        } else{
-//            //Look for last time "Day " is mentioned and output that
-//            let dayFound = content.lastIndex(of: "Day ")!
-//            let range = dayFound..<(dayFound + 5)
-//
-//            return String(content[range])
-//        }
-//    }
     
     //*********************************************GETTING NEWS**************************************************
     func newsTask(){

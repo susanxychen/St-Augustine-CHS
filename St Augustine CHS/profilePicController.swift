@@ -15,6 +15,10 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
     var db: Firestore!
     var docRef: DocumentReference!
     
+    //SCREEN SIZE FIXES
+    @IBOutlet weak var profilePicHeight: NSLayoutConstraint!
+    @IBOutlet weak var profilePicWidth: NSLayoutConstraint!
+    
     //UI Elements
     @IBOutlet weak var updateButton: UIButton!
     
@@ -87,12 +91,21 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
         cancelOrUpdateView.backgroundColor = Defaults.primaryColor
         lineBetweenOwnedAndAll.backgroundColor = Defaults.primaryColor
         
+        //Fixing screen sizes for the SE
+        //568.0 for SE
+        //667.0 for 6
+        if UIScreen.main.bounds.height < 667.0 {
+            //just make the profile picture smaller
+            profilePicWidth.constant = 100
+            profilePicHeight.constant = 100
+        }
+        
         //Set up the current profile image
         theProfilePic.image = thePicImage
-        theProfilePic.layer.borderWidth = 3.0
+        theProfilePic.layer.borderWidth = 2.0
         theProfilePic.layer.masksToBounds = false
         theProfilePic.layer.borderColor = UIColor.white.cgColor
-        theProfilePic.layer.cornerRadius = 200/2
+        theProfilePic.layer.cornerRadius = profilePicWidth.constant/2
         theProfilePic.clipsToBounds = true
         
         //Always bounce

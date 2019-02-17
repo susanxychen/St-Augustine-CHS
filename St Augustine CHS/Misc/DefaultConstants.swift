@@ -25,5 +25,8 @@ struct Defaults {
     static var requestSong: Int = 20
     static var supervoteMin: Int = 10
     static var supervoteRatio: CGFloat = 1.0
+    
+    static var songRequestTheme: String = ""
+    
 }
 

@@ -11,12 +11,19 @@ import Foundation
 import Firebase
 
 class songViewCell: UICollectionViewCell {
+    
+    @IBOutlet weak var voteArrowButtonView: UIView!
     @IBOutlet weak var songName: UILabel!
     @IBOutlet weak var artistName: UILabel!
     @IBOutlet weak var voteCount: UILabel!
     @IBOutlet weak var upvotedButton: UIButton!
     @IBOutlet weak var voteArrow: UIImageView!
     @IBOutlet weak var songID: UILabel!
+    
+    //SMALL SCREEN CONSTRAINTS
+    @IBOutlet weak var voteViewSideConstraint: NSLayoutConstraint!
+//    @IBOutlet weak var songNameSideConstraint: NSLayoutConstraint!
+//    @IBOutlet weak var artistNameSideConstraint: NSLayoutConstraint!
     
     //Cloud Functions
     lazy var functions = Functions.functions()

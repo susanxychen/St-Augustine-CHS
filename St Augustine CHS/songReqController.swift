@@ -30,6 +30,10 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     
     var isOverMaxSongs = false
     
+    //Song Request Themes
+    @IBOutlet weak var themeLabel: UILabel!
+    @IBOutlet weak var themeLabelHeight: NSLayoutConstraint!
+    
     //Refresh Controls
     var refreshControl: UIRefreshControl?
     
@@ -48,13 +52,14 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //Add the super vote recognizer
         let lpgr: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress(gestureRecognizer:)))
         lpgr.minimumPressDuration = 0.5
         //lpgr.delegate = self as? UIGestureRecognizerDelegate
         lpgr.delaysTouchesBegan = true
         self.songView.addGestureRecognizer(lpgr)
         
-        
+        //Add the request a song floating button
         let floaty = Floaty()
         floaty.buttonColor = Defaults.accentColor
         floaty.plusColor = UIColor.white
@@ -103,12 +108,23 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         cancelButton.setTitleColor(Defaults.accentColor, for: .normal)
         supervoteSlider.tintColor = Defaults.accentColor
         
+        themeLabel.textColor = Defaults.accentColor
+        themeLabel.backgroundColor = Defaults.darkerPrimary
+        
         supervoteSlider.minimumValue = Float(Defaults.supervoteMin)
         supervoteSlider.maximumValue = Float(allUserFirebaseData.data["points"] as! Int)
         
-        //Get the data of whether you voted or not
+        //Get the data of what you voted for before
         if let x = UserDefaults.standard.object(forKey: "songsVoted") as? [[Any]]{
             voteData.songsVoted = x
+        }
+        
+        //Check for a song request theme
+        if Defaults.songRequestTheme != "" {
+            themeLabel.text = "THEME: \(Defaults.songRequestTheme)"
+            themeLabelHeight.constant = 35
+        } else {
+            themeLabelHeight.constant = 0
         }
         
         getSongData()
@@ -389,8 +405,12 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         self.songView.reloadData()
     }
     
-    //***********************************FORMATTING THE SONGS************************************* 
-    //RETURN CLUB COUNT
+    //***********************************FORMATTING THE SONGS*************************************
+    //For some odd reason iPhone SE requires this
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: (self.songView.frame.width), height: 100)
+    }
+    
     //Make sure when you add collection view you add data source and delegate connections on storyboard
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return voteData.songsVoted.count
@@ -415,16 +435,23 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
             cell.voteCount.textColor = UIColor.darkText
         }
         
-        cell.bringSubviewToFront(cell.upvotedButton)
+        //FIXING CONSTRAINTS
+        //See if its smaller than an iPhone 6 Screen
+//        if songView.frame.width < 375 {
+//            cell.voteViewSideConstraint.constant = 20
+//        } else {
+//            cell.voteViewSideConstraint.constant = 12
+//        }
+        cell.bringSubviewToFront(cell.voteArrowButtonView)
+        cell.voteArrowButtonView.bringSubviewToFront(cell.upvotedButton)
+        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print(indexPath.item)
     }
- 
-    //*******************ADD A SONG******************
-    //put a reqeust a song thing here
+    
     
     //*****************************************REFRESHING DATA**************************************
     func addRefreshControl(){

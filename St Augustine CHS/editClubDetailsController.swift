@@ -30,6 +30,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     var pendingList = [String]()
     
     //Club IB Outlets
+    @IBOutlet weak var bannerHeight: NSLayoutConstraint!
     @IBOutlet weak var updateButton: UIButton!
     @IBOutlet weak var clubBanner: UIImageView!
     @IBOutlet weak var clubNameTxtView: UITextView!
@@ -97,6 +98,10 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
         //Hide keyboard when tapped out
         self.hideKeyboardWhenTappedAround()
         
+        //Fix the banner to be 1280x720 ratio
+        let imgWidth = clubBanner.frame.width
+        bannerHeight.constant = imgWidth * (720/1280)
+        
         //Colours
         statusBarView.backgroundColor = Defaults.darkerPrimary
         topBarView.backgroundColor = Defaults.primaryColor
@@ -151,7 +156,6 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
 //        clubBanner.image = resized
         let cropVC = CropViewController(image: image)
         cropVC.delegate = self
-        cropVC.title = "Banners should be in a 1280x720 ratio"
         cropVC.rotateButtonsHidden = true
         cropVC.aspectRatioLockEnabled = true
         cropVC.resetButtonHidden = true
@@ -188,6 +192,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     
     //***************************UPDATE THE CLUB DETAILS***************************
     @IBAction func updateClubDetails(_ sender: Any) {
+        //Check each condition such as empty fields or too long names
         
         if clubNameTxtView.text == "" || clubDescTxtView.text == "" {
             //Tell the user that information needs to be filled in
@@ -211,7 +216,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
             self.present(alert, animated: true, completion: nil)
         }
         
-        else if (self.clubDescTxtView.text?.count)! > 300 {
+        else if (self.clubDescTxtView.text?.count)! > 300 && (allUserFirebaseData.data["status"] as? Int ?? 0 != 2) {
             let alert = UIAlertController(title: "Error", message: "Description is too long", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(okAction)

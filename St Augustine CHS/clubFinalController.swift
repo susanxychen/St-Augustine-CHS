@@ -32,6 +32,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     var anncImgHeights = [CGFloat]()
     var clubID = String()
     
+    @IBOutlet weak var bannerHeight: NSLayoutConstraint!
     @IBOutlet weak var bannerImageView: UIImageView!
     @IBOutlet weak var clubNameTextView: UITextView!
     @IBOutlet weak var clubDescTextView: UITextView!
@@ -145,6 +146,10 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         clubNameTextView.text = clubData["name"] as? String ?? "error"
         clubDescTextView.text = clubData["desc"] as? String ?? "error"
         
+        //Fix the banner to be 1280x720 ratio
+        let imgWidth = bannerImageView.frame.width
+        bannerHeight.constant = imgWidth * (720/1280)
+        
         var fixedWidth = clubNameTextView.frame.size.width
         var newSize = clubNameTextView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
         clubNameTextView.frame.size = CGSize(width: max(newSize.width, fixedWidth), height: newSize.height)
@@ -155,9 +160,15 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         
         //Get club announcements if part of club
         if partOfClub || allUserFirebaseData.data["status"] as! Int == 2 {
-            joinClubButton.isHidden = true
-            constraintBetweenDescAndBadgeLabel.constant = 8
-            joinClubButton.frame.size = CGSize(width: joinClubButton.frame.width, height: 0)
+            
+            //If you are actually part of the club, dont show the button
+            if partOfClub {
+                joinClubButton.isHidden = true
+                constraintBetweenDescAndBadgeLabel.constant = 8
+                joinClubButton.frame.size = CGSize(width: joinClubButton.frame.width, height: 0)
+            }
+            
+            //Get all the annnouncments still regardless of status
             getClubAnnc()
         } else {
             announcementLabel.isHidden = true
@@ -264,7 +275,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     
     //**********************JOINING CLUBS***********************
     @IBAction func joinClubButtonTapped(_ sender: Any) {
-        let joinStatus = clubData["joinPref"] as! Int
+        let joinStatus = clubData["joinPref"] as? Int ?? 0
         print("wow u want to join the best club. Join status \(joinStatus)")
         clubListDidUpdateClubDetails.clubAdminUpdatedData = true
         
@@ -293,7 +304,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             let clubRef = self.db.collection("clubs").document(clubID)
             clubRef.updateData(["pending": FieldValue.arrayUnion([Auth.auth().currentUser?.uid as Any])])
             
-            let ac = UIAlertController(title: "Note", message: "New members require admin approval to join this club. You'll receive a notification once you have been accepted.", preferredStyle: .alert)
+            let ac = UIAlertController(title: "Note", message: "New members require admin approval to join this club. You'll receive a notification once you have been accepted. All club admins have been notified of your request to join.", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: { (alert) in
                 self.refreshList()
             }))
@@ -325,9 +336,6 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                 "notifications": FieldValue.arrayUnion([self.clubID])
             ])
             
-//            var ref = allUserFirebaseData.data["clubs"] as! [String]
-//            allUserFirebaseData.data["clubs"] = ref.append(clubID)
-            
             //Make label visible and announcements visible and also hide the join club button obviously
             announcementLabel.isHidden = false
             anncCollectionView.isHidden = false
@@ -349,50 +357,6 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                 }
             }
             
-//            self.db.runTransaction({ (transaction, errorPointer) -> Any? in
-//                let uDoc: DocumentSnapshot
-//                do {
-//                    try uDoc = transaction.getDocument(userRef)
-//                } catch let fetchError as NSError {
-//                    errorPointer?.pointee = fetchError
-//                    return nil
-//                }
-//
-//                guard let oldPoints = uDoc.data()?["points"] as? Int else {
-//                    let error = NSError(
-//                        domain: "AppErrorDomain",
-//                        code: -1,
-//                        userInfo: [
-//                            NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
-//                        ]
-//                    )
-//                    errorPointer?.pointee = error
-//                    return nil
-//                }
-//                transaction.updateData(["points": oldPoints + 10], forDocument: userRef)
-//                return nil
-//            }, completion: { (object, err) in
-//                if let error = err {
-//                    print("Transaction failed: \(error)")
-//                } else {
-//                    print("Transaction successfully committed!")
-//                    print("successfuly gave badge")
-//
-//                    let user = Auth.auth().currentUser
-//                    self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
-//                        if let docSnapshot = docSnapshot {
-//                            self.partOfClub = true
-//                            allUserFirebaseData.data = docSnapshot.data()!
-//                            if !self.cameFromSocialPage {
-//                                self.joinedANewClubBlock?(true)
-//                            }
-//                            self.refreshList()
-//                        } else {
-//                            print("wow u dont exist")
-//                        }
-//                    }
-//                }
-//            })
         }
     }
     
@@ -442,12 +406,6 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                 self.segueNum = 0
                 self.performSegue(withIdentifier: "editClubDetails", sender: self.editClubDetailsButton)
             }))
-//            actionSheet.addAction(UIAlertAction(title: "Add Announcement", style: .default, handler: { (action:UIAlertAction) in
-//                print("add")
-//                self.isEditingAnnc = false
-//                self.segueNum = 1
-//                self.performSegue(withIdentifier: "addAnnc", sender: self.addAnncButton)
-//            }))
             
             if (clubData["joinPref"] as? Int ?? 0) == 1 {
                 actionSheet.addAction(UIAlertAction(title: "Pending List", style: .default, handler: { (action:UIAlertAction) in
@@ -565,85 +523,104 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                         print("unsubscribed to topic")
                     }
                     
-                    //Remove points
-//                    self.db.runTransaction({ (transaction, errorPointer) -> Any? in
-//                        let uDoc: DocumentSnapshot
-//                        do {
-//                            try uDoc = transaction.getDocument(userRef)
-//                        } catch let fetchError as NSError {
-//                            errorPointer?.pointee = fetchError
-//                            return nil
-//                        }
-//
-//                        guard let oldPoints = uDoc.data()?["points"] as? Int else {
-//                            let error = NSError(
-//                                domain: "AppErrorDomain",
-//                                code: -1,
-//                                userInfo: [
-//                                    NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
-//                                ]
-//                            )
-//                            errorPointer?.pointee = error
-//                            return nil
-//                        }
-//                        transaction.updateData(["points": oldPoints - Defaults.joiningClub], forDocument: userRef)
-//                        return nil
-//                    }, completion: { (object, err) in
-//                        if let error = err {
-//                            print("Transaction failed: \(error)")
-//                        } else {
-//                            print("Transaction successfully committed!")
-//
-//                            //Take the grade points
-//                            let gradYear = allUserFirebaseData.data["gradYear"] as? Int ?? 0
-//                            let pointRef = self.db.collection("info").document("spiritPoints")
-//                            self.db.runTransaction({ (transaction, errorPointer) -> Any? in
-//                                let pDoc: DocumentSnapshot
-//                                do {
-//                                    try pDoc = transaction.getDocument(pointRef)
-//                                } catch let fetchError as NSError {
-//                                    errorPointer?.pointee = fetchError
-//                                    return nil
-//                                }
-//                                guard let oldPoints = pDoc.data()?[String(gradYear)] as? Int else {
-//                                    let error = NSError(
-//                                        domain: "AppErrorDomain",
-//                                        code: -1,
-//                                        userInfo: [
-//                                            NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(pDoc)"
-//                                        ]
-//                                    )
-//                                    errorPointer?.pointee = error
-//                                    return nil
-//                                }
-//                                transaction.updateData([String(gradYear): oldPoints - Defaults.joiningClub], forDocument: pointRef)
-//                                return nil
-//                            }, completion: { (object, err) in
-//                                if let error = err {
-//                                    print("Transaction failed: \(error)")
-//                                    let ac = UIAlertController(title: "Transaction Error: Grad - \(gradYear)", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
-//                                    ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-//                                    self.present(ac, animated: true)
-//                                } else {
-//                                    print("Transaction successfully committed!")
-//                                    print("successfuly gave badge")
-//                                }
-//
-//                                let user = Auth.auth().currentUser
-//                                self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
-//                                    if let docSnapshot = docSnapshot {
-//                                        allUserFirebaseData.data = docSnapshot.data()!
-//                                        self.joinedANewClubBlock?(true)
-//                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-//                                            self.navigationController?.popViewController(animated: true)
-//                                        })
-//                                    } else {
-//                                        print("wow u dont exist")
-//                                    }
-//                                }
-//                            })
-//                        }
-//                    })
+                    //take them points if status 1
+                    if self.clubData["joinPref"] as? Int ?? 0 == 1 {
+                        let gradYear = allUserFirebaseData.data["gradYear"] as? Int ?? 0
+                        self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                            let uDoc: DocumentSnapshot
+                            do {
+                                try uDoc = transaction.getDocument(userRef)
+                            } catch let fetchError as NSError {
+                                errorPointer?.pointee = fetchError
+                                return nil
+                            }
+                            
+                            guard let oldPoints = uDoc.data()?["points"] as? Int else {
+                                let error = NSError(
+                                    domain: "AppErrorDomain",
+                                    code: -1,
+                                    userInfo: [
+                                        NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+                                    ]
+                                )
+                                errorPointer?.pointee = error
+                                return nil
+                            }
+                            transaction.updateData(["points": oldPoints - Defaults.joiningClub], forDocument: userRef)
+                            return nil
+                        }, completion: { (object, err) in
+                            if let error = err {
+                                print("Transaction failed: \(error)")
+                                let ac = UIAlertController(title: "Could not give points to user", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+                                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                                self.present(ac, animated: true)
+                            } else {
+                                print("Transaction successfully committed!")
+                                
+                                //Take the grade points
+                                let pointRef = self.db.collection("info").document("spiritPoints")
+                                self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                                    let pDoc: DocumentSnapshot
+                                    do {
+                                        try pDoc = transaction.getDocument(pointRef)
+                                    } catch let fetchError as NSError {
+                                        errorPointer?.pointee = fetchError
+                                        return nil
+                                    }
+                                    guard let oldPoints = pDoc.data()?[String(gradYear)] as? Int else {
+                                        let error = NSError(
+                                            domain: "AppErrorDomain",
+                                            code: -1,
+                                            userInfo: [
+                                                NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(pDoc)"
+                                            ]
+                                        )
+                                        errorPointer?.pointee = error
+                                        return nil
+                                    }
+                                    transaction.updateData([String(gradYear): oldPoints - Defaults.joiningClub], forDocument: pointRef)
+                                    return nil
+                                }, completion: { (object, err) in
+                                    if let error = err {
+                                        print("Transaction failed: \(error)")
+                                        let ac = UIAlertController(title: "Transaction Error: Grad - \(gradYear)", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+                                        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                                        self.present(ac, animated: true)
+                                    } else {
+                                        print("Transaction successfully committed!")
+                                    }
+                                    
+                                    //Kick the user back out to the main screen
+                                    let user = Auth.auth().currentUser
+                                    self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                                        if let docSnapshot = docSnapshot {
+                                            allUserFirebaseData.data = docSnapshot.data()!
+                                            self.joinedANewClubBlock?(true)
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                                                self.navigationController?.popViewController(animated: true)
+                                            })
+                                        } else {
+                                            print("wow u dont exist")
+                                        }
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+                        //Kick the user back out to the main screen
+                        let user = Auth.auth().currentUser
+                        self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                            if let docSnapshot = docSnapshot {
+                                allUserFirebaseData.data = docSnapshot.data()!
+                                self.joinedANewClubBlock?(true)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                                    self.navigationController?.popViewController(animated: true)
+                                })
+                            } else {
+                                print("wow u dont exist")
+                            }
+                        }
+                    }
                 }
                 alert.addAction(confirmAction)
                 alert.addAction(cancelAction)
@@ -843,13 +820,11 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                 }
             }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5){
+            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+            self.refreshControl?.endRefreshing()
             self.badgeCollectionView.reloadData()
-            
-            //Back up just in case images dont load
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
-                self.badgeCollectionView.reloadData()
-            }
         }
     }
     
@@ -885,7 +860,6 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
                     let confirmAction = UIAlertAction(title: "Delete", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
                         print("Deleted the annc");
-                        self.showActivityIndicatory(container: self.container, actInd: self.actInd)
                         let theDeleteAnncID = self.anncRef[indexPath.item]
                         
                         DispatchQueue.main.async {
@@ -1396,11 +1370,11 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     self.getClubAnnc()
                 }
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-                    self.anncCollectionView.reloadData()
-                    self.refreshControl?.endRefreshing()
-                })
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+//                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+//                    self.anncCollectionView.reloadData()
+//                    self.refreshControl?.endRefreshing()
+//                })
             } else {
                 print("Document does not exist")
             }

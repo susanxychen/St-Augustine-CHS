@@ -398,6 +398,12 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
         self.pendingListCollectionView.reloadData()
     }
     
+    
+    //For some odd reason iPhone SE requires this
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: (self.pendingListCollectionView.frame.width), height: 64)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return pendingNamesList.count
     }

@@ -201,6 +201,8 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
     func getBadgeDocs(theData: [String:Any]){
         badgeData.removeAll()
         badgeImgs.removeAll()
+        
+        //If there are no badges, just dont show the thing itself
         if (theData["badges"] as! [String]).count == 0 {
             badgeCollectionViewHeight.constant = 0
             badgesCollectionView.reloadData()
@@ -208,9 +210,14 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         } else {
             badgeCollectionViewHeight.constant = 133
         }
+        
+        //This loop creates just "filler" data so that the real badge data will replace it
+        //This is needed because otherwise badge images will not match the badge data if we just randomly append
         for _ in theData["badges"] as! [String] {
             badgeData.append(["err":"err"])
         }
+        
+        //Now actually get the badges
         for x in 0...(theData["badges"] as! [String]).count - 1 {
             let id = (theData["badges"] as! [String])[x]
             db.collection("badges").document(id).getDocument { (snap, err) in
@@ -238,6 +245,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         for _ in badgeData {
             badgeImgs.append(UIImage())
         }
+        
         for i in 0...badgeImgs.count - 1 {
             let name = badgeData[i]["img"] as? String ?? "Error"
             //Image
@@ -567,7 +575,13 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                                         }
                                     }
                                     
-                                    self.classesInCommon.setTitle("\(self.numOfSameCourses) classes in common", for: .normal)
+                                    //Grammar
+                                    if self.numOfSameCourses == 1 {
+                                        self.classesInCommon.setTitle("1 class in common", for: .normal)
+                                    } else {
+                                        self.classesInCommon.setTitle("\(self.numOfSameCourses) classes in common", for: .normal)
+                                    }
+                                    
                                     self.classesInCommon.isUserInteractionEnabled = true
                                 } else {
                                     self.classesInCommon.isUserInteractionEnabled = false
@@ -809,8 +823,11 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
             vc.classes = theOtherPersonsClasses
             vc.yourClasses = allUserFirebaseData.data["classes"] as! [String]
             
+            //If you are looking at your own schedule, theOtherPersonsClasses would be yourself
             if lookingAtOtherUserInGeneral {
                 vc.viewingYourself = false
+            } else {
+                vc.classes = allUserFirebaseData.data["classes"] as! [String]
             }
             
             break

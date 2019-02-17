@@ -281,7 +281,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
         var anncDesc = ""
         
         //Check for content text field
-        if contentTxtArea.text != "" && contentTxtArea.text != "content" {
+        if contentTxtArea.text != "" {
             anncDesc = contentTxtArea.text!
         } else{
             print("There was no description")

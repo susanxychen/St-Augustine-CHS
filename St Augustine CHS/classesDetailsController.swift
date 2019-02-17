@@ -54,6 +54,16 @@ class classesDetailsController: UIViewController, UICollectionViewDataSource, UI
     }
     
     //****************************FORMATTING THE COLLECTION VIEWS****************************
+    //For some odd reason iPhone SE requires this
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if collectionView == semester1CollectionView {
+            return CGSize(width: (self.semester1CollectionView.frame.width), height: 50)
+        } else {
+            return CGSize(width: (self.semester2CollectionView.frame.width), height: 50)
+        }
+    }
+    
+    //Just return 4 cells cause 4 courses
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 4
     }
@@ -86,6 +96,7 @@ class classesDetailsController: UIViewController, UICollectionViewDataSource, UI
         let vc = segue.destination as! changeCoursesController
         vc.coursesBefore = allUserFirebaseData.data["classes"] as! [String]
         vc.onDoneBlock = { result in
+            print("Afterwards: \(allUserFirebaseData.data["classes"] as! [String])")
             self.classes = allUserFirebaseData.data["classes"] as! [String]
             self.semester1CollectionView.reloadData()
             self.semester2CollectionView.reloadData()

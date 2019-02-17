@@ -479,7 +479,13 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     //*************************************FORMATTING THE CLUBS*************************************
-    //Make sure when you add collection view you add data source and delegate connections on storyboard
+    //Make the club tiles all 1280x720 ratio
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = clubListView.frame.width
+        let height = width * (720/1280)
+        return CGSize(width: width, height: height)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         //print("i do get run club list")
         if viewingPersonalClubs{
@@ -568,10 +574,16 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
         
         if viewingPersonalClubs {
             viewingPersonalClubs = !viewingPersonalClubs
+            
+            //Get data for all clubs
+            //Quick Switch only if you already downloaded data
             if didNotDownloadData {
+                print("Getting new club list")
                 didNotDownloadData = false
                 getClubs()
-            } else {
+            }
+            
+            else {
                 clubListView.isHidden = false
                 self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                 clubListView.reloadData()

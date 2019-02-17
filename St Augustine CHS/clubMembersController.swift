@@ -378,9 +378,8 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                         print("Result is: \(String(describing: result?.data))")
                     }
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                        self.getClubData()
-                    })
+                    let gradYear = Int(self.adminsEmailsList[indexPath.item].suffix(14).prefix(2)) ?? 0
+                    self.takeAwayPoints(userRef: userRef, gradYear: gradYear)
                 }
                 alert.addAction(confirmAction)
                 alert.addAction(cancelAction)
@@ -482,85 +481,8 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                         print("Result is: \(String(describing: result?.data))")
                     }
                     
-                    //take them points
-//                    self.db.runTransaction({ (transaction, errorPointer) -> Any? in
-//                        let uDoc: DocumentSnapshot
-//                        do {
-//                            try uDoc = transaction.getDocument(userRef)
-//                        } catch let fetchError as NSError {
-//                            errorPointer?.pointee = fetchError
-//                            return nil
-//                        }
-//
-//                        guard let oldPoints = uDoc.data()?["points"] as? Int else {
-//                            let error = NSError(
-//                                domain: "AppErrorDomain",
-//                                code: -1,
-//                                userInfo: [
-//                                    NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
-//                                ]
-//                            )
-//                            errorPointer?.pointee = error
-//                            return nil
-//                        }
-//                        transaction.updateData(["points": oldPoints - Defaults.joiningClub], forDocument: userRef)
-//                        return nil
-//                    }, completion: { (object, err) in
-//                        if let error = err {
-//                            print("Transaction failed: \(error)")
-//                            let ac = UIAlertController(title: "Could not give points to user", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
-//                            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-//                            self.present(ac, animated: true)
-//                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-//                                self.getClubData()
-//                            })
-//                        } else {
-//                            print("Transaction successfully committed!")
-//
-//                            //Take the grade points
-//                            let gradYear = Int(self.membersEmailsList[indexPath.item].suffix(14).prefix(2)) ?? 0
-//                            let pointRef = self.db.collection("info").document("spiritPoints")
-//                            self.db.runTransaction({ (transaction, errorPointer) -> Any? in
-//                                let pDoc: DocumentSnapshot
-//                                do {
-//                                    try pDoc = transaction.getDocument(pointRef)
-//                                } catch let fetchError as NSError {
-//                                    errorPointer?.pointee = fetchError
-//                                    return nil
-//                                }
-//                                guard let oldPoints = pDoc.data()?[String(gradYear)] as? Int else {
-//                                    let error = NSError(
-//                                        domain: "AppErrorDomain",
-//                                        code: -1,
-//                                        userInfo: [
-//                                            NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(pDoc)"
-//                                        ]
-//                                    )
-//                                    errorPointer?.pointee = error
-//                                    return nil
-//                                }
-//                                transaction.updateData([String(gradYear): oldPoints - Defaults.joiningClub], forDocument: pointRef)
-//                                return nil
-//                            }, completion: { (object, err) in
-//                                if let error = err {
-//                                    print("Transaction failed: \(error)")
-//                                    let ac = UIAlertController(title: "Transaction Error: Grad - \(gradYear)", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
-//                                    ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-//                                    self.present(ac, animated: true)
-//                                } else {
-//                                    print("Transaction successfully committed!")
-//                                    print("successfuly gave badge")
-//                                }
-//                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-//                                    self.getClubData()
-//                                })
-//                            })
-//                        }
-//                    })
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                        self.getClubData()
-                    })
+                    let gradYear = Int(self.membersEmailsList[indexPath.item].suffix(14).prefix(2)) ?? 0
+                    self.takeAwayPoints(userRef: userRef, gradYear: gradYear)
                 }
                 alert.addAction(confirmAction)
                 alert.addAction(cancelAction)
@@ -568,6 +490,92 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
             }))
             actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             self.present(actionSheet, animated: true, completion: nil)
+        }
+    }
+    
+    func takeAwayPoints(userRef: DocumentReference, gradYear: Int){
+        //take them points
+        self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+            let uDoc: DocumentSnapshot
+            do {
+                try uDoc = transaction.getDocument(userRef)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+            
+            guard let oldPoints = uDoc.data()?["points"] as? Int else {
+                let error = NSError(
+                    domain: "AppErrorDomain",
+                    code: -1,
+                    userInfo: [
+                        NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+                    ]
+                )
+                errorPointer?.pointee = error
+                return nil
+            }
+            transaction.updateData(["points": oldPoints - Defaults.joiningClub], forDocument: userRef)
+            return nil
+        }, completion: { (object, err) in
+            if let error = err {
+                print("Transaction failed: \(error)")
+                let ac = UIAlertController(title: "Could not give points to user", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(ac, animated: true)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                    self.getClubData()
+                })
+            } else {
+                print("Transaction successfully committed!")
+                
+                //Take the grade points
+                let pointRef = self.db.collection("info").document("spiritPoints")
+                self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                    let pDoc: DocumentSnapshot
+                    do {
+                        try pDoc = transaction.getDocument(pointRef)
+                    } catch let fetchError as NSError {
+                        errorPointer?.pointee = fetchError
+                        return nil
+                    }
+                    guard let oldPoints = pDoc.data()?[String(gradYear)] as? Int else {
+                        let error = NSError(
+                            domain: "AppErrorDomain",
+                            code: -1,
+                            userInfo: [
+                                NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(pDoc)"
+                            ]
+                        )
+                        errorPointer?.pointee = error
+                        return nil
+                    }
+                    transaction.updateData([String(gradYear): oldPoints - Defaults.joiningClub], forDocument: pointRef)
+                    return nil
+                }, completion: { (object, err) in
+                    if let error = err {
+                        print("Transaction failed: \(error)")
+                        let ac = UIAlertController(title: "Transaction Error: Grad - \(gradYear)", message: "Error: \(error.localizedDescription)", preferredStyle: .alert)
+                        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                        self.present(ac, animated: true)
+                    } else {
+                        print("Transaction successfully committed!")
+                        print("successfuly gave badge")
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                        self.getClubData()
+                    })
+                })
+            }
+        })
+    }
+    
+    //For some odd reason iPhone SE requires this
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if collectionView == adminsCollectionView {
+            return CGSize(width: (self.adminsCollectionView.frame.width), height: 64)
+        } else {
+            return CGSize(width: (self.membersCollectionView.frame.width), height: 64)
         }
     }
     

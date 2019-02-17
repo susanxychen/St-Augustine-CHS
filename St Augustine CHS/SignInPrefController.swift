@@ -110,6 +110,7 @@ class SignInPrefController: UIViewController {
             Analytics.setUserProperty(String(gradYear!), forName: "grade")
         }
         
+        //Create the user in the database
         db.collection("users").document((user?.uid)!).setData([
             "badges": [],
             "classes": courses,
@@ -133,15 +134,15 @@ class SignInPrefController: UIViewController {
                 self.present(alert, animated: true, completion: nil)
             } else {
                 print("Document successfully written!")
-                self.performSegue(withIdentifier: "doneSeg", sender: self.nextButtonHidden)
-                UserDefaults.standard.set(true, forKey: "didSignInBefore")
+                
+                //You dont need to... but just safer to wait like 1 second?
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                    self.performSegue(withIdentifier: "doneSeg", sender: self.nextButtonHidden)
+                })
+                
+//                UserDefaults.standard.set(true, forKey: "didSignInBefore")
             }
         }
     }
     
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        let nav = segue.destination as! UINavigationController
-//        let vc = nav.topViewController as! menuController
-//        vc.cameFromSignUpFlow = true
-//    }
 }
