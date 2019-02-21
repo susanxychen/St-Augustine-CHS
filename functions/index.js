@@ -280,7 +280,8 @@ exports.getDayNumber = functions.https.onRequest((request, response) => {
                 response.send(dayNum);
                 return snapshot.ref.set({
                     dayNumber: dayNum,
-                    snowDay: false
+                    snowDay: false,
+                    haveFun: false
                 }, {merge: true});
             } else {
                 console.log('no day number')
@@ -606,4 +607,122 @@ exports.testTopic = functions.https.onRequest((request, response) => {
         console.log('Error sending message:', error);
         return 'error';
     });
+});
+
+exports.createUserDocs = functions.https.onRequest((req, response) => {
+    // setTimeout(() => {
+    admin.firestore().collection('users').get()
+    .then(snapshot => {
+        snapshot.forEach(doc => {
+            const uData = doc.data();
+            let id = doc.id;
+
+            let msg = uData.msgToken;
+            if(!msg){
+                msg = 'error'
+            }
+
+            let data = {
+                email: uData.email,
+                profilePic: uData.profilePic,
+                name: uData.name,
+                msgToken: msg
+            };
+
+            admin.firestore().collection('users').doc(id).collection('info').doc('vital').set(data);
+        });
+        return 'nice'
+    })
+    .catch(error => {
+        console.log(error);
+        response.status(500).send(error);
+    })
+    // }, 360000); // 6 minute delay
+
+    // var uref = admin.firestore().collection('users').get()
+    // var getData = uref.then(snapshot => {
+    //     let ids = []
+    //     let datas = []
+        
+    //     snapshot.forEach(doc => {
+    //         const uData = doc.data();
+
+    //         let id = doc.id;
+
+    //         ids.push(id);
+
+    //         let msg = uData.msgToken;
+    //         if(!msg){
+    //             msg = 'error'
+    //         }
+
+    //         let data = {
+    //             email: uData.email,
+    //             profilePic: uData.profilePic,
+    //             name: uData.name,
+    //             msgToken: msg
+    //         };
+
+    //         datas.push(data);
+    //     });
+    //     return [ids, datas]
+    // })
+    // .catch(error => {
+    //     console.log(error);
+    //     response.status(500).send(error);
+    // })
+
+    // var setData = getData.then(input => {
+    //     let ids = input[0]
+    //     let datas = input[1]
+
+    //     for (j = 0; j < ids.length; j++) {
+    //         admin.firestore().collection('users').doc(ids[j]).collection('info').doc('vital').set(datas[j]);
+    //     }
+
+    //     return 'nice'
+    // })
+    // .catch(error => {
+    //     console.log(error);
+    //     response.status(500).send(error);
+    // })
+    
+    // return Promise.all([getData, setData]).then(result => {
+    //     response.send(result);
+    //     return result;
+    // });
+});
+
+exports.stealSchoolData = functions.https.onRequest((req, response) => {
+    admin.firestore().collection('users').get()
+    .then(snapshot => {
+        let ids = []
+        let datas = []
+
+        snapshot.forEach(doc => {
+            const uData = doc.data();
+            let id = doc.id;
+
+            let msg = uData.msgToken;
+            if(!msg){
+                msg = 'error'
+            }
+
+            let data = {
+                email: uData.email,
+                profilePic: uData.profilePic,
+                name: uData.name,
+                msgToken: msg
+            };
+
+            ids.push(id);
+            datas.push(data);            
+        });
+        response.send([ids,datas]);
+        return 'stolen';
+    })
+    .catch(error => {
+        console.log(error);
+        response.status(500).send(error);
+    })
 });

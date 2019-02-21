@@ -138,7 +138,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         }
         let checkEmail = user.profile.email
         
-        if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail?.hasSuffix("ycdsb.ca"))! || (checkEmail == "sachstesterforapple@gmail.com") || allowAnyGoogleAccount){
+        if ((checkEmail?.hasSuffix("ycdsbk12.ca"))! || (checkEmail == "sachstesterforapple@gmail.com") || allowAnyGoogleAccount){
             //print("wow nice sign in")
             //************************Firebase Auth************************
             guard let authentication = user.authentication else {
@@ -319,6 +319,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     func setupRemoteConfigDefaults() {
         let defaultValues = [
+            "showUsersOnSongs": "1" as NSObject,
+            "IOS_VERSION": "" as NSObject,
             "songRequestTheme": "" as NSObject,
             "AllowAccounts": 0 as NSObject,
             "AppOnline": 1 as NSObject,
@@ -372,6 +374,22 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             allowAnyGoogleAccount = false
         }
         
+        //Check for a new update version
+        let latestVersion = RemoteConfig.remoteConfig().configValue(forKey: "IOS_VERSION").stringValue ?? ""
+        
+        
+        //************MANUALLY UPDATE THIS AFTER EVERY UPDATE************
+        let versionHERE = "1.0.1b"
+        
+        
+        //Remind user
+        print(latestVersion + " " + versionHERE)
+        if latestVersion != versionHERE && latestVersion != "" {
+            let ac = UIAlertController(title: "New iOS update available!", message: "The list of bug fixes are on the app store. Please update!", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(ac, animated: true)
+        }
+        
         //apply the remote config values here
         let primary = RemoteConfig.remoteConfig().configValue(forKey: "primaryColor").stringValue ?? "#8D1230"
         let darker = RemoteConfig.remoteConfig().configValue(forKey: "darkerPrimary").stringValue ?? "#460817"
@@ -415,6 +433,13 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         Defaults.supervoteRatio = CGFloat(((RemoteConfig.remoteConfig().configValue(forKey: "supervoteRatio").stringValue ?? "1.0") as NSString).floatValue)
         
         Defaults.songRequestTheme = RemoteConfig.remoteConfig().configValue(forKey: "songRequestTheme").stringValue ?? ""
+        
+        let showUsers = RemoteConfig.remoteConfig().configValue(forKey: "showUsersOnSongs").stringValue ?? "1"
+        if showUsers == "1" {
+            Defaults.showUsersOnSongs = true
+        } else {
+            Defaults.showUsersOnSongs = false
+        }
         
         //Now actually change the colours
         changeMenuControllerColours()
@@ -639,19 +664,15 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! newsViewCell
             //print("i get run data \(newsData[indexPath.item][0]) replacing \(cell.depName.text)")
             
-            cell.contentView.layer.cornerRadius = 10
-            cell.contentView.layer.borderWidth = 1.0
-            
-            cell.contentView.layer.borderColor = UIColor.clear.cgColor
-            cell.contentView.layer.masksToBounds = true
-            
-            cell.layer.shadowColor = UIColor.gray.cgColor
-            cell.layer.shadowOffset = CGSize(width: 0, height: 2.0)
+            //Add drop shadow to cell
+            cell.layer.shadowColor = UIColor.lightGray.cgColor
+            cell.layer.shadowOffset = CGSize(width:0,height: 2.0)
             cell.layer.shadowRadius = 2.0
             cell.layer.shadowOpacity = 1.0
             cell.layer.masksToBounds = false
             cell.layer.shadowPath = UIBezierPath(roundedRect:cell.bounds, cornerRadius:cell.contentView.layer.cornerRadius).cgPath
             
+            //Fill in the real announcement data
             cell.anncDep.text = newsData[indexPath.item][0]
             cell.anncText.text = newsData[indexPath.item][1]
             cell.anncDep.centerVertically()
@@ -956,12 +977,15 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         let url = URL(string: "https://www.apple.com")
         let task = URLSession.shared.dataTask(with: url!) {(data, response, error) in
             let httpResponse = response as? HTTPURLResponse
-            if let contentType = httpResponse!.allHeaderFields["Date"] as? String {
+            if let contentType = httpResponse?.allHeaderFields["Date"] as? String {
                 //print(httpResponse)
                 let dFormatter = DateFormatter()
                 dFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss z"
                 let serverTime = dFormatter.date(from: contentType)
                 completionHandler(serverTime)
+            } else {
+                //If getting server time fails, return regular date
+                completionHandler(Date())
             }
         }
         task.resume()

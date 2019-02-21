@@ -49,6 +49,13 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //iPhone SE screen
+        if UIScreen.main.bounds.width < 375 {
+            print("small")
+            let font = UIFont(name: "Scada-Regular", size: 12)
+            joinClubSettingsSegmentControl.setTitleTextAttributes([NSAttributedString.Key.font: font ?? UIFont.systemFont(ofSize: 14)], for: .normal)
+        }
+        
         //Set Up 
         // [START setup]
         let settings = FirestoreSettings()

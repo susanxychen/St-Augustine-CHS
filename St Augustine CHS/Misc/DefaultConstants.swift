@@ -27,6 +27,6 @@ struct Defaults {
     static var supervoteRatio: CGFloat = 1.0
     
     static var songRequestTheme: String = ""
-    
+    static var showUsersOnSongs: Bool = true
 }
 

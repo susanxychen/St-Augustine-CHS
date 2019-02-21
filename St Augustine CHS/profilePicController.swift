@@ -167,6 +167,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                     // Uh-oh, an error occurred!
                     print("cant find image \(i)")
                     print(error)
+                    self.picsNotOwned[i] = self.fillerImage
                 } else {
                     if let metadata = metadata {
                         let theMetaData = metadata.dictionaryRepresentation()
@@ -275,7 +276,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                 print("wow update: \(self.newPicChosen)")
                 if self.choseNewPic {
                     self.showActivityIndicatory(container: self.container, actInd: self.actInd)
-                    let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+                    let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!).collection("info").document("vital")
                     userRef.setData([
                         "profilePic" : self.newPicChosen,
                     ], mergeFields: ["profilePic"]) { (err) in
@@ -289,9 +290,9 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                             print("Document successfully updated")
                             allUserFirebaseData.profilePic = self.theProfilePic.image!
                             let user = Auth.auth().currentUser
-                            self.db.collection("users").document((user?.uid)!).getDocument { (docSnapshot, err) in
+                            self.db.collection("users").document((user?.uid)!).collection("info").document("vital").getDocument { (docSnapshot, err) in
                                 if let docSnapshot = docSnapshot {
-                                    allUserFirebaseData.data = docSnapshot.data()!
+                                    allUserFirebaseData.data["profilePic"] = docSnapshot.data()?["profilePic"] ?? 0
                                     self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                                     self.dismiss(animated: true, completion: nil)
                                 }
@@ -397,7 +398,8 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                     self.showActivityIndicatory(container: self.container, actInd: self.actInd)
 
                     //Update the picsOwned array
-                    let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
+                    let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!).collection("info").document("vital")
+                    
                     userRef.updateData(["picsOwned": FieldValue.arrayUnion([self.newPicChosen])])
                     
                     //Subtact the points

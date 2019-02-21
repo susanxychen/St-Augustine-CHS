@@ -240,10 +240,11 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
             pendingNamesList.append("")
             pendingEmailsList.append("")
             pendingMsgList.append("")
-            pendingPics.append(UIImage())
+            pendingPics.append(UIImage(named: "safeProfilePic")!)
         }
+        
         for user in 0..<pendingList.count {
-            db.collection("users").document(pendingList[user]).getDocument { (snap, err) in
+            db.collection("users").document(pendingList[user]).collection("info").document("vital").getDocument { (snap, err) in
                 if let err = err {
                     let alert = UIAlertController(title: "Error in getting list", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)

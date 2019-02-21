@@ -11,11 +11,12 @@ import Firebase
 import Floaty
 
 struct voteData {
-    //Voted, Name, Artist, Votes, ID
+    //Voted, Name, Artist, Votes, ID, Suggestor
     static var songsVoted:[[Any]] = []
 }
 
-class songReqController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class songReqController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, SongViewCellDelegate {
+    
     //button used for segue
     @IBOutlet weak var suggestASong: UIButton!
     
@@ -49,8 +50,26 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     @IBOutlet weak var spendButton: UIButton!
     @IBOutlet weak var cancelButton: UIButton!
     
+    var userNames = [String]()
+    var userPics = [UIImage]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        //Clear Keys of previous song voting only once
+        var haventCleared = true
+        if let x = UserDefaults.standard.object(forKey: "haventClearedSongKeys") as? Bool {
+           haventCleared = x
+            print("Have cleared songs already")
+        }
+
+        if haventCleared {
+            print("Have not cleared songs. Clearing")
+            let domain = Bundle.main.bundleIdentifier!
+            UserDefaults.standard.removePersistentDomain(forName: domain)
+            UserDefaults.standard.synchronize()
+            
+            UserDefaults.standard.set(false, forKey: "haventClearedSongKeys")
+        }
         
         //Add the super vote recognizer
         let lpgr: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress(gestureRecognizer:)))
@@ -143,20 +162,78 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         }
         let p = gestureRecognizer.location(in: self.songView)
         if let indexPath : NSIndexPath = (self.songView.indexPathForItem(at: p) as NSIndexPath?){
-            //Disable super vote if user has already voted
-            if voteData.songsVoted[indexPath.item][0] as! Int == 0 {
-                print("Long Pressed on: \(indexPath.item)")
-                supervotedIndex = indexPath.item
-                selectedSuperSongID = voteData.songsVoted[indexPath.item][4] as? String
-                supervoteSongName.text = "Supervote: \(voteData.songsVoted[indexPath.item][1] as? String ?? "Error")"
-                supervoteDesc.text = "Super vote allows you to spend points for votes. You have \(allUserFirebaseData.data["points"] ?? "Error") points."
-                supervoteView.isHidden = false
-                self.view.bringSubviewToFront(supervoteView)
+            //Let teachers delete songs
+            if allUserFirebaseData.data["status"] as? Int ?? 0 > 0 {
+                let actionSheet = UIAlertController(title: "Choose an Option for \(voteData.songsVoted[indexPath.item][1] as? String ?? "Error")", message: nil, preferredStyle: .actionSheet)
                 
-                UIView.animate(withDuration: 0.1) {
-                    self.supervoteView.alpha = 1
+                actionSheet.addAction(UIAlertAction(title: "Delete Song", style: .default, handler: { (action:UIAlertAction) in
+                    let alert = UIAlertController(title: "Confirmation", message: "Are you sure you want to delete \(voteData.songsVoted[indexPath.item][1] as? String ?? "Error")?", preferredStyle: .alert)
+                    let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil)
+                    let confirmAction = UIAlertAction(title: "Confirm", style: UIAlertAction.Style.destructive) { (action:UIAlertAction) in
+                        print("delete song")
+                        
+                        //Remove the song
+                        self.showActivityIndicatory(container: self.container, actInd: self.actInd)
+                        self.db.collection("songs").document(voteData.songsVoted[indexPath.item][4] as? String ?? "error").delete() { err in
+                            if let err = err {
+                                print("Error in removing song: \(err.localizedDescription)")
+                                let alert = UIAlertController(title: "Error in deleting song", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
+                                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                                alert.addAction(okAction)
+                                self.present(alert, animated: true, completion: nil)
+                            } else {
+                                self.getSongData()
+                            }
+                        }
+                    }
+                    alert.addAction(confirmAction)
+                    alert.addAction(cancelAction)
+                    self.present(alert, animated: true, completion: nil)
+                }))
+                actionSheet.addAction(UIAlertAction(title: "Supervote", style: .default, handler: { (action:UIAlertAction) in
+                    //Already voted
+                    if voteData.songsVoted[indexPath.item][0] as! Int != 0 {
+                        let alert = UIAlertController(title: "", message: "You already voted!", preferredStyle: .alert)
+                        self.present(alert, animated: true, completion: nil)
+                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5){
+                            alert.dismiss(animated: true, completion: nil)
+                        }
+                    } else {
+                        //Regular supervote for teachers
+                        self.supervotedIndex = indexPath.item
+                        self.selectedSuperSongID = voteData.songsVoted[indexPath.item][4] as? String
+                        self.supervoteSongName.text = "Supervote: \(voteData.songsVoted[indexPath.item][1] as? String ?? "Error")"
+                        self.supervoteDesc.text = "Super vote allows you to spend points for votes. You have \(allUserFirebaseData.data["points"] ?? "Error") points."
+                        self.supervoteView.isHidden = false
+                        self.view.bringSubviewToFront(self.supervoteView)
+                        
+                        UIView.animate(withDuration: 0.1) {
+                            self.supervoteView.alpha = 1
+                        }
+                    }
+                }))
+                actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                self.present(actionSheet, animated: true, completion: nil)
+            }
+            
+            //Normal super vote
+            else {
+                //Only allow super vote if user has not already voted
+                if voteData.songsVoted[indexPath.item][0] as! Int == 0 {
+                    print("Long Pressed on: \(indexPath.item)")
+                    supervotedIndex = indexPath.item
+                    selectedSuperSongID = voteData.songsVoted[indexPath.item][4] as? String
+                    supervoteSongName.text = "Supervote: \(voteData.songsVoted[indexPath.item][1] as? String ?? "Error")"
+                    supervoteDesc.text = "Super vote allows you to spend points for votes. You have \(allUserFirebaseData.data["points"] ?? "Error") points."
+                    supervoteView.isHidden = false
+                    self.view.bringSubviewToFront(supervoteView)
+                    
+                    UIView.animate(withDuration: 0.1) {
+                        self.supervoteView.alpha = 1
+                    }
                 }
             }
+            
         }
     }
     
@@ -293,8 +370,11 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                 
                 //Disable the add song button if there are over max songs
                 if querySnapshot!.documents.count >= Defaults.maxSongs {
+                    self.isOverMaxSongs = true
+                    
+                    //Status
                     if allUserFirebaseData.data["status"] as? Int ?? 0 == 2 {
-                        self.isOverMaxSongs = true
+                        self.isOverMaxSongs = false
                     }
                 }
                 
@@ -304,20 +384,13 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                     let theSongName = songData["name"] ?? "Error"
                     let theArtistName = songData["artist"] ?? "Error"
                     let votes = songData["upvotes"] ?? 0
+                    
+                    let suggestor = songData["suggestor"] ?? "Error"
+                    
                     let id = document.documentID
                     
-                    if (votes as! CGFloat).isNaN {
-                        let alert = UIAlertController(title: "Error in retrieveing songs", message: "Please Try Again later", preferredStyle: .alert)
-                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                        alert.addAction(okAction)
-                        self.present(alert, animated: true, completion: nil)
-                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
-                        self.refreshControl?.endRefreshing()
-                        return
-                    }
-                    
                     //Set the latest song data
-                    latestSongs.append([0, theSongName as! String, theArtistName as! String, votes as! Int, id])
+                    latestSongs.append([0, theSongName as! String, theArtistName as! String, votes as! Int, id, suggestor as! String])
                 }
                 
                 //Check if there was previously saved data
@@ -376,7 +449,90 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                 
                 //print("The Final Songs: \(voteData.songsVoted)")
                 
+                self.getUserData()
+            }
+        }
+    }
+    
+    func getUserData(){
+        if Defaults.showUsersOnSongs {
+            userNames.removeAll()
+            userPics.removeAll()
+            
+            for _ in voteData.songsVoted {
+                userNames.append("")
+                userPics.append(UIImage(named: "safeProfilePic")!)
+            }
+            
+            for i in 0..<voteData.songsVoted.count - 1 {
+                //print("\(voteData.songsVoted.count - 1) vs \(i)")
+                let id = voteData.songsVoted[i][5] as? String ?? "error"
+                
+                db.collection("users").document(id).collection("info").document("vital").getDocument { (snap, err) in
+                    if err != nil {
+                        self.userNames[i] = "error"
+                        self.getPicture(profPic: 0, user: i)
+                    }
+                    if let snap = snap {
+                        let data = snap.data()
+                        self.userNames[i] = data?["name"] as? String ?? "error"
+                        self.getPicture(profPic: data?["profilePic"] as? Int ?? 0, user: i)
+                    }
+                }
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
                 self.sortSongsByVote()
+            }
+        } else {
+            self.sortSongsByVote()
+        }
+    }
+    
+    func getPicture(profPic: Int, user: Int) {
+        //Image
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        
+        // Create a reference to the file you want to download
+        let imgRef = storageRef.child("profilePictures/\(profPic).png")
+        
+        imgRef.getMetadata { (metadata, error) in
+            if let error = error {
+                // Uh-oh, an error occurred!
+                print("cant find image \(profPic)")
+                print(error)
+            } else {
+                // Metadata now contains the metadata for 'images/forest.jpg'
+                if let metadata = metadata {
+                    let theMetaData = metadata.dictionaryRepresentation()
+                    let updated = theMetaData["updated"]
+                    
+                    if let updated = updated {
+                        if let savedImage = self.getSavedImage(named: "\(profPic)=\(updated)"){
+                            //print("already saved \(profPic)=\(updated)")
+                            self.userPics[user] = savedImage
+                        } else {
+                            // Create a reference to the file you want to download
+                            imgRef.downloadURL { url, error in
+                                if error != nil {
+                                    print("cant find image \(profPic)")
+                                } else {
+                                    // Get the download URL
+                                    var image: UIImage?
+                                    let data = try? Data(contentsOf: url!)
+                                    if let imageData = data {
+                                        image = UIImage(data: imageData)!
+                                        self.userPics[user] = image!
+                                        self.clearImageFolder(imageName: "\(profPic)=\(updated)")
+                                        self.saveImageDocumentDirectory(image: image!, imageName: "\(profPic)=\(updated)")
+                                    }
+                                    print("i success now")
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -395,20 +551,39 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                         let temp = voteData.songsVoted[i]
                         voteData.songsVoted[i] = voteData.songsVoted[i+1]
                         voteData.songsVoted[i+1] = temp
+                        
+                        //Only sort if u actully show songs
+                        if Defaults.showUsersOnSongs {
+                            let temp2 = userNames[i]
+                            userNames[i] = userNames[i+1]
+                            userNames[i+1] = temp2
+                            
+                            let temp3 = userPics[i]
+                            userPics[i] = userPics[i+1]
+                            userPics[i+1] = temp3
+                        }
                     }
                 }
             }
         }
-        print(voteData.songsVoted)
+        //print(voteData.songsVoted)
         self.hideActivityIndicator(container: self.container, actInd: self.actInd)
         self.refreshControl?.endRefreshing()
         self.songView.reloadData()
     }
     
+    func didVote() {
+        sortSongsByVote()
+    }
+    
     //***********************************FORMATTING THE SONGS*************************************
     //For some odd reason iPhone SE requires this
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: (self.songView.frame.width), height: 100)
+        if Defaults.showUsersOnSongs {
+            return CGSize(width: (self.songView.frame.width), height: 140)
+        } else {
+            return CGSize(width: (self.songView.frame.width), height: 100)
+        }
     }
     
     //Make sure when you add collection view you add data source and delegate connections on storyboard
@@ -418,6 +593,45 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "song", for: indexPath) as! songViewCell
+        //Clear previous data
+        cell.studentProfileImgView.image = UIImage()
+        cell.studentName.text = ""
+        
+        //Cell Delegate for sorting after each vote
+        cell.delegate = self
+        
+        //Student
+        if Defaults.showUsersOnSongs {
+            cell.studentViewPanelHeight.constant = 40
+            
+            //the pic
+            cell.studentProfileImgView.clipsToBounds = true
+            cell.studentProfileImgView.layer.cornerRadius = 34/2
+            
+            //No index out of bounds
+            if indexPath.item < userPics.count  {
+                cell.studentProfileImgView.image = userPics[indexPath.item]
+            } else {
+                cell.studentProfileImgView.image = UIImage(named: "safeProfilePic")
+            }
+            
+            //no index out of bounds
+            if indexPath.item < userNames.count {
+                cell.studentName.text = userNames[indexPath.item]
+            } else {
+                cell.studentName.text = ""
+            }
+        } else {
+            //hide the name
+            cell.studentViewPanelHeight.constant = 0
+            cell.studentNameTop.constant = 0
+            cell.studentNameBottom.constant = 0
+            cell.studentProfileImgViewTop.constant = 0
+            cell.studentProfileImgViewBottom.constant = 0
+        }
+        
+        
+        //Show the respective data
         cell.songName.text = voteData.songsVoted[indexPath.item][1] as? String
         cell.artistName.text = voteData.songsVoted[indexPath.item][2] as? String
         cell.voteCount.text = String(voteData.songsVoted[indexPath.item][3] as! Int)
@@ -435,13 +649,14 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
             cell.voteCount.textColor = UIColor.darkText
         }
         
-        //FIXING CONSTRAINTS
-        //See if its smaller than an iPhone 6 Screen
-//        if songView.frame.width < 375 {
-//            cell.voteViewSideConstraint.constant = 20
-//        } else {
-//            cell.voteViewSideConstraint.constant = 12
-//        }
+        //Drop shadow
+        cell.layer.shadowColor = UIColor.lightGray.cgColor
+        cell.layer.shadowOffset = CGSize(width:0,height: 2.0)
+        cell.layer.shadowRadius = 2.0
+        cell.layer.shadowOpacity = 1.0
+        cell.layer.masksToBounds = false
+        cell.layer.shadowPath = UIBezierPath(roundedRect:cell.bounds, cornerRadius:cell.contentView.layer.cornerRadius).cgPath
+        
         cell.bringSubviewToFront(cell.voteArrowButtonView)
         cell.voteArrowButtonView.bringSubviewToFront(cell.upvotedButton)
         
@@ -449,7 +664,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath.item)
+        print("\(indexPath.item) voted")
     }
     
     

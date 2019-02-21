@@ -121,18 +121,18 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
             adminsNamesList.append("")
             adminsEmailsList.append("")
             adminsMsgList.append("")
-            adminsPics.append(UIImage())
+            adminsPics.append(UIImage(named: "safeProfilePic")!)
         }
         
         for _ in membersList {
             membersNamesList.append("")
             membersEmailsList.append("")
             membersMsgList.append("")
-            membersPics.append(UIImage())
+            membersPics.append(UIImage(named: "safeProfilePic")!)
         }
         
         for user in 0..<adminsList.count {
-            db.collection("users").document(adminsList[user]).getDocument { (snap, err) in
+            db.collection("users").document(adminsList[user]).collection("info").document("vital").getDocument { (snap, err) in
                 if let err = err {
                     let alert = UIAlertController(title: "Error in getting list", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -152,7 +152,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
         }
         
         for user in 0..<membersList.count {
-            db.collection("users").document(membersList[user]).getDocument { (snap, err) in
+            db.collection("users").document(membersList[user]).collection("info").document("vital").getDocument { (snap, err) in
                 if let err = err {
                     let alert = UIAlertController(title: "Error in getting list", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)

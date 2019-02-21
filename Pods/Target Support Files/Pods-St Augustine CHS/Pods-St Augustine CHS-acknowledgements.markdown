@@ -1,7 +1,7 @@
 # Acknowledgements
 This application makes use of the following third party libraries:
 
-## BoringSSL
+## BoringSSL-GRPC
 
 BoringSSL is a fork of OpenSSL. As such, large parts of it fall under OpenSSL
 licensing. Files that are completely new have a Google copyright and an ISC
@@ -291,7 +291,7 @@ Fabric: Copyright 2018 Google, Inc. All Rights Reserved. Use of this software is
 
 ## Firebase
 
-Copyright 2018 Google
+Copyright 2019 Google
 
 ## FirebaseABTesting
 
@@ -299,7 +299,7 @@ Copyright 2018 Google
 
 ## FirebaseAnalytics
 
-Copyright 2018 Google
+Copyright 2019 Google
 
 ## FirebaseAnalyticsInterop
 
@@ -1955,19 +1955,19 @@ Copyright 2018 Google
 
 ## FirebaseInstanceID
 
-Copyright 2018 Google
+Copyright 2019 Google
 
 ## FirebaseMLCommon
 
-Copyright 2018 Google
+Copyright 2019 Google
 
 ## FirebaseMLVision
 
-Copyright 2018 Google
+Copyright 2019 Google
 
 ## FirebaseMLVisionBarcodeModel
 
-Copyright 2018 Google
+Copyright 2019 Google
 
 ## FirebaseMessaging
 
@@ -2825,7 +2825,7 @@ SOFTWARE.
 
 ## GoogleAppMeasurement
 
-Copyright 2018 Google
+Copyright 2019 Google
 
 ## GoogleMobileVision
 

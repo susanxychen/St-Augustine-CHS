@@ -74,8 +74,8 @@ class settingsController: UIViewController, MFMailComposeViewControllerDelegate 
         }
         subscribedToGeneralSwitch.setOn(subscribedToGeneral, animated: true)
         
-        classesSwitch.setOn(allUserFirebaseData.data["showClasses"] as? Bool ?? false, animated: true)
-        clubsSwitch.setOn(allUserFirebaseData.data["showClubs"] as? Bool ?? false, animated: true)
+        classesSwitch.setOn(!(allUserFirebaseData.data["showClasses"] as? Bool ?? false), animated: true)
+        clubsSwitch.setOn(!(allUserFirebaseData.data["showClubs"] as? Bool ?? false), animated: true)
     }
     
     @IBAction func privacySwitchPressed(_ sender: UISwitch) {
@@ -83,6 +83,7 @@ class settingsController: UIViewController, MFMailComposeViewControllerDelegate 
         let uid = Auth.auth().currentUser?.uid
         if sender == classesSwitch {
             classesSwitch.isUserInteractionEnabled = false
+            print("switch")
             if sender.isOn {
                 db.collection("users").document(uid ?? "error").setData(["showClasses":false], merge: true) { (error) in
                     if let error = error {
@@ -90,6 +91,7 @@ class settingsController: UIViewController, MFMailComposeViewControllerDelegate 
                         ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                         self.present(ac, animated: true)
                     } else {
+                        print("turned false")
                         allUserFirebaseData.data["showClasses"] = false
                         self.classesSwitch.isUserInteractionEnabled = true
                     }
@@ -101,6 +103,7 @@ class settingsController: UIViewController, MFMailComposeViewControllerDelegate 
                         ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                         self.present(ac, animated: true)
                     } else {
+                        print("turned true")
                         allUserFirebaseData.data["showClasses"] = true
                         self.classesSwitch.isUserInteractionEnabled = true
                     }
@@ -144,7 +147,7 @@ class settingsController: UIViewController, MFMailComposeViewControllerDelegate 
             
             self.present(mail, animated: true)
         } else {
-            let ac = UIAlertController(title: "Cannot open mail app", message: "Note: MFMailComposeVC requires at least one email address to be signed into the mail app", preferredStyle: .alert)
+            let ac = UIAlertController(title: "Cannot open mail app", message: "Note: At least one email address to be signed into the 'Mail' app on the iPhone.", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             self.present(ac, animated: true)
         }

@@ -27,8 +27,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="yorkLogo" translatesAutoresizingMaskIntoConstraints="NO" id="9DY-3G-WR3">
-                                <rect key="frame" x="52" y="97" width="271" height="473"/>
+                            <imageView clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="stalogo" translatesAutoresizingMaskIntoConstraints="NO" id="9DY-3G-WR3">
+                                <rect key="frame" x="52" y="120" width="271" height="427"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -50,6 +50,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="yorkLogo" width="400" height="473"/>
+        <image name="stalogo" width="430" height="427"/>
     </resources>
 </document>

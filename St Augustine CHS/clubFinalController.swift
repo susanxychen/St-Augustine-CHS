@@ -26,11 +26,19 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     //The Club Data
     var clubData = [String:Any]()
     var banImage: UIImage?
+    var clubID = String()
+    
+    //Announcements
     var anncRef = [String]()
     var anncData = [[String:Any]]()
     var anncImgs = [UIImage]()
     var anncImgHeights = [CGFloat]()
-    var clubID = String()
+    
+    var anncUserIDs = [String]()
+    var anncUserNames = [String]()
+    var anncUserPics = [UIImage]()
+    
+    var noAnnouncements = false
     
     @IBOutlet weak var bannerHeight: NSLayoutConstraint!
     @IBOutlet weak var bannerImageView: UIImageView!
@@ -54,7 +62,6 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
     var refreshControl: UIRefreshControl?
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
-    
     
     //Part of Club or not Variables
     var partOfClub = true
@@ -414,6 +421,27 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     self.performSegue(withIdentifier: "viewPending", sender: self.pendingButton)
                 }))
             }
+            
+            //Club badge
+            var msg = ""
+            if clubData["clubBadge"] as! String == "" {
+                msg = "Create Club Badge"
+            } else {
+                msg = "Edit Club Badge"
+            }
+            
+            actionSheet.addAction(UIAlertAction(title: msg, style: .default, handler: { (action:UIAlertAction) in
+                self.goingToCreateClubBadge = true
+                self.segueNum = 5
+                
+                if msg == "Create Club Badge" {
+                    self.isEditingBadge = false
+                } else {
+                    self.isEditingBadge = true
+                }
+                
+                self.performSegue(withIdentifier: "createBadge", sender: self.createBadgeSegueButton)
+            }))
         }
         
         //************ALL MEMBERS PRIVLAGES************
@@ -957,27 +985,57 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             if let snap = snap {
                 if snap.count <= 0 {
                     print("there is no announcements")
+                    self.noAnnouncments = true
                     self.anncData = [["content": "", "date": Timestamp.init(), "img": "","title": "There are no announcements"]]
                     self.noAnnouncments = true
                     self.hideActivityIndicator(container: self.container, actInd: self.actInd)
                     self.anncCollectionView.reloadData()
                     self.refreshControl?.endRefreshing()
                 } else {
+                    self.noAnnouncments = false
                     let document = snap.documents
                     for i in 0...document.count-1 {
                         self.anncData.append(document[i].data())
+                        self.anncUserIDs.append(document[i].data()["creator"] as? String ?? "error")
                         self.anncRef.append(document[i].documentID)
                         
                         if i == document.count - 1 {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 print("finished getting getting anncData first time")
-                                //print("After all appends \(self.anncData)")
-                                self.sortAnncByDate()
+                                self.getUserData()
                             }
                         }
                     }
                 }
             }
+        }
+    }
+    
+    func getUserData(){
+        anncUserNames.removeAll()
+        anncUserPics.removeAll()
+        
+        for _ in anncUserIDs {
+            anncUserNames.append("")
+            anncUserPics.append(UIImage(named: "safeProfilePic")!)
+        }
+        
+        for i in 0..<anncUserIDs.count {
+            db.collection("users").document(anncUserIDs[i]).collection("info").document("vital").getDocument { (snap, err) in
+                if err != nil {
+                    self.anncUserNames[i] = "error"
+                    self.getPicture(profPic: 0, user: i)
+                }
+                if let snap = snap {
+                    let data = snap.data()
+                    self.anncUserNames[i] = data?["name"] as? String ?? "error"
+                    self.getPicture(profPic: data?["profilePic"] as? Int ?? 0, user: i)
+                }
+            }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.sortAnncByDate()
         }
     }
     
@@ -1008,6 +1066,15 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                         let temp2 = anncRef[i]
                         anncRef[i] = anncRef[i+1]
                         anncRef[i+1] = temp2
+                        
+                        //Swap user data
+                        let temp3 = anncUserNames[i]
+                        anncUserNames[i] = anncUserNames[i+1]
+                        anncUserNames[i+1] = temp3
+                        
+                        let temp4 = anncUserPics[i]
+                        anncUserPics[i] = anncUserPics[i+1]
+                        anncUserPics[i+1] = temp4
                     }
                 }
             }
@@ -1189,6 +1256,53 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         }
     }
     
+    func getPicture(profPic: Int, user: Int) {
+        //Image
+        let storage = Storage.storage()
+        let storageRef = storage.reference()
+        
+        // Create a reference to the file you want to download
+        let imgRef = storageRef.child("profilePictures/\(profPic).png")
+        
+        imgRef.getMetadata { (metadata, error) in
+            if let error = error {
+                // Uh-oh, an error occurred!
+                print("cant find image \(profPic)")
+                print(error)
+            } else {
+                // Metadata now contains the metadata for 'images/forest.jpg'
+                if let metadata = metadata {
+                    let theMetaData = metadata.dictionaryRepresentation()
+                    let updated = theMetaData["updated"]
+                    
+                    if let updated = updated {
+                        if let savedImage = self.getSavedImage(named: "\(profPic)=\(updated)"){
+                            self.anncUserPics[user] = savedImage
+                        } else {
+                            // Create a reference to the file you want to download
+                            imgRef.downloadURL { url, error in
+                                if error != nil {
+                                    print("cant find image \(profPic)")
+                                } else {
+                                    // Get the download URL
+                                    var image: UIImage?
+                                    let data = try? Data(contentsOf: url!)
+                                    if let imageData = data {
+                                        image = UIImage(data: imageData)!
+                                        self.anncUserPics[user] = image!
+                                        self.clearImageFolder(imageName: "\(profPic)=\(updated)")
+                                        self.saveImageDocumentDirectory(image: image!, imageName: "\(profPic)=\(updated)")
+                                    }
+                                    print("i success now")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     //************************************************SETTING UP ANNOUNCEMENTS************************************************
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == anncCollectionView {
@@ -1213,17 +1327,20 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             let attributesContent = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
             let estimatedFrameContent = NSString(string: anncData[indexPath.item]["content"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesContent, context: nil)
             
-            var imgHeight:CGFloat = 0
-            if anncData[indexPath.item]["img"] as? String != "" {
-                imgHeight = anncImgHeights[indexPath.item]
-            }
-            
+            //Set the height of content appropriately
             var contentHeight:CGFloat = 0
             if anncData[indexPath.item]["content"] as? String != "" {
                 contentHeight = estimatedFrameContent.height + 10
             }
             
-            let finalHeight = titleHeight + contentHeight + imgHeight + 75
+            //If there is an image, set the size appropriately
+            var imgHeight:CGFloat = 0
+            if anncData[indexPath.item]["img"] as? String != "" {
+                imgHeight = anncImgHeights[indexPath.item] + 5
+            }
+            
+            //Also add the date, the creator/author
+            let finalHeight = titleHeight + contentHeight + imgHeight + 140
             
             return CGSize(width: view.frame.width, height: finalHeight)
         } else if collectionView == badgeCollectionView {
@@ -1246,12 +1363,13 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         if collectionView == anncCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "announcement", for: indexPath) as! clubNewsViewCell
             
-            //Clear the old image as the cell gets reused. Good chance you need to clear all data. set to nil
+            //Clear previous data
             cell.anncImg.image = UIImage()
+            cell.studentName.text = ""
+            cell.studentPicture.image = UIImage()
             
-            //print(anncData)
             if anncData.count != 0 {
-//                //Set the title's height
+                //Set the title's height
                 let size = CGSize(width: view.frame.width, height: 1000)
                 let attributesTitle = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 17)!]
                 let estimatedFrameTitle = NSString(string: anncData[indexPath.item]["title"] as! String).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributesTitle, context: nil)
@@ -1295,6 +1413,15 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
                     cell.anncImg.isHidden = false
                     cell.anncImg.image = anncImgs[indexPath.item]
                     cell.anncImgHeight.constant = anncImgHeights[indexPath.item]
+                }
+                
+                //Display the creator only if there are actual announcements
+                if !noAnnouncments {
+                    print(anncUserNames)
+                    cell.studentName.text = anncUserNames[indexPath.item]
+                    cell.studentPicture.clipsToBounds = true
+                    cell.studentPicture.layer.cornerRadius = 34/2
+                    cell.studentPicture.image = anncUserPics[indexPath.item]
                 }
             }
             return cell

@@ -385,7 +385,7 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                         
                         if let updated = updated {
                             if let savedImage = self.getSavedImage(named: "\(imageName)=\(updated)"){
-                                print("already saved \(imageName)=\(updated)")
+                                //print("already saved \(imageName)=\(updated)")
                                 if self.viewingPersonalClubs{
                                     //print(self.personalClubBanners)
                                     self.personalClubBanners[clubNum] = savedImage
@@ -633,7 +633,6 @@ class clubListController: UIViewController, UICollectionViewDataSource, UICollec
                 vc.clubData = self.clubsYouAreNotAPartOf[self.selectedClub]
                 vc.partOfClub = false
                 vc.banImage = banners[selectedClub]
-                print(clubIDs)
                 vc.clubID = clubIDs[selectedClub]
                 vc.joinedANewClubBlock = { result in
                     self.viewingPersonalClubs = true

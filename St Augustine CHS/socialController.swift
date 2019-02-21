@@ -629,8 +629,16 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         performSegue(withIdentifier: "showClasses", sender: showClassesButton)
     }
     
-    var counterBecauseOnlyRunOnce = 0
+    
     //****************************FORMATTING THE COLLECTION VIEWS****************************
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        if collectionView == badgesCollectionView {
+//            return CGSize(width: (self.badgesCollectionView.frame.width), height: 130)
+//        } else {
+//            return CGSize(width: (self.clubsCollectionView.frame.width), height: 60)
+//        }
+//    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == badgesCollectionView {
             return badgeImgs.count

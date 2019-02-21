@@ -10,6 +10,10 @@ import UIKit
 import Foundation
 import Firebase
 
+protocol SongViewCellDelegate: class {
+    func didVote()
+}
+
 class songViewCell: UICollectionViewCell {
     
     @IBOutlet weak var voteArrowButtonView: UIView!
@@ -20,10 +24,21 @@ class songViewCell: UICollectionViewCell {
     @IBOutlet weak var voteArrow: UIImageView!
     @IBOutlet weak var songID: UILabel!
     
-    //SMALL SCREEN CONSTRAINTS
-    @IBOutlet weak var voteViewSideConstraint: NSLayoutConstraint!
-//    @IBOutlet weak var songNameSideConstraint: NSLayoutConstraint!
-//    @IBOutlet weak var artistNameSideConstraint: NSLayoutConstraint!
+    @IBOutlet weak var studentViewPanel: UIView!
+    @IBOutlet weak var studentViewPanelHeight: NSLayoutConstraint!
+    @IBOutlet weak var studentProfileImgView: UIImageView!
+    @IBOutlet weak var studentName: UILabel!
+    
+    //just to hide warnings
+    @IBOutlet weak var studentProfileImgViewBottom: NSLayoutConstraint!
+    @IBOutlet weak var studentProfileImgViewTop: NSLayoutConstraint!
+    @IBOutlet weak var studentNameTop: NSLayoutConstraint!
+    @IBOutlet weak var studentNameBottom: NSLayoutConstraint!
+    
+    
+    
+    //Sorting after each vote
+    weak var delegate: SongViewCellDelegate?
     
     //Cloud Functions
     lazy var functions = Functions.functions()
@@ -43,6 +58,7 @@ class songViewCell: UICollectionViewCell {
         
         print("voted")
         upvotedButton.isEnabled = false
+        
         //If the user has not voted on the current song, do upvote calculation
         let theSong = self.indexPath![1]
         print(theSong)
@@ -54,23 +70,6 @@ class songViewCell: UICollectionViewCell {
         
         
         if voteData.songsVoted[theSong][0] as! Int == 0 {
-            //Send the vote to cloud functions
-//            functions.httpsCallable("changeVote").call(["id": songID.text!, "uservote": voteAmount]) { (result, error) in
-//                if let error = error as NSError? {
-//                    if error.domain == FunctionsErrorDomain {
-//                        let code = FunctionsErrorCode(rawValue: error.code)
-//                        let message = error.localizedDescription
-//                        let details = error.userInfo[FunctionsErrorDetailsKey]
-//                        print(code as Any)
-//                        print(message)
-//                        print(details as Any)
-//                    }
-//                }
-//                print("vote sent to functions")
-//                print("Result is: \(String(describing: result?.data))")
-//                self.upvotedButton.isEnabled = true
-//            }
-            
             let songRef = self.db.collection("songs").document(songID.text!)
             self.db.runTransaction({ (transaction, errorPointer) -> Any? in
                 let uDoc: DocumentSnapshot
@@ -100,6 +99,11 @@ class songViewCell: UICollectionViewCell {
                 } else {
                     print("Transaction successfully committed!")
                     print("successfuly upvoted")
+                    
+                    if let del = self.delegate {
+                        del.didVote()
+                    }
+
                     self.upvotedButton.isEnabled = true
                 }
             })
@@ -121,22 +125,6 @@ class songViewCell: UICollectionViewCell {
             voteArrow.image = UIImage(named: "voteArrowEmpty")
             
             if votes > 0 {
-//                //Send the vote to cloud functions
-//                functions.httpsCallable("changeVote").call(["id": songID.text!, "uservote": (voteAmount * -1)]) { (result, error) in
-//                    if let error = error as NSError? {
-//                        if error.domain == FunctionsErrorDomain {
-//                            let code = FunctionsErrorCode(rawValue: error.code)
-//                            let message = error.localizedDescription
-//                            let details = error.userInfo[FunctionsErrorDetailsKey]
-//                            print(code as Any)
-//                            print(message)
-//                            print(details as Any)
-//                        }
-//                    }
-//                    print("vote sent to functions")
-//                    print("Result is: \(String(describing: result?.data))")
-//                    self.upvotedButton.isEnabled = true
-//                }
                 
                 let songRef = self.db.collection("songs").document(songID.text!)
                 self.db.runTransaction({ (transaction, errorPointer) -> Any? in
@@ -167,6 +155,12 @@ class songViewCell: UICollectionViewCell {
                     } else {
                         print("Transaction successfully committed!")
                         print("successfuly upvoted")
+                        
+                        //Sort
+                        if let del = self.delegate {
+                            del.didVote()
+                        }
+
                         self.upvotedButton.isEnabled = true
                     }
                 })
@@ -174,6 +168,10 @@ class songViewCell: UICollectionViewCell {
                 votes -= voteAmount
                 voteData.songsVoted[theSong][3] = votes
             } else {
+                if let del = self.delegate {
+                    del.didVote()
+                }
+
                 self.upvotedButton.isEnabled = true
             }
             voteCount.text = String(votes)

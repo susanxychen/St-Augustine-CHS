@@ -16,5 +16,9 @@ class clubNewsViewCell: UICollectionViewCell {
     @IBOutlet weak var anncTextHeight: NSLayoutConstraint!
     @IBOutlet weak var anncImg: UIImageView!
     @IBOutlet weak var anncImgHeight: NSLayoutConstraint!
+    @IBOutlet weak var studentPicture: UIImageView!
+    @IBOutlet weak var studentName: UILabel!
+    
+    
     var hardCodedImgHeight = 0
 }
