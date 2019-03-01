@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "staugustinechsapp",
+  "private_key_id": "e8fb322154eb28af1312d8117f0206e18ea8e2d1",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDjz5Ku1yNm/HWD\n3hfA1L59y/wYaN3YSgVuB+GdN6xm4ahhu9p3vG3ihQlao11ZTABpn0GGyA3X38yS\n/dB8dSLGxER/cjSyrE3gqddc+YLNd5Ib1cUkTWFBcc18z4xLC8dn1xFkfhudhVO6\nZqnDEp/VvwEA32u/DlPZoAS5a9LRmDogV3D8eGanjfm7u6NAtt3/1JLljpcY3wC5\n8VB+X63HoyrjU0CodnSjU8vd6Fw4ffD+civXLRFiBNqwNhK1mrJRYJMOM3y4Mipv\nHMBOM/oPQSyKnmxCOcRG37jFmNW94WznNQuXDEs+gAahdG1eTuyWppyitd8EOVpC\nKXwXN/LTAgMBAAECggEAFoO0Pn1arVn0D0VK2a7s6KfZUVxD2JVwNfCndo9DBaP1\nrTsQm1bPEV0OkJumpSWiwM2Rf02UOKqQoFJfYX1+I2DQWDwkQyhORg7jDvhF2iKg\nGQomgrD3FK23nkcw2VXfrj6OJH1mI0pC/SAaVQIpM8m9wqVSE77JwK9U6DJk0nvm\nLiFTRbrZG72Wc/DKDPEijQjF92EiTZorKFnxupFJyrlw6ByXiQnL9uAkTF9hvWTD\nCH5nf+GYDmAzTN5Ju4N6IEGF5AHOfU8pjUZnQ+EvlTKsuakAGGq3ZxHJRbP+HF0H\nxocH26eXtmPSFPZLeqPF0r2vRYZj3plfvrhUNrdg4QKBgQD+a6V0Kt51P9ycTJEM\nn9djcpuTbDMMIkVNjaqW/Ueby+FWwWGNH2G49/yMX6jRjD6Sp27ctDOqL6WT/Ete\nulf511/1+bLNdbupehhl92kVQIwhGZw1tPUQhXiieWAvaEYVy6l5zwaxagLextd6\nsdEotuJMR+l4Vf9kKuxdhoJEMQKBgQDlOaK3GGyngrM3CPxslcJehakg/Bm/Q7vH\njAo/v6kcYLujTEtvkWhTxb0svPx21ya6V78hMqlodnZzSJ/HyoTHvlqlAOkWsMoa\nfgzUTOTDl3s5MpIhoHwVRVPxmYVLiFnDgEz8qv48HkKPz9j32qVZsOkIGH1gRy0u\naNB4ID06QwKBgEoa7rFcfzllpYt9Hc6wjBsyWbBiFqhVHxyMxACAu6fchcEwSIrD\ndkJbMRtuDY0jrWIoFLmCX34VrMPi+80Wt+NU4WWTGoqP3V5q6spgeyIuj+JgREi8\ncZkjV1Tzx5lnZOqaTL3nGEr61uUuw7rAKm0Sf+26EH31hpMVkY1YTX8xAoGBAJgY\nVxQAG9BGE933k24FLJQFQgSF4hubuNQd4osMBAy1Tqt6qy8bH0s+kFhICYhdF/Ba\n2pIPiIKs38l8rbAme1YBwylq4j5RDbjoXGDdqIjzUSrRmE7BqrN+bcWIJP7KOS1U\nS0D3wHtpZKcBtag3prFNhkH95erlL2B04aZjVdz7AoGBALALN+gELhYvu7zZkK8M\n6tHI8O4ORCERArbuVQnkp21uPyrNw4Kb0xd4vEnXbS6qVXtgxtHzCK/qhfEii0aU\nQqpq9p/17HoBUC7jsMomtoxTGJK0JDifoqzYl3eT/Qp+y0JQ+8mdo6jbLCsDbLvS\nFCk8a48msDvvFAITo9X+nfhz\n-----END PRIVATE KEY-----\n",
+  "client_email": "backupserviceaccount@staugustinechsapp.iam.gserviceaccount.com",
+  "client_id": "115459093711582667568",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/backupserviceaccount%40staugustinechsapp.iam.gserviceaccount.com"
+}

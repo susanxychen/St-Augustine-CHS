@@ -464,7 +464,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
                 userPics.append(UIImage(named: "safeProfilePic")!)
             }
             
-            for i in 0..<voteData.songsVoted.count - 1 {
+            for i in 0..<voteData.songsVoted.count {
                 //print("\(voteData.songsVoted.count - 1) vs \(i)")
                 let id = voteData.songsVoted[i][5] as? String ?? "error"
                 

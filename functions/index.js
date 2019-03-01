@@ -1,10 +1,6 @@
 const https = require('follow-redirects').http;
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-// const nodemailer = require('nodemailer');
-// const cors = require('cors')();
-
-// var serviceAccount = require('./serviceAccountKey.json');
 admin.initializeApp({ 
     credential: admin.credential.applicationDefault()
 });
@@ -15,28 +11,44 @@ const storage = new Storage();
 const settings = {timestampsInSnapshots: true};
 admin.firestore().settings(settings);
 
-// const validateFirebaseIdToken = (req, res, next) => {
-//     cors(req, res, () => {
-//       const idToken = String(req.headers.authorization).split('Bearer ')[1];
-//       admin.auth().verifyIdToken(idToken).then(decodedIdToken => {
-//         console.log('ID Token correctly decoded', decodedIdToken);
-//         req.user = decodedIdToken;
-//         next();
-//         return '';
-//       }).catch(error => {
-//         console.error('Error while verifying Firebase ID token:', error);
-//         res.status(403).send('Unauthorized');
-//       });
-//     });
-// };
-  
+const {google} = require('googleapis')
+const rp = require('request-promise')
 
-// exports.testauth = functions.https.onRequest((req, res) => {
-//     validateFirebaseIdToken(req, res, () => {
-//         //now you know they're authorized and `req.user` has info about them
-//         res.send('auth passed');
-//     });
-// });
+exports.backupFirestore = functions.https.onRequest((data, response) => {
+    const projectId = 'staugustinechsapp'
+    const getAccessToken = new Promise((resolve, reject) => {
+      const scopes = ['https://www.googleapis.com/auth/datastore', 'https://www.googleapis.com/auth/cloud-platform']
+      const key = require(`./${projectId}.json`)
+      const jwtClient = new google.auth.JWT(
+        key.client_email,
+        undefined,
+        key.private_key,
+        scopes,
+        undefined
+      )
+      const authorization = new Promise((resolve, reject) => {
+        return jwtClient.authorize().then((value) => {
+          return resolve(value)
+        })
+      })
+      return authorization.then((value) => {
+        return resolve(value.access_token)
+      })
+    })
+    return getAccessToken.then((accessToken) => {
+      const url = `https://firestore.googleapis.com/v1beta1/projects/${projectId}/databases/(default):exportDocuments`
+      response.send('backed');
+      return rp.post(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
+        json: true,
+        body: {
+          outputUriPrefix: `gs://sta-firestore-backups`
+        }
+      })
+    })
+  })
 
 exports.sendEmailToAdmins = functions.https.onCall((data, response) => {
     const adminIDArr = data.adminIDArr;
@@ -123,71 +135,102 @@ exports.sendEmailToAdmins = functions.https.onCall((data, response) => {
 });
 
 exports.deleteTopSongs = functions.https.onRequest((request, response) => {
-    //validateFirebaseIdToken(request, response, () => {
-        var songsRef = admin.firestore().collection('songs');
-        var allSongs = songsRef.get()
-        .then(snapshot => {
-            var votes = []
-            var ids = []
-            var dates = []
-            snapshot.forEach(doc => {
-                const songData = doc.data();
-                let upvotes = songData.upvotes;
-                if(!upvotes){
-                    upvotes = 0;
-                }
-                votes.push(upvotes);
-                ids.push(doc.id);
-
-                let timestamp = songData.date;
-                const date = timestamp.toDate();
-                dates.push(date);
-            });
-
-            //Check if there are songs at all
-            if (ids.length >= 1) {
-                var max = 0;
-                var maxID = '';
-
-                //Go through all the songs
-                for (let i = 0; i < votes.length; i++){
-                    //Get new max check if we already did that max
-                    if (max <= votes[i]) {
-                        max = votes[i];
-                        maxID = ids[i];
+    admin.firestore().doc('info/dayNumber').get()
+    .then(snapshot => {
+        var isSnowDay = snapshot.data().snowDay
+        if (!isSnowDay) {
+            var theCollection = 'songs'
+            var songsRef = admin.firestore().collection(theCollection);
+            // eslint-disable-next-line promise/no-nesting
+            var allSongs = songsRef.get()
+            .then(snapshot => {
+                var votes = []
+                var ids = []
+                var dates = []
+                snapshot.forEach(doc => {
+                    const songData = doc.data();
+                    let upvotes = songData.upvotes;
+                    if(!upvotes){
+                        upvotes = 0;
                     }
-                }
+                    votes.push(upvotes);
+                    ids.push(doc.id);
 
-                //Delete the top song
-                admin.firestore().collection('songs').doc(maxID).delete();
+                    let timestamp = songData.date;
+                    const date = new Date(timestamp);
+                    dates.push(date);
+                });
 
-                //Delete songs older than 2 days
-                var daysAgo = new Date().getTime() - (2*24*60*60*1000)
-                var oldSongIds = []
+                //Check if there are songs at all
+                if (ids.length >= 1) {
+                    var max = 0;
+                    var maxID = '';
 
-                for (let i = 0; i < ids.length; i++){
-                    if (dates[i] < daysAgo){
-                        oldSongIds.push(ids[i]);
+                    //Go through all the songs
+                    for (let i = 0; i < votes.length; i++){
+                        //Get new max check if we already did that max
+                        if (max <= votes[i]) {
+                            max = votes[i];
+                            maxID = ids[i];
+                        }
                     }
-                }
 
-                //Delete the old songs
-                for (let i = 0; i < oldSongIds.length; i++){
-                    admin.firestore().collection('songs').doc(oldSongIds[i]).delete();
-                }
+                    //Delete the top song
+                    admin.firestore().collection(theCollection).doc(maxID).delete();
 
-                response.send(oldSongIds + ' ' + maxID);
-                return oldSongIds;
-            } else {
-                response.send('no songs at all');
-                return 'no songs at all';
-            }
-        })
-        .catch(error => {
-            console.log(error);
-            response.status(500).send(error);
-        })
-    //});
+                    //Delete songs older than 2 days
+                    var daysAgo = new Date().getTime() - (2*24*60*60*1000)
+                    var oldSongIds = []
+
+                    for (let i = 0; i < ids.length; i++){
+                        if (dates[i] < daysAgo){
+                            oldSongIds.push(ids[i]);
+                        }
+                    }
+
+                    //Delete the old songs
+                    for (let i = 0; i < oldSongIds.length; i++){
+                        admin.firestore().collection(theCollection).doc(oldSongIds[i]).delete();
+                    }
+
+                    response.send(oldSongIds + ' ' + maxID);
+                    return oldSongIds;
+                } else {
+                    response.send('no songs at all');
+                    return 'no songs at all';
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                response.status(500).send(error);
+            })
+        } else {
+            response.send('its a snow day. dont delete songs')
+        }
+        return 'done';
+    })
+    .catch(error => {
+        //handle the error
+        console.log(error);
+        response.status(error.status >= 100 && error.status < 600 ? error.code : 500).send("Error accessing firestore: " + error.message);
+    });
+});
+
+exports.changeAllSongDatesWeekend = functions.https.onRequest((request, response) => {
+    var songsRef = admin.firestore().collection('songs');
+    songsRef.get()
+    .then(snapshot => {
+        snapshot.forEach(doc => {
+            const id = doc.id
+            admin.firestore().collection('songs').doc(id).update({date: Date()});
+        });
+        response.send('changed dates');
+        return 'changed dates';
+    })
+    .catch(error => {
+        console.log(error);
+        response.status(500).send(error);
+    })
 });
 
 exports.deleteOldAnnouncements = functions.https.onRequest((request, response) => {
@@ -692,6 +735,99 @@ exports.createUserDocs = functions.https.onRequest((req, response) => {
     //     return result;
     // });
 });
+
+exports.createFakeUsers = functions.https.onRequest((req, response) => {
+    for (let i = 0; i < 850; i++){
+        let data = {
+            points: 100
+        };
+
+        admin.firestore().collection('usersTEST').doc(String(i)).set(data);
+    }
+});
+
+exports.giveEveryonePoints2 = functions.https.onRequest((req, response) => {
+    let db = admin.firestore()
+    let theCollection = 'users'
+    db.collection(theCollection).get()
+    .then(snapshot => {
+        snapshot.forEach(doc => {
+            let id = doc.id;
+            let oldPoints = doc.data().points;
+
+
+            if (oldPoints === 0) {
+                console.log('Had zero: ' + id);
+                db.collection(theCollection).doc(id).update({
+                    points: 20
+                })
+            }
+
+            else if (!oldPoints) {
+                console.log('Error points: ' + id);
+            } 
+            
+            else {
+                // Initialize document
+                db.collection(theCollection).doc(id).update({
+                    points: oldPoints + 20
+                })
+            }
+
+            //OR TRANSACTIONS
+            // Initialize document
+            // var uRef = db.collection(theCollection).doc(id);
+
+            // // eslint-disable-next-line promise/no-nesting
+            // db.runTransaction(t => {
+            // // eslint-disable-next-line promise/no-nesting
+            // return t.get(uRef)
+            //     .then(doc => {
+            //     var newPoints = doc.data().points + 25;
+            //     t.update(uRef, {points: newPoints});
+            //     return 'done'
+            //     });
+            // }).catch(err => {
+            //     console.log(id, 'Transaction failure: ', err);
+            // });
+        });
+        //response.send('done points');
+        return 'done';
+    })
+    .catch(error => {
+        console.log(error);
+        response.status(500).send(error);
+    })
+});
+
+//Please be super fucking careful. Use usersTEST please for the love of god oh god that was a bad night
+//Dont touch this. Ever.
+// exports.giveEveryonePoints = functions.https.onRequest((req, response) => {
+//     let db = admin.firestore()
+//     db.collection('users').get()
+//     .then(snapshot => {
+//         snapshot.forEach(doc => {
+//             let id = doc.id;
+//             let oldPoints = doc.data().points;
+
+//             if (!oldPoints) {
+//                 console.log('Error points: ' + id);
+//                 oldPoints = 500;
+//             }
+
+//             // Initialize document
+//             db.collection('users').doc(id).update({
+//                 points: oldPoints + 25
+//             })
+//         });
+//         response.send('done');
+//         return 'done';
+//     })
+//     .catch(error => {
+//         console.log(error);
+//         response.status(500).send(error);
+//     })
+// });
 
 exports.stealSchoolData = functions.https.onRequest((req, response) => {
     admin.firestore().collection('users').get()

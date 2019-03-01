@@ -229,7 +229,6 @@ class badgeScannerController: UIViewController, AVCaptureVideoDataOutputSampleBu
                                     })
                                 }
                             })
-                            
                         } else {
                             let alert = UIAlertController(title: "Error in giving badges", message: "No user found with \(email)", preferredStyle: .alert)
                             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))

@@ -316,6 +316,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
     func removeBrokenUsers(){
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             //Filter out all the broken users
+            print(self.pendingNamesList)
             var foundAnErrorUser = true
             while foundAnErrorUser {
                 if let index = self.pendingNamesList.index(of: "error") {

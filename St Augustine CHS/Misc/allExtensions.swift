@@ -34,45 +34,9 @@ extension StringProtocol where Index == String.Index {
     func endIndex(of string: Self, options: String.CompareOptions = []) -> Index? {
         return range(of: string, options: options)?.upperBound
     }
-    /*
-     func indexes(of string: Self, options: String.CompareOptions = []) -> [Index] {
-     var result: [Index] = []
-     var start = startIndex
-     while start < endIndex,
-     let range = self[start..<endIndex].range(of: string, options: options) {
-     result.append(range.lowerBound)
-     start = range.lowerBound < range.upperBound ? range.upperBound :
-     index(range.lowerBound, offsetBy: 1, limitedBy: endIndex) ?? endIndex
-     }
-     return result
-     }
-     func ranges(of string: Self, options: String.CompareOptions = []) -> [Range<Index>] {
-     var result: [Range<Index>] = []
-     var start = startIndex
-     while start < endIndex,
-     let range = self[start..<endIndex].range(of: string, options: options) {
-     result.append(range)
-     start = range.lowerBound < range.upperBound ? range.upperBound :
-     index(range.lowerBound, offsetBy: 1, limitedBy: endIndex) ?? endIndex
-     }
-     return result
-     }
-     */
 }
 
 extension String {
-    /*
-     subscript (bounds: CountableClosedRange<Int>) -> String {
-     let start = index(startIndex, offsetBy: bounds.lowerBound)
-     let end = index(startIndex, offsetBy: bounds.upperBound)
-     return String(self[start...end])
-     }
-     subscript (bounds: CountableRange<Int>) -> String {
-     let start = index(startIndex, offsetBy: bounds.lowerBound)
-     let end = index(startIndex, offsetBy: bounds.upperBound)
-     return String(self[start..<end])
-     }
-     */
     func lastIndex(of string: String) -> Int? {
         guard let index = range(of: string, options: .backwards) else { return nil }
         return self.distance(from: self.startIndex, to: index.lowerBound)
@@ -398,31 +362,3 @@ extension UIColor {
     }
 }
 
-//Dont think i can do this because i do unique things such as disabling requesting songs if not connected
-//Cannot return a boolean as you cannot return in closure
-//Closure does not finish before function ends
-//extension UIViewController {
-//
-//    func checkInternetConnection() -> Bool {
-//        //***************INTERNET CONNECTION**************
-//        var iAmConnected = false
-//        let connectedRef = Database.database().reference(withPath: ".info/connected")
-//        connectedRef.observe(.value, with: { snapshot in
-//            if let connected = snapshot.value as? Bool, connected {
-//                print("Connected")
-//                iAmConnected = true
-//            } else {
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
-//                    print(iAmConnected)
-//                    if !iAmConnected{
-//                        print("Not connected")
-//                        let alert = UIAlertController(title: "Error", message: "You are not connected to the internet", preferredStyle: .alert)
-//                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-//                        alert.addAction(okAction)
-//                        self.present(alert, animated: true, completion: nil)
-//                    }
-//                }
-//            }
-//        })
-//    }
-//}

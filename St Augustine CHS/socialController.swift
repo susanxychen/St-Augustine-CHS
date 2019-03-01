@@ -247,7 +247,8 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         }
         
         for i in 0...badgeImgs.count - 1 {
-            let name = badgeData[i]["img"] as? String ?? "Error"
+            let name = badgeData[i]["img"] as? String ?? "error"
+            
             //Image
             let storage = Storage.storage()
             let storageRef = storage.reference()
@@ -295,9 +296,25 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                 }
             }
         }
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
-            self.badgesCollectionView.reloadData()
+            self.removeBrokenBadges()
         }
+    }
+    
+    func removeBrokenBadges(){
+        //Filter out all the broken users
+        var indexesToRemove = [Int]()
+        
+        for i in 0..<badgeData.count {
+            if badgeData[i]["club"] as? String ?? "error" == "error" {
+                indexesToRemove.append(i)
+            }
+        }
+        
+        badgeData.remove(at: indexesToRemove)
+        badgeImgs.remove(at: indexesToRemove)
+        self.badgesCollectionView.reloadData()
     }
     
     //Get the profile picture

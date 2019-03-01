@@ -14,6 +14,7 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
 
     var clubID: String!
     var clubMembers = [String]()
+    var clubEmails = [String]()
     
     //The Database
     var db: Firestore!
@@ -42,6 +43,10 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //Intialize the club Emails
+        for _ in clubMembers {
+            clubEmails.append("")
+        }
         
         if isUpdatingBadge {
             badgeImageView.image = oldBadgeImg
@@ -277,8 +282,85 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
             userRef.updateData([
                 "badges": FieldValue.arrayUnion([id])
             ])
+            
+            //Give user points
+            self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                let uDoc: DocumentSnapshot
+                do {
+                    try uDoc = transaction.getDocument(userRef)
+                } catch let fetchError as NSError {
+                    errorPointer?.pointee = fetchError
+                    return nil
+                }
+                
+                guard let oldPoints = uDoc.data()?["points"] as? Int else {
+                    let error = NSError(
+                        domain: "AppErrorDomain",
+                        code: -1,
+                        userInfo: [
+                            NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(uDoc)"
+                        ]
+                    )
+                    errorPointer?.pointee = error
+                    return nil
+                }
+                transaction.updateData(["points": oldPoints + Defaults.joiningClub], forDocument: userRef)
+                return nil
+            }, completion: { (object, err) in
+                if let error = err {
+                    print("Transaction failed: \(error)")
+                } else {
+                    print("Transaction successfully committed!")
+                    print("successfuly gave badge")
+                }
+            })
+            
+            //Get all the grades
+            db.collection("users").document(user).collection("info").document("vital").getDocument { (snap, err) in
+                if let err = err {
+                    print("error \(err)")
+                }
+                if let snap = snap {
+                    let data = snap.data() ?? ["name":"error", "email":"error", "profilePic": 0, "msgToken":"error"]
+                    let email = data["email"] as? String ?? "error"
+                    
+                    let gradYear = Int(email.suffix(14).prefix(2)) ?? 0
+                    let pointRef = self.db.collection("info").document("spiritPoints")
+                    self.db.runTransaction({ (transaction, errorPointer) -> Any? in
+                        let pDoc: DocumentSnapshot
+                        do {
+                            try pDoc = transaction.getDocument(pointRef)
+                        } catch let fetchError as NSError {
+                            errorPointer?.pointee = fetchError
+                            return nil
+                        }
+                        guard let oldPoints = pDoc.data()?[String(gradYear)] as? Int else {
+                            let error = NSError(
+                                domain: "AppErrorDomain",
+                                code: -1,
+                                userInfo: [
+                                    NSLocalizedDescriptionKey: "Unable to retrieve points from snapshot \(pDoc)"
+                                ]
+                            )
+                            errorPointer?.pointee = error
+                            return nil
+                        }
+                        transaction.updateData([String(gradYear): oldPoints + Defaults.joiningClub], forDocument: pointRef)
+                        return nil
+                    }, completion: { (object, err) in
+                        if let error = err {
+                            print("Transaction failed: \(error)")
+                        } else {
+                            print("Transaction successfully committed!")
+                        }
+                    })
+                }
+            }
+            
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+            self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             self.onDoneBlock!(true)
             self.dismiss(animated: true, completion: nil)
         }
