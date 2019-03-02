@@ -379,13 +379,13 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         
         
         //************MANUALLY UPDATE THIS AFTER EVERY UPDATE************
-        let versionHERE = "1.0.2"
+        let versionHERE = "1.0.3"
         
         
         //Remind user
         print(latestVersion + " " + versionHERE)
         if latestVersion != versionHERE && latestVersion != "" {
-            let ac = UIAlertController(title: "New iOS update available!", message: "The list of bug fixes are on the app store. Please update!", preferredStyle: .alert)
+            let ac = UIAlertController(title: "New iOS update available!", message: "The list of bug fixes and changes are on the app store. Please update!", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             self.present(ac, animated: true)
         }
@@ -459,19 +459,29 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             if let error = error {
                 print("Error fetching remote instance ID: \(error)")
             } else if let result = result {
-                //print("Remote instance ID token: \(result.token)")
                 
-                if result.token != allUserFirebaseData.data["msgToken"] as? String ?? "err"{
-                    self.db.collection("users").document((Auth.auth().currentUser?.uid)!).setData(["msgToken": result.token], merge: true)
-                    
-                    //Resubscribe to everything
-                    for club in allUserFirebaseData.data["notifications"] as? [String] ?? ["general"] {
-                        Messaging.messaging().subscribe(toTopic: club) { error in
-                            print("Subscribed to \(club) topic")
+                //Also get the info doc token
+                self.db.collection("users").document((Auth.auth().currentUser?.uid)!).collection("info").document("vital").getDocument(completion: { (snap, err) in
+                    if let err = err {
+                        print(err)
+                    }
+                    if let snap = snap {
+                        let data = snap.data()
+                        let msgToken = data?["msgToken"] as? String ?? "error"
+                        
+                        //IF the msgToken is different reset that on the info doc
+                        if result.token != msgToken {
+                            self.db.collection("users").document((Auth.auth().currentUser?.uid)!).collection("info").document("vital").setData(["msgToken": result.token], merge: true)
+                            
+                            //Resubscribe to everything
+                            for club in allUserFirebaseData.data["notifications"] as? [String] ?? ["general"] {
+                                Messaging.messaging().subscribe(toTopic: club) { error in
+                                    print("Subscribed to \(club) topic")
+                                }
+                            }
                         }
                     }
-                }
-                
+                })
             }
         }
     }
@@ -664,6 +674,13 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! newsViewCell
             //print("i get run data \(newsData[indexPath.item][0]) replacing \(cell.depName.text)")
             
+            //Allow for live links and data
+            cell.anncText.isUserInteractionEnabled = true
+            cell.anncText.isScrollEnabled = false
+            cell.anncText.isEditable = false
+            cell.anncText.tintColor = Defaults.accentColor
+            cell.anncText.dataDetectorTypes = UIDataDetectorTypes.all
+            
             //Add drop shadow to cell
             cell.layer.shadowColor = UIColor.lightGray.cgColor
             cell.layer.shadowOffset = CGSize(width:0,height: 2.0)
@@ -704,6 +721,13 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             //Get the date the announcement was made
             let timestamp: Timestamp = clubNewsData[indexPath.row]["date"] as! Timestamp
             let date: Date = timestamp.dateValue()
+            
+            //Allow for live links and data
+            cell.contentLabel.isUserInteractionEnabled = true
+            cell.contentLabel.isScrollEnabled = false
+            cell.contentLabel.isEditable = false
+            cell.contentLabel.tintColor = Defaults.accentColor
+            cell.contentLabel.dataDetectorTypes = UIDataDetectorTypes.all
             
             //colours
             cell.clubLabel.backgroundColor = Defaults.accentColor

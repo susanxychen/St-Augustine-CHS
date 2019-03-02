@@ -395,7 +395,23 @@ exports.sendToTopicHTTP = functions.https.onRequest((data, response) => {
     const department = data.department;
     const topic = data.topic;
 
-    console.log("HTTP version: " + topic);
+    if (!topic) {
+        console.log('No Topic');
+    } else {
+        console.log(topic)
+    }
+
+    if (!department) {
+        console.log('No department');
+    } else {
+        console.log(department)
+    }
+
+    if (!body) {
+        console.log('No body');
+    } else {
+        console.log(body)
+    }
 
     // See the "Defining the message payload" section below for details
     var message = {
@@ -654,7 +670,8 @@ exports.testTopic = functions.https.onRequest((request, response) => {
 
 exports.createUserDocs = functions.https.onRequest((req, response) => {
     // setTimeout(() => {
-    admin.firestore().collection('users').get()
+    var theColleciton = 'users'
+    admin.firestore().collection(theColleciton).get()
     .then(snapshot => {
         snapshot.forEach(doc => {
             const uData = doc.data();
@@ -672,7 +689,10 @@ exports.createUserDocs = functions.https.onRequest((req, response) => {
                 msgToken: msg
             };
 
-            admin.firestore().collection('users').doc(id).collection('info').doc('vital').set(data);
+            // eslint-disable-next-line promise/no-nesting
+            admin.firestore().collection(theColleciton).doc(id).collection('info').doc('vital').create(data).catch(error => {
+                //lmao
+            })
         });
         return 'nice'
     })

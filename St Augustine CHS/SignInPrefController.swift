@@ -135,12 +135,18 @@ class SignInPrefController: UIViewController {
             } else {
                 print("Document successfully written!")
                 
+                //Also create the info doc
+                self.db.collection("users").document((user?.uid)!).collection("info").document("vital").setData([
+                    "email": user?.email as Any,
+                    "msgToken": "msg",
+                    "name": user?.displayName as Any,
+                    "profilePic": self.picChosen
+                ])
+                
                 //You dont need to... but just safer to wait like 1 second?
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
                     self.performSegue(withIdentifier: "doneSeg", sender: self.nextButtonHidden)
                 })
-                
-//                UserDefaults.standard.set(true, forKey: "didSignInBefore")
             }
         }
     }

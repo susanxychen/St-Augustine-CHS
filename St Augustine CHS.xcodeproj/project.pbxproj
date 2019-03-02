@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		61B9DF7D51B83DE1EF7B0ACA /* Pods_St_Augustine_CHSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 230CF8F0AD952258CCE9D367 /* Pods_St_Augustine_CHSTests.framework */; };
-		66DC3D09AA9630E1C515FF0B /* Pods_St_Augustine_CHS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9D9504C6BB910C366F8CFFD /* Pods_St_Augustine_CHS.framework */; };
+		3BDFAD5F656D5C773AFAE53F /* Pods_St_Augustine_CHS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A889DD5392F60F14A9A356D0 /* Pods_St_Augustine_CHS.framework */; };
+		4C1D4AB9B88DED385F67F83A /* Pods_St_Augustine_CHSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9334E3157123B318D61742 /* Pods_St_Augustine_CHSUITests.framework */; };
 		B90669C82186851800CAA824 /* addAnncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90669C72186851800CAA824 /* addAnncController.swift */; };
 		B90669CA2186ACF100CAA824 /* addClubController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90669C92186ACF100CAA824 /* addClubController.swift */; };
 		B909434221DEE1740004433F /* DefaultConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B909434121DEE1740004433F /* DefaultConstants.swift */; };
@@ -68,7 +68,7 @@
 		B9FECBFF219131E30006CCE3 /* socialController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FECBFE219131E30006CCE3 /* socialController.swift */; };
 		B9FECC012191337F0006CCE3 /* badgesViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FECC002191337F0006CCE3 /* badgesViewCell.swift */; };
 		B9FECC03219133950006CCE3 /* socialClubsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FECC02219133950006CCE3 /* socialClubsViewCell.swift */; };
-		F3F4BB736BB543BE1D37B2C3 /* Pods_St_Augustine_CHSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FED5CAC9B3EDDA9BB2CB083E /* Pods_St_Augustine_CHSUITests.framework */; };
+		F809FDE942DCA859F641F0F2 /* Pods_St_Augustine_CHSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C75B937A126460DA4A7207A5 /* Pods_St_Augustine_CHSTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,11 +89,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		230CF8F0AD952258CCE9D367 /* Pods_St_Augustine_CHSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_St_Augustine_CHSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4205E11A16762BBF665178E5 /* Pods-St Augustine CHSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSTests/Pods-St Augustine CHSTests.release.xcconfig"; sourceTree = "<group>"; };
-		9746CC61A84E41634849D689 /* Pods-St Augustine CHSUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSUITests/Pods-St Augustine CHSUITests.debug.xcconfig"; sourceTree = "<group>"; };
-		9FE0DDF033696787AF2A03B8 /* Pods-St Augustine CHS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHS.release.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS.release.xcconfig"; sourceTree = "<group>"; };
-		B55AF3A3DD5C4947AC0224B6 /* Pods-St Augustine CHSUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSUITests/Pods-St Augustine CHSUITests.release.xcconfig"; sourceTree = "<group>"; };
+		1200440126EC5259394BE33A /* Pods-St Augustine CHS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHS.release.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS.release.xcconfig"; sourceTree = "<group>"; };
+		463C32E1E30EE7C9CC43FE07 /* Pods-St Augustine CHSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSTests/Pods-St Augustine CHSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		8042757457064347219EC6AC /* Pods-St Augustine CHS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS.debug.xcconfig"; sourceTree = "<group>"; };
+		81D256879F747A216782CBDD /* Pods-St Augustine CHSUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSUITests/Pods-St Augustine CHSUITests.release.xcconfig"; sourceTree = "<group>"; };
+		985BF9A734C46CBC20AF4EB1 /* Pods-St Augustine CHSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSTests/Pods-St Augustine CHSTests.release.xcconfig"; sourceTree = "<group>"; };
+		A889DD5392F60F14A9A356D0 /* Pods_St_Augustine_CHS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_St_Augustine_CHS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B90669C72186851800CAA824 /* addAnncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addAnncController.swift; sourceTree = "<group>"; };
 		B90669C92186ACF100CAA824 /* addClubController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addClubController.swift; sourceTree = "<group>"; };
 		B909434121DEE1740004433F /* DefaultConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultConstants.swift; sourceTree = "<group>"; };
@@ -160,10 +161,9 @@
 		B9FECBFE219131E30006CCE3 /* socialController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = socialController.swift; sourceTree = "<group>"; };
 		B9FECC002191337F0006CCE3 /* badgesViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = badgesViewCell.swift; sourceTree = "<group>"; };
 		B9FECC02219133950006CCE3 /* socialClubsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = socialClubsViewCell.swift; sourceTree = "<group>"; };
-		D7D287ACBF6F7C5A0AEEF666 /* Pods-St Augustine CHSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSTests/Pods-St Augustine CHSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		F3E82CD5B1296E69F841AD88 /* Pods-St Augustine CHS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS.debug.xcconfig"; sourceTree = "<group>"; };
-		F9D9504C6BB910C366F8CFFD /* Pods_St_Augustine_CHS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_St_Augustine_CHS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FED5CAC9B3EDDA9BB2CB083E /* Pods_St_Augustine_CHSUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_St_Augustine_CHSUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C75B937A126460DA4A7207A5 /* Pods_St_Augustine_CHSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_St_Augustine_CHSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE9334E3157123B318D61742 /* Pods_St_Augustine_CHSUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_St_Augustine_CHSUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF0A2CADB30E2164FAD0BA9A /* Pods-St Augustine CHSUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSUITests/Pods-St Augustine CHSUITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,7 +171,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				66DC3D09AA9630E1C515FF0B /* Pods_St_Augustine_CHS.framework in Frameworks */,
+				3BDFAD5F656D5C773AFAE53F /* Pods_St_Augustine_CHS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,7 +179,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				61B9DF7D51B83DE1EF7B0ACA /* Pods_St_Augustine_CHSTests.framework in Frameworks */,
+				F809FDE942DCA859F641F0F2 /* Pods_St_Augustine_CHSTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,34 +187,34 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F3F4BB736BB543BE1D37B2C3 /* Pods_St_Augustine_CHSUITests.framework in Frameworks */,
+				4C1D4AB9B88DED385F67F83A /* Pods_St_Augustine_CHSUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6BEE7305A57DA6EAE974BA55 /* Frameworks */ = {
+		0AFFE8952987D22459D84CE5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				F9D9504C6BB910C366F8CFFD /* Pods_St_Augustine_CHS.framework */,
-				230CF8F0AD952258CCE9D367 /* Pods_St_Augustine_CHSTests.framework */,
-				FED5CAC9B3EDDA9BB2CB083E /* Pods_St_Augustine_CHSUITests.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		8B668EB8A04642700864AFC0 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				F3E82CD5B1296E69F841AD88 /* Pods-St Augustine CHS.debug.xcconfig */,
-				9FE0DDF033696787AF2A03B8 /* Pods-St Augustine CHS.release.xcconfig */,
-				D7D287ACBF6F7C5A0AEEF666 /* Pods-St Augustine CHSTests.debug.xcconfig */,
-				4205E11A16762BBF665178E5 /* Pods-St Augustine CHSTests.release.xcconfig */,
-				9746CC61A84E41634849D689 /* Pods-St Augustine CHSUITests.debug.xcconfig */,
-				B55AF3A3DD5C4947AC0224B6 /* Pods-St Augustine CHSUITests.release.xcconfig */,
+				8042757457064347219EC6AC /* Pods-St Augustine CHS.debug.xcconfig */,
+				1200440126EC5259394BE33A /* Pods-St Augustine CHS.release.xcconfig */,
+				463C32E1E30EE7C9CC43FE07 /* Pods-St Augustine CHSTests.debug.xcconfig */,
+				985BF9A734C46CBC20AF4EB1 /* Pods-St Augustine CHSTests.release.xcconfig */,
+				CF0A2CADB30E2164FAD0BA9A /* Pods-St Augustine CHSUITests.debug.xcconfig */,
+				81D256879F747A216782CBDD /* Pods-St Augustine CHSUITests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		A47CCB3E3984ED76725B15FE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A889DD5392F60F14A9A356D0 /* Pods_St_Augustine_CHS.framework */,
+				C75B937A126460DA4A7207A5 /* Pods_St_Augustine_CHSTests.framework */,
+				CE9334E3157123B318D61742 /* Pods_St_Augustine_CHSUITests.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		B93F208121738E5100279829 = {
@@ -224,8 +224,8 @@
 				B93F20A121738E5500279829 /* St Augustine CHSTests */,
 				B93F20AC21738E5500279829 /* St Augustine CHSUITests */,
 				B93F208B21738E5100279829 /* Products */,
-				8B668EB8A04642700864AFC0 /* Pods */,
-				6BEE7305A57DA6EAE974BA55 /* Frameworks */,
+				0AFFE8952987D22459D84CE5 /* Pods */,
+				A47CCB3E3984ED76725B15FE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -354,13 +354,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B93F20B221738E5500279829 /* Build configuration list for PBXNativeTarget "St Augustine CHS" */;
 			buildPhases = (
-				0ED46D3106318266D0C3B7C8 /* [CP] Check Pods Manifest.lock */,
+				459707FF54B7001FE0100B6A /* [CP] Check Pods Manifest.lock */,
 				B93F208621738E5100279829 /* Sources */,
 				B93F208721738E5100279829 /* Frameworks */,
 				B93F208821738E5100279829 /* Resources */,
 				B903DCAE21D80CD4001048AB /* ShellScript */,
-				508FF7E401F56B4D4FF8B04C /* [CP] Embed Pods Frameworks */,
-				362A6E795076D7AA56C521A8 /* [CP] Copy Pods Resources */,
+				1C671138A2A4C4C5F37609B3 /* [CP] Embed Pods Frameworks */,
+				23811F3648CBF42D579EC46D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -375,7 +375,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B93F20B521738E5500279829 /* Build configuration list for PBXNativeTarget "St Augustine CHSTests" */;
 			buildPhases = (
-				C652CDFC36005A2FD4DA50A6 /* [CP] Check Pods Manifest.lock */,
+				F72649961AD65E402292A636 /* [CP] Check Pods Manifest.lock */,
 				B93F209A21738E5500279829 /* Sources */,
 				B93F209B21738E5500279829 /* Frameworks */,
 				B93F209C21738E5500279829 /* Resources */,
@@ -394,7 +394,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B93F20B821738E5500279829 /* Build configuration list for PBXNativeTarget "St Augustine CHSUITests" */;
 			buildPhases = (
-				1E46699924BFCAA5A70BA2F4 /* [CP] Check Pods Manifest.lock */,
+				5E0FA270DE8BB597CF832955 /* [CP] Check Pods Manifest.lock */,
 				B93F20A521738E5500279829 /* Sources */,
 				B93F20A621738E5500279829 /* Frameworks */,
 				B93F20A721738E5500279829 /* Resources */,
@@ -493,63 +493,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0ED46D3106318266D0C3B7C8 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-St Augustine CHS-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		1E46699924BFCAA5A70BA2F4 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-St Augustine CHSUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		362A6E795076D7AA56C521A8 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseInAppMessagingDisplay/InAppMessagingDisplayResources.bundle",
-				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/InAppMessagingDisplayResources.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		508FF7E401F56B4D4FF8B04C /* [CP] Embed Pods Frameworks */ = {
+		1C671138A2A4C4C5F37609B3 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -589,6 +533,62 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		23811F3648CBF42D579EC46D /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseInAppMessagingDisplay/InAppMessagingDisplayResources.bundle",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/InAppMessagingDisplayResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		459707FF54B7001FE0100B6A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-St Augustine CHS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5E0FA270DE8BB597CF832955 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-St Augustine CHSUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		B903DCAE21D80CD4001048AB /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -603,7 +603,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Fabric/run\"\n";
 		};
-		C652CDFC36005A2FD4DA50A6 /* [CP] Check Pods Manifest.lock */ = {
+		F72649961AD65E402292A636 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -855,7 +855,7 @@
 		};
 		B93F20B321738E5500279829 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F3E82CD5B1296E69F841AD88 /* Pods-St Augustine CHS.debug.xcconfig */;
+			baseConfigurationReference = 8042757457064347219EC6AC /* Pods-St Augustine CHS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "St Augustine CHS/St Augustine CHS.entitlements";
@@ -879,7 +879,7 @@
 		};
 		B93F20B421738E5500279829 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9FE0DDF033696787AF2A03B8 /* Pods-St Augustine CHS.release.xcconfig */;
+			baseConfigurationReference = 1200440126EC5259394BE33A /* Pods-St Augustine CHS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "St Augustine CHS/St Augustine CHS.entitlements";
@@ -902,7 +902,7 @@
 		};
 		B93F20B621738E5500279829 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D7D287ACBF6F7C5A0AEEF666 /* Pods-St Augustine CHSTests.debug.xcconfig */;
+			baseConfigurationReference = 463C32E1E30EE7C9CC43FE07 /* Pods-St Augustine CHSTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -924,7 +924,7 @@
 		};
 		B93F20B721738E5500279829 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4205E11A16762BBF665178E5 /* Pods-St Augustine CHSTests.release.xcconfig */;
+			baseConfigurationReference = 985BF9A734C46CBC20AF4EB1 /* Pods-St Augustine CHSTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -946,7 +946,7 @@
 		};
 		B93F20B921738E5500279829 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9746CC61A84E41634849D689 /* Pods-St Augustine CHSUITests.debug.xcconfig */;
+			baseConfigurationReference = CF0A2CADB30E2164FAD0BA9A /* Pods-St Augustine CHSUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -967,7 +967,7 @@
 		};
 		B93F20BA21738E5500279829 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B55AF3A3DD5C4947AC0224B6 /* Pods-St Augustine CHSUITests.release.xcconfig */;
+			baseConfigurationReference = 81D256879F747A216782CBDD /* Pods-St Augustine CHSUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;

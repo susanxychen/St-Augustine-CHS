@@ -54,6 +54,8 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
     @IBOutlet weak var cancelOrUpdateView: UIView!
     @IBOutlet weak var lineBetweenOwnedAndAll: UIView!
     
+    var downloadedImagesCount = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -175,7 +177,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                         
                         if let updated = updated {
                             if let savedImage = self.getSavedImage(named: "\(i)=\(updated)"){
-                                print("already saved \(i)=\(updated)")
+                                //print("already saved \(i)=\(updated)")
                                 self.picsNotOwned[i] = savedImage
                                 //print(self.picsNotOwned)
                             } else {
@@ -186,6 +188,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                                         print("cant find image \(i) + \(self.picsNotOwned[i])")
                                         self.picsNotOwned[i] = self.fillerImage
                                     } else {
+                                        self.downloadedImagesCount += 1
                                         // Get the download URL
                                         var image: UIImage?
                                         let data = try? Data(contentsOf: url!)
@@ -195,7 +198,7 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                                             self.clearImageFolder(imageName: "\(i)=\(updated)")
                                             self.saveImageDocumentDirectory(image: image!, imageName: "\(i)=\(updated)")
                                         }
-                                        print("i success now")
+                                        print("i got a new image")
                                     }
                                 }
                             }
@@ -246,15 +249,36 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                     }
                 }
                 
-                //Findally remove the pics that you already own from picsNotOwned
-                self.picsNotOwned.remove(at: self.picsOwnedNums)
-                self.picsNotOwnedNums.remove(at: self.picsOwnedNums)
+                //If downloading more than a few pictures, just delay to give time before removing indexs
+                //Thats what crashed it
+                if self.downloadedImagesCount > 3 {
+                    print("yeah man new images so lets wait")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.5, execute: {
+                        //Findally remove the pics that you already own from picsNotOwned
+                        print("i remove from index")
+                        self.picsNotOwned.remove(at: self.picsOwnedNums)
+                        self.picsNotOwnedNums.remove(at: self.picsOwnedNums)
+                        
+                        //Finish up
+                        print("done formatting")
+                        self.ownedCollectionView.reloadData()
+                        self.notOwnedCollectionView.reloadData()
+                        self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+                    })
+                }
+                else {
+                    //Findally remove the pics that you already own from picsNotOwned
+                    print("i remove from index")
+                    self.picsNotOwned.remove(at: self.picsOwnedNums)
+                    self.picsNotOwnedNums.remove(at: self.picsOwnedNums)
+                    
+                    //Finish up
+                    print("done formatting")
+                    self.ownedCollectionView.reloadData()
+                    self.notOwnedCollectionView.reloadData()
+                    self.hideActivityIndicator(container: self.container, actInd: self.actInd)
+                }
                 
-                //Finish up
-                print("done formatting")
-                self.ownedCollectionView.reloadData()
-                self.notOwnedCollectionView.reloadData()
-                self.hideActivityIndicator(container: self.container, actInd: self.actInd)
             }
         }
     }
@@ -398,9 +422,12 @@ class profilePicController: UIViewController, UICollectionViewDataSource, UIColl
                     self.showActivityIndicatory(container: self.container, actInd: self.actInd)
 
                     //Update the picsOwned array
-                    let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!).collection("info").document("vital")
+                    let userRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!)
                     
                     userRef.updateData(["picsOwned": FieldValue.arrayUnion([self.newPicChosen])])
+                    
+                    let vitalRef = self.db.collection("users").document((Auth.auth().currentUser?.uid)!).collection("info").document("vital")
+                    vitalRef.setData(["profilePic": self.newPicChosen], merge: true)
                     
                     //Subtact the points
                     allUserFirebaseData.data["points"] = allUserFirebaseData.data["points"] as! Int - theCost

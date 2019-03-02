@@ -16,28 +16,32 @@ class titanTagController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        UserDefaults.standard.set(true, forKey: "didEnterTT")
         
+        //Show debug output for TT for status
         if allUserFirebaseData.data["status"] as! Int == 2 {
             theGreetingLabel.isHidden = false
         }
         
+        //Change brightness
+        UserDefaults.standard.set(true, forKey: "didEnterTT")
         UIScreen.animateBrightness(to: 1)
         
+        //Update the TT
         update()
         _ = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
     }
     
     @objc func update() {
         DispatchQueue.main.async {
-            let email = Auth.auth().currentUser?.email?.split(separator: "@")
-            let emailAfterSplit = String(email?[0] ?? "Error")
-            //print("Encoding \(emailAfterSplit)")
-            let encoded = self.encode(data: emailAfterSplit)
-            //print("kenn en: \(encoded)")
+            //let email = Auth.auth().currentUser?.email?.split(separator: "@")
+            //let emailAfterSplit = String(email?[0] ?? "Error")
+            
+            let finalEmail = Auth.auth().currentUser?.email ?? "error"
+            
+            let encoded = self.encode(data: finalEmail)
             
             let time: Int = Int(Date().timeIntervalSince1970 / 5)
-            self.theGreetingLabel.text = "m:\(emailAfterSplit) c: \(encoded) t: \(time)"
+            self.theGreetingLabel.text = "m:\(finalEmail) c: \(encoded) t: \(time)"
             
             let image = self.generateQRCode(from: encoded)
             self.qrImageView.image = image

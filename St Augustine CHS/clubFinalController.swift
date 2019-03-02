@@ -1368,6 +1368,13 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
             cell.studentName.text = ""
             cell.studentPicture.image = UIImage()
             
+            //Allow for live links and data
+            cell.anncText.isUserInteractionEnabled = true
+            cell.anncText.isScrollEnabled = false
+            cell.anncText.isEditable = false
+            cell.anncText.tintColor = Defaults.accentColor
+            cell.anncText.dataDetectorTypes = UIDataDetectorTypes.all
+            
             if anncData.count != 0 {
                 //Set the title's height
                 let size = CGSize(width: view.frame.width, height: 1000)
