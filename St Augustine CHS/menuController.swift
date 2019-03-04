@@ -319,6 +319,8 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
     
     func setupRemoteConfigDefaults() {
         let defaultValues = [
+            "showLogoInTT": "1" as NSObject,
+            "addK12ToTT": "1" as NSObject,
             "showUsersOnSongs": "1" as NSObject,
             "IOS_VERSION": "" as NSObject,
             "songRequestTheme": "" as NSObject,
@@ -379,12 +381,12 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         
         
         //************MANUALLY UPDATE THIS AFTER EVERY UPDATE************
-        let versionHERE = "1.0.3"
-        
+        let versionHERE = "1.0.31"
         
         //Remind user
         print(latestVersion + " " + versionHERE)
-        if latestVersion != versionHERE && latestVersion != "" {
+        
+        if latestVersion != versionHERE && latestVersion != "" && (Auth.auth().currentUser?.email) ?? "error" != "sachstesterforapple@gmail.com" {
             let ac = UIAlertController(title: "New iOS update available!", message: "The list of bug fixes and changes are on the app store. Please update!", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             self.present(ac, animated: true)
@@ -439,6 +441,21 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             Defaults.showUsersOnSongs = true
         } else {
             Defaults.showUsersOnSongs = false
+        }
+        
+        //Titan Tag
+        let addK12 = RemoteConfig.remoteConfig().configValue(forKey: "addK12ToTT").stringValue ?? "1"
+        if addK12 == "1" {
+            Defaults.addK12ToTT = true
+        } else {
+            Defaults.addK12ToTT = false
+        }
+        
+        let showLogo = RemoteConfig.remoteConfig().configValue(forKey: "showLogoInTT").stringValue ?? "1"
+        if showLogo == "1" {
+            Defaults.showLogoInTT = true
+        } else {
+            Defaults.showLogoInTT = false
         }
         
         //Now actually change the colours

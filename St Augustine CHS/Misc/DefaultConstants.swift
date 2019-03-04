@@ -28,5 +28,8 @@ struct Defaults {
     
     static var songRequestTheme: String = ""
     static var showUsersOnSongs: Bool = true
+    
+    static var addK12ToTT: Bool = true
+    static var showLogoInTT: Bool = true
 }
 

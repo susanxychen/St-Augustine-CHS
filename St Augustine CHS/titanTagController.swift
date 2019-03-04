@@ -13,6 +13,7 @@ class titanTagController: UIViewController {
 
     @IBOutlet weak var qrImageView: UIImageView!
     @IBOutlet weak var theGreetingLabel: UILabel! //the lower hidden one
+    @IBOutlet weak var staLogoImageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +22,9 @@ class titanTagController: UIViewController {
         if allUserFirebaseData.data["status"] as! Int == 2 {
             theGreetingLabel.isHidden = false
         }
+        
+        //Hide the logo if needed
+        staLogoImageView.isHidden = !(Defaults.showLogoInTT)
         
         //Change brightness
         UserDefaults.standard.set(true, forKey: "didEnterTT")
@@ -33,10 +37,13 @@ class titanTagController: UIViewController {
     
     @objc func update() {
         DispatchQueue.main.async {
-            //let email = Auth.auth().currentUser?.email?.split(separator: "@")
-            //let emailAfterSplit = String(email?[0] ?? "Error")
-            
-            let finalEmail = Auth.auth().currentUser?.email ?? "error"
+            var finalEmail = "error"
+            if Defaults.addK12ToTT {
+                 finalEmail = Auth.auth().currentUser?.email ?? "error"
+            } else {
+                let email = Auth.auth().currentUser?.email?.split(separator: "@")
+                finalEmail = String(email?[0] ?? "Error")
+            }
             
             let encoded = self.encode(data: finalEmail)
             
@@ -45,8 +52,6 @@ class titanTagController: UIViewController {
             
             let image = self.generateQRCode(from: encoded)
             self.qrImageView.image = image
-
-            //print("kenn de: \(self.decode(data: encoded))")
         }
     }
     

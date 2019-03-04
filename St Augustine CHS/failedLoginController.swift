@@ -19,6 +19,17 @@ class failedLoginController: UIViewController {
         super.viewDidLoad()
         loginValidLabel.textColor = Defaults.primaryColor
         goBackButton.setTitleColor(Defaults.accentColor, for: .normal)
+        
+        //Sign out of Google
+        GIDSignIn.sharedInstance()?.signOut()
+        
+        //Sign out of Firebase
+        let firebaseAuth = Auth.auth()
+        do {
+            try firebaseAuth.signOut()
+        } catch let signOutError as NSError {
+            print ("Error signing out: %@", signOutError)
+        }
     }
     
     @IBAction func goBack(_ sender: Any) {
