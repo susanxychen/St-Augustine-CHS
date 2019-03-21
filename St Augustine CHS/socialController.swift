@@ -108,7 +108,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
         //Set Up Firebase
         // [START setup]
         let settings = FirestoreSettings()
-        settings.areTimestampsInSnapshotsEnabled = true
+        //settings.areTimestampsInSnapshotsEnabled = true
         Firestore.firestore().settings = settings
         // [END setup]
         db = Firestore.firestore()

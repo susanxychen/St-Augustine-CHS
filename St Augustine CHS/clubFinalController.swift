@@ -130,7 +130,7 @@ class clubFinalController: UIViewController, UICollectionViewDataSource, UIColle
         //Set Up
         // [START setup]
         let settings = FirestoreSettings()
-        settings.areTimestampsInSnapshotsEnabled = true
+        //settings.areTimestampsInSnapshotsEnabled = true
         Firestore.firestore().settings = settings
         // [END setup]
         db = Firestore.firestore()

@@ -183,7 +183,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         //Set Up
         // [START setup]
         let settings = FirestoreSettings()
-        settings.areTimestampsInSnapshotsEnabled = true
+        ////settings.areTimestampsInSnapshotsEnabled = true
         Firestore.firestore().settings = settings
         // [END setup]
         db = Firestore.firestore()
@@ -659,15 +659,14 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
             var size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
             var attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 18)!]
             var estimatedFrame = NSString(string: newsData[indexPath.row][1]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
-            
             let contentHeight =  estimatedFrame.height + 8
+            
             size = CGSize(width: approxWidthOfAnnouncementTextView, height: 1000)
             attributes = [NSAttributedString.Key.font: UIFont(name: "Scada-Regular", size: 19)!]
             estimatedFrame = NSString(string: newsData[indexPath.row][0]).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
-            
             let titleHeight = estimatedFrame.height + 8
             
-            return CGSize(width: view.frame.width, height: contentHeight + titleHeight + 8)
+            return CGSize(width: view.frame.width, height: contentHeight + titleHeight + 32)
         }
     }
     
