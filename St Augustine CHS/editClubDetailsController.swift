@@ -100,7 +100,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
         clubNameTxtView.enablesReturnKeyAutomatically = true
         clubDescTxtView.enablesReturnKeyAutomatically = true
         
-        print(clubID)
+        print(clubID as Any)
         
         //Hide keyboard when tapped out
         self.hideKeyboardWhenTappedAround()
@@ -189,7 +189,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
     @IBAction func joinClubDetailsSegment(_ sender: Any) {
         //See which option is selected
         clubJoinSetting = joinClubSettingsSegmentControl.selectedSegmentIndex
-        print(clubJoinSetting)
+        print(clubJoinSetting as Any)
     }
     
     //***************************CANCEL EDITING***************************
@@ -291,20 +291,20 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
                 
                 if self.clubBadge as String != "" {
                     userRef.updateData([
-                        "badges": FieldValue.arrayUnion([self.clubBadge])
+                        "badges": FieldValue.arrayUnion([self.clubBadge as Any])
                     ])
                 }
                 
                 userRef.updateData([
-                    "clubs": FieldValue.arrayUnion([clubID]),
-                    "notifications": FieldValue.arrayUnion([clubID])
+                    "clubs": FieldValue.arrayUnion([clubID as Any]),
+                    "notifications": FieldValue.arrayUnion([clubID as Any])
                 ])
                 
                 userRef.getDocument { (snap, err) in
                     if let snap = snap {
                         let data = snap.data()
                         let msgToken = data?["msgToken"] as? String ?? "error"
-                        self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [msgToken], "isSubscribing": true, "clubID": self.clubID]) { (result, error) in
+                        self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [msgToken], "isSubscribing": true, "clubID": self.clubID as Any]) { (result, error) in
                             if let error = error as NSError? {
                                 if error.domain == FunctionsErrorDomain {
                                     let code = FunctionsErrorCode(rawValue: error.code)
@@ -349,7 +349,7 @@ class editClubDetailsController: UIViewController, UIImagePickerControllerDelega
         clubRef.setData([
             "desc": newClubDesc,
             "name": newClubName,
-            "joinPref": clubJoinSetting
+            "joinPref": clubJoinSetting as Any
         ], merge: true) { (err) in
             if let err = err {
                 let alert = UIAlertController(title: "Error in updating Club", message: "Please Try Again later. Error: \(err.localizedDescription)", preferredStyle: .alert)

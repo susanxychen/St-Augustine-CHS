@@ -302,7 +302,7 @@ class addAnncController: UIViewController, UIImagePickerControllerDelegate, UINa
                 "clubName": clubName,
                 "content": anncDesc,
                 "creator": user?.uid as Any,
-                "date": self.theDate,
+                "date": self.theDate as Any,
                 "img": imageName,
                 "title": anncTitle
             ]) { err in

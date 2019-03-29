@@ -178,7 +178,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
             //Filter out all the broken users
             var foundAnErrorUser = true
             while foundAnErrorUser {
-                if let index = self.membersNamesList.index(of: "error") {
+                if let index = self.membersNamesList.firstIndex(of: "error") {
                     foundAnErrorUser = true
                     self.membersNamesList.remove(at: index)
                     self.membersEmailsList.remove(at: index)
@@ -193,7 +193,7 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
             
             foundAnErrorUser = true
             while foundAnErrorUser {
-                if let index = self.adminsNamesList.index(of: "error") {
+                if let index = self.adminsNamesList.firstIndex(of: "error") {
                     foundAnErrorUser = true
                     self.adminsNamesList.remove(at: index)
                     self.adminsEmailsList.remove(at: index)
@@ -358,13 +358,13 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     //Update user stuff
                     let userRef = self.db.collection("users").document(self.adminsList[indexPath.item])
                     userRef.updateData([
-                        "clubs": FieldValue.arrayRemove([self.clubID]),
-                        "notifications": FieldValue.arrayRemove([self.clubID]),
-                        "badges": FieldValue.arrayRemove([self.clubBadge])
+                        "clubs": FieldValue.arrayRemove([self.clubID as Any]),
+                        "notifications": FieldValue.arrayRemove([self.clubID as Any]),
+                        "badges": FieldValue.arrayRemove([self.clubBadge as Any])
                     ])
                     
                     let msgToken = self.adminsMsgList[indexPath.item]
-                    self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [msgToken], "isSubscribing": false, "clubID": self.clubID]) { (result, error) in
+                    self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [msgToken], "isSubscribing": false, "clubID": self.clubID as Any]) { (result, error) in
                         if let error = error as NSError? {
                             if error.domain == FunctionsErrorDomain {
                                 let code = FunctionsErrorCode(rawValue: error.code)
@@ -461,12 +461,12 @@ class clubMembersController: UIViewController, UICollectionViewDataSource, UICol
                     //update the user
                     let userRef = self.db.collection("users").document(self.membersList[indexPath.item])
                     userRef.updateData([
-                        "clubs": FieldValue.arrayRemove([self.clubID]),
-                        "notifications": FieldValue.arrayRemove([self.clubID]),
-                        "badges": FieldValue.arrayRemove([self.clubBadge])
+                        "clubs": FieldValue.arrayRemove([self.clubID as Any]),
+                        "notifications": FieldValue.arrayRemove([self.clubID as Any]),
+                        "badges": FieldValue.arrayRemove([self.clubBadge as Any])
                     ])
                     
-                    self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [self.membersMsgList[indexPath.item]], "isSubscribing": false, "clubID": self.clubID]) { (result, error) in
+                    self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [self.membersMsgList[indexPath.item]], "isSubscribing": false, "clubID": self.clubID as Any]) { (result, error) in
                         if let error = error as NSError? {
                             if error.domain == FunctionsErrorDomain {
                                 let code = FunctionsErrorCode(rawValue: error.code)

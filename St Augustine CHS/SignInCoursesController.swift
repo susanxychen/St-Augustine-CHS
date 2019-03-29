@@ -50,7 +50,7 @@ class SignInCoursesController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(picChosen)
+        print(picChosen as Any)
         
         //Set Up
         // [START setup]
@@ -88,7 +88,7 @@ class SignInCoursesController: UIViewController {
         
         hideKeyboardWhenTappedAround()
         
-        print(picChosen)
+        print(picChosen as Any)
     }
     
 

@@ -501,6 +501,7 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                 Crashlytics.sharedInstance().crash()
             }
             
+            //Philo joke
             if userInput == "theclearingwantsyou" {
                 print("The clearing")
                 searchBar.text = "it wants you \(String(Auth.auth().currentUser?.displayName?.split(separator: " ")[0] ?? "").lowercased())"
@@ -513,6 +514,30 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                     view.removeFromSuperview()
                 }
                 return
+            }
+            
+            //Mini joke
+            if userInput == "m sub s" {
+                let alert = UIAlertController(title: ":)", message: "m", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "s", style: .default, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+            }
+            
+            //another mini joke
+            if userInput == "tea" {
+                let alert = UIAlertController(title: "all", message: "the", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "tea", style: .default, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
+            }
+            
+            //another mini joke
+            if userInput == "fire" {
+                let alert = UIAlertController(title: "fire", message: "chaos", preferredStyle: .alert)
+                let okAction = UIAlertAction(title: ":)", style: .default, handler: nil)
+                alert.addAction(okAction)
+                self.present(alert, animated: true, completion: nil)
             }
             
             //*****If the user did not add @ycdsbk12 just add it for them******

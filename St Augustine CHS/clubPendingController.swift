@@ -70,7 +70,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                 self.changedPendingList!(true)
                 
                 let msgToken = self.pendingMsgList[indexPath.item]
-                self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [msgToken], "isSubscribing": true, "clubID": self.clubID]) { (result, error) in
+                self.functions.httpsCallable("manageSubscriptions").call(["registrationTokens": [msgToken], "isSubscribing": true, "clubID": self.clubID as Any]) { (result, error) in
                     if let error = error as NSError? {
                         if error.domain == FunctionsErrorDomain {
                             let code = FunctionsErrorCode(rawValue: error.code)
@@ -110,13 +110,13 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
                 //Give club badge if there is one
                 if self.clubBadge as String != "" {
                     userRef.updateData([
-                        "badges": FieldValue.arrayUnion([self.clubBadge])
+                        "badges": FieldValue.arrayUnion([self.clubBadge as Any])
                     ])
                 }
                 
                 userRef.updateData([
-                    "clubs": FieldValue.arrayUnion([self.clubID]),
-                    "notifications": FieldValue.arrayUnion([self.clubID]),
+                    "clubs": FieldValue.arrayUnion([self.clubID as Any]),
+                    "notifications": FieldValue.arrayUnion([self.clubID as Any]),
                 ])
                 
                 //give em points
@@ -319,7 +319,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
             print(self.pendingNamesList)
             var foundAnErrorUser = true
             while foundAnErrorUser {
-                if let index = self.pendingNamesList.index(of: "error") {
+                if let index = self.pendingNamesList.firstIndex(of: "error") {
                     foundAnErrorUser = true
                     self.pendingNamesList.remove(at: index)
                     self.pendingEmailsList.remove(at: index)

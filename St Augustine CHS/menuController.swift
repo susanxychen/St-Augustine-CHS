@@ -381,7 +381,7 @@ class menuController: UIViewController, UICollectionViewDataSource, UICollection
         
         
         //************MANUALLY UPDATE THIS AFTER EVERY UPDATE************
-        let versionHERE = "1.0.31"
+        let versionHERE = "1.0.32"
         
         //Remind user
         print(latestVersion + " " + versionHERE)

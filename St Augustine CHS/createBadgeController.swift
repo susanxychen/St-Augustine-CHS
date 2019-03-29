@@ -61,7 +61,7 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
         // [END setup]
         db = Firestore.firestore()
         
-        print(clubID)
+        print(clubID as Any)
         
         hideKeyboardWhenTappedAround()
         
@@ -211,7 +211,7 @@ class createBadgeController: UIViewController, UIImagePickerControllerDelegate, 
         if !isUpdatingBadge {
             db.collection("clubs").document(clubID).updateData(["clubBadge" : badgeID])
             db.collection("badges").document(badgeID).setData([
-                "club": clubID,
+                "club": clubID as Any,
                 "desc": desc,
                 "creator": user?.uid as Any,
                 "img": imageName,

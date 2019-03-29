@@ -275,23 +275,23 @@ class addClubController: UIViewController, UIImagePickerControllerDelegate, UINa
                 print("oh damn \(error)")
             } else {
                 let userRef = self.db.collection("users").document(user!.uid)
-                userRef.updateData(["notifications": FieldValue.arrayUnion([self.clubID])])
+                userRef.updateData(["notifications": FieldValue.arrayUnion([self.clubID as Any])])
             }
         }
         
         let userRef = self.db.collection("users").document(user!.uid)
         userRef.updateData([
-            "clubs": FieldValue.arrayUnion([clubID])
+            "clubs": FieldValue.arrayUnion([clubID as Any])
         ])
         
         db.collection("clubs").document(clubID).setData([
             "admins": [user?.uid],
             "clubBadge": "",
-            "desc": clubDescTxtView.text,
-            "img": clubBannerID,
+            "desc": clubDescTxtView.text as Any,
+            "img": clubBannerID as Any,
             "joinPref": clubJoinSetting,
             "members": [],
-            "name": clubNameTxtView.text,
+            "name": clubNameTxtView.text as Any,
             "pending": []
         ]) { err in
             if let err = err {

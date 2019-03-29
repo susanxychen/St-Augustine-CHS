@@ -146,7 +146,7 @@ class badgeScannerController: UIViewController, AVCaptureVideoDataOutputSampleBu
                         if snap.documents.count == 1 {
                             let userRef = self.db.collection("users").document(snap.documents[0].documentID)
                             userRef.updateData([
-                                "badges": FieldValue.arrayUnion([self.badgeID])
+                                "badges": FieldValue.arrayUnion([self.badgeID as Any])
                             ])
                             
                             let msgToken = snap.documents[0].data()["msgToken"] as? String ?? "error"

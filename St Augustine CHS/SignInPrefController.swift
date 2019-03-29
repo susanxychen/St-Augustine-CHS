@@ -47,8 +47,8 @@ class SignInPrefController: UIViewController {
         statusBarView.backgroundColor = Defaults.darkerPrimary
         topBarView.backgroundColor = Defaults.primaryColor
         
-        print(picChosen)
-        print(courses)
+        print(picChosen as Any)
+        print(courses as Any)
         
     }
     
@@ -88,8 +88,8 @@ class SignInPrefController: UIViewController {
         }
         
         //CREATE THE USER IN THE DATABASE WITH GIVEN PREFERENCES
-        print(picChosen)
-        print(courses)
+        print(picChosen as Any)
+        print(courses as Any)
         print(showCourses)
         
         let user = Auth.auth().currentUser
@@ -113,7 +113,7 @@ class SignInPrefController: UIViewController {
         //Create the user in the database
         db.collection("users").document((user?.uid)!).setData([
             "badges": [],
-            "classes": courses,
+            "classes": courses as Any,
             "clubs": [],
             "email": user?.email as Any,
             "gradYear": gradYear!,
@@ -121,7 +121,7 @@ class SignInPrefController: UIViewController {
             "notifications": ["general"],
             "picsOwned": [picChosen],
             "points": Defaults.startingPoints,
-            "profilePic": picChosen,
+            "profilePic": picChosen as Any,
             "showClasses": showCourses,
             "showClubs": showClubs,
             "status": status
@@ -140,7 +140,7 @@ class SignInPrefController: UIViewController {
                     "email": user?.email as Any,
                     "msgToken": "msg",
                     "name": user?.displayName as Any,
-                    "profilePic": self.picChosen
+                    "profilePic": self.picChosen as Any
                 ])
                 
                 //You dont need to... but just safer to wait like 1 second?

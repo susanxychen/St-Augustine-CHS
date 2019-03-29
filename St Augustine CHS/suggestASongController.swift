@@ -126,7 +126,7 @@ class suggestASongController: UIViewController {
                         //Add the song to the db
                         self.db.collection("songs").document(id).setData([
                             "artist": artist as Any,
-                            "date": self.theDate,
+                            "date": self.theDate as Any,
                             "name": song as Any,
                             "suggestor": Auth.auth().currentUser?.uid as Any,
                             "upvotes": 0

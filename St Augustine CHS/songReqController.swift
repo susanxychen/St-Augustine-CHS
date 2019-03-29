@@ -54,23 +54,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     var userPics = [UIImage]()
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        //Clear Keys of previous song voting only once
-        var haventCleared = true
-        if let x = UserDefaults.standard.object(forKey: "haventClearedSongKeys") as? Bool {
-           haventCleared = x
-            print("Have cleared songs already")
-        }
-
-        if haventCleared {
-            print("Have not cleared songs. Clearing")
-            let domain = Bundle.main.bundleIdentifier!
-            UserDefaults.standard.removePersistentDomain(forName: domain)
-            UserDefaults.standard.synchronize()
-            
-            UserDefaults.standard.set(false, forKey: "haventClearedSongKeys")
-        }
-        
+        super.viewDidLoad()        
         //Add the super vote recognizer
         let lpgr: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress(gestureRecognizer:)))
         lpgr.minimumPressDuration = 0.5
@@ -131,7 +115,7 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
         themeLabel.backgroundColor = Defaults.darkerPrimary
         
         supervoteSlider.minimumValue = Float(Defaults.supervoteMin)
-        supervoteSlider.maximumValue = Float(allUserFirebaseData.data["points"] as! Int)
+        supervoteSlider.maximumValue = Float(allUserFirebaseData.data["points"] as! Int) * Float(Defaults.supervoteRatio)
         
         //Get the data of what you voted for before
         if let x = UserDefaults.standard.object(forKey: "songsVoted") as? [[Any]]{
@@ -241,8 +225,8 @@ class songReqController: UIViewController, UICollectionViewDataSource, UICollect
     var supervoteCost = 0
     @IBAction func sliderMoved(_ sender: Any) {
         let value = CGFloat(supervoteSlider.value)
-        supervoteAmount = Int(value * Defaults.supervoteRatio)
-        supervoteCost = Int(value)
+        supervoteAmount = Int(value)
+        supervoteCost = Int(value * Defaults.supervoteRatio)
         
         supervoteVotes.text = "Votes: \(supervoteAmount)"
         supervotePoints.text = "Points: \(supervoteCost)"
