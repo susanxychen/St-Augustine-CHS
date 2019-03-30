@@ -516,14 +516,6 @@ class socialController: UIViewController, UICollectionViewDataSource, UICollecti
                 return
             }
             
-            //Mini joke
-            if userInput == "m sub s" {
-                let alert = UIAlertController(title: ":)", message: "m", preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "s", style: .default, handler: nil)
-                alert.addAction(okAction)
-                self.present(alert, animated: true, completion: nil)
-            }
-            
             //another mini joke
             if userInput == "tea" {
                 let alert = UIAlertController(title: "all", message: "the", preferredStyle: .alert)
