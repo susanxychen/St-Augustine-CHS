@@ -33,6 +33,7 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
     var refreshControl: UIRefreshControl?
     let actInd: UIActivityIndicatorView = UIActivityIndicatorView()
     let container: UIView = UIView()
+    @IBOutlet weak var pendingLabel: UILabel!
     
     
     //Returning to club controller
@@ -55,6 +56,8 @@ class clubPendingController: UIViewController, UICollectionViewDataSource, UICol
         //lpgr.delegate = self as? UIGestureRecognizerDelegate
         lpgr.delaysTouchesBegan = true
         self.pendingListCollectionView.addGestureRecognizer(lpgr)
+        
+        pendingLabel.textColor = Defaults.primaryColor
         
         getpendingNamesList()
     }

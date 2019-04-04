@@ -23,6 +23,7 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
     @IBOutlet weak var regularMenuCollectionViewHeight: NSLayoutConstraint!
     @IBOutlet weak var cafeViewHeight: NSLayoutConstraint!
     @IBOutlet weak var lineBetweenMenuHeights: NSLayoutConstraint!
+    @IBOutlet weak var viewBetweenTheMenus: UIView!
     
     //Weekend Constraints
     @IBOutlet weak var topofdayHeight: NSLayoutConstraint!
@@ -70,6 +71,8 @@ class cafeMenuController: UIViewController, UICollectionViewDataSource, UICollec
         let fullDate = String(DateFormatter.localizedString(from: Date(), dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)).split(separator: ",")
         
         daymenuLabel.text = "\(String(fullDate[0]).uppercased()) MENU"
+        
+        viewBetweenTheMenus.backgroundColor = Defaults.primaryColor
         
         let theDay = DateFormatter.localizedString(from: Date(), dateStyle: DateFormatter.Style.full, timeStyle: DateFormatter.Style.none)
         //If its a weekend set up the "monday will be message"
