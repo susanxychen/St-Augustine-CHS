@@ -10,7 +10,9 @@
       
     <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-firestore.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-firestore.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/5.10.1/firebase-functions.js"></script>
+
   </head>
 	
   <body class="bg-color-baige">
@@ -100,8 +102,29 @@
 		</div>
 	  </div>
 	</div>
-	  
-	<!--<div class="container mt-4">
+	
+	<!--This is for the tucci Login Menu-->
+	<div id="tucciLogin" class="container mt-3" style="display: none">
+			<div class="row">
+				<div class="col-12">
+					<div class="jumbotron bg-color-primary" style="border-radius: 2rem">
+						<h1 class="text-left" style="color: white"><center>Send Alert</center></h1>
+							<h3 class="text-left" style="color: white"><center>Note: This will alert the whole school</center></h3>
+							<br>
+							 <div align="center">
+												 <form action="" onsubmit="return sendMessage()">
+													 Message:
+													 <br>
+													 <textarea rows="4" cols="50" type="text" style="width: 60%; height: 200px;" id="tucciMessage"></textarea>
+													 <br>
+													 <input type="button" value="Send" id="sendMessageBtn">
+												 </form>
+							 </div>
+					 </div>
+				 </div>
+			 </div>
+		 </div>
+	<!-- <div class="container mt-4">
       <div class="row">
         <div class="col-12">
           <div class="jumbotron bg-color-primary" style="border-radius: 2rem">
@@ -143,7 +166,7 @@
 		  </div>
 		</div>
 	  </div>
-	</div>-->
+	</div> -->
 	
     <footer class="text-center">
       <div class="container">
@@ -157,7 +180,7 @@
     
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://app.staugustinechs.ca/js/jquery-3.2.1.min.js"></script>
-    <script src="login.js"></script>
+    <script src="readableLogin.js"></script>
       <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="https://app.staugustinechs.ca/js/popper.min.js"></script>
     <script src="https://app.staugustinechs.ca/js/bootstrap-4.0.0.js"></script>
