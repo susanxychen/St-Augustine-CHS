@@ -1,6 +1,7 @@
 const https = require('follow-redirects').http;
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const FeildValue = require('firebase-admin').firestore.FieldValue;
 // const nodemailer = require('nodemailer');
 // const cors = require('cors')();
 
@@ -131,7 +132,7 @@ exports.deleteTopSongs = functions.https.onRequest((request, response) => {
             var ids = []
             var dates = []
             snapshot.forEach(doc => {
-                console.log(doc.id, ' => ', doc.data())
+                // console.log(doc.id, ' => ', doc.data())
                 const songData = doc.data();
                 let upvotes = songData.upvotes;
                 if(!upvotes){
@@ -573,3 +574,60 @@ exports.testTopic = functions.https.onRequest((request, response) => {
         return 'error';
     });
 });
+
+exports.deleteSeniors = functions.https.onRequest((req, res) => {
+
+    let user_ref = admin.firestore().collection('usersTEST2');
+
+    let all_user = user_ref.get()
+    .then(snapshot => {
+
+        const senior_ids = [];
+
+        snapshot.forEach(doc => {
+
+            console.log(doc.id + '=>' + doc.data());
+            const usr_data = doc.data();
+            
+            let usr_email = usr_data.email;
+
+            if(usr_email.includes("19")){
+                senior_ids.push(doc.id);
+            }
+
+        });
+
+        for(let i = 0; i < senior_ids.length; i++){
+            admin.firestore().collection('usersTEST2').doc(senior_ids[i]).collection('info').doc('vital').delete();
+            admin.firestore().collection('usersTEST2').doc(senior_ids[i]).delete(); 
+        }
+
+
+        res.send(senior_ids);
+        return senior_ids;
+    })
+    .catch((error) => {
+        res.send('Error deleting users' + error);
+        return 'error';
+    })
+
+
+});
+
+exports.deleteClubSeniors = functions.https.onRequest((req, res) => {
+
+    // let clubsRef = firebase.firestore().collection('clubs');
+    //Testing Purposes
+    let test_club_ref = firebase.firestore().collection('clubs').doc('clubID');
+    
+    let remove_user = test_club_ref.update()({
+
+
+
+
+    });
+
+
+
+
+})
