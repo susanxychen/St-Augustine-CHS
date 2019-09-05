@@ -577,7 +577,7 @@ exports.testTopic = functions.https.onRequest((request, response) => {
 
 exports.deleteSeniors = functions.https.onRequest((req, res) => {
 
-    let user_ref = admin.firestore().collection('usersTEST2');
+    let user_ref = admin.firestore().collection('users');
 
     let all_user = user_ref.get()
     .then(snapshot => {
@@ -586,25 +586,35 @@ exports.deleteSeniors = functions.https.onRequest((req, res) => {
 
         snapshot.forEach(doc => {
 
-            console.log(doc.id + '=>' + doc.data());
+            // console.log(doc.id + '=>' + doc.data());
             const usr_data = doc.data();
             
             let usr_email = usr_data.email;
 
-            if(usr_email.includes("19")){
-                senior_ids.push(doc.id);
+            console.log(usr_email);
+            try {
+                if(usr_email.includes("19")){
+                    senior_ids.push(doc.id);
+                }
+            } catch (err) {
+                console.log(usr_email);
             }
 
         });
 
         for(let i = 0; i < senior_ids.length; i++){
-            admin.firestore().collection('usersTEST2').doc(senior_ids[i]).collection('info').doc('vital').delete();
-            admin.firestore().collection('usersTEST2').doc(senior_ids[i]).delete(); 
+            admin.firestore().collection('users').doc(senior_ids[i]).collection('info').doc('vital').delete();
+            admin.firestore().collection('users').doc(senior_ids[i]).delete(); 
         }
 
 
         res.send(senior_ids);
         return senior_ids;
+    })
+    .catch( (error) => {
+        
+
+
     })
     .catch((error) => {
         res.send('Error deleting users' + error);
@@ -614,20 +624,67 @@ exports.deleteSeniors = functions.https.onRequest((req, res) => {
 
 });
 
-exports.deleteClubSeniors = functions.https.onRequest((req, res) => {
+exports.deleteClubs = functions.https.onRequest( (req, res) => {
 
-    // let clubsRef = firebase.firestore().collection('clubs');
-    //Testing Purposes
-    let test_club_ref = firebase.firestore().collection('clubs').doc('clubID');
-    
-    let remove_user = test_club_ref.update()({
+    //Get the clubs collection
+    let clubs_ref = admin.firestore().collection('clubs');
+
+    let all_clubs = clubs_ref.get()
+
+    .then( snapshot => {
+
+        // const clubs_list = [];
+
+        snapshot.forEach(doc => {
+            
+            // clubs_list.push_back(doc.id);
+            if(doc.id !== '3rk2QdNU21cZ0bEpQJK7')
+                admin.firestore().collection('clubs').doc(doc.id).delete();
+            // console.log(doc);
+
+        });
 
 
+        // for(let i = 0; i < clubs_list.length; i++) {
 
+        //     admin.firestore().collection('ClubsTest').doc(clubs_list[i]).delete();
+
+        // }
+
+       res.send('Success');
+       return 1; 
+    }) .catch(err => {
+
+        res.send(err);
+        return err;
 
     });
+});
 
+exports.resetTimeTables = functions.https.onRequest( (req, res) => {
 
+    let users_ref = admin.firestore().collection('usersTEST2')
 
+    let get_users = users_ref.get()
+
+    .then( snapshot => {
+
+        snapshot.forEach( doc => {
+
+            const usr_data = doc.data();
+
+            let usr_courses = usr_data.courses;
+            
+            usr_courses.set();
+
+        });
+
+        res.send("Success");
+        return 1;
+    }) .catch(err => {
+
+        res.send(err);
+        return err;
+    });
 
 })
