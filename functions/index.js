@@ -663,7 +663,7 @@ exports.deleteClubs = functions.https.onRequest( (req, res) => {
 
 exports.resetTimeTables = functions.https.onRequest( (req, res) => {
 
-    let users_ref = admin.firestore().collection('usersTEST2')
+    let users_ref = admin.firestore().collection('users')
 
     let get_users = users_ref.get()
 
@@ -672,10 +672,12 @@ exports.resetTimeTables = functions.https.onRequest( (req, res) => {
         snapshot.forEach( doc => {
 
             const usr_data = doc.data();
+            const spare_arr = ["SPARE", "SPARE", "SPARE", "SPARE", "SPARE", "SPARE", "SPARE", "SPARE"];
 
-            let usr_courses = usr_data.courses;
-            
-            usr_courses.set();
+            let update_usr = admin.firestore().collection('users').doc(doc.id).update( {
+               "classes" : ["SPARE","SPARE","SPARE","SPARE","SPARE","SPARE","SPARE","SPARE"] 
+            });
+
 
         });
 
@@ -686,5 +688,69 @@ exports.resetTimeTables = functions.https.onRequest( (req, res) => {
         res.send(err);
         return err;
     });
+
+})
+
+exports.fixJohnsMistake = functions.https.onRequest((req, res) => {
+
+    const usr_ref = admin.firestore().collection('users');
+
+    let all_users = usr_ref.get()
+
+    .then( snapshot => {
+
+        snapshot.forEach( doc => {
+
+            let delete_stuff = admin.firestore().collection('users').doc(doc.id).update( {
+
+                "courses" : FeildValue.delete() 
+
+            })
+
+        })
+
+        res.send("Fixed your mistake")
+        return "Success";
+    }) .catch(err => {
+
+        console.log(err);
+        res.send(err);
+
+    });
+
+})
+
+exports.removeClubsFromUsers = functions.https.onRequest((req, res) => {
+
+    let user_ref = admin.firestore().collection('users');
+
+    let get_users = user_ref.get()
+
+    .then(snapshot => {
+
+        snapshot.forEach(doc => {
+            let usr_data = doc.data();
+
+            for(let i = 0; i < usr_data.clubs.length; i++){
+                console.log(doc.id);
+                admin.firestore().collection('users').doc(doc.id).update({
+                    "clubs" : FeildValue.arrayRemove(usr_data.clubs[i])
+                    // "clubs" : []
+                });
+            }
+            
+            // admin.firestore().collection('usersTEST2').doc(doc.id)
+        });
+
+        res.send("Clubs deleted from users");
+        return "Success";
+    }).catch((err) => {
+        console.log(err);
+        res.send(err);
+        return err;
+
+    })
+
+
 
 })
