@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3BDFAD5F656D5C773AFAE53F /* Pods_St_Augustine_CHS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A889DD5392F60F14A9A356D0 /* Pods_St_Augustine_CHS.framework */; };
 		4C1D4AB9B88DED385F67F83A /* Pods_St_Augustine_CHSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE9334E3157123B318D61742 /* Pods_St_Augustine_CHSUITests.framework */; };
+		5594E2F72360DA6A0089CF98 /* FAQController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5594E2F62360DA6A0089CF98 /* FAQController.swift */; };
 		B90669C82186851800CAA824 /* addAnncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90669C72186851800CAA824 /* addAnncController.swift */; };
 		B90669CA2186ACF100CAA824 /* addClubController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90669C92186ACF100CAA824 /* addClubController.swift */; };
 		B909434221DEE1740004433F /* DefaultConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B909434121DEE1740004433F /* DefaultConstants.swift */; };
@@ -91,6 +92,7 @@
 /* Begin PBXFileReference section */
 		1200440126EC5259394BE33A /* Pods-St Augustine CHS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHS.release.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS.release.xcconfig"; sourceTree = "<group>"; };
 		463C32E1E30EE7C9CC43FE07 /* Pods-St Augustine CHSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSTests/Pods-St Augustine CHSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		5594E2F62360DA6A0089CF98 /* FAQController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FAQController.swift; sourceTree = "<group>"; };
 		8042757457064347219EC6AC /* Pods-St Augustine CHS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHS/Pods-St Augustine CHS.debug.xcconfig"; sourceTree = "<group>"; };
 		81D256879F747A216782CBDD /* Pods-St Augustine CHSUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSUITests/Pods-St Augustine CHSUITests.release.xcconfig"; sourceTree = "<group>"; };
 		985BF9A734C46CBC20AF4EB1 /* Pods-St Augustine CHSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-St Augustine CHSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-St Augustine CHSTests/Pods-St Augustine CHSTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -249,6 +251,7 @@
 				B93F209621738E5500279829 /* LaunchScreen.storyboard */,
 				B93F209121738E5100279829 /* Main.storyboard */,
 				B93F208D21738E5100279829 /* AppDelegate.swift */,
+				5594E2F62360DA6A0089CF98 /* FAQController.swift */,
 				B9ACA1ED2175825800302C4B /* failedLoginController.swift */,
 				B9ACA1E92175499100302C4B /* signInController.swift */,
 				B94B173A21A0AAD000BCD86A /* SignInProfilePicController.swift */,
@@ -657,6 +660,7 @@
 				B9FECC012191337F0006CCE3 /* badgesViewCell.swift in Sources */,
 				B9EAF7B321A0D3D40062736B /* signInProfilePicViewCell.swift in Sources */,
 				B9C6E35B21ACA68500A03650 /* classesDetailsController.swift in Sources */,
+				5594E2F72360DA6A0089CF98 /* FAQController.swift in Sources */,
 				B9C6E35D21ACBFE200A03650 /* semester1ViewCell.swift in Sources */,
 				B958A26421C4023A00726345 /* cafeMenuController.swift in Sources */,
 				B9AE584821D5859F0067B904 /* memberCell.swift in Sources */,
