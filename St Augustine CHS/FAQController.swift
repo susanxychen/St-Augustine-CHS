@@ -21,10 +21,12 @@ class FAQController: UITableViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
                 
-        tableViewData = [cellData(opened: false, title: "Title 1", sectionData: ["cell1", "cell2", "cell3"]),
+        tableViewData = [cellData(opened: false, title: "If I spend my spirit points, does it take away from the spirit points of my grade?", sectionData: ["cell1"]),
                          cellData(opened: false, title: "Title 1", sectionData: ["cell1", "cell2", "cell3"]),
                          cellData(opened: false, title: "Title 1", sectionData: ["cell1", "cell2", "cell3"]),
                          cellData(opened: false, title: "Title 1", sectionData: ["cell1", "cell2", "cell3"])]
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 50
     }
     
     override func didReceiveMemoryWarning() {
