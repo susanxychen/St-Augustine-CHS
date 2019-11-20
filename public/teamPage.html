@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Firebase App is always required and must be first -->
+<script src="/__/firebase/5.8.2/firebase-app.js"></script>
+
+<!-- Add additional services that you want to use -->
+<script src="/__/firebase/5.8.2/firebase-auth.js"></script>
+<script src="/__/firebase/5.8.2/firebase-firestore.js"></script>
+<!--
+<script src="/__/firebase/5.8.2/firebase-database.js"></script>
+<script src="/__/firebase/5.8.2/firebase-messaging.js"></script>
+<script src="/__/firebase/5.8.2/firebase-functions.js"></script>
+-->
+
+<!-- Comment out (or don't include) services that you don't want to use -->
+<!-- <script src="/__/firebase/5.8.2/firebase-storage.js"></script> -->
+
+<script src="/__/firebase/init.js"></script>
+	
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>St Augustine CHS App</title>
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+    <link href="css/styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <style>
+		  
+		html, body {
+			max-width: 100%;
+			overflow-x: hidden;
+		}
+		  
+        .fa {
+            padding: 20px;
+            font-size: 30px;
+            width: 70px;
+            height: 70px;
+            text-align: center;
+            text-decoration: none;
+            margin: 5px 2px;
+            border-radius: 50%;
+        }
+        .fa:hover {
+            opacity: 0.7;
+        }
+        .fa-instagram {
+            background: #125688;
+            color: white;
+        }
+        .fa-youtube {
+            background: #bb0000;
+            color: white;
+        }
+        .fa-twitter {
+            background: #55ACEE;
+            color: white;
+        }
+        
+        .col-sm-13 {
+			-webkit-box-flex: 0;
+			-ms-flex: 0 0 25%;
+			flex: 0 0 25%;
+			max-width: 25%;
+			margin-left: 22.5%;
+		}
+		
+		.col-sm-14 {
+			-webkit-box-flex: 0;
+			-ms-flex: 0 0 25%;
+			flex: 0 0 25%;
+			max-width: 25%;
+			margin-left: 5%;
+		}
+	
+		.container-new {
+			width: 100%;
+			margin-left: 35%;
+		}
+  
+      </style>
+  </head>
+  <body class="bg-color-baige">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-color-primary">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://app.staugustinechs.ca/index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://app.staugustinechs.ca/tutorials/index.html">Tutorials</a>
+          </li>
+          <li class="nav-item ">
+            <a class="nav-link" href="https://app.staugustinechs.ca/faq.html">FAQ</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="https://app.staugustinechs.ca/teamPage.html">Developers<span class="sr-only">(current)</span></a>
+          </li>
+          
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <a class="nav-link" style="color: white" href="https://app.staugustinechs.ca/login/index.html">Login</a>
+        </form>
+      </div>
+    </nav>
+ 
+	  <br>
+ 
+    <div class="container mt-2">
+      <div class="row">
+        <div class="col-12">
+          <div class="jumbotron bg-color-primary" style="border-radius: 2rem">
+			  <div align="center">
+			  	<img src="images/icon_square.jpg" width="15%" style="border-radius: 2rem">
+			  </div>
+			  <br>
+            <h2 class="text-center" style="color: white">Meet The Devs!</h2>
+		  </div>
+			<!--<section>
+				<div class="container">
+					<div class="row justify-content-center">
+				  		<div class="col-10">
+							<div class="embed-responsive embed-responsive-16by9">
+				  			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/lFqDM_YlXV8"></iframe>
+							</div>
+				  		</div>
+					</div>
+				</div>
+			</section>-->
+            </div>
+		</div>
+	  </div>
+		<hr>
+	  <div class="container">
+		  <div class="card">
+        <div class="text-center card-body" style="background-color: white">
+          <h3 class="card-title">2018-2019</h3>
+          <div class="container mt-4">
+		      <div class="row">
+		        <div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/charmaine.jpg" alt="Card image cap">
+		            <div class="card-body">
+		              <h5 class="card-title">Charmaine Chun</h5>
+		              <p class="card-text">Charmaine actively competes in engineering events and owns an online woodworking business. In the future, she aspires to become a mechanical engineer and designer. She thinks of her best ideas when she naps.</p>
+		              </div>
+		          </div>
+		        </div>
+		        <div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/amanda.jpg" alt="Card image cap">
+		            <div class="card-body">
+		              <h5 class="card-title">Amanda Morelli<span style="font-size: 14px"><br>Co-Founder</span></h5>
+		              <p class="card-text">Amanda is a former high school research intern at Sunnybrook Research Institute’s Focused Ultrasound Lab, and is the president of her school’s HOSA chapter. She is an aspiring biomedical engineer and entrepreneur.</p>
+		              </div>
+		          </div>
+		        </div>
+				<div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/pablo.jpg" alt="Card image cap">
+		            <div class="card-body">
+		              <h5 class="card-title">Pablo Araujo Camacho<span style="font-size: 14px"><br>Co-Founder</span></h5>
+		              <p class="card-text">Pablo has been coding since he was nine years old. He is an aspiring computer science student and wants to be a software developer for Google in the future. He is a follower of God and is Imagine Dragons’ biggest fan.</p>
+		              </div>
+		          </div>
+		        </div>
+				<div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/kenny.jpg" alt="Card image cap">
+		            <div class="card-body">
+		              <h5 class="card-title">Kenny Miu</h5>
+		              <p class="card-text">Kenny participated in Waterloo’s Catalyst Summer Program and is a FIRST Robotics mentor. In the future, he wants to study computer science and aspires to work in Silicon Valley in the future. He can sleep through absolutely anything.</p>
+		              </div>
+		          </div>
+		        </div>
+			  </div>
+		    </div>
+				  </div>
+          </div>
+		</div>
+		
+	  <hr>	
+		
+		<div class="container">
+		  <div class="card">
+        <div class="text-center card-body" style="background-color: white">
+          <h3 class="card-title">2019-2020</h3>
+          <div class="container mt-4">
+		      <div class="row">
+		        <div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/jonathan.jpg" alt="name4">
+		            <div class="card-body">
+		              <h5 class="card-title">Jonathan Woo</h5>
+		              <p class="card-text">Jonathan Woo is an iOS developer of the St. Augustine CHS app.
+										   After high school, he hopes to attend a university in USA for engineering or the University of Waterloo for the Software 
+										   Engineering program.</p>
+		              </div>
+		          </div>
+		        </div>
+		        <div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/susan.jpg" alt="name3">
+		            <div class="card-body">
+		              <h5 class="card-title">Susan Chen</h5>
+		              <p class="card-text">Susan has competed and earned awards in a variety of competitions, from University of Waterloo math and science contests 
+											to the York University Tri-Sci Tourney. She is an aspiring chemical engineer and hopes to contribute towards creating a 
+											miracle product.</p>
+		              </div>
+		          </div>
+		        </div>
+				<div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/ernestine.jpg" alt="name2">
+		            <div class="card-body">
+		              <h5 class="card-title">Ernestine Ho</h5>
+		              <p class="card-text">Ernestine actively codes in her free time. In the future, she aspires to become a software engineer and aims to work 
+										   around the world. She can sleep anywhere anytime even after drinking coffee."</p>
+		              </div>
+		          </div>
+		        </div>
+				<div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/ryanchiu.jpg" alt="name2">
+		            <div class="card-body">
+		              <h5 class="card-title">Ryan Chiu</h5>
+		              <p class="card-text">Ryan is a male teenager aspiring to one day become a successful entrepreneur with a background of either engineering or 
+										   computer science. </p>
+		              </div>
+		          </div>
+		        </div>
+			  </div>
+		    </div>
+		    <br>
+		 <div class="container mt-4">
+		      <div class="row">
+		        <div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/john.jpg" alt="name4">
+		            <div class="card-body">
+		              <h5 class="card-title">John Tedesco</h5>
+		              <p class="card-text">John began programming 3 years ago with the desire of making. He wishes to attend Waterloo university to study computer science 
+										   in order to later specialize in security or system design</p>
+		              </div>
+		          </div>
+		        </div>
+		        <div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/kevin.jpg" alt="name3">
+		            <div class="card-body">
+		              <h5 class="card-title">Kevin Basta</h5>
+		              <p class="card-text">Kevin is an aspiring software engineer and filmmaker. He is very interested in programming, videography, and classical 
+										   guitar. He is actively developing his programming skills. </p>
+		              </div>
+		          </div>
+		        </div>
+				<div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/matthew.jpg" alt="name2">
+		            <div class="card-body">
+		              <h5 class="card-title">Matthew Morelli</h5>
+		              <p class="card-text">Matthew is an aspiring computer science student.  He earned the Bronze Duke of Edinburgh Award
+										   in Grade 9, and his interests are in programming, and he hopes to do that in the future.</p>
+		              </div>
+		          </div>
+		        </div>
+				<div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/andre.jpg" alt="name2">
+		            <div class="card-body">
+		              <h5 class="card-title">Andre Giardina</h5>
+		              <p class="card-text">Andre was valedictorian and achieved the "Technology Award" in grade 8. He aspires to become a creative graphic designer/marketer.
+										   He has been skiing for 12 years and racing for 4. Somehow he can eat 5 meals a day and still be hungry.</p>
+		              </div>
+		          </div>
+		        </div>
+		        <br>
+		        <div class="container mt-4">
+				<br>
+		      <div class="row">
+		        <div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/marcos.jpg" alt="name4">
+		            <div class="card-body">
+		              <h5 class="card-title">Marcos Araujo Camacho</h5>
+		              <p class="card-text">Marcos is an immigrant from Spain that moved to Canada in 2011. He has lived there with his family for nearly 8 years. He's had the 
+										   privilege to be his elementary school "Tech Guy" and has worked with his brother on various projects including the St. A's 
+										   App development.</p>
+		              </div>
+		          </div>
+		        </div>
+		        <div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/emmaf.jpg" alt="name3">
+		            <div class="card-body">
+		              <h5 class="card-title">Emma Florentino</h5>
+		              <p class="card-text">Emma is fascinated with technology and it’s relation to the world of marketing. She is the marketing trainer for her 
+										   school’s DECA chapter and aspires to work in a STEM related field. Her goal is to encourage other young girls to pursue 
+										   their passions!</p>
+		              </div>
+		          </div>
+		        </div>
+		        <div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/mehul.jpg" alt="name3">
+		            <div class="card-body">
+		              <h5 class="card-title">Mehul Pillai</h5>
+		              <p class="card-text">Mehul hopes to attend a computer science program and work as a developer. He loves writing code and playing chem sketch.</p>
+		              </div>
+		          </div>
+		        </div>
+		        <div class="col-sm-3">
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/jordan.jpg" alt="name3">
+		            <div class="card-body">
+		              <h5 class="card-title">Ryan Chong-Kit</h5>
+		              <p class="card-text">Aspiring Computer Science student in grade 12.</p>
+		              </div>
+		          </div>
+		        </div>
+		        
+		        
+		        <div class="col-sm-13">
+					<br>
+					<br>
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/emmah.jpg" alt="name3">
+		            <div class="card-body">
+		              <h5 class="card-title">Emma Hosey</h5>
+		              <p class="card-text">Emma has a strong interest in visual arts for as long as she can remember. She enjoys drawing digitally and on paper. 
+										   In the future, she aspires to become a graphic designer. </p>
+		              </div>
+		          </div>
+		        </div>
+
+		        <div class="col-sm-14">
+					<br>
+					<br>
+		          <div class="card">
+		            <img class="card-img-top" src="devphotos/ryanc.jpg" alt="name3">
+		            <div class="card-body">
+		              <h5 class="card-title">Jordon Ng</h5>
+		              <p class="card-text">As an avid lover of art and architecture, Jordan has dreamed of becoming an architect since he was four years old. 
+										   He is currently in his senior year at St. Augustine CHS and plans on fulfilling his childhood dream after school.</p>
+		              </div>
+		          </div>
+		        </div>
+			  </div>
+			  </div>
+		    </div>
+				  </div>
+          </div>
+		</div>
+		
+	  <hr>
+  <div class="container bg-color-primary" style="border-radius: 2rem; padding-bottom: 2rem; padding-top: 1rem; color: white;">
+		  <div class="text-center card-body">
+<h2>Social</h2>
+	  <div class="row justify-content-center">
+          <a href="https://www.instagram.com/sachsapp" class="fa fa-instagram" style="margin-right: 3%"></a>
+          <a href="https://www.twitter.com/sachsapp" class="fa fa-twitter" style="margin-right: 3%"></a>
+          <a href="https://www.youtube.com/channel/UCZ23Opi4gXuLo5PKm-Plusw" class="fa fa-youtube"></a>
+	  </div>
+  </div>
+    <div class="container">
+        <div class="text-center">
+        <h2>Contact Us</h2>
+        <address>
+            <u><strong>App Development Team</strong><br></u>
+          Email: sachsappteam@gmail.com
+          </address>
+        
+      </div>
+        <div class="row justify-content-center">
+        <div class="col-9 text-center">
+        <h2>About Us</h2>
+          <p>We started developing this app because we wanted to increase school spirit within the student body and promote the technological aspect of our school community. Also, we never knew whether it is a day 1 or a day 2 and wanted to find a solution to this common confusion within our school. The team started out knowing close to nothing about app development, so the process of building this app has been a journey for all of us. From marketing and design to backend server and database management <!-- and machine learning implementation -->, we have gained several new skills and collaborated with a number of people in order to bring this app to life.</p>
+        </div>
+        </div>
+    </div>
+		  </div>
+		  <hr>
+    <footer class="text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <p>Copyright © St Augustine CHS. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap-4.0.0.js"></script>
+    <!--
+    theclearingwantsyou, and the fbi is looking for you
+    -->
+  </body>
+</html>
+
+

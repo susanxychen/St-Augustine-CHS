@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<!-- Firebase App is always required and must be first -->
+	<script src="/__/firebase/5.8.2/firebase-app.js"></script>
+
+	<!-- Add additional services that you want to use -->
+	<script src="/__/firebase/5.8.2/firebase-auth.js"></script>
+	<script src="/__/firebase/5.8.2/firebase-firestore.js"></script>
+	<!--
+	<script src="/__/firebase/5.8.2/firebase-database.js"></script>
+	<script src="/__/firebase/5.8.2/firebase-messaging.js"></script>
+	<script src="/__/firebase/5.8.2/firebase-functions.js"></script>
+	-->
+
+	<!-- Comment out (or don't include) services that you don't want to use -->
+	<!-- <script src="/__/firebase/5.8.2/firebase-storage.js"></script> -->
+
+<script src="/__/firebase/init.js"></script>
+  <head>
+	<!-- FAQ -->
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>St Augustine CHS App</title>
+    <link rel="shortcut icon" href="https://app.staugustinechs.ca/images/favicon.png" type="image/x-icon">
+    <link href="css/styles.css" rel="stylesheet">
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+	
+  <body class="bg-color-baige">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-color-primary">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://app.staugustinechs.ca/index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://app.staugustinechs.ca/tutorials/index.html">Tutorials</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="https://app.staugustinechs.ca/faq.html">FAQ<span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://app.staugustinechs.ca/teamPage.html">Developers</a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <a class="nav-link" style="color: white" href="https://app.staugustinechs.ca/login/index.html">Login</a>
+        </form>
+      </div>
+    </nav>
+	  
+    <div class="container mt-2">
+      <div class="row">
+        <div class="col-12">
+          <div class="jumbotron bg-color-primary" style="border-radius: 2rem">
+			  <div align="center">
+			  	<img src="../images/icon_square.jpg" width="15%" style="border-radius: 2rem">
+			  </div>
+			  <br>
+            <h2 class="text-center" style="color: white">FAQ</h2>
+			  <div align="center">
+				<h4 class="text-center" style="color: white">(Frequently Asked Questions)</h4>
+			  </div>
+		  </div>
+		  <hr>
+		  <div class="">
+			<div class="card">
+		   <div class="text-center card-body" style="background-color: white;">
+				<div align="center">
+						<br>
+						<h6 class="text-left" style="color: black; margin-left: 20%;">If I spend my spirit points, does it take away from the spirit points of my grade?</h6>
+						<div class="text-left" style="margin-left: 25%; margin-right: 22%;">
+							<ul><li><p class="text-left" >No. Although the spirit points you gain individually are added to your grades overall spirit meter, these points will not be taken away once you decide to spend them.</p></li></ul>
+						</div>
+							<br>
+						<h6 class="text-left" style="color: black; margin-left: 20%;">How do I keep my school information private?</h6>
+						<div class="text-left" style="margin-left: 25%; margin-right: 22%;">
+							<ul><li><p class="text-left" > To ensure other students cannot see your courses or clubs, go to the home screen and click the three dots on the top left corner, and then go into settings. From there, turn on the toggle switch to keep classes and clubs private.</p></li></ul>
+						</div>
+							<br>
+						<h6 class="text-left" style="color: black; margin-left: 20%;">How do you get more badges? Will each club have one?</h6>
+						<div class="text-left" style="margin-left: 25%; margin-right: 22%;">
+							<ul><li><p class="text-left" >You can get more badges by joining different clubs, however, badges can only be earned once you have been accepted into the club by your club administrator. No, not all clubs have badges. It is up to the club administrator if they wish to add them. </p></li></ul>
+						</div>
+							<br>
+						<h6 class="text-left" style="color: black; margin-left: 20%;">What does “Clear Cache” do?</h6>
+						<div class="text-left" style="margin-left: 25%; margin-right: 22%;">
+							<ul><li><p class="text-left" >We store images on the app so that it runs smooth. By clearing cache, you will save storage on your device. The app will still be able to run, however, loading time may take a bit longer. </p></li></ul>
+						</div>
+							<br>
+						<h6 class="text-left" style="color: black; margin-left: 20%;">Does the app update for snow days on the home page?</h6>
+						<div class="text-left" style="margin-left: 25%; margin-right: 22%;">
+							<ul><li><p class="text-left" >Yes. The app gets its information directly from School Bus City, therefore once updates have been posted on the website, the app will update as well by posting it on the home page as well as sending out a notification (if notifications are on). </p></li></ul>
+						</div>
+							<br>
+						<h6 class="text-left" style="color: black; margin-left: 20%;">How do you earn points to spend on profile pics?</h6>
+						<div class="text-left" style="margin-left: 25%; margin-right: 22%;">
+							<ul><li><p class="text-left" >You can earn points by joining clubs which require approval from the administrator. From there you are free to use your points on whatever you wish (ie. song requests, new profile pictures, etc.)</p></li></ul>
+						</div>
+							<br>
+						<h6 class="text-left" style="color: black; margin-left: 20%;">Will the caf menu be updated the night before or the morning of?</h6>
+						<div class="text-left" style="margin-left: 25%; margin-right: 22%;">
+							<ul><li><p class="text-left" >The caf menu will be updated on the app the morning of, as this is when the cafeteria posts that day’s menu</p></li></ul>
+						</div>
+							<br>
+						<h6 class="text-left" style="color: black; margin-left: 20%;">Is there a place in the app or somewhere we can put suggestions and report bugs? </h6>
+						<div class="text-left" style="margin-left: 25%; margin-right: 22%;">
+							<ul><li><p class="text-left" >Yes! In settings</p></li></ul>
+						</div>
+							<br>
+						<h6 class="text-left" style="color: black; margin-left: 20%;">What is the difference between club announcements and school wide announcements?</h6>
+						<div class="text-left" style="margin-left: 25%; margin-right: 22%;">
+							<ul><li><p class="text-left" >Club announcements </p></li></ul>
+						</div>
+							<br>
+						<h6 class="text-left" style="color: black; margin-left: 20%;">Can I log into my account on multiple devices?</h6>
+						<div class="text-left" style="margin-left: 25%; margin-right: 22%;">
+							<ul><li><p class="text-left" >Yes, however, the notifications will only appear on the last signed in device </p></li></ul>
+						</div>
+				</div>
+			</div>
+			</div>
+			</div>
+		</div>
+	  </div>
+	</div>
+	<hr>
+  <div class="container bg-color-primary" style="border-radius: 2rem; padding-bottom: 2rem; padding-top: 1rem; color: white;">
+		  <div class="text-center card-body">
+<h2>Social</h2>
+	  <div class="row justify-content-center">
+          <a href="https://www.instagram.com/sachsapp" class="fa fa-instagram" style="margin-right: 3%"></a>
+          <a href="https://www.twitter.com/sachsapp" class="fa fa-twitter" style="margin-right: 3%"></a>
+          <a href="https://www.youtube.com/channel/UCZ23Opi4gXuLo5PKm-Plusw" class="fa fa-youtube"></a>
+	  </div>
+  </div>
+    <div class="container">
+        <div class="text-center">
+        <h2>Contact Us</h2>
+        <address>
+            <u><strong>App Development Team</strong><br></u>
+          Email: sachsappteam@gmail.com
+          </address>
+        
+      </div>
+        <div class="row justify-content-center">
+        <div class="col-9 text-center">
+        <h2>About Us</h2>
+          <p>We started developing this app because we wanted to increase school spirit within the student body and promote the technological aspect of our school community. Also, we never knew whether it is a day 1 or a day 2 and wanted to find a solution to this common confusion within our school. The team started out knowing close to nothing about app development, so the process of building this app has been a journey for all of us. From marketing and design to backend server and database management <!-- and machine learning implementation -->, we have gained several new skills and collaborated with a number of people in order to bring this app to life.</p>
+        </div>
+        </div>
+    </div>
+		  </div>
+		  <hr>
+    <footer class="text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <p>Copyright © St Augustine CHS. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://app.staugustinechs.ca/js/jquery-3.2.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://app.staugustinechs.ca/js/popper.min.js"></script>
+    <script src="https://app.staugustinechs.ca/js/bootstrap-4.0.0.js"></script>
+  </body>
+</html>

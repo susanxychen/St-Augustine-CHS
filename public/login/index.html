@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+	 <!-- LOGIN -->
 	<meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>St Augustine CHS App</title>
     <link rel="shortcut icon" href="https://app.staugustinechs.ca/images/favicon.png" type="image/x-icon">
-    <link href="../css/styles.css" rel="stylesheet">
-      
+    <link href="styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-auth.js"></script>
-		<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-firestore.js"></script>
-		<script src="https://www.gstatic.com/firebasejs/5.10.1/firebase-functions.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-firestore.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.10.1/firebase-functions.js"></script>
 
   </head>
 	
@@ -23,12 +24,21 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="https://app.staugustinechs.ca">Home<span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="https://app.staugustinechs.ca/index.html">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="https://app.staugustinechs.ca/tutorials/index.html">Tutorials</a>
           </li>
+          <li class="nav-item ">
+            <a class="nav-link" href="https://app.staugustinechs.ca/faq.html">FAQ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://app.staugustinechs.ca/teamPage.html">Developers</a>
+          </li>
         </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <a class="nav-link active" style="color: white" href="https://app.staugustinechs.ca/login/index.html">Login<span class="sr-only">(current)</span></a>
+        </form>
       </div>
     </nav>
 	  
@@ -37,7 +47,7 @@
         <div class="col-12">
           <div class="jumbotron bg-color-primary" style="border-radius: 2rem">
 			  <div align="center">
-			  	<img src="../images/icon_square.jpg" width="15%" style="border-radius: 2rem">
+			  	<img src="icon_square.jpg" width="15%" style="border-radius: 2rem">
 			  </div>
 			  <br>
             <h2 class="text-center" style="color: white">Log in</h2>
