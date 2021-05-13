@@ -270,24 +270,6 @@ exports.deleteOldAnnouncements = functions.https.onRequest((request, response) =
 });
 
 
-var mysql = require('mysql');
-
-var con = mysql.createConnection({
-  host: "staugustinechs.netfirmsmysql.com",
-  user: "kevb",
-  password: "ics3u1Rules!",
-  database: "staannounce"
-});
-
-con.connect(function(err) {
-  if (err) throw err;
-  con.query("SELECT * FROM customers", function (err, result, fields) {
-    if (err) throw err;
-    console.log(result);
-  });
-});
-
-
 exports.getDayNumber = functions.https.onRequest((request, response) => {
     https.get({
         host: 'staugustinechs.netfirms.com',
