@@ -10,6 +10,8 @@ admin.initializeApp({
     credential: admin.credential.applicationDefault()
 });
 
+let whiteListedModules = ['vue','axios','vue-electron', 'vue-router', 'vuex', 'vuex-electron','element-ui'];
+
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 
@@ -267,6 +269,32 @@ exports.deleteOldAnnouncements = functions.https.onRequest((request, response) =
     })
 });
 
+
+
+
+
+// SQL CONNECTION :'(
+    exports.connectSQL = functions.https.onRequest((request, response) => {
+        var mysql = require('mysql');
+
+        var con = mysql.createConnection({
+        host: "staugstinechs.netfirmsmysql.com",
+        user: "kevb",
+        password: "ics3u1Rules!"
+        });
+
+        con.connect(function(err) {
+        if (err) throw err;
+        console.log("Connected!");
+
+        con.query("SELECT * FROM dayonetwo", function (err, result, fields) {
+            if (err) throw err;
+            console.log(result);
+        });
+        });
+    });
+
+
 exports.getDayNumber = functions.https.onRequest((request, response) => {
     https.get({
         host: 'staugustinechs.netfirms.com',
@@ -282,14 +310,14 @@ exports.getDayNumber = functions.https.onRequest((request, response) => {
     // The whole response has been received
     resp.on('end', () => {
         //console.log(data);
-        var index = data.lastIndexOf("Day ");
-        var dayNum = data.substring(index+4, index + 5);
+        var index = data.lastIndexOf("Cohort ");
+        var dayNum = data.substring(index+7, index + 8);
         //var dayNumAsInt = parseInt(dayNum, 10);
 
         admin.firestore().doc('info/dayNumber').get()
         .then(snapshot => {
             if (snapshot.exists) {
-                console.log('Day:' + dayNum);
+                console.log('Cohort:' + dayNum);
                 response.send(dayNum);
                 return snapshot.ref.set({
                     dayNumber: dayNum,
@@ -311,6 +339,7 @@ exports.getDayNumber = functions.https.onRequest((request, response) => {
         response.send("Error getting day number " + err.message);
         console.log("Error: " + err.message);
     });
+    
 });
 
 exports.sendToTopic = functions.https.onCall((data, response) => {
