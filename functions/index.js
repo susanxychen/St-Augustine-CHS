@@ -270,29 +270,22 @@ exports.deleteOldAnnouncements = functions.https.onRequest((request, response) =
 });
 
 
+var mysql = require('mysql');
 
+var con = mysql.createConnection({
+  host: "staugustinechs.netfirmsmysql.com",
+  user: "kevb",
+  password: "ics3u1Rules!",
+  database: "staannounce"
+});
 
-
-// SQL CONNECTION :'(
-    exports.connectSQL = functions.https.onRequest((request, response) => {
-        var mysql = require('mysql');
-
-        var con = mysql.createConnection({
-        host: "staugstinechs.netfirmsmysql.com",
-        user: "kevb",
-        password: "ics3u1Rules!"
-        });
-
-        con.connect(function(err) {
-        if (err) throw err;
-        console.log("Connected!");
-
-        con.query("SELECT * FROM dayonetwo", function (err, result, fields) {
-            if (err) throw err;
-            console.log(result);
-        });
-        });
-    });
+con.connect(function(err) {
+  if (err) throw err;
+  con.query("SELECT * FROM customers", function (err, result, fields) {
+    if (err) throw err;
+    console.log(result);
+  });
+});
 
 
 exports.getDayNumber = functions.https.onRequest((request, response) => {
@@ -339,7 +332,6 @@ exports.getDayNumber = functions.https.onRequest((request, response) => {
         response.send("Error getting day number " + err.message);
         console.log("Error: " + err.message);
     });
-    
 });
 
 exports.sendToTopic = functions.https.onCall((data, response) => {
